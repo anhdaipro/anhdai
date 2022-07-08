@@ -45,7 +45,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
     };
 
     useEffect(() => {
-       if(localStorage.token!='null' && expiry>0){
+       if(isAuthenticated){
             const search = window.location.search;
             const params = new URLSearchParams(search);
             if(params.get('next')!=null){
@@ -55,7 +55,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
                 window.location.href='/'
             }
        }
-    }, [])
+    }, [isAuthenticated])
    
     
     
