@@ -3,7 +3,7 @@ import Sidebamenu from "./Sidebar-menu"
 import axios from 'axios';
 import Navbar from "./Navbar"
 import { useParams,Link, useNavigate } from "react-router-dom";
-import React, {useState,useEffect,useCallback,useRef} from 'react'
+import React, {useState,useEffect} from 'react'
 import {localhost,formatter,newproductURL,shippingshopURL,groupBy} from "../constants"
 import ProductDetail from "./Product"
 import Message from '../containers/Chat'
@@ -12,7 +12,6 @@ const Newproduct=()=>{
     const [state,setState]=useState({list_category:[],list_choice:[],list_media:[],category:null,
     list_color:[],list_size:[],position:0})
     const [level,setLevel]=useState(0)
-    const [detail,setDetail]=useState()
     const [variation,setVariation]=useState([])
     const [shipping,setShipping]=useState()
     const [show,setShow]=useState(false)
@@ -148,7 +147,7 @@ const Newproduct=()=>{
                                                     <ul  className="scroll-item">
                                                         {i<=level?<>
                                                         {state.list_category.map(category=>{
-                                                            if((i>0&&category.level==i && category.parent==state.list_choice[i-1].id && category.level>0) || (category.level==0 && i==0)){
+                                                            if((i>0&&category.level==i && category.parent==state.list_choice[i-1].id && category.level>0) || (category.level==0 && i==0 && category.title.indexOf(state.category)>-1)){
                                                                 return(
                                                                 <li onClick={()=>setcategorychoice(i,category)} className={`category-item ${category.id==state.list_choice[i].id?'selected':''}`}>
                                                                     <p className="text-overflow">{category.title}</p> 
