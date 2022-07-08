@@ -17,16 +17,6 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
     const onSubmit = e => {
         e.preventDefault();
         login(username, password);
-        setTimeout(()=>{
-            if(isAuthenticated!=null){
-                if(isAuthenticated){
-                    setState({...state,error_login:0})
-                }
-                else{
-                    setState({...state,error_login:state.error_login+1})
-                }
-            }
-        },1000)
     };
     
     const showpass=(e,name,value)=>{
@@ -34,27 +24,24 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
         setState({...state,[name]:!value})
     }
     
-    const continueWithFacebook = async () => {
-        try {
-            const res = await axios.get(`https://anhdai.herokuapp.com/auth/o/facebook/?redirect_uri=http://localhost:3000/facebook`)
-
-            window.location.replace(res.data.authorization_url);
-        } catch (err) {
-
-        }
-    };
 
     useEffect(() => {
-       if(isAuthenticated){
-            const search = window.location.search;
-            const params = new URLSearchParams(search);
-            if(params.get('next')!=null){
-                window.location.href=params.get('next')
+        if(isAuthenticated!=null){
+            if(isAuthenticated){
+                setState({...state,error_login:0})
+                const search = window.location.search;
+                const params = new URLSearchParams(search);
+                if(params.get('next')!=null){
+                    window.location.href=params.get('next')
+                }
+                else{
+                    window.location.href='/'
+                }
             }
             else{
-                window.location.href='/'
+                setState({...state,error_login:state.error_login+1})
             }
-       }
+        }
     }, [isAuthenticated])
    
     
