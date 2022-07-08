@@ -4,7 +4,7 @@ import { checkAuthenticated} from '../actions/auth';
 
 const Layout = ({children,checkAuthenticated }) => {
     useEffect(() => {
-        if(localStorage.token!='null'){
+        if(localStorage.token){
         checkAuthenticated()
         }
     }, []);
