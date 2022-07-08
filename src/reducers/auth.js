@@ -66,7 +66,7 @@ const rootReducer=(state = initialState, action)=>{
                 ...state,
                 access: null,
                 refresh: null,
-                isAuthenticated: false,
+                isAuthenticated: null,
                 user: null
             }
         case PASSWORD_RESET_SUCCESS:
