@@ -1,10 +1,10 @@
 import Navbar from "./Navbar"
 import axios from 'axios';
-import Message from '../containers/Chat'
-import { headers,user} from '../actions/auth'
+import {shopprofileURL,} from "../urls"
+import { headers} from '../actions/auth'
 import Sidebamenu from "./Sidebar-menu"
 import React, {useRef,useState,useEffect} from "react"
-import { shopprofileURL,matchYoutubeUrl } from "../constants"
+import { matchYoutubeUrl } from "../constants"
 import {connect} from 'react-redux'
 const Profileshop=({user})=>{
   const submitprofile=(e)=>{
@@ -140,7 +140,7 @@ const Profileshop=({user})=>{
                                 <div data-v-2f57c25a="" className="cover" style={{backgroundImage: `url(${state.image_cover})`}}>
                                   <div onClick={(e)=>editimagecover(e)} data-v-2f57c25a="" className="cover-edit action">Sửa ảnh bìa</div>
                                 </div> 
-                                <div data-v-2f57c25a="" className="avatar" style={{backgroundImage: `url(${state.image!=null?state.image:user!=null?user.image:null})`}}>
+                                <div data-v-2f57c25a="" className="avatar" style={{backgroundImage: `url(${state.avatar!=null?state.avatar:user!=null?user.avatar:null})`}}>
                                   <div onClick={(e)=>editimage(e)} data-v-2f57c25a="" className="avatar-edit action">Sửa</div>
                                 </div> 
                                 <div data-v-2f57c25a="" className="user">
@@ -487,9 +487,7 @@ const Profileshop=({user})=>{
             </div>
           </div> :''}
         </div>
-        <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-            <Message/>
-        </div>     
+           
       </>
     )
 }

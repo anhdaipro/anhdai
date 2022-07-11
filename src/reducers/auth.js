@@ -13,14 +13,20 @@ import {
     GOOGLE_AUTH_FAIL,
     FACEBOOK_AUTH_SUCCESS,
     FACEBOOK_AUTH_FAIL,
-    LOGOUT
+    LOGOUT,
+    SHOW_CHAT,
 } from '../actions/types';
 
 let initialState = {
     access: localStorage.getItem('access'),
     refresh: localStorage.getItem('refresh'),
     isAuthenticated: null,
-    user: null
+    user: null,
+    count_notify_unseen:0,
+    count_message_unseen:0,
+    thread:null,
+    messages:[],
+    showchat:false
 };
 
 const rootReducer=(state = initialState, action)=>{
@@ -30,7 +36,9 @@ const rootReducer=(state = initialState, action)=>{
             return {
                 ...state,
                 isAuthenticated: true,
-                user:payload
+                user:payload,
+                count_notify_unseen:payload.count_notify_unseen,
+                count_message_unseen:payload.count_message_unseen
             }
         case LOGIN_SUCCESS:
         case GOOGLE_AUTH_SUCCESS:
@@ -48,7 +56,14 @@ const rootReducer=(state = initialState, action)=>{
                 ...state,
                 isAuthenticated: false
             }
-       
+        case SHOW_CHAT:
+            return{
+                ...state,
+                showchat:true,
+                messages:payload.messages,
+                members:payload.members,
+                thread:payload.thread
+        }
         case AUTHENTICATED_FAIL:
             return {
                 ...state,

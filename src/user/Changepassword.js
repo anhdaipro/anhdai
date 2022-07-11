@@ -1,23 +1,22 @@
 import React,{useState,useEffect, useRef} from 'react';
 import axios from 'axios';
 import Navbar from "../containers/Navbar"
-import {localhost,changepassURL, profiledURL} from "../constants"
 import User from "./User"
 import { useNavigate } from 'react-router';
 import { headers } from '../actions/auth';
-
+import {changepassURL, profiledURL} from "../urls"
 
 const Changepassword =()=>{
     const [loading,setLoading]=useState(false)
     const [state,setState]=useState({})
     const navigate=useNavigate()
-    const [formData,setformData]=useState({username:'',email:'',image:null,old_password:'',new_password:'',new_password2:''})
+    const [formData,setformData]=useState({username:'',email:'',avatar:null,old_password:'',new_password:'',new_password2:''})
     useEffect(() => {
         axios.get(profiledURL,headers)
         .then(res=>{
           const data = res.data
           setLoading(true)
-          setformData({ ...formData,username:data.username,name:data.name,email:data.email,image:data.image}) 
+          setformData({ ...formData,username:data.username,name:data.name,email:data.email,avatar:data.avatar}) 
             if(data.phone==null){
                 navigate(`user/account/phone?next=${window.location}`)
             }
@@ -49,7 +48,7 @@ const Changepassword =()=>{
                 <div className="containers _1QwuCJ">
                     <User
                     username={formData.username}
-                    image={formData.image}
+                    avatar={formData.avatar}
                     />
                     <div className="_3D9BVC">
                         <div className="h4QDlo" role="main">

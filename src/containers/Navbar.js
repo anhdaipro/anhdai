@@ -1,6 +1,7 @@
 
 import axios from 'axios';
-import {cartviewURL,formatter, categoryhomeURL} from "../constants"
+import {formatter,} from "../constants"
+import {cartviewURL,categoryhomeURL} from "../urls"
 import { logout,headers,expiry } from '../actions/auth';
 import { connect } from 'react-redux';
 import React, { Fragment, useState,useEffect } from 'react';
@@ -118,7 +119,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user}) => {
                         </Link>
                         {user!==null?
                         <div onMouseLeave={()=>hideaccount()} onMouseEnter={()=>viewaccount()} className="item-center pl-2" id="nav">
-                            <img id="img-preview2" src={image!=undefined?image:user.image}/>
+                            <img id="img-preview2" src={image!=undefined?image:user.avatar}/>
                             <span className="pl-1_2">{user.username}</span>
                             {state.view_account?
                             <div className="log">
@@ -218,7 +219,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user}) => {
                                                 <div className="cart-item-name_price">
                                                     <div className="item-center">
                                                         <div className="cart-item-name">
-                                                            {Object.keys(item.promotion).length>0?<span className="_2-s53F">Combo khuyến mãi</span>:item.shock_deal_type!=null?<span className="_2-s53F">{item.shock_deal_type=='1'?'Buy to receive gift':'Buy with shock deal'}</span>:''}
+                                                            {item.promotion?<span className="_2-s53F">Combo khuyến mãi</span>:item.shock_deal_type!=null?<span className="_2-s53F">{item.shock_deal_type=='1'?'Buy to receive gift':'Buy with shock deal'}</span>:''}
                                                             {item.item_info.item_name}
                                                         </div>
                                                         <div className="cart-item-price">₫{formatter.format(item.price)}</div>

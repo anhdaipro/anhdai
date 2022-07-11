@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Programinfo from "../hocs/Programinfo"
 import React, {useState, useEffect} from 'react'
-import {detailprogramURL} from "../constants"
+import {detailprogramURL} from "../urls"
 import { useParams} from "react-router-dom";
 import { headers } from '../actions/auth';
 let Pagesize=5

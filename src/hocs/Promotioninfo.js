@@ -6,8 +6,8 @@ import Timeoffer from "./Timeoffer"
 import Productoffer from "../seller/Productoffer"
 import React, {useState,useEffect,useCallback,useRef,memo} from 'react'
 import Pagination from "./Pagination"
-import Message from '../containers/Chat'
-import {localhost,formatter,threadlURL,itemvariation,newcomboURL,combo_type} from "../constants"
+import {newcomboURL,} from "../urls"
+import {formatter,itemvariation,combo_type} from "../constants"
 import { headers } from '../actions/auth';
 let Pagesize=5
 const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,url_combo})=>{
@@ -578,9 +578,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                     setshow={(sho,name)=>setshow(sho,name)}
                 />
             </div>
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message/>
-            </div>    
+               
         </>
     )
 }

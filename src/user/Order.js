@@ -1,12 +1,12 @@
-import {listThreadlURL,orderURL,formatter,itemvariation} from "../constants"
+import {formatter,itemvariation} from "../constants"
 import axios from 'axios';
 import Navbar from "../containers/Navbar"
-import Message from "../containers/Chat"
+
 import User from "./User"
 import React, {useState, useEffect,useCallback} from 'react'
 import { useParams,useLocation, Navigate,useSearchParams,Link } from "react-router-dom";
 import { headers,expiry } from "../actions/auth";
-
+import {listThreadlURL,orderURL} from "../urls"
 const Orderuser=()=>{
     const { id } = useParams(); // <-- access id match param here
   const [list_threads,setThreads]=useState([]);
@@ -303,18 +303,7 @@ const Orderuser=()=>{
                 </div>
             </div>
         </div>
-        <div id="modal">
-        </div>
-        <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-        <Message
-            show_thread={state.show_thread}
-            setshowthread={e=>setshowthread(e)}
-            threads={threads}
-            listMessages={listMessages}
-            show_message={state.show_message}
-            threadchoice={state.threadchoice}
-            />
-        </div>     
+        
     </>
           
   )

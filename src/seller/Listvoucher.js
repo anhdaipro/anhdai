@@ -1,5 +1,6 @@
 import React, {useState,useCallback,useEffect} from 'react'
-import {listvouchershopURL,timepromotion,formatter} from "../constants"
+import {timepromotion,formatter} from "../constants"
+import {listvouchershopURL,} from "../urls"
 import Voucherinfo from "../hocs/Voucherinfo"
 import {useNavigate} from 'react-router-dom'
 import axios from 'axios'

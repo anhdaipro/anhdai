@@ -1,20 +1,9 @@
-import {updateURL} from "../constants"
-import axios from "axios"
-const NoPage = () => {
-    const  previewFile=(e)=>{
-        [].forEach.call(e.target.files, function(file) {
-            let form =new FormData()
-            form.append('file',file)
-            axios.post(updateURL,form)
-            .then(rep=>{
 
-            })
-            .catch(error => console.error('Unable to get items.', error));
-        })
-    }
+
+const NoPage = () => {
     return (
         <div id="main">
-            <input onChange={(e)=>previewFile(e)} type="file" multiple={true}/>
+           
             
             <div className="error404">
                 <div className="error-img">

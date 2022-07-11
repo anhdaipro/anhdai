@@ -1,9 +1,7 @@
 import Pagination from "../hocs/Pagination"
 import axios from 'axios';
-import {Link} from 'react-router-dom'
 import React, {useState, useEffect,memo,useMemo,useCallback} from 'react'
-import {localhost,formatter,threadlURL,itemvariation,purchaselistdURL,hidestring,list_review_text_star,
-    star_solid,star_empty,dataURLtoFile,rating_score,list_rating_category_bab} from "../constants"
+import {formatter,} from "../constants"
 let PageSize = 10;
 const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,submitby,
     setshow,page_count_main,page_count_by,sec,text,complete,

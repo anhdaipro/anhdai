@@ -213,9 +213,7 @@ const Marketing=()=>{
                     </div> 
                 </div>       
             </div>
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message/>
-            </div>  
+           
         </>
     )
 }

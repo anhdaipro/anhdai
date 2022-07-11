@@ -3,10 +3,10 @@ import Navbar from "./Navbar"
 import {Link,useSearchParams} from 'react-router-dom'
 import React, {useState, useEffect,useRef} from 'react'
 import Sidebamenu from "./Sidebar-menu"
-import Message from '../containers/Chat'
-import {listordersellerURL,itemvariation} from "../constants"
-import { headers } from '../actions/auth';
 
+import {itemvariation} from "../constants"
+import { headers } from '../actions/auth';
+import {listordersellerURL,} from "../urls"
 const Shippingmanagement=()=>{
     const [state,setState]=useState({list_order_type:[{name:'Tất cả',type:undefined},{name:'Chờ xác nhận',type:'unpaid'},
     {name:'Chờ lấy hàng',type:'toship'},{name:'Đang giao',type:'shipping'},{name:'Đã giao',type:'completed'}
@@ -299,7 +299,7 @@ const Shippingmanagement=()=>{
                                                         <div className="avatar__placeholder">
                                                             <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-headshot"><g><circle cx="7.5" cy="4.5" fill="none" r="3.8" stroke-miterlimit="10"></circle><path d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" stroke-linecap="round" stroke-miterlimit="10"></path></g></svg>
                                                         </div>
-                                                        <img className="avatar__img" src={order.user.image}/>
+                                                        <img className="avatar__img" src={order.user.avatar}/>
 
                                                     </div>
                                                     <span>{order.user.username}</span>
@@ -345,9 +345,7 @@ const Shippingmanagement=()=>{
                 </div>
             </div>
         </div>
-        <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-            <Message/>
-        </div>  
+        
     </>
     )
 }

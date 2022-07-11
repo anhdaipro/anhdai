@@ -3,8 +3,8 @@ import { Link,useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { reset_password,reset_password_confirm } from '../actions/auth';
 import axios from 'axios';
-import {otpURL,verifyotpURL,isVietnamesePhoneNumber,regExp,validatEemail,validatePassword} from "../constants"
-
+import {isVietnamesePhoneNumber,regExp,validatEemail,validatePassword} from "../constants"
+import {otpURL,verifyotpURL,} from "../urls"
 const ResetPassword = ({match,reset_password,reset_password_confirm}) => {
     const [requestSent, setRequestSent] = useState(false);
     

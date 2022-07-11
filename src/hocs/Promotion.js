@@ -1,10 +1,9 @@
 
 import axios from 'axios';
 import React, {useState, useEffect,memo} from 'react'
-import Variations from '../hocs/Promotion';
-import {localhost,formatter,promotionURL,addToCartURL} from "../constants"
+import {formatter,} from "../constants"
 import { headers } from '../actions/auth';
-
+import {addToCartURL} from "../urls"
 const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
     const [state, setState] = useState({data:data,inventory:null,price:null,percent_discount:null,variation_id:0});
     const [variation, setVariation] = useState({

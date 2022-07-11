@@ -4,12 +4,9 @@ import {Link, Navigate,useNavigate} from 'react-router-dom'
 import Address from "../hocs/Address"
 import { headers,expiry} from '../actions/auth';
 import React, {useState, useEffect,useCallback} from 'react'
-import ReactDOM, { render } from 'react-dom'
-import Message from "./Chat"
 import { connect } from 'react-redux';
-import {localhost,checkoutURL,formatter,threadlURL,
-    itemvariation,arraymove, savevoucherURL,updateAddressURL,cityListURL,listThreadlURL} from "../constants"
-
+import {formatter,itemvariation,arraymove} from "../constants"
+import {localhost,checkoutURL,threadlURL,savevoucherURL,updateAddressURL,cityListURL,listThreadlURL} from "../urls"
 const Checkout =({user})=>{
     const [state,setState] = useState({show_message:false,show_thread:false,loading:false,orders:[],address:null,method_payment:['Ví Điện tử','Thẻ Tín dụng/Ghi nợ',
     'Paypal','Số dư TK Shopee','Payment on delivery'],
@@ -542,15 +539,7 @@ const Checkout =({user})=>{
             />
             :''}
         </div>
-        <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-        <Message
-            show_thread={showthread}
-            show_message={state.show_message}
-            threads={threads}
-            listMessages={listMessages}
-            thread_choice={threadchoice}
-            />
-        </div>  
+        
         </>    
     )
 }

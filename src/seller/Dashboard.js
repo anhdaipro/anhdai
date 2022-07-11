@@ -2,9 +2,9 @@ import axios from 'axios';
 import Navbar from "./Navbar"
 import { useParams,Link } from "react-router-dom";
 import React, {useState,useEffect,useCallback,useRef} from 'react'
-import {timeformat,dashboardURL,timevalue} from "../constants"
+import {timeformat,timevalue} from "../constants"
 import Calendar from 'react-calendar/dist/umd/Calendar';
-import Message from '../containers/Chat'
+import {dashboardURL,} from "../urls"
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -856,9 +856,7 @@ const Dashboard=()=>{
                     }
                 </div>
             </div>
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message/>
-            </div>    
+            
         </> 
     )
 }

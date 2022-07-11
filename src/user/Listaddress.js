@@ -3,9 +3,8 @@ import User from "./User"
 import Address from "../hocs/Address"
 import axios from 'axios';
 import React, {useState, useEffect,useCallback} from 'react'
-import Message from "../containers/Chat"
-import {localhost,addresslistdURL,address_null,typeaddress,updateAddressURL,cityListURL} from "../constants"
 import { headers,expiry } from "../actions/auth";
+import {updateAddressURL,cityListURL} from "../urls"
 import {connect} from "react-redux"
 const Addressuser = ({user}) =>{
     const [state, setState] = useState({list_addresses:[],username:null,image:null,address:null});
@@ -165,7 +164,7 @@ const Addressuser = ({user}) =>{
                 <div className="containers _1QwuCJ">
                     <User
                     username={user.username}
-                    image={user.image}
+                    image={user.avatar}
                     />
                     <div className="_3D9BVC">
                         <div className="h4QDlo" role="main">
@@ -255,9 +254,7 @@ const Addressuser = ({user}) =>{
                 deleteAddress={address=>deleteAddress(address)}
             />
         </div>
-        <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-            <Message/>
-        </div>    
+          
         </>
     )
     

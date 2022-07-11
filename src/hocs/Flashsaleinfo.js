@@ -1,13 +1,11 @@
 import axios from 'axios';
 import Navbar from "../seller/Navbar"
-import {Link} from 'react-router-dom'
-import ReactDOM, { render } from 'react-dom'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Productoffer from "../seller/Productoffer"
 import React, {useState,useEffect,useCallback,useRef} from 'react'
 import {localhost,formatter,itemvariation} from "../constants"
-import Message from '../containers/Chat'
+
 import { headers } from '../actions/auth';
 const Pagesize=10
 
@@ -827,10 +825,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
                     setshow={(sho,name)=>setshow(sho,name)}
                 />
             </div>
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message/>
-            </div>    
-            
+             
         </>
     )
 }

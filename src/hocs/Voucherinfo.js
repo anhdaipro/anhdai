@@ -4,11 +4,10 @@ import Timeoffer from "./Timeoffer"
 import {Link,useNavigate} from 'react-router-dom'
 import Productoffer from "../seller/Productoffer"
 import React, {useState,useEffect,useCallback,memo} from 'react'
-import ReactDOM, { render } from 'react-dom'
-import {localhost,vouchershopURL,formatter} from "../constants"
 import Pagination from "./Pagination"
-import Message from '../containers/Chat'
-import { headers } from '../actions/auth';
+import {vouchershopURL} from "../urls"
+import {formatter} from "../constants"
+import {headers} from "../actions/auth"
 let Pagesize=5
 const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_content})=>{
     const navite=useNavigate();
@@ -583,9 +582,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
                     setshow={(sho,name)=>setshow(sho,name)}
                 />
             </div>
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message/>
-            </div>    
+            
         </>
     )
 }

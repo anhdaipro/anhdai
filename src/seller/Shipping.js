@@ -3,9 +3,8 @@ import Navbar from "./Navbar"
 import {Link} from 'react-router-dom'
 import React, {useState, useEffect,useCallback} from 'react'
 import Sidebamenu from "./Sidebar-menu"
-import ReactDOM, { render } from 'react-dom'
-import Message from '../containers/Chat'
-import {address_null,localhost,threadlURL,listshippingURL,groupBy,itemvariation,arraymove} from "../constants"
+import {listshippingURL,} from "../urls"
+import {groupBy,itemvariation,arraymove} from "../constants"
 import { headers } from '../actions/auth';
 const Shipping=()=>{
     const [data,setData]=useState(null)
@@ -123,9 +122,7 @@ const Shipping=()=>{
                     </div>
                 </div>
             </div>
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message/>
-            </div>  
+             
         </>
     )
 }

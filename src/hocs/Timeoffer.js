@@ -1,6 +1,5 @@
 
 import React, {useState,useEffect,useCallback,useRef,memo} from 'react'
-import {localhost,formatter,promotionURL,addToCartURL} from "../constants"
 
 import Calendar from 'react-calendar';
 const scrollToRef = (ref) => window.scrollTo(50, ref.current.offsetTop)   

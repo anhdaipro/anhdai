@@ -1,5 +1,5 @@
 
-import {originweb} from "../constants"
+import {originweb} from "../urls"
 import React, { useState } from 'react';
 import {Link} from 'react-router-dom';
 

@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import {infosellerURL} from "../constants"
+import {infosellerURL} from "../urls"
 import { headers, logout,expiry } from '../actions/auth';
 import { connect } from 'react-redux';
 import React, { useState,useEffect } from 'react';
@@ -13,7 +13,7 @@ const Navbar = ({ logout, isAuthenticated }) => {
         const info= async () =>{
             await axios.get(infosellerURL,headers)
             .then(res=>{
-                setState({...state,username:res.data.name,image:res.data.image})
+                setState({...state,username:res.data.name,avatar:res.data.avatar})
                 if(res.data.user_type!="S"){
                     setTimeout(()=>{
                         navigate('/vendor/onboarding')
@@ -55,7 +55,7 @@ const Navbar = ({ logout, isAuthenticated }) => {
                         <div className="popover__ref">
                             <div data-v-294196ab="" className="account-info-box">
                                 <div data-v-294196ab="" className="account-info">
-                                    <img data-v-294196ab="" src={state.image} className="account-avatar"/> 
+                                    <img data-v-294196ab="" src={state.avatar} className="account-avatar"/> 
                                     <span data-v-294196ab="" className="account-name">{state.username}</span>
                                 </div>
                             </div> 

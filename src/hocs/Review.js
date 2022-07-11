@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React, {useState, useEffect,useCallback,memo} from 'react'
 import { headers } from '../actions/auth';
-import {localhost,formatter,threadlURL,itemvariation,purchaselistdURL,hidestring,list_review_text_star,
+import {formatter,itemvariation,hidestring,list_review_text_star,
 star_solid,star_empty,dataURLtoFile,rating_score,list_rating_category_bab,list_reason_cancel} from "../constants"
-
+import {threadlURL,purchaselistdURL,localhost,} from "../urls"
 const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,user,setshow,updateorder,
     edit,setedit,list_orderitem,setorderitem,setChoice,setlistreview})=>{
     const [state, setState] = useState({list_orderitem:list_orderitem,loading:false,review:null,open_info_review:false,submit:false,

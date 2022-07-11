@@ -1,9 +1,9 @@
 import axios from 'axios';
 import Navbar from "./Navbar"
-import Message from "./Chat"
 import React, {useState, useEffect} from 'react'
-import {searchURL,formatter,localhost,rating,rating_choice} from "../constants"
+import {rating_choice} from "../constants"
 import Itemsearch from "./Listitem"
+import {searchURL,} from "../urls"
 import { useParams,useLocation, Navigate,useSearchParams } from "react-router-dom";
 const Searchitem=()=>{
     let location =useLocation();
@@ -469,11 +469,7 @@ const Searchitem=()=>{
                 </div>:''}
             </div>
         </div>
-        <div id="modal"></div>
-        <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-            <Message
-            />
-        </div>   
+        
         </> 
     )
 }

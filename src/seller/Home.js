@@ -4,10 +4,10 @@ import axios from 'axios';
 import Navbar from "./Navbar"
 import { useParams,Link } from "react-router-dom";
 import React, {useState,useEffect,useCallback,useRef} from 'react'
-
-import {timeformat, chartURL} from "../constants"
+import {chartURL } from "../urls"
+import {timeformat, } from "../constants"
 import {headers} from "../actions/auth"
-import Message from '../containers/Chat'
+
 import {
     Chart as ChartJS,
     CategoryScale,

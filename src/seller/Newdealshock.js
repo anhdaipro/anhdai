@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React, {useState,useEffect,useCallback,useRef} from 'react'
-import {localhost,newdealURL} from "../constants"
+import {localhost,newdealURL} from "../urls"
 import 'react-calendar/dist/Calendar.css';
 import Dealshockinfo from "../hocs/Dealshockinfo"
 import Navbar from "./Navbar"
-import Message from '../containers/Chat'
+
 import { headers } from '../actions/auth';
 const Newdealshock=()=>{
     const [deal,setDeal]=useState({valid_from:new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),limited_product_bundle:null,minimum_price_to_receive_gift:null,number_gift:null,
@@ -118,9 +118,7 @@ const Newdealshock=()=>{
                  </div>
             </div>
 
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message/>
-            </div>    
+             
         </>
     )
 }

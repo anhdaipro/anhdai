@@ -1,11 +1,9 @@
 import React,{useState,useEffect,createRef} from 'react';
 import axios from 'axios';
 import Navbar from "./Navbar"
-import {localhost,formatter,topsearchURL,ItemRecommend,itemcommon,ItemsellerURL, imagehomeURL,listitemflashsalelURL,listcategoryURL} from "../constants"
-import ReactDOM from 'react-dom'
-import { logout,headers } from '../actions/auth';
+import {formatter,} from "../constants"
+import {ItemRecommend,topsearchURL,imagehomeURL,listitemflashsalelURL,listcategoryURL} from "../urls"
 import { Link } from 'react-router-dom';
-import Message from "./Chat"
 import SlideshowGallery from "../hocs/Slideshow"
 function partition(array, n) {
     return array.length ? [array.splice(0, n)].concat(partition(array, n)) : [];
@@ -527,10 +525,6 @@ export default class HomePage extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div id="modal"></div>
-                <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                    <Message/>
                 </div>
             </>
         );

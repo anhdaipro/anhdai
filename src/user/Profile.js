@@ -1,8 +1,8 @@
 import React,{useState,useEffect, useRef} from 'react';
 import axios from 'axios';
 import Navbar from "../containers/Navbar"
-import {localhost,addressListURL, profiledURL} from "../constants"
 import User from "./User"
+import {profiledURL} from "../urls"
 import { headers,expiry } from '../actions/auth';
 
 console.log(new Date("July 21, 1983 01:15:00"))
@@ -24,7 +24,7 @@ const Profile =()=>{
           setLoading(true)
           setformData({ username:data.username,name:data.name,email:data.email,
             phone:data.phone,shop_name:data.shop_name,gender:data.gender,
-            image:data.image,date:data.date_of_birth!=null?new Date(data.date_of_birth).getDate():1,month:data.date_of_birth!=null?new Date(data.date_of_birth).getMonth()+1:1,year:data.date_of_birth!=null?new Date(data.date_of_birth).getFullYear():2020});
+            avatar:data.avatar,date:data.date_of_birth!=null?new Date(data.date_of_birth).getDate():1,month:data.date_of_birth!=null?new Date(data.date_of_birth).getMonth()+1:1,year:data.date_of_birth!=null?new Date(data.date_of_birth).getFullYear():2020});
         })   
     },[])
     
@@ -34,7 +34,7 @@ const Profile =()=>{
     
     const  previewFile=(e)=>{
         [].forEach.call(e.target.files, function(file) {
-            setformData({...formData,file:file,image:(window.URL || window.webkitURL).createObjectURL(file)})
+            setformData({...formData,file:file,avatar:(window.URL || window.webkitURL).createObjectURL(file)})
         })
     }
    
@@ -73,13 +73,13 @@ const Profile =()=>{
             <div className="_193wCc">
                 <div className="item-col top container-wrapper">
                     <Navbar
-                        image={formData.image}
+                        image={formData.avatar}
                     />
                 </div>
                 <div className="containers _1QwuCJ">
                     <User
                     username={formData.username}
-                    image={formData.image}
+                    image={formData.avatar}
                     />
                     <div className="_3D9BVC">
                         <div className="h4QDlo" role="main">
@@ -246,7 +246,7 @@ const Profile =()=>{
                                     <div className="_1aIEbS">
                                         <div className="X1SONv">
                                             <div className="_1FzaUZ">
-                                                <div className="TgSfgo" style={{backgroundImage:`url(${formData.image})`}}></div>
+                                                <div className="TgSfgo" style={{backgroundImage:`url(${formData.avatar})`}}></div>
                                             </div>
                                             <input ref={inputref} onChange={(e)=>previewFile(e)} className="_2xS5eV" type="file" accept=".jpg,.jpeg,.png"/>
                                             <button onClick={()=>inputref.current.click()} type="button" className="btn-light btn-m item-center btn--inline">Chọn ảnh</button>

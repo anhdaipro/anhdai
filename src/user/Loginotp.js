@@ -5,7 +5,8 @@ import { facebookLogin,googleLogin,loginotp,login,expiry } from '../actions/auth
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
-import {otpURL,verifyotpURL,isVietnamesePhoneNumber,generateString,validatePassword} from "../constants"
+import {otpURL,verifyotpURL,} from "../urls"
+import {isVietnamesePhoneNumber,generateString,validatePassword} from "../constants"
 let user_id=null
 const Loginotp = ({ loginotp, isAuthenticated}) => {
     const [formData, setFormData] = useState({

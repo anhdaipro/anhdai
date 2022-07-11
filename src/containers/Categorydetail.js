@@ -1,4 +1,4 @@
-import {detailURL,formatter,localhost,rating,rating_choice} from "../constants"
+import {rating_choice} from "../constants"
 import Itemsearch from "./Listitem"
 import React, {useState, useEffect,useRef} from 'react'
 import SlideshowGallery from "../hocs/Slideshow"

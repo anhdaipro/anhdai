@@ -1,11 +1,10 @@
-import {detailURL,formatter,localhost,timecreate,shopinfoURL,sort_options,
-    itemvariation,rating,listThreadlURL,sort_price_choice, timeago} from "../constants"
+import {timeago} from "../constants"
 import axios from 'axios';
 import React, {useState, useEffect,useRef} from 'react'
-import Pagination from "../hocs/Pagination"
 import {useNavigate , Link,useLocation, Navigate,useParams,useSearchParams} from 'react-router-dom';
 import Itemsearch from "./Listitem"
 import {connect} from "react-redux"
+import {listThreadlURL,detailURL,} from "../urls"
 import { expiry, headers } from "../actions/auth";
 const Shopinfo = ({setshow,data,setthreadchoice,setsearchitem,setthread,setsearchcategory,user,
     params,searchitem,listitem}) => {
@@ -82,7 +81,7 @@ const Shopinfo = ({setshow,data,setthreadchoice,setsearchitem,setthread,setsearc
             <div className="shop-page__info">
                 <div className="section-seller-overview-horizontal containers">
                     <div className="section-seller-overview-horizontal__leading">
-                        <div className="section-seller-overview-horizontal__leading-background" style={{backgroundImage: `url(${data.shop_logo})`}}></div>
+                        <div className="section-seller-overview-horizontal__leading-background" style={{backgroundImage: `url(${data.avatar})`}}></div>
                         <div className="section-seller-overview-horizontal__leading-background-mask"></div>
                         <div className="section-seller-overview-horizontal__leading-content">
                             <div className="section-seller-overview-horizontal__seller-portrait _3G9pjm">

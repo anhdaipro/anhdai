@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import {useNavigate , Link,useLocation, Navigate} from 'react-router-dom';
 import { connect } from 'react-redux';
 import { login,facebookLogin,googleLogin, expiry,signup } from '../actions/auth';
-import {registeremailURL,verifyemailURL} from "../constants"
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
 import { headers } from '../actions/auth';
+import {registeremailURL,verifyemailURL} from "../urls"
 const Registeremail = ({googleLogin,facebookLogin,signup,isAuthenticated}) => {
     const [formData, setFormData] = useState({
         username: null,

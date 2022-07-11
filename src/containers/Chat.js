@@ -1,181 +1,145 @@
 import axios from 'axios';
 import React, {useState, useEffect,useCallback,useRef} from 'react'
-import {createmessagelURL,formatter,threadlURL,conversationsURL,listThreadlURL,updatefileURL,dataURLtoFile,checkDay,itemvariation,timeformat,timevalue, star_empty} from "../constants"
+import {formatter,dataURLtoFile,checkDay,itemvariation,timeformat,timevalue} from "../constants"
 import { connect } from 'react-redux';
+import {conversationsURL,listThreadlURL,updatefileURL,} from "../urls"
 import { headers,expiry} from '../actions/auth';
 import io from "socket.io-client";
+import {Link} from "react-router-dom"
 import {debounce} from 'lodash';
-const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAuthenticated,user})=>{
-    const [state, setState] = useState({action_thread:[
-    {name:'Ghim Trò Chuyện',gim:true},{name:'Bỏ gim cuộc Trò Chuyện',gim:false},
-    {name:'Đánh dấu đã đọc',unread:false},{name:'Đánh dấu đã đọc',unread:true},
-    {name:'Xóa trò chuyện',delete:true}],show_type_chat:false,type_chat:1,list_type_chat:[{'name':'All',value:1},{'name':'Unread',value:2},{'name':'Đã gim',value:3}],user_search:null,loading:false,list_messages:[],user:null,count_unread:0,typing:false,
-    list_file_chat:[],time_out:0,show_product:false,show_order:false,show_chat:false,loading_more:false});
+const listaction=[ {name:'Ghim Trò Chuyện',gim:true},{name:'Bỏ gim cuộc Trò Chuyện',gim:false},
+{name:'Đánh dấu đã đọc',unread:false},{name:'Đánh dấu đã đọc',unread:true},
+{name:'Xóa trò chuyện',delete:true}]
+const list_type_chat=[{'name':'All',value:1},{'name':'Unread',value:2},{'name':'Đã gim',value:3}]
+
+const Message=(props)=>{
+    const {threadstate,isAuthenticated,user,messages,members,showchat,count_message_unseen}=props
+    const [state, setState] = useState({show_type_chat:false,type_chat:1,user_search:null,loading:false,
+    show_product:false,show_order:false,loading_more:false});
     const [show, setShow] = useState(false);
     const [shop,setShop]=useState({list_orders:[],list_items:[],count_product:0,count_order:0,choice:null})
     const [list_messages,setListmessages]=useState([]);
-    const [message,setMessage]=useState({message:'',item_id:0,order_id:0,sent_by:null,
-    thread_choice:null,
-    uploadfile_id:0,list_uploadfile:[]})
-    const [list_threads,setThreads]=useState([]);
+    const [message,setMessage]=useState('')
+    const [threads,setThreads]=useState([]);
+    const [thread,setThread]=useState();
     const [showemoji,setShowemoji]=useState(false)
     const [loading,setLoading]=useState(false)
+    const [receiver,setReceiver]=useState()
+    const [listfile,setListfile]=useState([]);
+    const [listmember,setListmember]=useState([])
     const [typing,setTyping]=useState({typing:false,send_to:null})
+    const [messagefile,setMessagefile]=useState([])
     const socket=useRef()   
     const scrollRef=useRef(null);
-    let list_file_chat=[]
-    let time_out=0
+    useEffect(() =>  {
+        if(showchat){
+        setListmember(members)
+        setShow(showchat)
+        setThread(threadstate)
+        setListmessages(messages.reverse())
+        }
+    }, [threadstate,members,messages,showchat]);
+
     useEffect(() => {
-        
         socket.current=io.connect('https://server-socket-123.herokuapp.com')
-        socket.current.on('message',e=>{
-            const data = e.data
+        socket.current.on('message',data=>{
             console.log(data)
-            if(data.typing){
-                setTyping({typing:true,send_to:data.send_to})
+            if(data.typing || data.typing==""){
+                if(data.typing==""){
+                    setTyping({typing:false})
+                }
+                else{
+                setTyping({typing:true})
+                setReceiver(data.receiver)
+                }
             }
             else{
-                const message_text={sender:data.sender,text:data.message,list_file:[],message_order:data.message_order?data.message_order:{},message_product:data.message_product?data.message_product:{},created:timevalue(new Date())}
-                const message_file={sender:data.sender,text:null,list_file:data.list_file,message_order:data.message_order?data.message_order:{},message_product:data.message_product?data.message_product:{},created:timevalue(new Date())}
-                const list=data.message && data.list_file.length>0?[...list_messages,message_text,message_file]:data.message?[...list_messages,message_text]:data.list_file.length>0?[...list_messages,message_file]:list_messages
-                if(list_threads.some(thread=>thread.choice) && data.thread_id==list_threads.find(thread=>thread.choice).id){
-                    setListmessages(list)
+                const listmessages=[...list_messages,...data.message]
+                setTyping({typing:false})
+                if(thread.id==data.thread_id){
+                    setListmessages(listmessages)
                 }
                 setTyping({typing:false,send_to:data.send_to})
-                setState({...state,list_file_chat:[]})
-                const convesations=list_threads.map(thread=>{
+                const convesations=threads.map(thread=>{
                     if(data.thread_id==thread.id){
-                    return({...thread,message:[{list_file:data.list_file,created:new Date().toString(), sender:data.sender,text:data.message,message_order:data.message_order?data.message_order:{},message_product:data.message_product?data.message_product:{}}]})
+                    return({...thread,message_last:data[data.length-1]})
                     }
                     return({...thread})
                 })
                 setThreads(convesations)
-            }
-            if(scrollRef.current){
-                scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+                if(scrollRef.current){
+                    scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+                }
             }
         })
         
         return () => {
             socket.current.disconnect();
-          };
-    },[list_messages,scrollRef,list_threads]);
+        };
+    },[list_messages,scrollRef,threads]);
     
-    useEffect(()=>{
-		window.addEventListener("beforeunload", onUnload);
-	},[])
-
-    const onUnload=(e)=>{
-        if(expiry>0 && localStorage.token!='null'){
-            let form =new FormData()
-            form.append('online',false)
-            axios.post('https://anhdai.herokuapp.com/api/v4/update/online',form,headers)
-            .then(res=>{
-            })
-        }
-    }
-   
-    //list thread
-    useEffect(() =>  {
-        (async () => {
-            try {
-                if(user!=null){
-                await isAuthenticated
-                const res = await axios.get(threadlURL,headers)
-                setState({...state,loading:true,error:false,count_unread:res.data.threads.filter(thread=> thread.message.length>0 && !thread.message[0].read && thread.message[0].sender!=user.username).length})
-            } 
-            }catch (error) {
-            console.log(error);
-            }
-        })();
-    }, [user]);
-
     const showthread=()=>{
         setShow(true)
         axios.get(listThreadlURL,headers)
         .then(res=>{
             setState({...state,loading:true})
-            const list_threads=res.data.threads.map(item=>{
+            const threads=res.data.threads.map(item=>{
                 return({...item,show_action:false,choice:false})
             })
-            setThreads(list_threads)
+            setThreads(threads)
         })
     }
 
     const showmessage=(e,threadchoice)=>{
         e.stopPropagation()
         setState({...state,loading:false})
-        const list_thread=list_threads.map(thread=>{
+        const list_thread=threads.map(thread=>{
             if(thread.id==threadchoice.id){
-                return({...thread,count_message_not_seen:0,choice:true})
+                return({...thread,choice:true})
             }
             return({...thread,choice:false})
         })
         setThreads(list_thread)
-        if(threadchoice.count_message_not_seen>0 && threadchoice.message[0].sender!=user.username){ 
-            let form=new FormData()
-            form.append('thread_id',threadchoice.id)
-            form.append('seen',true)
-            if(localStorage.token!='null'&&expiry>0){
-                axios.post(listThreadlURL,form,headers)
-                .then(res=>{
-                    setState({...state,loading:true})
-                    setListmessages(res.data.messages)
-                    if(scrollRef.current){
-                        scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-                    }
-                })
+        setListmember(thread.members)
+        axios.get(`${conversationsURL}/${threadchoice.id}`,headers)
+        .then(res=>{
+            setState({...state,loading:true})
+            setListmessages(res.data)
+            if(scrollRef.current){
+                scrollRef.current.scrollTop = scrollRef.current.scrollHeight
             }
-        }
-        else{
-            let url= new URL(listThreadlURL)
-            let search_params=url.searchParams
-            setMessage({...message,thread_choice:threadchoice})
-            search_params.set('thread_id',threadchoice.id)
-            url.search = search_params.toString();
-            let new_url = url.toString();
-            axios.get(new_url,headers)
-            .then(res=>{
-                setState({...state,loading:true})
-                setListmessages(res.data.messages)
-                if(scrollRef.current){
-                    scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-                }
-            })
-        }
-        
+        })
     }
 
     console.log(list_messages)
     const sendproduct=(item)=>{
-        let data = {
-            item_id:item.item_id,
-            order_id:0,
-            item:item,
-            sent_by: user.id,
-            sender:user.username,
-            send_to: list_threads.find(thread=>thread.choice).info_thread.find(users=>users.user_id!=user.id).user_id,
-            thread_id:list_threads.find(thread=>thread.choice).id,
-            count_uploadfile: state.list_file_chat.length
-        }
-        axios.post(createmessagelURL,JSON.stringify(data),headers)
-        socket.current.emit('sendData',data)
+        (async ()=>{
+            try{
+                let form=new FormData()
+                form.append('item_id',item.id) 
+                const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers)
+                const messages={message:res.data,thread_id:thread.id,send_by:user.id}
+                socket.current.emit("sendData",messages)
+            }
+            catch(e){
+                console.log(e)
+            }
+        })() 
     }
 
     const sendorder=(order)=>{
-        let data = {
-            item_id:0,
-            order:order,
-            order_id:order.id,
-            sender:user.username,
-            sent_by: user.id,
-            send_to: list_threads.find(thread=>thread.choice).info_thread.find(users=>users.user_id!=user.id).user_id,
-            thread_id:list_threads.find(thread=>thread.choice).id,
-            count_uploadfile: state.list_file_chat.length
-        }
-       
-        axios.post(createmessagelURL,JSON.stringify(data),headers)
-        socket.current.emit('sendData',data)
+        (async ()=>{
+            try{
+                let form=new FormData()
+                form.append('order_id',order.id) 
+                const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers)
+                const messages={message:res.data,thread_id:thread.id,send_by:user.id}
+                socket.current.emit("sendData",messages)
+            }
+            catch(e){
+                console.log(e)
+            }
+        })()
     }
 
     const settyping=(e)=>{ 
@@ -185,52 +149,78 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
     }
 
     const sentyping= useCallback(debounce((value)=>{
-        console.log(list_threads)
         let data={
-        typing:value,
-        sent_by: user.id,
-        sender:user.username,
-        send_to: list_threads.find(thread=>thread.choice).info_thread.find(users=>users.user_id!=user.id).user_id,
-        thread_id:list_threads.find(thread=>thread.choice).id,
-        count_uploadfile: state.list_file_chat.length
+        typing:message,
+        send_by: user.id,
+        receiver:listmember.filter(member=>user.id!=member.user_id),
         }
+        
         socket.current.emit('sendData',data)
-    },1000),[user,list_threads])
+    },1000),[user,listmember,message])
     
     const senmessage=(e)=>{
-        let data = {
-            message: message.message,
-            sent_by: user.id,
-            sender:user.username,
-            send_to: list_threads.find(thread=>thread.choice).info_thread.find(users=>users.user_id!=user.id).user_id,
-            thread_id:list_threads.find(thread=>thread.choice).id,
-            count_uploadfile: state.list_file_chat.length,
-            list_file: state.list_file_chat
+        if(listfile.filter(file=>file.filetype=='image').length>0 || message.trim()!=''){ 
+            let form=new FormData()
+            form.append('action','create-message')
+            form.append('send_by',user.id)
+            if(message.trim()!=''){
+                form.append('message',message)
+            }
+            listfile.filter(file=>file.filetype=='image').map(file=>{
+                form.append('image',file.file)
+            }) 
+            setListfile(listfile.filter(file=>file.filetype!='image')) 
+            axios.post(`${conversationsURL}/${thread.id}`,form,headers)
+            .then(res=>{  
+                const messages={message:res.data,thread_id:thread.id,send_by:user.id}
+                socket.current.emit("sendData",messages)
+                setShowemoji(false)
+                setMessage('')
+            })
+        } 
+
+        if(listfile.find(file=>file.filetype!=='image')){  
+            setTimeout(()=>{
+                let formfile=new FormData()
+                formfile.append('action','create-message')
+                formfile.append('send_by',user.id)
+                listfile.filter(file=>file.filetype!=='image').map((file,i)=>{
+                    formfile.append('file',file.file)
+                    formfile.append('filetype',file.filetype)
+                    formfile.append('file_preview',file.file_preview)
+                    formfile.append('duration',file.duration)
+                    formfile.append('name',file.file_name)
+                })  
+                const messagefile=listfile.filter(file=>file.filetype!=='image').map((file,i)=>{
+                    return({message:null,filetype:file.filetype,
+                    user_id:user.id,date_created:new Date().toString(),
+                    list_file:[{media:file.media,file_name:file.file_name,
+                    media_preview:file.media_preview,duration:file.duration,filetype:file.filetype}]
+                    })
+                })  
+                setListfile([])
+                setMessagefile(messagefile)
+                axios.post(`${conversationsURL}/${thread.id}`,formfile,headers)
+                .then(res=>{
+                    setMessagefile([])
+                    const messages={message:res.data,thread_id:thread.id,send_by:user.id}
+                    socket.current.emit("sendData",messages)      
+                }) 
+            },200)
         }
-        axios.post(createmessagelURL,JSON.stringify(data),headers)
-        socket.current.emit('sendData',data)
-        list_file_chat.length=0
-        setShowemoji(false)
-        setMessage({...message,message:''}) 
     }
     
     //add message
     const addmessage=(e)=>{
         e.stopPropagation()
-        if(state.loading && e.target.scrollTop==0 && list_messages.length<message.thread_choice.count_message){
+        if(state.loading && e.target.scrollTop==0 && list_messages.length<thread.count_message){
             setState({...state,loading:false})
-            let url= new URL(listThreadlURL)
-            let search_params=url.searchParams
-            search_params.set('thread_id',message.thread_choice.id)
-            search_params.set('offset',list_messages.length)
-            url.search = search_params.toString();
-            let new_url = url.toString();
-            axios.get(new_url,headers)
+            axios.get(`${conversationsURL}/${thread.id}?offset=${list_messages.length}`,headers)
             .then(res=>{
                 setState({...state,loading:true})
-                const list_message=[...res.data.messages,...list_messages]
+                const datamesssage=res.data.reverse()
                 e.target.scrollTop = 60
-                setListmessages(list_message)
+                setListmessages([...datamesssage,...list_messages])
             })
         }
         else{
@@ -259,97 +249,45 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
         return list_days_unique
     }
     
+    let list_file=[]
     const previewFile=(e)=>{
         [].forEach.call(e.target.files, function(file) {
             if ((/image\/.*/.test(file.type))){
-                list_file_chat.push({file:file,file_preview:undefined,duration:0,filetype:'image',
-                    file_name:file.name,media_preview:(window.URL || window.webkitURL).createObjectURL(file)})
-                setState({...state,list_file_chat:[...state.list_file_chat,...list_file_chat]})
+                list_file.push({file:file,file_preview:undefined,duration:0,filetype:'image',
+                file_name:file.name,media_preview:(window.URL || window.webkitURL).createObjectURL(file)})
+                const list_file_chat=[...listfile,...list_file]
+                setListfile(list_file_chat)
             }
             else if(file.type.match('video.*')){ 
-                time_out=(e.target.files.length/2)*1000
                 var url = (window.URL || window.webkitURL).createObjectURL(file);
-                var video = document.createElement('video');
-                var timeupdate = function() {
-                if (snapImage()) {
-                    video.removeEventListener('timeupdate', timeupdate);
-                    video.pause();
-                  }
-                };
+                let video = document.createElement('video');
+                video.src = url;
                 video.addEventListener('loadeddata', e =>{
-                        
-                if (snapImage()) {
-                    video.removeEventListener('timeupdate', timeupdate);
-                  }
+                    video.currentTime=1
                 });
-                let snapImage = function() {
+                video.addEventListener('timeupdate',e=>{
                 let canvas = document.createElement('canvas');
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
                 let image = canvas.toDataURL("image/png");
                 let file_preview = dataURLtoFile(image,'dbc9a-rg53.png');
-                let success = image.length > 100000;
-                
-                if (success) {
-                    list_file_chat.push({file_name:file.name,filetype:'video',file:file,file_preview:file_preview,'duration':video.duration,media_preview:(window.URL || window.webkitURL).createObjectURL(file_preview)})
-                    
-                    setState({...state,list_file_chat:[...state.list_file_chat,...list_file_chat],time_out:time_out})
-                    URL.revokeObjectURL(url);
-                  }
-                  return success;
-                };
-                video.addEventListener('timeupdate', timeupdate);
+                list_file.push({file_name:file.name,filetype:'video',file:file,file_preview:file_preview,duration:video.duration,media:url,media_preview:(window.URL || window.webkitURL).createObjectURL(file_preview)})    
+                const list_file_chat=[...listfile,...list_file]
+                setListfile(list_file_chat)
+                });
                 video.preload = 'metadata';
-                video.src = url;
                 // Load video in Safari / IE11
                 video.muted = true;
-                video.playsInline = true;
-                video.play();
-                }
-                else{
-                    list_file_chat.push({file_name:file.name,filetype:'pdf',file:file,file_preview:undefined,duration:0})
-                    setState({...state,list_file_chat:[...state.list_file_chat,...list_file_chat]})
                 }
             })
-        
-        function remURL() {(window.URL || window.webkitURL).revokeObjectURL(this.src)}
-        setTimeout(function() {
-            let form=new FormData()
-            form.append('thread_id',message.thread_choice.id)
-            list_file_chat.map(file=>{
-                form.append('file',file.file)
-                if(file.file_preview!=undefined){
-                form.append('file_preview',file.file_preview)
-                }
-                form.append('duration',file.duration)
-                form.append('name',file.file_name)
-            })
-            setLoading(false)
-            axios.post(updatefileURL,form,headers)
-            .then(res=>{
-                list_file_chat=list_file_chat.map((item,index)=>{
-                    return({...item,file_preview:res.data.list_file[list_file_chat.indexOf(item)].file_preview,file:res.data.list_file[list_file_chat.indexOf(item)].file})
-                })
-                setState({...state,list_file_chat:list_file_chat,loading_more:true})
-                setLoading(true)
-                const list_uploadfile=[...message.list_uploadfile,...res.data.list_file]
-                setMessage({...message,list_uploadfile:list_uploadfile})
-             })
-        }, time_out);
     }
 
     const deletefile=(file,i)=>{
-        let form=new FormData()
-        form.append('file_id',message.list_uploadfile[i].id)
-        axios.post(updatefileURL,form,headers)
-        .then(res=>{
-            state.list_file_chat.splice(i,1)
-            setState({...state,list_file_chat:state.list_file_chat})
-            message.list_uploadfile.splice(i,1)
-            setMessage({...message,list_uploadfile:message.list_uploadfile})
-        })
-    }
+        const list_files=listfile.filter(item=>listfile.indexOf(item)!=i)
+        setListfile(list_files)
+       
+    }                
 
     const chatproduct=()=>{
         setState({...state,loading:false,show_order:false,show_product:!state.show_product,choice:'item'})
@@ -395,7 +333,6 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
                 setShop({...shop,list_orders:res.data.list_orders,choice:'order',count_order:res.data.count_order})
             })
         }
-     
     }
 
     const showmoreitem=(e,name)=>{
@@ -446,11 +383,11 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
         axios.post(`${conversationsURL}${thread.id}`,form,headers)
         .then(res=>{
             if(name=='delete'){
-                const list_convesations=list_threads.filter(item=>item.id!=thread.id)
+                const list_convesations=threads.filter(item=>item.id!=thread.id)
                 setThreads(list_convesations)
             }
             else if(name=='unread'){
-                const list_convesations=list_threads.map(item=>{
+                const list_convesations=threads.map(item=>{
                     if(item.id==thread.id){
                         if(value){
                         return({...item,count_unread:1})
@@ -462,7 +399,7 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
                 setThreads(list_convesations)
             }
             else{
-                const list_convesations=list_threads.map(item=>{
+                const list_convesations=threads.map(item=>{
                     if(item.id==thread.id){
                         return({...item,[name]:value}) 
                     }
@@ -472,9 +409,9 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
             }
         })
     }
-    const get_user=(thread)=>{
-        return thread.info_thread.find(users=>users.user_id!=user.id)
-    }
+
+    const direact=listmember.find(member=>member.user_id!=user.id)
+
     ///set tychat
     const settypechat=(item)=>{
         setState({...state,type_chat:item.value})
@@ -482,10 +419,10 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
         let search_params=url.searchParams
         axios.get(`${listThreadlURL}?type_chat=${item.value.toString()}`,headers)
         .then(res=>{
-            const list_threads=res.data.threads.map(item=>{
+            const threads=res.data.threads.map(item=>{
                 return({...item,show_action:false})
             })
-            setThreads(list_threads)
+            setThreads(threads)
             setState({...state,show_type_chat:false})
             if(!res.data.some(item=>item.id==message.thread_choice.id)){
                 setMessage({...message,thread_choice:null})
@@ -497,7 +434,7 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
     // show actio
     const setshowaction=(e,thread)=>{
         e.stopPropagation()
-        const list_convesations=list_threads.map(item=>{
+        const list_convesations=threads.map(item=>{
             if(thread.id==item.id){
                 return({...item,show_action:!item.show_action})
             }
@@ -509,9 +446,9 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
         <>
         {user!=null?
         !show?
-        <div onClick={()=>showthread()} className={`src-pages-index__root--1G_Ox ${state.count_unread>0?'unread':''}`}>
+        <div onClick={()=>showthread()} className={`src-pages-index__root--1G_Ox ${count_message_unseen?'unread':''}`}>
             <div className="src-pages-index__logo-wrapper--IqLfz">
-                {state.count_unread>0?<div className="src-pages-index__counts--1f4Va">{state.count_unread>0?state.count_unread:''}</div>:''}
+                {count_message_unseen>0?<div className="src-pages-index__counts--1f4Va">{count_message_unseen>0?count_message_unseen:''}</div>:''}
                 <i className="_3kEAcT1Mk5 src-pages-index__chat--3rr3d">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" className="chat-icon"><path d="M18 6.07a1 1 0 01.993.883L19 7.07v10.365a1 1 0 01-1.64.768l-1.6-1.333H6.42a1 1 0 01-.98-.8l-.016-.117-.149-1.783h9.292a1.8 1.8 0 001.776-1.508l.018-.154.494-6.438H18zm-2.78-4.5a1 1 0 011 1l-.003.077-.746 9.7a1 1 0 01-.997.923H4.24l-1.6 1.333a1 1 0 01-.5.222l-.14.01a1 1 0 01-.993-.883L1 13.835V2.57a1 1 0 011-1h13.22zm-4.638 5.082c-.223.222-.53.397-.903.526A4.61 4.61 0 018.2 7.42a4.61 4.61 0 01-1.48-.242c-.372-.129-.68-.304-.902-.526a.45.45 0 00-.636.636c.329.33.753.571 1.246.74A5.448 5.448 0 008.2 8.32c.51 0 1.126-.068 1.772-.291.493-.17.917-.412 1.246-.74a.45.45 0 00-.636-.637z"></path></svg>
                 </i>
@@ -527,11 +464,11 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
                     <i className="_3kEAcT1Mk5 chat-header-logo icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 22" className="chat-icon"><path d="M9.286 6.001c1.161 0 2.276.365 3.164 1.033.092.064.137.107.252.194.09.085.158.064.203 0 .046-.043.182-.194.251-.26.182-.17.433-.43.752-.752a.445.445 0 00.159-.323c0-.172-.092-.3-.227-.365A7.517 7.517 0 009.286 4C5.278 4 2 7.077 2 10.885s3.256 6.885 7.286 6.885a7.49 7.49 0 004.508-1.484l.022-.043a.411.411 0 00.046-.71v-.022a25.083 25.083 0 00-.957-.946.156.156 0 00-.227 0c-.933.796-2.117 1.205-3.392 1.205-2.846 0-5.169-2.196-5.169-4.885C4.117 8.195 6.417 6 9.286 6zm32.27 9.998h-.736c-.69 0-1.247-.54-1.247-1.209v-3.715h1.96a.44.44 0 00.445-.433V9.347h-2.45V7.035c-.021-.043-.066-.065-.111-.043l-1.603.583a.423.423 0 00-.29.41v1.362h-1.781v1.295c0 .238.2.433.445.433h1.337v4.19c0 1.382 1.158 2.505 2.583 2.505H42v-1.339a.44.44 0 00-.445-.432zm-21.901-6.62c-.739 0-1.41.172-2.013.496V4.43a.44.44 0 00-.446-.43h-1.788v13.77h2.234v-4.303c0-1.076.895-1.936 2.013-1.936 1.117 0 2.01.86 2.01 1.936v4.239h2.234v-4.561l-.021-.043c-.202-2.088-2.012-3.723-4.223-3.723zm10.054 6.785c-1.475 0-2.681-1.12-2.681-2.525 0-1.383 1.206-2.524 2.681-2.524 1.476 0 2.682 1.12 2.682 2.524 0 1.405-1.206 2.525-2.682 2.525zm2.884-6.224v.603a4.786 4.786 0 00-2.985-1.035c-2.533 0-4.591 1.897-4.591 4.246 0 2.35 2.058 4.246 4.59 4.246 1.131 0 2.194-.388 2.986-1.035v.604c0 .237.203.431.453.431h1.356V9.508h-1.356c-.25 0-.453.173-.453.432z"></path></svg>
                     </i>
-                    {state.count_unread>0?
+                    {count_message_unseen>0?
                     <div className="chat-count-new-message">
                         <i className="_3kEAcT1Mk5 icon chat-close">
                             <svg viewBox="0 0 3 12" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path d="M2.788 12L3 11.383c-.514-.443-.959-1.113-1.335-2.013-.376-.9-.564-2.01-.564-3.333v-.074c0-1.323.189-2.434.567-3.333.378-.9.822-1.553 1.332-1.961L2.788.006 2.754 0C2.102.354 1.48 1.063.888 2.127.296 3.19 0 4.473 0 5.974v.052c0 1.505.296 2.789.888 3.85.592 1.062 1.214 1.77 1.866 2.124h.034z"></path></svg>
-                        </i>{state.count_unread>0?state.count_unread:''}
+                        </i>{count_message_unseen>0?count_message_unseen:''}
                         <i className="_3kEAcT1Mk5 icon chat-close">
                             <svg viewBox="0 0 3 12" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path d="M.246 12c.648-.354 1.269-1.062 1.863-2.124C2.703 8.815 3 7.531 3 6.026v-.052c0-1.501-.297-2.784-.891-3.847C1.515 1.063.894.354.246 0H.212L0 .617c.48.42.917 1.09 1.31 2.01.393.92.59 2.032.59 3.336v.074c0 1.33-.191 2.454-.573 3.37-.382.917-.824 1.575-1.327 1.976L.212 12h.034z"></path></svg>
                         </i>
@@ -551,24 +488,22 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
                 </div>
             </div>
             <div className="chat-body">
-                {list_threads.some(thread=>thread.choice)?
+                {threads.some(thread=>thread.choice)?
                 <div className="chat-window-detail">
-                    
-                    <div className="chat-shop-info item-center">
-                        
-                        <div className="chat-shop-name">{message.thread_choice!=null?message.thread_choice.info_thread.find(users=>users.user_id!=user.id).username:''}</div>
+                    <div className="chat-shop-info item-center"> 
+                        <div className="chat-shop-name">{direact.username}</div>
                         <i className="icon-dropdown icon">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" className="chat-icon"><path d="M6.243 6.182L9.425 3l1.06 1.06-4.242 4.243L2 4.061 3.06 3z"></path></svg>
                         </i>
                     </div>
                     <div className="chat-message-detail">
                         <div className="chat-message-detail-wrap" id="messagesContainer">
-                            {state.list_file_chat.length>0?
+                            {listfile.length>0?
                             <div className="chat-mediapreview-wrap">
                                 <section className="chat-mediapreview-section">
                                     <div className="chat-mediapreview-section-content">
                                         <div className="chat-mediapreview-section-files">   
-                                            {state.list_file_chat.map((file,i)=>{
+                                            {listfile.map((file,i)=>{
                                                 if(file.filetype=="image" || file.filetype=="video"){
                                                     return(
                                                         <div className="vbUibIOQCdVGpvTHR9QZ5" key={i}>
@@ -641,73 +576,49 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
                                         <div className="chat-message-time">{checkDay(new Date(message.created))=="Today"?`${("0" + new Date(message.created).getHours()).slice(-2)}:${("0" + new Date(message.created).getMinutes()).slice(-2)}`:checkDay(new Date(message.created))=="Yesterday"?`Yesterday, ${("0" + new Date(message.created).getHours()).slice(-2)}:${("0" + new Date(message.created).getMinutes()).slice(-2)}`:`${("0" + new Date(message.created).getDate()).slice(-2)} Th${("0"+(new Date(message.created).getMonth()+1)).slice(-2)} ${new Date(message.created).getFullYear()}, ${("0" + new Date(message.created).getHours()).slice(-2)}:${("0" + new Date(message.created).getMinutes()).slice(-2)}`}</div>
                                     :''}
                                     <div className={`chat-message-table ${message.sender==user.username?'chat-message-sender':'chat-message-receiver'}`}>
-                                        {message.text!=null && message.text!=''?
                                         <div className="chat-message">
-                                            <pre className="message-send message-text">{message.text}</pre>
-                                        </div>:""}
-                                        {message.list_file.length>0?
-                                        <div className="chat-message">
-                                            {message.list_file.filter(file=>file.filetype=='image').length>0?
-                                            <div className="chat-message-images">
+                                        {message.message_type=='1'?
+                                        <pre className="message-send message-text">{message.message}</pre>
+                                        :
+                                        message.message_type=='2'?
+                                        <div className="chat-message-images">
                                             {message.list_file.map(file=>{
                                                 if(file.filetype=='image'){
                                                     return(
-                                                    <div key={file.file_name} style={{width:`${message.list_file.length==1?'200px':''}`}} className={`chat-file ${message.list_file.length>2?'kuivcneq':message.list_file.length==2?'hkbzh7o3':''}`}>
-                                                        <div className="chat-message-image">
-                                                            <div className="image">
-                                                                <img className="chat-image" src={file.file} alt="" />
+                                                        <div key={file.file_name} style={{width:`${message.list_file.length==1?'200px':''}`}} className={`chat-file ${message.list_file.length>2?'kuivcneq':message.list_file.length==2?'hkbzh7o3':''}`}>
+                                                            <Link to={`/message_media?thread_id=${thread.id}&message_id=${message.id}&id=${file.id}`}>
+                                                                <div className="chat-message-image">
+                                                                    <div className="image">
+                                                                        <img className="chat-image" src={file.file} alt="" />
+                                                                    </div>
+                                                                </div>
+                                                            </Link>
+                                                        </div>
+                                                       
+                                                    )
+                                                }
+                                            })}
+                                        </div>
+                                        :message.message_type=='3'?
+                                        <>
+                                            {message.list_file.map(file=>
+                                            <Link to={`/message_media?thread_id=${thread.id}&message_id=${message.id}&id=${file.id}`}>
+                                                <div className='chat-message-file' key={file.file_name}>
+                                                    <div className="chat-messsage-file-preview">
+                                                        <img className="chat-image-preview" src={file.media_preview?file.media_preview:file.file_preview} alt=""/>
+                                                        <div className="chat-message-image-preview-wrap">
+                                                            <div className="chat-message-image-preview-pause">
+                                                                <div className="chat-message-image-preview-icon">
+                                                                    <svg viewBox="0 0 25 34" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clip-rule="evenodd" d="M0 2.79798C0 1.18996 1.8014 0.239405 3.12882 1.14699L23.9004 15.3489C25.062 16.1431 25.062 17.8567 23.9004 18.6509L3.12882 32.8529C1.8014 33.7605 0 32.8099 0 31.2019V2.79798Z" fill="white"></path></svg>
+                                                                </div>
                                                             </div>
                                                         </div>
+                                                        <div className="chat-message-video-duration">00:{Math.round(file.duration)}</div>
                                                     </div>
-                                                    )
-                                                }
-                                            })}
-                                            </div>:''}
-                                            {message.list_file.map(file=>{
-                                                if(file.filetype=='video'){
-                                                    return(
-                                                        <div className='chat-message-file' key={file.file_name}>
-                                                            <div className="chat-messsage-file-preview">
-                                                                <img className="chat-image-preview" src={file.file_preview} alt=""/>
-                                                                <div className="chat-message-image-preview-wrap">
-                                                                <div className="chat-message-image-preview-pause">
-                                                                    <div className="chat-message-image-preview-icon">
-                                                                        <svg viewBox="0 0 25 34" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clip-rule="evenodd" d="M0 2.79798C0 1.18996 1.8014 0.239405 3.12882 1.14699L23.9004 15.3489C25.062 16.1431 25.062 17.8567 23.9004 18.6509L3.12882 32.8529C1.8014 33.7605 0 32.8099 0 31.2019V2.79798Z" fill="white"></path></svg>
-                                                                    </div>
-                                                                </div>
-                                                                </div>
-                                                                <div className="chat-message-video-duration">00:{Math.round(file.duration)}</div>
-                                                            </div>
-                                                        </div> 
-                                                    )
-                                                }
-                                                if(file.filetype=='pdf'){
-                                                    return(
-                                                        <div className='chat-file-document-container' key={file.file_name}>
-                                                            <a href={file.file} target="_blank">
-                                                                <div className="chat-file-document-content">
-                                                                    <div className="chat-icon-document">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" width="45.057px" height="45.057px" viewBox="0 0 45.057 45.057" style={{enableBackground:'new 0 0 45.057 45.057'}} xmlSpace="preserve">
-                                                                            <g>
-                                                                                <path d="M13.323,13.381c6.418,0,12.834,0,19.252,0c1.613,0,1.613-2.5,0-2.5c-6.418,0-12.834,0-19.252,0     C11.711,10.881,11.711,13.381,13.323,13.381z"/>
-                                                                                <path d="M32.577,16.798c-6.418,0-12.835,0-19.253,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.835,0,19.253,0     C34.188,19.298,34.188,16.798,32.577,16.798z"/>
-                                                                                <path d="M32.577,22.281c-6.418,0-12.835,0-19.253,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.835,0,19.253,0     C34.188,24.781,34.188,22.281,32.577,22.281z"/>
-                                                                                <path d="M32.577,28.197c-6.418,0-12.835,0-19.253,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.835,0,19.253,0     C34.188,30.697,34.188,28.197,32.577,28.197z"/>
-                                                                                <path d="M32.204,33.781c-6.418,0-12.834,0-19.252,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.834,0,19.252,0     C33.817,36.281,33.817,33.781,32.204,33.781z"/>
-                                                                                <path d="M33.431,0H5.179v45.057h34.699V6.251L33.431,0z M36.878,42.056H8.179V3h23.707v4.76h4.992V42.056z"/>
-                                                                            </g>
-                                                                        </svg>
-                                                                    </div>
-                                                                    <div className="buofh1pr oo9gr5id lrazzd5p qv66sw1b">
-                                                                        <div className="chat-file-name" style={{webkitLineClamp: 3}}>{file.file_name}</div>
-                                                                    </div>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                    )
-                                                }
-                                            })}
-                                        </div>:Object.keys(message.message_order).length>0?
+                                                </div> 
+                                            </Link>)}
+                                        </>
+                                        :message.message_type=='4'?
                                         <div className="onDrqkSpt9r3zn_6p3pRf _18r49d6bjodvFmJMZ-4Ew5">
                                             <div className="KIDOiX8kg8qYOZk2r28XZ">
                                                 <div className="_2rOpog8D_jhF1evUqNokLy">ĐƠN HÀNG</div>
@@ -731,7 +642,7 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>:Object.keys(message.message_product).length>0?
+                                        </div>: 
                                         <div className="xaMUYIRSRlS1WYaJbpOwG DAgS9n3scQ7kWR3b9O-Va _1-jFwlhhdMvfDXAJH72LUv">
                                             <div className="_3QAhrlbRryynyUr5qWoKQI lz9DXMa2SXtyOYAO75qni _35qRx_AaOlKkCRdT9mxgpd">
                                                 <div className="_23vIMkrJSmAutLCB7Ij2em _2X1TUK7H0DhwKmtYbhlI-X">SẢN PHẨM</div>
@@ -761,8 +672,9 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>:''}
-                                        
+                                        </div>}
+                                        </div>
+             
                                     </div> 
                                 </div>
                                 )}
@@ -907,7 +819,7 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
                                 {state.show_type_chat?
                                 <div className="drop-chat">
                                     <div className="list-type-chat">
-                                        {state.list_type_chat.map(item=>
+                                        {list_type_chat.map(item=>
                                         <div onClick={()=>settypechat(item)} className="type-chat">{item.name}</div>
                                         )}
                                     </div>
@@ -916,39 +828,38 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
                         </div>
                     </div>
                     <div className="chat-conversation-lists-container chat-index__conversation-lists">
-                        {list_threads.length==0 || (state.user_search!=null && state.user_search.trim()!='' && !list_threads.some(thread=>get_user(thread).username.toUpperCase().indexOf(state.user_search.toUpperCase())>-1))?
+                        {threads.length==0 || (state.user_search!=null && state.user_search.trim()!='' && !threads.some(thread=>direact.username.toUpperCase().indexOf(state.user_search.toUpperCase())>-1))?
                         <div className="_3YurerlznH src-pages-conversationLists-index__empty--2z4Bf">
                             <img src="https://res.cloudinary.com/dupep1afe/image/upload/v1651031916/file/profile/143e062750363ec2d5f8d5601a9b595a_lfxpez.png" className="_1jxtCX6jiG"/>
                             <div className="_3l9IBXMpxr">Không tìm thấy cuộc hội thoại nào.</div>
                         </div>:
                         <div className="chat-message-container" style={{height: '100%',boxSizing: 'border-box',direction: 'ltr',position: 'relative',width: '222px',willChange: 'transform',overflow: 'auto'}}>
                             <div className="chat-message-container">
-                                {list_threads.map((thread,i)=>{
-                                    if(state.user_search==null ||state.user_search=='' || (state.user_search!='' && get_user(thread).username.toUpperCase().indexOf(state.user_search.toUpperCase())>-1)){
+                                {threads.map((thread,i)=>{
+                                    if(state.user_search==null ||state.user_search=='' || (state.user_search!='' && direact.username.toUpperCase().indexOf(state.user_search.toUpperCase())>-1)){
                                         return(
                                         <div key={i} onClick={(e)=>showmessage(e,thread)} className="chat-pages-index__root" style={{height: '48px', left: '0px', position: 'absolute', top: `${i*48}px`, width: '100%'}}>
                                             <div className="chat-pages-index__avatar">
                                                 <div className="chat-avatar-index__avatar-wrapper">
-                                                    <img alt="" src={`${get_user(thread).shop_logo}`} />
+                                                    <img alt="" src={`${direact.avatar}`}/>
                                                     <div className="chat-avatar-index__avatar-border"></div>
                                                 </div>
                                             </div>
                                             <div className="chat-pages-index__container">
                                                 <div className="chat-pages-index__upper">
-                                                    <div className="chat-pages-index__username" title={get_user(thread).shop_name!=undefined?get_user(thread).shop_name:get_user(thread).username}>{get_user(thread).shop_name!=undefined?get_user(thread).shop_name:get_user(thread).username}</div>
+                                                    <div className="chat-pages-index__username" title={direact.username}>{direact.username}</div>
                                                 </div>
-                                                <div className="chat-pages-index__lower">
-                                                    {thread.message.length>0?
+                                                <div className="chat-pages-index__lower"> 
                                                     <>
-                                                    {thread.message[0].text!=null?
-                                                    <div className={`${thread.message[0].sender!=user.username?'q66pz984':''} text-overflow`}>{thread.message[0].text}</div>
-                                                    :thread.message[0].list_file.length>0?
-                                                    thread.message[0].list_file[0].filetype=='image'?
+                                                    {thread.message_last.message_type=='1'?
+                                                    <div className={`${thread.message[0].user_id!=user.id?'q66pz984':''} text-overflow`}>{thread.message_last.message}</div>
+                                                    :thread.message_last.message_type=='2'?
                                                     <>
                                                     <i className="icon image-icon">
                                                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path d="M19 18.974V5H5v14h.005l4.775-5.594a.5.5 0 01.656-.093L19 18.974zM4 3h16a1 1 0 011 1v16a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm11.5 8a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"></path></svg>
                                                     </i>
                                                     image</>:
+                                                    thread.message_last.message_type=='3'?
                                                     <>
                                                     <i className="icon icon-document"> 
                                                         <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" width="45.057px" height="45.057px" viewBox="0 0 45.057 45.057" style={{enableBackground:'new 0 0 45.057 45.057'}} xmlSpace="preserve">
@@ -962,12 +873,11 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
                                                             </g>
                                                         </svg>
                                                     </i>
-                                                    file</>:
-                                                    Object.keys(thread.message[0].message_order).length>0?
+                                                    video</>:
+                                                    thread.message_last.message_type=='5'?
                                                     <div className="text-overflow">Cam on ban da dat hang</div>:
                                                     <div className="text-overflow">Cam on ban da quan tam san pham</div>}
-                                                    </>
-                                                    :""}
+                                                    </>  
                                                 </div>
                                             </div>
                                             <div className="action-thread">
@@ -1022,13 +932,13 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
                     {shop.choice=='item'?
                     <>
                     <div className="src-components-index__tabs--Y19NK">
-                        {(message.thread_choice.shop_logo_sender!=null && message.thread_choice.sender.user_id==user.id || message.thread_choice.shop_logo_receiver!=null && message.thread_choice.received.user_id==user.id)?
+                        {(message.thread_choice.avatar_sender!=null && message.thread_choice.sender.user_id==user.id || message.thread_choice.avatar_receiver!=null && message.thread_choice.received.user_id==user.id)?
                         <div className="src-components-index__active--2KOj5 src-components-index__header--2FJYt src-modules-ProductPopover-index__complete--3dtzk">
                             <div className="src-modules-ProductPopover-index__tab-nav--2eBWV">
                                 <div className="src-modules-ProductPopover-index__shop-icon--2Vxmd">
                                     <div className="src-components-avatar-index__root--2xGjv undefined">
                                         <div className="src-components-avatar-index__avatar-wrapper--29uog">
-                                            <img alt="" src={message.thread_choice.shop_logo_sender}/>
+                                            <img alt="" src={message.thread_choice.avatar_sender}/>
                                             <div className="src-components-avatar-index__avatar-border--2Wkz3"></div>
                                         </div>
                                     </div>
@@ -1036,13 +946,13 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
                                 <div className="src-modules-component-index__shop-name" title="My shop">My shop</div>
                             </div>
                         </div>:''}
-                        {message.thread_choice.shop_logo_receiver!=null?
+                        {message.thread_choice.avatar_receiver!=null?
                         <div className=" src-components-index__header--2FJYt src-modules-ProductPopover-index__complete--3dtzk">
                             <div className="src-modules-ProductPopover-index__tab-nav--2eBWV">
                                 <div className="src-modules-ProductPopover-index__shop-icon--2Vxmd">
                                     <div className="src-components-avatar-index__root--2xGjv undefined">
                                         <div className="src-components-avatar-index__avatar-wrapper--29uog">
-                                            <img alt="" src="${info_item[0].shop_logo}"/>
+                                            <img alt="" src="${info_item[0].avatar}"/>
                                             <div className="src-components-avatar-index__avatar-border--2Wkz3"></div>
                                         </div>
                                     </div>
@@ -1165,6 +1075,8 @@ const Message=({show_thread,threads,listMessages,show_message,thread_choice,isAu
     )
 }
 const mapStateToProps = state => ({
-    isAuthenticated: state.isAuthenticated,user:state.user
+    isAuthenticated: state.isAuthenticated,user:state.user,count_message_unseen:state.count_message_unseen,
+    showchat:state.showchat,
+    messages:state.messages,threadstate:state.thread,members:state.members
 });
 export default connect(mapStateToProps)(Message);

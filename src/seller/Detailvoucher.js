@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {useParams} from 'react-router-dom'
 import React, {useState,useEffect} from 'react'
-import {detailvoucherURL} from "../constants"
+import {detailvoucherURL} from "../urls"
 import Voucherinfo from "../hocs/Voucherinfo"
 import { headers } from '../actions/auth';
 let Pagesize=10

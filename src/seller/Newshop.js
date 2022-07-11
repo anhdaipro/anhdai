@@ -2,8 +2,7 @@ import axios from 'axios';
 import React, {useState, useEffect,useCallback} from 'react'
 import { Navigate, useNavigate } from 'react-router';
 import { expiry, headers } from '../actions/auth';
-import {address_null,localhost,checkoutURL,formatter,threadlURL,newshopURL,
-    itemvariation,arraymove, savevoucherURL,updateAddressURL,cityListURL,listThreadlURL} from "../constants"
+import {newshopURL,updateAddressURL,cityListURL} from "../urls"
 import Header from './Header';
 const Newshop=()=>{
     const [city,setCity]=useState({list_city:[]})

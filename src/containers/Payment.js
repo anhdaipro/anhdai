@@ -6,7 +6,7 @@ import {
     PayPalButtons,
     BraintreePayPalButtons,
 } from "@paypal/react-paypal-js";
-import {threadlURL,paymentURL} from "../constants"
+import {threadlURL,paymentURL} from "../urls"
 import axios from 'axios';
 import Navbar from "./Navbar"
 import { headers} from '../actions/auth';

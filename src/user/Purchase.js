@@ -5,10 +5,11 @@ import axios from 'axios';
 import React, {useState, useEffect,useCallback} from 'react'
 import {connect} from "react-redux"
 import Listreview from "../hocs/Review"
-import Message from '../containers/Chat'
+
 import {Link} from 'react-router-dom'
-import {localhost,formatter,threadlURL,itemvariation,purchaselistdURL,listThreadlURL} from "../constants"
+import {formatter,itemvariation} from "../constants"
 import { headers,expiry } from "../actions/auth";
+import {purchaselistdURL,listThreadlURL} from "../urls"
 const Purchase =({user})=>{
     const [state, setState] = useState({count_order:0,orders:[],user:null,list_review:[],list_type_order:[{name:'Tất cả',type:'1'},{name:'Chờ xác nhận',type:'2'},{name:'Chờ lấy hàng',type:'3'}
 ,{name:'Đang giao',type:'4'},{name:'Đã giao',type:'5'},{name:'Đã Hủy',type:'6'}],
@@ -381,16 +382,7 @@ const Purchase =({user})=>{
             setlistreview={edit=>setlistreview(edit)}
         />
             </div>
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-            <Message
-                show_thread={state.show_thread}
-                setshowthread={e=>setshowthread(e)}
-                threads={threads}
-                listMessages={listMessages}
-                show_message={state.show_message}
-                threadchoice={state.threadchoice}
-                />
-            </div>     
+             
         </>
     ) 
 }

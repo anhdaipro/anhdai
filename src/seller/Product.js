@@ -2,8 +2,9 @@
 import {Link,useNavigate} from 'react-router-dom'
 import React, {useState, useEffect,useCallback,useRef} from 'react'
 import ReactDOM, { render } from 'react-dom'
-import {localhost,updateimageURL,dataURLtoFile,generateString, newproductURL,groupBy,formatter} from "../constants"
+import {dataURLtoFile,generateString, groupBy,formatter} from "../constants"
 import Cropper from 'react-cropper'; 
+import {updateimageURL,newproductURL,} from "../urls"
 import axios from 'axios';
 import 'cropperjs/dist/cropper.css';
 import { headers } from '../actions/auth';

@@ -1,8 +1,9 @@
 import {formatter,timecreate,timeago,
-    itemvariation,hidestring,addToCartURL,rating,ratingitem,productinfoURL,listThreadlURL,list_review_choice,timepromotion} from "../constants"
+    itemvariation,hidestring,rating,ratingitem,list_review_choice,timepromotion} from "../constants"
 import axios from 'axios';
 import React, {useState, useEffect,useRef} from 'react'
 import ReactDOM from 'react-dom'
+import {addToCartURL,productinfoURL,listThreadlURL,} from "../urls"
 import Pagination from "../hocs/Pagination"
 import {
     FacebookShareButton,
@@ -247,8 +248,8 @@ const ProductDetail = ({report_complete,reviewchoice,show_report,setreport,setth
             }
             else{
             create_thread()
+            }
         }
-    }
     }
   
     const setlikereview=(e,review)=>{
@@ -827,7 +828,7 @@ const ProductDetail = ({report_complete,reviewchoice,show_report,setreport,setth
                                 <div className="avatar__placeholder">
                                     <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-headshot"><g><circle cx="7.5" cy="4.5" fill="none" r="3.8" stroke-miterlimit="10"></circle><path d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" strokeLinecap="round" stroke-miterlimit="10"></path></g></svg>
                                 </div>
-                                <img src={shop.shop_logo} alt="" className="avatar__img"/>
+                                <img src={shop.avatar} alt="" className="avatar__img"/>
                             </div>
                         </a>
                         <div className="item-col ml-1">

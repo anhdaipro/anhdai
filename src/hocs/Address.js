@@ -1,9 +1,9 @@
 
 import axios from 'axios';
 import React, {useState, memo} from 'react'
-import ReactDOM from 'react-dom'
+import {updateAddressURL} from "../urls"
 import GoogleMap from './GoogleMap'
-import {address_null,typeaddress,updateAddressURL} from "../constants"
+import {address_null,typeaddress,} from "../constants"
 import { headers } from '../actions/auth';
 const Address=({address,show,setshow,list_city,action,city_choice,district_choice,town_choice,setlistaddress,
     setcitychoice,setdistrictchoice,settownchoice,clearaddress,setformdata,addressChoice,

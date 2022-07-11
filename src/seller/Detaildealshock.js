@@ -4,10 +4,10 @@ import { useParams,Link } from "react-router-dom";
 import Productoffer from "./Productoffer"
 import React, {useState,useEffect,useCallback,useRef} from 'react'
 import ReactDOM, { render } from 'react-dom'
-import {localhost,formatter,dealDetailshopURL,itemdealURL,itemvariation} from "../constants"
+import {formatter,itemvariation} from "../constants"
 import Pagination from "../hocs/Pagination"
 import Dealshockinfo from "../hocs/Dealshockinfo"
-import Message from '../containers/Chat'
+import {dealDetailshopURL,itemdealURL,} from "../urls"
 import { headers } from '../actions/auth';
 let Pagesize=5
 const Detaildealshock=()=>{
@@ -1323,9 +1323,7 @@ const Detaildealshock=()=>{
                     setshow={(sho,name)=>setshow(sho,name)}
                 />
             </div>
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message/>
-            </div>    
+             
         </>
     )
 }

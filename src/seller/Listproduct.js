@@ -3,9 +3,9 @@ import axios from 'axios';
 import Navbar from "./Navbar"
 import { useParams,Link } from "react-router-dom";
 import React, {useState,useEffect,useCallback,useRef} from 'react'
-import {productshopURL,itemvariation,pagesize} from "../constants"
+import {itemvariation,pagesize} from "../constants"
 import Pagination from "../hocs/Pagination"
-import Message from '../containers/Chat'
+import {productshopURL,} from "../urls"
 import { headers} from '../actions/auth';
 const Listproduct=()=>{
     const [state,setState]=useState({show:false})
@@ -530,9 +530,7 @@ const Listproduct=()=>{
                 </div>
             </div>
             </div> 
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message/>
-            </div>   
+             
            
         </>
     )

@@ -4,9 +4,9 @@ import axios from 'axios';
 import Navbar from "./Navbar"
 import { useParams,Link, useNavigate } from "react-router-dom";
 import React, {useState,useEffect,useCallback,useRef} from 'react'
-import {localhost,formatter,shippingshopURL,groupBy,detailproductURL} from "../constants"
+import {groupBy,} from "../constants"
 import ProductDetail from "./Product"
-import Message from '../containers/Chat'
+import {shippingshopURL,detailproductURL} from "../urls"
 import { headers } from "../actions/auth";
 const Detailproduct=()=>{
     const [state,setState]=useState({list_category:[],list_choice:[],list_media:[],

@@ -1,5 +1,6 @@
 import React, {useState,useCallback,useEffect} from 'react'
-import {listcomboshopURL,formatter,timepromotion} from "../constants"
+import {formatter,timepromotion} from "../constants"
+import {listcomboshopURL,} from "../urls"
 import {useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import { headers } from '../actions/auth'

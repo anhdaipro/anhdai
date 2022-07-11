@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {vouchershopURL} from "../constants"
+import {vouchershopURL} from "../urls"
 import Voucherinfo from "../hocs/Voucherinfo"
 const Newvoucher=()=>{
     const [voucher,setVoucher]=useState({name_of_the_discount_program:'',code_type:'All',code:'',

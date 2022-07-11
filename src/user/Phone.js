@@ -1,11 +1,11 @@
 import React,{useState,useEffect, useRef} from 'react';
 import axios from 'axios';
 import Navbar from "../containers/Navbar"
-import {otpURL, profiledURL,isVietnamesePhoneNumber} from "../constants"
+import {isVietnamesePhoneNumber} from "../constants"
 import User from "./User"
 import { Navigate, useNavigate } from 'react-router';
 import { headers } from '../actions/auth';
-
+import {otpURL, profiledURL,} from "../urls"
 console.log(new Date("July 21, 1983 01:15:00"))
 if(new Date("July 21, 1983 01:15:00")=='Invalid date'){
     console.log('ị')
@@ -20,13 +20,13 @@ const Phoneuser =()=>{
     const [data,setData]=useState(null);
     const [error,setError]=useState({})
     const [state,setState]=useState({time:60,error:true,showpass:false,showrepass:false,style:{backgroundImage: `url(&quot;https://cf.shopee.vn/file/5569eb9dc7e09e2dbed5315b8f2ea8ba&quot;)`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center center'}})
-    const [formData,setformData]=useState({verify:false,phone:'',pin:'',username:'',name:'',email:'',image:null})
+    const [formData,setformData]=useState({verify:false,phone:'',pin:'',username:'',name:'',email:''})
     useEffect(() => {
         axios.get(profiledURL,headers)
         .then(res=>{
           const data = res.data
           setLoading(true)
-          setformData({...formData,username:data.username,name:data.name,email:data.email,image:data.image}) 
+          setformData({...formData,username:data.username,name:data.name,email:data.email,avatar:data.avatar}) 
         })  
     },[])
     
@@ -90,7 +90,7 @@ const Phoneuser =()=>{
                 <div className="containers _1QwuCJ">
                     <User
                     username={formData.username}
-                    image={formData.image}
+                    image={formData.avatar}
                     />
                     <div className="_3D9BVC">
                         <div className="h4QDlo" role="main">

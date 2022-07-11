@@ -6,8 +6,8 @@ import Timeoffer from "./Timeoffer"
 import Productoffer from "../seller/Productoffer"
 import React, {useState,useEffect,useCallback,useRef} from 'react'
 import Pagination from "./Pagination"
-import Message from '../containers/Chat'
-import {localhost,formatter,threadlURL,itemvariation,limit_choice} from "../constants"
+
+import {formatter,itemvariation,limit_choice} from "../constants"
 import { headers } from '../actions/auth';
 let Pagesize=5
 const Programinfo=({loading_content,item_program,date_program,program_shop,url_program})=>{
@@ -838,10 +838,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                     setshow={(sho,name)=>setshow(sho,name)}
                     submitby={()=>submitby()}
                 />
-            </div>
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message/>
-            </div>    
+            </div>  
         </>
     )
 }

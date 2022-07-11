@@ -1,6 +1,7 @@
 import React, {useState,useCallback,useEffect} from 'react'
-import {listflashsaleshopURL,formatter,timepromotion} from "../constants"
+import {formatter,timepromotion} from "../constants"
 import {useNavigate} from 'react-router-dom'
+import {listflashsaleshopURL,} from "../urls"
 import axios from 'axios'
 import { headers } from '../actions/auth'
 const Listflashseleshop=()=>{

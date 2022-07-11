@@ -4,7 +4,8 @@ import React, {useState, useEffect} from 'react'
 import { useParams,Link,useNavigate } from "react-router-dom";
 import Message from "./Chat"
 import { headers} from '../actions/auth';
-import {localhost,formatter,threadlURL,dealURL,itemvariation,updatecartURL,addToCartBatchURL} from "../constants"
+import {localhost,threadlURL,dealURL,addToCartBatchURL,updatecartURL,} from "../urls"
+import {formatter,itemvariation} from "../constants"
 const Dealshock = () => {
     let navigate = useNavigate();
     const { id } = useParams(); // <-- access id match param here

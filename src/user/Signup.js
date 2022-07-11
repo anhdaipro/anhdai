@@ -3,10 +3,10 @@ import { Link,useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signup,googleLogin,facebookLogin } from '../actions/auth';
 import axios from 'axios';
-import {otpURL,verifyotpURL,isVietnamesePhoneNumber,generateString,validatePassword} from "../constants"
+import {isVietnamesePhoneNumber,generateString,validatePassword} from "../constants"
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import { GoogleLogin } from 'react-google-login';
-
+import {otpURL,verifyotpURL} from "../urls"
 let id=undefined
 console.log(isVietnamesePhoneNumber('03567855355'))
 const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
@@ -278,7 +278,7 @@ const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
                                     {formData.user_id!=undefined?
                                     <div>
                                         <div className="KCx6fd _3nm8yw">
-                                            <img className="_2HCc0n" src={formData.image}/>
+                                            <img className="_2HCc0n" src={formData.avatar}/>
                                         </div>
                                         <div className="_1IpTW3">{formData.username}</div>
                                         <div className="_1f249O">{formData.phone}</div>

@@ -1,4 +1,4 @@
-import {formatter,localhost,sort_options,
+import {formatter,sort_options,
     rating,sort_price_choice} from "../constants"
 import axios from 'axios';
 import React, {useState, useEffect,useRef,memo} from 'react'
@@ -75,7 +75,7 @@ const Itemsearch=({listitem,setsearch,searchitem,search,data,setsearchitem})=>{
                     <div className="home-product-item-info">
                         <div className="home-product-item__name">{item.item_name}</div>
                         <div className="home-product-item__discount">
-                        {Object.keys(item.voucher).length>0?
+                        {item.voucher?
                         <div className="home-product-item__discount-voucher">
                             <svg className="clipath-left" viewBox="-0.5 -0.5 4 16">
                             <path d="M4 0h-3q-1 0 -1 1a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3q0 1 1 1h3" strokeWidth="1" transform="" stroke="currentColor" fill="#f69113"></path>
@@ -86,7 +86,7 @@ const Itemsearch=({listitem,setsearch,searchitem,search,data,setsearchitem})=>{
                             </svg>
                             </div>:''}
                             {item.shock_deal_type!=null?<div className="home-product-item__discount-deal-shock">{item.shock_deal_type=='1'?'Buy with shock deal':"Buy to receive gift"}</div>:
-                            Object.keys(item.voucher).length>0?<div className="home-product-item__discount-deal-shock">combo khuyen mai</div>:
+                            item.combo?<div className="home-product-item__discount-deal-shock">combo khuyen mai</div>:
                             ''}
                         </div>
                         <div className="_3_FVSo">  

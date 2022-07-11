@@ -1,7 +1,7 @@
 
 import React, {useState} from 'react'
 import Promotioninfo from "../hocs/Promotioninfo"
-import {newcomboURL} from "../constants"
+import {newcomboURL} from "../urls"
 const Newpromotion=()=>{
     const [combo,setCombo]=useState({valid_from:new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     quantity_to_reduced:null,discount_price:null,price_special_sale:null,

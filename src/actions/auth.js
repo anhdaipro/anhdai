@@ -13,9 +13,10 @@ import {
     GOOGLE_AUTH_FAIL,
     FACEBOOK_AUTH_SUCCESS,
     FACEBOOK_AUTH_FAIL,
-    LOGOUT
+    LOGOUT,
+    SHOW_CHAT
 } from './types';
-
+import {createthreadURL} from "../urls"
 import axios from 'axios';
 axios.defaults.withCredentials = true;
 export const checkAuthenticated = () => async dispatch => {
@@ -278,6 +279,27 @@ export const logout = () => dispatch => {
     });
 };
 
+export const showchat = (data) => async dispatch => {
+    try{
+        if(!data.thread){
+            const res=await axios.post(createthreadURL,JSON.stringify(data),headers)
+            const datachat={showchat:true,...res.data}
+            dispatch({
+                type: SHOW_CHAT,
+                payload: datachat
+            })
+        }
+        else{
+            dispatch({
+                type: SHOW_CHAT,
+                payload: data
+            })
+        }  
+    }
+    catch(e){
+        console.log(e)
+    }
+} 
 const expirationDate = localStorage.getItem("expirationDate")
 export const expiry=new Date(expirationDate).getTime() - new Date().getTime()
 export const headers={'headers': localStorage.token!='null' && expiry>0?{ Authorization:`JWT ${localStorage.token}`,'Content-Type': 'application/json' }:{'Content-Type': 'application/json'}}

@@ -1,5 +1,5 @@
 
-import {detailURL,productinfoURL} from "../constants"
+import {detailURL,productinfoURL} from "../urls"
 import axios from 'axios';
 import Navbar from "./Navbar"
 import Message from "./Chat"
@@ -240,15 +240,7 @@ const Detailview = () => {
           </div>
         </div>:''}
       </div>
-      <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-          <Message
-            show_thread={show}
-            show_message={state.show_message}
-            threads={threads}
-            listMessages={listMessages}
-            thread_choice={threadchoice}
-          />
-        </div>      
+         
       </>
   )
 }

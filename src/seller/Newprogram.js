@@ -1,7 +1,7 @@
 
 import Programinfo from "../hocs/Programinfo"
 import React, {useState} from 'react'
-import {newprogramURL} from "../constants"
+import {newprogramURL} from "../urls"
 const Newprogram=()=>{
     const [program,setProgram]=useState({name_program:'',valid_from:new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     valid_to:new Date(new Date().setHours(new Date().getHours()+1)).toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16)

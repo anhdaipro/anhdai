@@ -4,9 +4,9 @@ import Navbar from "./Navbar"
 import { useParams,Link } from "react-router-dom";
 import React, {useState,useEffect,useCallback,useRef} from 'react'
 import ReactDOM, { render } from 'react-dom'
-import {productshopURL,itemvariation,pagesize,shopratingURL, rating, timepromotion} from "../constants"
+import {itemvariation,pagesize, rating, timepromotion} from "../constants"
 import Pagination from "../hocs/Pagination"
-import Message from '../containers/Chat'
+import {shopratingURL,} from "../urls"
 import { headers} from '../actions/auth';
 const Ratingshop=()=>{
     const [state,setState]=useState({show:false,page_input:1,text:null,page_count:1})
@@ -269,7 +269,7 @@ const Ratingshop=()=>{
                                                                 <div className="item-space">
                                                                     <div className="item-center">
                                                                         <div>Người Mua:</div>
-                                                                        <div className="review-user-image"><img src={review.image}/></div>
+                                                                        <div className="review-user-image"><img src={review.avatar}/></div>
                                                                         <div className="review-username">{review.user}</div>
                                                                     </div>
                                                                     <div className="review-prrder_id">{review.ref_code}</div>
@@ -369,7 +369,7 @@ const Ratingshop=()=>{
                                 <div className="popup-form__main-container">
                                     <div className='item-center mb-1'>
                                         <div className="review-user-image ">
-                                            <img src={review_choice.image}/>
+                                            <img src={review_choice.avatar}/>
                                         </div>
                                         <div className="review-username mr-1">{review_choice.user}</div>
                                         <div className="d-flex">{rating(6,review_choice)}</div>
@@ -390,9 +390,7 @@ const Ratingshop=()=>{
                     </div>
                 </div>:''}
             </div>
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message/>
-            </div>   
+             
            
         </>
     )

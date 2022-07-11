@@ -5,7 +5,8 @@ import Navbar from "./Navbar"
 import React, {useState, useEffect,useCallback} from 'react'
 import Variationitem from '../hocs/Promotion';
 import { useParams } from "react-router-dom";
-import {localhost,formatter,promotionURL,addToCartURL} from "../constants"
+import {promotionURL,addToCartURL} from "../urls"
+import {formatter,} from "../constants"
 import Message from "./Chat"
 import { headers } from '../actions/auth';
 const Promotion = () => {
@@ -169,9 +170,7 @@ const Promotion = () => {
                     setwarring={war=>setwarring(war)}
                 />
             </div>
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-            <Message/>
-        </div>  
+           
         </>
     )
 }

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, {useState,useEffect} from 'react'
 import Promotioninfo from "../hocs/Promotioninfo"
-import {detailcomboURL} from "../constants"
+import {detailcomboURL} from "../urls"
 import { useParams,Link } from "react-router-dom";
 import { headers } from '../actions/auth';
 let Pagesize=5

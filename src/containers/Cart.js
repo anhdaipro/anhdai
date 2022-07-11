@@ -1,10 +1,10 @@
 
 import axios from 'axios';
 import Navbar from "./Navbar"
-import {localhost,formatter,listThreadlURL,ItemRecommend,cartURL,itemvariation,rating,listorderURL,
-    updatecartURL,arraymove, savevoucherURL,itemrecentlyURL} from "../constants"
+import {formatter,ItemRecommend,itemvariation,rating,
+arraymove,} from "../constants"
 import {useNavigate , Link,useLocation, Navigate} from 'react-router-dom';
-import PropTypes from 'prop-types';
+import {updatecartURL,listThreadlURL,listorderURL,cartURL,itemrecentlyURL,savevoucherURL} from "../urls"
 import Pagination from '../hocs/Pagination';
 import React, { useState,createRef } from 'react';
 import { headers,expiry} from '../actions/auth';
@@ -162,13 +162,13 @@ class Cart extends React.Component{
             
             
             for(let j=0;j<obj1.data.order_item.length;j++){
-                if(Object.keys(obj1.data.order_item[j].promotion).length>0){ 
+                if(obj1.data.order_item[j].promotion){ 
                     list_item_promotions.push(obj1.data.order_item[j])
                     if(list_item_promotion[obj1.data.order_item[j].promotion.id]) continue;
                     list_item_promotion[obj1.data.order_item[j].promotion.id] = true;
                     list_item_promotion_unique.push(obj1.data.order_item[j])
                 }
-                if(Object.keys(obj1.data.order_item[j].promotion).length==0){
+                if(!obj1.data.order_item[j].promotion){
                     list_item_remainder.push(obj1.data.order_item[j])
                 }
             }
@@ -1207,15 +1207,6 @@ class Cart extends React.Component{
                     </div>
                     :''}
                 </div>
-                <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message
-                    show_thread={this.state.show_thread}
-                    show_message={this.state.show_message}
-                    setshowthread={e=>this.setshowthread(e)}
-                    threads={this.state.threads}
-                    listMessages={this.state.messages}
-                    />
-                </div>      
             </>
         )
     }
