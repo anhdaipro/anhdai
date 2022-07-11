@@ -99,7 +99,7 @@ class Category extends React.Component {
                 <div className="header-section__header item-center">
                     <div className="header-section__header__title">Danh Mục</div>
                 </div>
-                {this.state.loading?
+                
                 <div className="image-carousel">
                     <div className="image-carousel__item-list-wrapper">
                         <ul className="image-carousel__item-list" style={{width: '130%', transform: transform, transition: 'all 500ms ease 0s'}}>
@@ -134,7 +134,7 @@ class Category extends React.Component {
                     <div onClick={this.nextSlide} className="carousel-arrow carousel-arrow--hint carousel-arrow--next carousel-arrow--hidden" role="button" tabIndex="0" style={{opacity: 1, visibility: 'visible', transform: 'translateX(calc(50% - 0px))'}}>
                         <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
                     </div>
-                </div>:''}
+                </div>
             </div>
         )
     }
