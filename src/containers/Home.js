@@ -70,7 +70,7 @@ class Category extends React.Component {
     componentDidMount() {
       axios.get(listcategoryURL)
       .then(res=>{
-        this.setState({loading:true,transform: 'translate(0px, 0px)',categories:partition(res.data.b, int).map(subarray => subarray)});
+        this.setState({loading:true,transform: 'translate(0px, 0px)',categories:partition(res.data, int).map(subarray => subarray)});
       })  
       .catch(err => {
         this.setState({ error: err});
