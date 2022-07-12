@@ -124,7 +124,7 @@ class Cart extends React.Component{
             let discount_promotion=0
             let discount_deal=0
             let discount_voucher=0
-            let count_orderitem=0
+            let count_cartitem=0
             obj2.data.orders.map(order=>{
                 list_voucher_shop=[...list_voucher_shop,order.voucher]
                 total+=order.total
@@ -133,7 +133,7 @@ class Cart extends React.Component{
                 discount_deal+=order.discount_deal
                 discount_voucher+=order.discount_voucher
                 count_order+=order.count
-                count_orderitem+=order.count_orderitem
+                count_cartitem+=order.count_cartitem
             })
             const list_shop=obj1.data.list_shop.map(shop=>{
                 let order=obj2.data.orders.find(order=>order.shop_name==shop.shop_name)
@@ -146,13 +146,13 @@ class Cart extends React.Component{
            
             for(let i=0 ;i<obj1.data.list_shop.length;i++){
                 let list_voucher_items=[]
-                for(let j=0;j<obj1.data.order_item.length;j++){
-                    if(obj1.data.order_item[j].shop_name==obj1.data.list_shop[i].shop_name){
-                        if(obj1.data.order_item[j].voucher_user.length>0){
-                            for(let k=0;k<obj1.data.order_item[j].list_voucher.voucher_info.length;k++){
-                                if(list_voucher_items[obj1.data.order_item[j].list_voucher.voucher_info[k].id]) continue;
-                                list_voucher_items[obj1.data.order_item[j].list_voucher.voucher_info[k].id] = true;
-                                obj1.data.list_shop[i].list_voucher_unique.push({'voucher_info':obj1.data.order_item[j].list_voucher.voucher_info[k],'voucher_user':obj1.data.order_item[j].voucher_user[k]});
+                for(let j=0;j<obj1.data.cart_item.length;j++){
+                    if(obj1.data.cart_item[j].shop_name==obj1.data.list_shop[i].shop_name){
+                        if(obj1.data.cart_item[j].voucher_user.length>0){
+                            for(let k=0;k<obj1.data.cart_item[j].list_voucher.voucher_info.length;k++){
+                                if(list_voucher_items[obj1.data.cart_item[j].list_voucher.voucher_info[k].id]) continue;
+                                list_voucher_items[obj1.data.cart_item[j].list_voucher.voucher_info[k].id] = true;
+                                obj1.data.list_shop[i].list_voucher_unique.push({'voucher_info':obj1.data.cart_item[j].list_voucher.voucher_info[k],'voucher_user':obj1.data.cart_item[j].voucher_user[k]});
                                 obj1.data.list_shop[i].show_voucher=false
                             }
                         }
@@ -161,15 +161,15 @@ class Cart extends React.Component{
             }
             
             
-            for(let j=0;j<obj1.data.order_item.length;j++){
-                if(obj1.data.order_item[j].promotion){ 
-                    list_item_promotions.push(obj1.data.order_item[j])
-                    if(list_item_promotion[obj1.data.order_item[j].promotion.id]) continue;
-                    list_item_promotion[obj1.data.order_item[j].promotion.id] = true;
-                    list_item_promotion_unique.push(obj1.data.order_item[j])
+            for(let j=0;j<obj1.data.cart_item.length;j++){
+                if(obj1.data.cart_item[j].promotion){ 
+                    list_item_promotions.push(obj1.data.cart_item[j])
+                    if(list_item_promotion[obj1.data.cart_item[j].promotion.id]) continue;
+                    list_item_promotion[obj1.data.cart_item[j].promotion.id] = true;
+                    list_item_promotion_unique.push(obj1.data.cart_item[j])
                 }
-                if(!obj1.data.order_item[j].promotion){
-                    list_item_remainder.push(obj1.data.order_item[j])
+                if(!obj1.data.cart_item[j].promotion){
+                    list_item_remainder.push(obj1.data.cart_item[j])
                 }
             }
             for(let j=0;j<list_item_promotion_unique.length;j++){
@@ -179,14 +179,14 @@ class Cart extends React.Component{
                     }
                 }
             }
-            this.setState({count:obj1.data.order_item.length,
+            this.setState({count:obj1.data.cart_item.length,
                 list_item_promotion_unique:list_item_promotion_unique,
                 list_item_remainder:list_item_remainder,
                 list_voucher_shop:list_voucher_shop,
                 count_order:count_order,
                 total:total,list_threads:obj2.data.list_threads,
                 user:obj1.data.user,
-                count_orderitem:count_orderitem,
+                count_cartitem:count_cartitem,
                 total_discount:total_discount,
                 discount_promotion:discount_promotion,
                 discount_deal:discount_deal,list_shop:list_shop,
@@ -212,6 +212,7 @@ class Cart extends React.Component{
             }
         } 
     }
+
     handlePageChange(page,data,item){
         this.setState({page_no:page})
         let url= new URL(updatecartURL)
@@ -271,7 +272,7 @@ class Cart extends React.Component{
             let data=rep.data
             this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
                 discount_deal:data.discount_deal,count_order:data.count,
-                discount_voucher:data.discount_voucher,count_orderitem:data.count_orderitem,
+                discount_voucher:data.discount_voucher,count_cartitem:data.count_cartitem,
                 list_item_promotion_unique:this.state.list_item_promotion_unique,list_item_remainder:this.state.list_item_remainder
             })
         }) 
@@ -321,7 +322,7 @@ class Cart extends React.Component{
             let data=rep.data
             this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
                 discount_deal:data.discount_deal,count_order:data.count,
-                discount_voucher:data.discount_voucher,count_orderitem:data.count_orderitem,
+                discount_voucher:data.discount_voucher,count_cartitem:data.count_cartitem,
                 list_item_promotion_unique:this.state.list_item_promotion_unique,list_item_remainder:this.state.list_item_remainder
             })
         }) 
@@ -381,7 +382,7 @@ class Cart extends React.Component{
             let variation_active=document.querySelectorAll('.product-variation.product-variation--selected')
             if(variation_active.length>=this.state.count_variation){
                 if(data.percent_discount_deal==undefined){
-                    form.append('orderitem_id',data.id)
+                    form.append('cartitem_id',data.id)
                 }
                 else{
                     form.append('byproduct_id',data.id)
@@ -413,7 +414,7 @@ class Cart extends React.Component{
             }
     }
 
-    variation(e,data,item,index,orderitem,shop){
+    variation(e,data,item,index,cartitem,shop){
         e.stopPropagation()
         data.open=!data.open
         let list_shop=[]
@@ -494,7 +495,7 @@ class Cart extends React.Component{
             form.append('byproduct_id',data.id)
         }
         else{
-        form.append('orderitem_id',data.id)
+        form.append('cartitem_id',data.id)
         }
         form.append('quantity',data.quantity)
         axios.post(cartURL,form,headers)
@@ -507,20 +508,20 @@ class Cart extends React.Component{
         }) 
     }
 
-    removeitem(e,data,item,index,orderitem){
+    removeitem(e,data,item,index,cartitem){
         let form=new FormData()
         form.append('id_delete',data.id)
         if(data.percent_discount_deal!==undefined){
             form.append('byproduct_id_delete',data.id)
         }
         else{
-        form.append('orderitem_id_delete',data.id)
+        form.append('cartitem_id_delete',data.id)
         }
         axios.post(cartURL,form,headers)
         .then(resp => {
         let data=resp.data
-        orderitem.splice(index,1)
-        this.setState({[item]:orderitem,total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
+        cartitem.splice(index,1)
+        this.setState({[item]:cartitem,total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
             discount_deal:data.discount_deal,count_order:data.count,
             discount_voucher:data.discount_voucher})
         })
@@ -647,7 +648,7 @@ class Cart extends React.Component{
         
     }
 
-    iteminfo(data,item,index,orderitem,shop){
+    iteminfo(data,item,index,cartitem,shop){
         return(
         <div key={item.id} className="d-flex p-1">
              <div className="item-check item-center">
@@ -666,7 +667,7 @@ class Cart extends React.Component{
             </div>
             <div className="shop-item-variation">
                 <div  className="aUj6f2">
-                    <div onClick={(e)=>this.variation(e,data,item,index,orderitem,shop)} className="ns42ir">
+                    <div onClick={(e)=>this.variation(e,data,item,index,cartitem,shop)} className="ns42ir">
                         <div className="shop-item-variation-title item-center"> phân loại
                             <button className={`_2Ipt-j ${data.open && data.variation_id==this.state.variation_id?'_2zsvOt':''}`}></button>
                         </div>
@@ -745,7 +746,7 @@ class Cart extends React.Component{
             </div>
             <div className="shop-item-price item-centers">₫{formatter.format(data.total_price)}</div>
             <div className='_2y8iJi _2qPRqW' >
-                <button onClick={e=>this.removeitem(e,data,item,index,orderitem)} className="item-delete button-no-outline">Xóa</button>
+                <button onClick={e=>this.removeitem(e,data,item,index,cartitem)} className="item-delete button-no-outline">Xóa</button>
                 <div className={`_1-rOD0 ${data.show?'_1EMX1h':''}`}>
                     {this.state.items.length>0 && data.show?
                     <div className="_2Nuk_- _2kB0Ra">
@@ -846,14 +847,14 @@ class Cart extends React.Component{
         )
     }
 
-    list_voucher(list_shop,shop,orderitem){
+    list_voucher(list_shop,shop,cartitem){
         let list_voucher_unique=[]
         let list_voucher_items=[]
-        if(orderitem.voucher_user.length>0){
-            for(let k=0;k<orderitem.list_voucher.voucher_info.length;k++){
-                if(list_voucher_items[orderitem.list_voucher.voucher_info[k].id]) continue;
-                list_voucher_items[orderitem.list_voucher.voucher_info[k].id] = true;
-                list_voucher_unique.push({voucher_info:orderitem.list_voucher.voucher_info[k],voucher_user:orderitem.voucher_user[k]});
+        if(cartitem.voucher_user.length>0){
+            for(let k=0;k<cartitem.list_voucher.voucher_info.length;k++){
+                if(list_voucher_items[cartitem.list_voucher.voucher_info[k].id]) continue;
+                list_voucher_items[cartitem.list_voucher.voucher_info[k].id] = true;
+                list_voucher_unique.push({voucher_info:cartitem.list_voucher.voucher_info[k],voucher_user:cartitem.voucher_user[k]});
             }
         }
         shop.list_voucher_unique=list_voucher_unique
@@ -902,7 +903,7 @@ class Cart extends React.Component{
 
     render(){
         console.log(this.props.user)
-        let {count,count_order,total,discount_promotion,loading,count_orderitem,
+        let {count,count_order,total,discount_promotion,loading,count_cartitem,
         discount_deal,total_discount,discount_voucher,list_shop,list_item_promotion_unique,
         list_item_remainder,list_voucher_shop,warring}=this.state
         return(
@@ -946,8 +947,8 @@ class Cart extends React.Component{
                                 <div className="item-col">
                                     <div className="order-total-header">
                                         <div className="item-check">
-                                            <label className={`stardust-checkbox ${count==count_orderitem?'stardust-checkbox--checked':''}`}>
-                                                <input defaultChecked onChange={e=>this.checkall(e)} checked={count_orderitem==count?true:false}  className="stardust-checkbox__input" type="checkbox"/>
+                                            <label className={`stardust-checkbox ${count==count_cartitem?'stardust-checkbox--checked':''}`}>
+                                                <input defaultChecked onChange={e=>this.checkall(e)} checked={count_cartitem==count?true:false}  className="stardust-checkbox__input" type="checkbox"/>
                                                 <div className="stardust-checkbox__box"></div>
                                             </label>
                                         </div>
@@ -974,15 +975,15 @@ class Cart extends React.Component{
                                                     </button>
                                                 </div>
                                                 <div className="shop_item">
-                                                    {list_item_promotion_unique.map((orderitem,i)=>{
-                                                        if(shop.shop_name==orderitem.shop_name){
+                                                    {list_item_promotion_unique.map((cartitem,i)=>{
+                                                        if(shop.shop_name==cartitem.shop_name){
                                                             return (
-                                                                <div className="shop-item-order" key={orderitem.id}>
+                                                                <div className="shop-item-order" key={cartitem.id}>
                                                                     <div className="shop-discount">
                                                                         <span className="discount">Promotion combo</span>
-                                                                        <span className="discount-title">Buy {orderitem.promotion.quantity_to_reduced} more {orderitem.promotion.combo_type=='1'?` (will be reduced ${orderitem.promotion.discount_percent}%)`:orderitem.promotion.combo_type=='2'?` (will be reduced ₫${formatter.format(orderitem.promotion.discount_price)}`:` (only with ₫${formatter.format(orderitem.promotion.price_special_sale)}`}</span>
+                                                                        <span className="discount-title">Buy {cartitem.promotion.quantity_to_reduced} more {cartitem.promotion.combo_type=='1'?` (will be reduced ${cartitem.promotion.discount_percent}%)`:cartitem.promotion.combo_type=='2'?` (will be reduced ₫${formatter.format(cartitem.promotion.discount_price)}`:` (only with ₫${formatter.format(cartitem.promotion.price_special_sale)}`}</span>
                                                                         <span className="add-byproduct">
-                                                                            <Link to={orderitem.promotion.combo_url}>Add
+                                                                            <Link to={cartitem.promotion.combo_url}>Add
                                                                                 <svg viewBox="0 0 12 12" fill="none" width="12" height="12" color="#ee4d2d" className="_1KsfYG"><path fillRule="evenodd" clipRule="evenodd" d="M9.293 6L4.146.854l.708-.708L10 5.293a1 1 0 010 1.414l-5.146 5.147-.708-.707L9.293 6z" fill="currentColor"></path></svg>
                                                                             </Link>
                                                                         </span>
@@ -996,12 +997,12 @@ class Cart extends React.Component{
                                                             ) 
                                                         }
                                                     })}
-                                                    {list_item_remainder.map((orderitem,i)=>{
-                                                        if(shop.shop_name==orderitem.shop_name){
+                                                    {list_item_remainder.map((cartitem,i)=>{
+                                                        if(shop.shop_name==cartitem.shop_name){
                                                         
                                                             return(
                                                                 <div className="shop-item-order">
-                                                                    {orderitem.shock_deal_type!==null?
+                                                                    {cartitem.shock_deal_type!==null?
                                                                     <div className="shop-discount">
                                                                         <span className="discount">Deal sốc</span>
                                                                         <span className="discount-title">{list_item_remainder[i].shock_deal_type=='1'?'Mua kèm deal shock':'Buy to receive gift'}</span>
@@ -1080,8 +1081,8 @@ class Cart extends React.Component{
                                     <div className="_1ri0rT _2amAdj"></div>
                                     <div className="W2HjBQ zzOmij">
                                         <div className="_1E2dyV">
-                                            <label className={`stardust-checkbox ${count==count_orderitem?'stardust-checkbox--checked':''}`}>
-                                                <input  onChange={e=>this.checkall(e)} checked={count_orderitem==count?true:false}  className="stardust-checkbox__input" type="checkbox"/>
+                                            <label className={`stardust-checkbox ${count==count_cartitem?'stardust-checkbox--checked':''}`}>
+                                                <input  onChange={e=>this.checkall(e)} checked={count_cartitem==count?true:false}  className="stardust-checkbox__input" type="checkbox"/>
                                                 <div className="stardust-checkbox__box"></div>
                                             </label>
                                         </div>
