@@ -423,7 +423,6 @@ class Cart extends React.Component{
                 }
             }
             
-            
             this.setState({
                 count:obj1.data.cart_item.length,
                 list_cartitem:obj1.data.cart_item,
@@ -891,8 +890,8 @@ class Cart extends React.Component{
                                             <div className="order-total-shop" key={shop.shop_name}>
                                                 <div className="item-center shop-info _3ApheT">
                                                     <div className="item-check">
-                                                        <label className={`stardust-checkbox ${[...list_item_remainder,...list_item_promotion_unique].find(item => item.check==false&&item.shop_name==shop.shop_name)?'':'stardust-checkbox--checked'}`}>
-                                                            <input onChange={(e)=>this.checkshop(e,shop)} checked={[...list_item_remainder,...list_item_promotion_unique].find(item => item.check==false&&item.shop_name==shop.shop_name)?false:true} className="stardust-checkbox__input" type="checkbox"/>
+                                                        <label className={`stardust-checkbox ${list_cartitem.some(item => !item.check && item.shop_name==shop.shop_name)?'':'stardust-checkbox--checked'}`}>
+                                                            <input onChange={(e)=>this.checkshop(e,shop)} checked={list_cartitem.some(item => !item.check&&item.shop_name==shop.shop_name)?false:true} className="stardust-checkbox__input" type="checkbox"/>
                                                             <div className="stardust-checkbox__box"></div>
                                                         </label>
                                                     </div>
