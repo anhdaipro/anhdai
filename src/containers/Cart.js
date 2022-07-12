@@ -116,13 +116,52 @@ const Divbox=(props)=>{
     )
 }
 
-const Iteminfo=(item,index,shop,cartitem)=>{
+const Iteminfo=(props)=>{
+    const {item,shop,cartitem,product,checked,adjustitem,removeitem,variation,setcolor,setsize,update}=props
+    const [show,setShow]=useState(false)
+    const [items,setItems]=useState([])
+    const [state,setState]=useState({page_no:1})
+    const itemref=useRef()
+    useEffect(() => {
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [])
+
+    const handleClick = (event) => {
+        const { target } = event
+        if(itemref.current!=null){
+            if (!itemref.current.contains(target)) {
+                setShow(false)
+            }
+        }
+    }
+    const finditem=(e,item)=>{
+        axios.get(`${updatecartURL}?item_id=${item.item_id}`,headers)
+        .then(rep=>{
+            let data=rep.data
+            setItems(data.list_item)
+            setState({...state,page_count:data.page_count,page:data.page,loading_item:true})
+        })
+        
+    }
+
+    const handlePageChange=(page,item)=>{
+        setState({...state,loading_item:false})
+        axios.get(`${updatecartURL}?item_id=${item.item_id}&page=${page}`,headers)
+        .then(rep=>{
+            let data=rep.data
+            setItems(data.list_item)
+            this.setState({...state,loading_item:true,page_no:page})
+        })
+    }
     return(
         <div key={item.id} className="d-flex p-1">
             <div className="item-check item-center">
-                {item.check!==undefined?
+                {product=='mainproduct'?
                 <label className={`stardust-checkbox ${item.check?'stardust-checkbox--checked':''}`}>
-                    <input onChange={(e)=>this.checked(e,data,item,index)} type="checkbox" value={item.id} checked={item.check?true:false} className="stardust-checkbox__input" type="checkbox"/>
+                    <input onChange={(e)=>checked(e,item)} type="checkbox" value={item.id} checked={item.check?true:false} className="stardust-checkbox__input" type="checkbox"/>
                     <div className="stardust-checkbox__box"></div>
                 </label>
                 :''}
@@ -134,17 +173,19 @@ const Iteminfo=(item,index,shop,cartitem)=>{
                 <div className="shop-item-name">{item.item_name}</div>
             </div>
             <div className="shop-item-variation">
-                <div  className="aUj6f2">
-                    <div onClick={(e)=>this.variation(e,data,item,index,cartitem,shop)} className="ns42ir">
+                <div ref={itemref} className="aUj6f2">
+                    <div onClick={(e)=>{
+                        setShow(!show)
+                        variation(e,item,product,cartitem)}} className="ns42ir">
                         <div className="shop-item-variation-title item-center"> phân loại
-                            <button className={`_2Ipt-j ${item.open && item.variation_id==this.state.variation_id?'_2zsvOt':''}`}></button>
+                            <button className={`_2Ipt-j ${show?'_2zsvOt':''}`}></button>
                         </div>
                         <div className="shop-item-variation-content">
-                            {itemvariation(data)}
+                            {itemvariation(item)}
                         </div>
                     </div>
                     <div>
-                        {item.open && item.variation_id==this.state.variation_id?
+                        {show?
                         <div className="_3qAzj1 modal__transition-enter-done">
                             <div className="arrow-box__container">
                                 <div className="arrow-box__arrow arrow-box__arrow--center">
@@ -159,8 +200,8 @@ const Iteminfo=(item,index,shop,cartitem)=>{
                                             <div className="_3gvvQI">
                                                 <div className="_3_Bulc">{item.color[0].name}:</div>
                                                 {item.color.map(item=>
-                                                    <button key={item.id} onClick={(e)=>this.setcolor(e,item,data)} className={`product-variation${this.state.variation_size.length>0?`${item.variation.some(r=> this.state.variation_size.includes(r))?'':' disable'}`:''}${item.id==this.state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
-                                                        {this.state.color_id==item.id?
+                                                    <button key={item.id} onClick={(e)=>setcolor(e,item,product,cartitem)} className={`product-variation${state.variation_size.length>0?`${item.variation.some(r=> state.variation_size.includes(r))?'':' disable'}`:''}${item.id==state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
+                                                        {state.color_id==item.id?
                                                         <div className="product-variation__tick">
                                                         <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
                                                         </div>
@@ -173,7 +214,7 @@ const Iteminfo=(item,index,shop,cartitem)=>{
                                             <div className="_3gvvQI">
                                                 <div className="_3_Bulc">{item.size[0].name}:</div>
                                                 {item.size.map(item=>
-                                                    <button key={item.id} onClick={(e)=>this.setsize(e,item,data)} className={`product-variation${this.state.variation_color.length>0?`${item.variation.some(r=> this.state.variation_color.includes(r))?'':' disable'}`:''}${item.id==this.state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
+                                                    <button key={item.id} onClick={(e)=>setsize(e,item,product,cartitem)} className={`product-variation${state.variation_color.length>0?`${item.variation.some(r=> state.variation_color.includes(r))?'':' disable'}`:''}${item.id==state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                                         {this.state.size_id==item.id?
                                                         <div className="product-variation__tick">
                                                             <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
@@ -184,8 +225,11 @@ const Iteminfo=(item,index,shop,cartitem)=>{
                                             </div>
                                             :''}
                                             <div className="_18oYnx">
-                                                <button onClick={(e)=>this.update(e,data,item)} className="cancel-btn">Trở Lại</button>
-                                                <button onClick={(e)=>this.update(e,data,item)} className="button-solid button-solid--primary">Xác nhận</button>
+                                                <button onClick={(e)=>setShow(false)} className="cancel-btn">Trở Lại</button>
+                                                <button onClick={(e)=>{
+                                                    update(e,item,shop,cartitem)
+                                                    setShow(false)
+                                                }} className="button-solid button-solid--primary">Xác nhận</button>
                                             </div>
                                         </div>
                                     </div>
@@ -203,25 +247,25 @@ const Iteminfo=(item,index,shop,cartitem)=>{
             </div>
             <div className="shop-item-quantity">
                 <div className="item-center">
-                    <button onClick={(e)=>this.minus(e,data,item,index)} className={`minus-btn btn-adjust`}>
+                    <button onClick={(e)=>adjustitem(e,item,product,cartitem,item.quantity-1)} className={`minus-btn btn-adjust`}>
                         <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon "><polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon></svg>
                     </button>
                     <input className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={item.quantity} />
-                    <button onClick={(e)=>this.add(e,data,item,index)} className={`plus-btn btn-adjust ${item.inventory<=item.quantity?'disable':''}`}>
+                    <button onClick={(e)=>adjustitem(e,item,product,cartitem,item.quantity+1)} className={`plus-btn btn-adjust ${item.inventory<=item.quantity?'disable':''}`}>
                         <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg>
                     </button>
                 </div>
             </div>
             <div className="shop-item-price item-centers">₫{formatter.format(item.total_price)}</div>
             <div className='_2y8iJi _2qPRqW' >
-                <button onClick={e=>this.removeitem(e,data,item,index,cartitem)} className="item-delete button-no-outline">Xóa</button>
+                <button onClick={e=>removeitem(e,item,product)} className="item-delete button-no-outline">Xóa</button>
                 <div className={`_1-rOD0 ${item.show?'_1EMX1h':''}`}>
-                    {this.state.items.length>0 && item.show?
+                    {items.length>0 && item.show?
                     <div className="_2Nuk_- _2kB0Ra">
-                        {this.state.loading_item?
+                        {state.loading_item?
                         <>
                         <div className="_1bmRDE">
-                        {this.state.items.map(item=>
+                        {items.map(item=>
                             <div className="grid__column-2-4" key={item.item_id}>
                                 <Link className="home-product-item" to={item.item_url}>
                                     <div className="home-product-item__image" style={{backgroundImage: `url(${item.item_image})`}}></div>
@@ -289,10 +333,10 @@ const Iteminfo=(item,index,shop,cartitem)=>{
                                 classActive={`button-solid button-solid--primary`}
                                 classNormal={`button-no-outline`}
                                 classIcon={`icon-button`}
-                                currentPage={this.state.page_no}
-                                totalCount={this.state.page_count}
+                                currentPage={state.page_no}
+                                totalCount={state.page_count}
                                 pageSize={PageSize}
-                                onPageChange={page => this.handlePageChange(page,data,item)}
+                                onPageChange={page => handlePageChange(page,item)}
                             />
                         </div>
                         </>
@@ -305,7 +349,7 @@ const Iteminfo=(item,index,shop,cartitem)=>{
                         </div>}
                     </div>
                     :''}
-                    <button onClick={(e)=>this.finditem(e,data,item)} className={`button-no-outline NJSFiA item-center ${item.show?'_1OWzl_':''}`}>
+                    <button onClick={(e)=>finditem()} className={`button-no-outline NJSFiA item-center ${item.show?'_1OWzl_':''}`}>
                         <span className="_1pXUYq">Tìm sản phẩm tương tự</span>
                         <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon _27CqwY icon-down-arrow-filled"><path d="m6.5 12.9-6-7.9s-1.4-1.5.5-1.5h13s1.8 0 .6 1.5l-6 7.9c-.1 0-.9 1.3-2.1 0z"></path></svg>
                     </button>
@@ -335,10 +379,7 @@ class Cart extends React.Component{
                 axios.get(cartURL,headers),
                 axios.get(listorderURL,headers),
             ])
-            let list_item_promotion=[]
-            let list_item_promotions=[]
-            let list_item_promotion_unique=[]
-            let list_item_remainder=[]
+            
             let list_voucher_shop=[]
             let count_order=0
             let total=0
@@ -383,12 +424,9 @@ class Cart extends React.Component{
             }
             
             
-            
             this.setState({
                 count:obj1.data.cart_item.length,
                 list_cartitem:obj1.data.cart_item,
-                list_item_promotion_unique:list_item_promotion_unique,
-                list_item_remainder:list_item_remainder,
                 list_voucher_shop:list_voucher_shop,
                 count_order:count_order,
                 total:total,list_threads:obj2.data.list_threads,
@@ -420,29 +458,14 @@ class Cart extends React.Component{
         } 
     }
 
-    handlePageChange(page,data,item){
-        this.setState({page_no:page})
-        let url= new URL(updatecartURL)
-        let search_params=url.searchParams
-        search_params.set('item_id',data.item_id)
-        search_params.set('page',this.state.page_no)
-        url.search = search_params.toString();
-        let new_url = url.toString();
-        this.setState({[item]:data,loading_item:false})
-        axios.get(new_url)
-        .then(rep=>{
-            let data=rep.data
-            this.setState({items:data.list_item,[item]:data,loading_item:true})
-        })
-    }
-    
+   
     checkall(e){
         let form=new FormData()
         this.state.list_shop.map(shop=>{
             form.append('shop_name',shop.shop_name)
         })
 
-        this.state.list_item_remainder.map(item=>{
+        this.state.list_cartitem.map(item=>{
             if(e.target.checked){
                 item.check=true
                 form.append('id_checked',item.id)
@@ -453,34 +476,13 @@ class Cart extends React.Component{
             }
         })
 
-        this.state.list_item_promotion_unique.map(item=>{
-            if(e.target.checked){
-                item.check=true
-                form.append('id_checked',item.id)
-            }
-            else{
-                item.check=false
-                form.append('id_check',item.id)
-            }
-            item.byproduct.map(byproduct=>{
-                if(e.target.checked){
-                    byproduct.check=true
-                    form.append('id_checked',byproduct.id)
-                    }
-                else{
-                    byproduct.check=false
-                    form.append('id_check',byproduct.id)
-                }
-            })
-        })
-        
         axios.post(cartURL,form,headers)
         .then(rep=>{
             let data=rep.data
             this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
                 discount_deal:data.discount_deal,count_order:data.count,
                 discount_voucher:data.discount_voucher,count_cartitem:data.count_cartitem,
-                list_item_promotion_unique:this.state.list_item_promotion_unique,list_item_remainder:this.state.list_item_remainder
+                list_cartitem:this.state.list_cartitem
             })
         }) 
     }
@@ -488,7 +490,7 @@ class Cart extends React.Component{
     checkshop(e,shop){
         let form=new FormData()
         form.append('shop_name',shop.shop_name)
-        this.state.list_item_remainder.map(item=>{
+        this.state.list_cartitem.map(item=>{
             if(item.shop_name===shop.shop_name){
                 if(e.target.checked){
                     item.check=true
@@ -501,56 +503,35 @@ class Cart extends React.Component{
             }
         })
 
-        this.state.list_item_promotion_unique.map(item=>{
-            if(item.shop_name==shop.shop_name){
-                if(e.target.checked){
-                    item.check=true
-                    form.append('id_checked',item.id)
-                    }
-                else{
-                    item.check=false
-                    form.append('id_check',item.id)
-                 }
-                item.byproduct.map(byproduct=>{
-                    if(e.target.checked){
-                        byproduct.check=true
-                        form.append('id_checked',byproduct.id)
-                        }
-                    else{
-                        byproduct.check=false
-                        form.append('id_check',byproduct.id)
-                    }
-                })
-            }
-        })
-        
         axios.post(cartURL,form,headers)
         .then(rep=>{
             let data=rep.data
             this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
                 discount_deal:data.discount_deal,count_order:data.count,
                 discount_voucher:data.discount_voucher,count_cartitem:data.count_cartitem,
-                list_item_promotion_unique:this.state.list_item_promotion_unique,list_item_remainder:this.state.list_item_remainder
+                list_cartitem:this.state.list_cartitem
             })
         }) 
     }
 
-    checked(e,data,item){
-        if (e.target.checked){
-            data.check=true
-        }
-        else{
-            data.check=false
-        }
-        this.setState({[item]:data})
+
+    checked(e,item){
+        
         let form=new FormData()
-        if(data.check){
-            form.append('id_checked',data.id)
+        if(item.check){
+            form.append('id_check',item.id)
         }
         else{
-            form.append('id_check',data.id)
+            form.append('id_checked',item.id)
         }
-        form.append('shop_name',data.shop_name)
+        form.append('shop_name',item.shop_name)
+        const list_cartitem=this.state.list_cartitem.map(cartitem=>{
+            if(item.id==cartitem.id){
+                return({...cartitem,check:!cartitem.check})
+            }
+            return({...cartitem})
+        })
+        this.setState({list_cartitem:list_cartitem})
         axios.post(cartURL,form,headers)
         .then(rep=>{
             let data=rep.data
@@ -610,7 +591,6 @@ class Cart extends React.Component{
                     data.id=result.id
                     data.total_price=result.total_price
                     data.inventory=result.inventory
-                    data.open=false
                     this.setState({[item]:data})
                     this.setState({size_id:0,color_id:0,variation_color:[],variation_size:[],count_variation:0,variation_id:0})
                  })
@@ -621,86 +601,61 @@ class Cart extends React.Component{
             }
     }
 
-    variation(e,data,item,index,cartitem,shop){
-        e.stopPropagation()
-        data.open=!data.open
-        let list_shop=[]
-        list_shop=[...this.state.list_shop]
-        for(let i in list_shop){
-            list_shop[i].show_voucher=false
-        }
-       
-        this.setState({[item]:data,[list_shop]:list_shop})
-        if(data.open==false){
+    variation(e,item,cartitem,shop){
+        if(item.open==false){
             this.setState({size_id:0,color_id:0,variation_color:[],variation_size:[],count_variation:0,variation_id:0})
         }
         
         else{ 
-            for(let i in this.state.list_item_promotion_unique){
-                if(this.state.list_item_promotion_unique[i].id!==data.id){
-                    this.state.list_item_promotion_unique[i].open=false
-                }
-                for(let j in this.state.list_item_promotion_unique[i].byproduct){
-                    if(this.state.list_item_promotion_unique[i].byproduct[j].id!==data.id){
-                        this.state.list_item_promotion_unique[i].byproduct[j].open=false
-                    }
+            
+            for(let i in item.size){
+                if(item.size_value==item.size[i].value){
+                    this.state.size_id=item.size[i].id
+                    this.state.variation_size=item.size[i].variation
                 }
             }
-            for(let i in this.state.list_item_remainder){
-                if(this.state.list_item_remainder[i].id!==data.id){
-                    this.state.list_item_remainder[i].open=false
-                }
-                for(let j in this.state.list_item_remainder[i].byproduct){
-                    if(this.state.list_item_remainder[i].byproduct[j].id!==data.id){
-                        this.state.list_item_remainder[i].byproduct[j].open=false
-                    }
+            for(let i in item.color){
+                if(item.color_value==item.color[i].value){
+                    this.state.color_id=item.color[i].id
+                    this.state.variation_color=item.color[i].variation
                 }
             }
-            window.onclick=(event)=>{
-                let parent=event.target.closest('._3qAzj1.modal__transition-enter-done')
-                if(!e.target.contains(event.target) && !parent){
-                data.open=false
-                this.setState({[item]:data})
-                this.setState({size_id:0,color_id:0,variation_color:[],variation_size:[],count_variation:0,variation_id:0})
-                }
-            }
-            for(let i in data.size){
-                if(data.size_value==data.size[i].value){
-                    this.state.size_id=data.size[i].id
-                    this.state.variation_size=data.size[i].variation
-                }
-            }
-            for(let i in data.color){
-                if(data.color_value==data.color[i].value){
-                    this.state.color_id=data.color[i].id
-                    this.state.variation_color=data.color[i].variation
-                }
-            }
-            this.setState({size_id:this.state.size_id,color_id:this.state.color_id,variation_color:this.state.variation_color,variation_size:this.state.variation_size,count_variation:data.count_variation,variation_id:data.variation_id})
+            this.setState({size_id:this.state.size_id,color_id:this.state.color_id,variation_color:this.state.variation_color,variation_size:this.state.variation_size,count_variation:item.count_variation,variation_id:item.variation_id})
         }
     }
    
-    add(e,data,item){
-        data.quantity+=1
-        this.setState({[item]:data})
-        this.adjust(e,data,item)
-    }
-
-    minus(e,data,item){
-        data.quantity-=1
-        this.setState({[item]:data})
-        this.adjust(e,data,item)
+    
+    adjustitem(e,item,product,cartitemchoice,value){
+        const list_cartitem=product=='mainproduct'?this.state.list_cartitem.map(cartitem=>{
+            if(item.id==cartitem.id){
+                return({...cartitem,quantity:value})
+            }
+            return({...cartitem})
+        }):this.state.list_cartitem.map(cartitem=>{
+            if(cartitemchoice.id==cartitem.id){
+                cartitem.byproduct.map(byproduct=>{
+                if(byproduct.id==item.id){
+                    return({...byproduct,quantity:value})
+                }
+                return({...byproduct})
+                })
+                return({...cartitem,quantity:value})
+            }
+            return({...cartitem})
+        })
+        this.setState({list_cartitem:list_cartitem})
+        this.fetchdata(e,item,product,value)
     }
     
-    adjust(e,data,item){
+    fetchdata(e,item,product,value){
         let form=new FormData()
-        if(data.percent_discount_deal!==undefined){
-            form.append('byproduct_id',data.id)
+        if(product=='byproduct'){
+            form.append('byproduct_id',item.id)
         }
         else{
-        form.append('cartitem_id',data.id)
+            form.append('cartitem_id',item.id)
         }
-        form.append('quantity',data.quantity)
+        form.append('quantity',value)
         axios.post(cartURL,form,headers)
         .then(rep=>{
             let data=rep.data
@@ -711,62 +666,25 @@ class Cart extends React.Component{
         }) 
     }
 
-    removeitem(e,data,item,index,cartitem){
+    removeitem(e,itemchoice,product){
         let form=new FormData()
-        form.append('id_delete',data.id)
-        if(data.percent_discount_deal!==undefined){
-            form.append('byproduct_id_delete',data.id)
+        if(product=='byproduct'){
+            form.append('byproduct_id_delete',itemchoice.id)
         }
         else{
-        form.append('cartitem_id_delete',data.id)
+        form.append('cartitem_id_delete',itemchoice.id)
         }
         axios.post(cartURL,form,headers)
         .then(resp => {
         let data=resp.data
-        cartitem.splice(index,1)
-        this.setState({[item]:cartitem,total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
+        const list_cartitem=this.state.list_cartitem.filter(item=>item.id!=itemchoice.id)
+        this.setState({list_cartitem:list_cartitem,total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
             discount_deal:data.discount_deal,count_order:data.count,
             discount_voucher:data.discount_voucher})
         })
     }
 
-    finditem(e,data,item){
-        let url= new URL(updatecartURL)
-        let search_params=url.searchParams
-        search_params.set('item_id',data.item_id)
-        this.state.show=!this.state.show
-        data.show=!data.show
-        if(data.show){
-            for(let i in this.state.list_item_promotion_unique){
-                if(this.state.list_item_promotion_unique.id!==data.id){
-                    this.state.list_item_promotion_unique[i].show=false
-                }
-                for(let j in this.state.list_item_promotion_unique[i].byproduct){
-                    if(this.state.list_item_promotion_unique[i].byproduct[j].id!==data.id){
-                        this.state.list_item_promotion_unique[i].byproduct[j].show=false
-                    }
-                }
-            }
-            for(let i in this.state.list_item_remainder){
-                if(this.state.list_item_remainder[i].id!==data.id){
-                    this.state.list_item_remainder[i].show=false
-                }
-                for(let j in this.state.list_item_remainder[i].byproduct){
-                    if(this.state.list_item_remainder[i].byproduct[j].id!==data.id){
-                        this.state.list_item_remainder[i].byproduct[j].show=false
-                    }
-                }
-            }
-        }
-        this.setState({variation_id:data.variation_id,[item]:data,loading_item:false})
-        axios.get(url)
-        .then(rep=>{
-            let data=rep.data
-            this.setState({items:data.list_item,page_count:data.page_count,page:data.page,loading_item:true})
-        })
-        
-    }
-
+    
     apply_voucher(voucher,shop,list_shop){
         let form=new FormData()
         form.append('voucher_id',voucher.voucher_info.id)
@@ -998,7 +916,10 @@ class Cart extends React.Component{
                                                                 {list_cartitem.filter(cartitem=>cartitem.promotion && cartitem.shop_name==shop.shop_name).map((item,i)=>{
                                                                     <Iteminfo
                                                                     item={item}
-                                                                    i={i}
+                                                                    adjustitem={(e,item,product,cartitemchoice,value)=>this.adjustitem(e,item,product,cartitemchoice,value)}
+                                                                    removeitem={(e,item,product)=>this.removeitem(e,item,product)}
+                                                                    checked={(e,item)=>this.checked(e,item)}
+                                                                    product='mainproduct'
                                                                     shop={shop}
                                                                     />
                     
@@ -1022,6 +943,7 @@ class Cart extends React.Component{
                                                             <Iteminfo
                                                                 item={cartitem}
                                                                 i={i}
+                                                                product='mainproduct'
                                                                 shop={shop}
                                                             />
                                                             {cartitem.byproduct.length>0?<div className="_1fU7BV"></div>:""}
@@ -1030,6 +952,7 @@ class Cart extends React.Component{
                                                                     item={item}
                                                                     i={j}
                                                                     shop={shop}
+                                                                    product='byproduct'
                                                                     cartitem={cartitem}
                                                                     />
                                                                 }   
