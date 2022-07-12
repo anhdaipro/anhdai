@@ -6,19 +6,43 @@ arraymove,} from "../constants"
 import {useNavigate , Link,useLocation, Navigate} from 'react-router-dom';
 import {updatecartURL,listThreadlURL,listorderURL,cartURL,itemrecentlyURL,savevoucherURL} from "../urls"
 import Pagination from '../hocs/Pagination';
-import React, { useState,createRef } from 'react';
+import React, { useState,createRef,useEffect,useRef } from 'react';
 import { headers,expiry} from '../actions/auth';
 import ReactDOM, { render } from 'react-dom'
 import Message from "./Chat"
 import { connect } from 'react-redux';
 let PageSize = 10;
-const Divbox=props=>{
+const Divbox=(props)=>{
     const {shop,elem,list_item_promotion_unique,list_item_remainder,save_voucher,remove_voucher,apply_voucher}=props
     const scrollTop = document.documentElement.scrollTop;
+    const [text,setText]=useState('')
+    const [show,setShow]=useState(false)
+    const voucherref=useRef()
+
+    useEffect(() => {
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [])
+
+    useEffect(()=>{
+        if(shop){
+            setShow(shop.show_voucher)
+        }
+    },[shop,show])
+    const handleClick = (event) => {
+        const { target } = event
+        if(voucherref.current!=null){
+            if (!voucherref.current.contains(target)) {
+                setShow(false)
+            }
+        }
+    }
     return (
     <>
-    {shop!=null && shop.show_voucher?
-    <div  className="popover HGTXIW" style={{top:`${scrollTop + elem.getBoundingClientRect().top+30}px`}}>
+    {show?
+    <div ref={voucherref} className="popover HGTXIW" style={{top:`${scrollTop + elem.getBoundingClientRect().top+30}px`}}>
         <div className="_2iCXFt" id="shopVouchersModal">
             <h3 className="_1DEUtY">KING SPORT Voucher</h3>
             <div className="_38kqI1">
@@ -26,7 +50,7 @@ const Divbox=props=>{
                 <div className="_3K7VlY">
                     <div className="input-with-validator-wrapper">
                         <div className="input-with-validator">
-                            <input type="text" value={this.state.name}/>
+                            <input onChange={e=>setText(e.target.value)} type="text" value={text}/>
                         </div>
                     </div>
                 </div>
@@ -92,6 +116,204 @@ const Divbox=props=>{
     )
 }
 
+const Iteminfo=(item,index,shop,cartitem)=>{
+    return(
+        <div key={item.id} className="d-flex p-1">
+            <div className="item-check item-center">
+                {item.check!==undefined?
+                <label className={`stardust-checkbox ${item.check?'stardust-checkbox--checked':''}`}>
+                    <input onChange={(e)=>this.checked(e,data,item,index)} type="checkbox" value={item.id} checked={item.check?true:false} className="stardust-checkbox__input" type="checkbox"/>
+                    <div className="stardust-checkbox__box"></div>
+                </label>
+                :''}
+            </div>
+            <div className="shop-item-info item-center">
+                <Link to={item.item_url}>
+                    <div className="shop-item-image" style={{backgroundImage: `url(${item.item_image})`}}></div>
+                </Link>
+                <div className="shop-item-name">{item.item_name}</div>
+            </div>
+            <div className="shop-item-variation">
+                <div  className="aUj6f2">
+                    <div onClick={(e)=>this.variation(e,data,item,index,cartitem,shop)} className="ns42ir">
+                        <div className="shop-item-variation-title item-center"> phân loại
+                            <button className={`_2Ipt-j ${item.open && item.variation_id==this.state.variation_id?'_2zsvOt':''}`}></button>
+                        </div>
+                        <div className="shop-item-variation-content">
+                            {itemvariation(data)}
+                        </div>
+                    </div>
+                    <div>
+                        {item.open && item.variation_id==this.state.variation_id?
+                        <div className="_3qAzj1 modal__transition-enter-done">
+                            <div className="arrow-box__container">
+                                <div className="arrow-box__arrow arrow-box__arrow--center">
+                                    <div className="arrow-box__arrow-outer">
+                                        <div className="arrow-box__arrow-inner"></div>
+                                    </div>
+                                </div>
+                                <div className="arrow-box__content">
+                                    <div className="_32z-AY">
+                                        <div className="_39MbPI">
+                                            {item.color.length>0?
+                                            <div className="_3gvvQI">
+                                                <div className="_3_Bulc">{item.color[0].name}:</div>
+                                                {item.color.map(item=>
+                                                    <button key={item.id} onClick={(e)=>this.setcolor(e,item,data)} className={`product-variation${this.state.variation_size.length>0?`${item.variation.some(r=> this.state.variation_size.includes(r))?'':' disable'}`:''}${item.id==this.state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
+                                                        {this.state.color_id==item.id?
+                                                        <div className="product-variation__tick">
+                                                        <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
+                                                        </div>
+                                                        :''}
+                                                    </button>
+                                                )}
+                                            </div>
+                                            :''}
+                                            {item.size.length>0?
+                                            <div className="_3gvvQI">
+                                                <div className="_3_Bulc">{item.size[0].name}:</div>
+                                                {item.size.map(item=>
+                                                    <button key={item.id} onClick={(e)=>this.setsize(e,item,data)} className={`product-variation${this.state.variation_color.length>0?`${item.variation.some(r=> this.state.variation_color.includes(r))?'':' disable'}`:''}${item.id==this.state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
+                                                        {this.state.size_id==item.id?
+                                                        <div className="product-variation__tick">
+                                                            <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
+                                                        </div>
+                                                        :''}
+                                                    </button>                
+                                                )}
+                                            </div>
+                                            :''}
+                                            <div className="_18oYnx">
+                                                <button onClick={(e)=>this.update(e,data,item)} className="cancel-btn">Trở Lại</button>
+                                                <button onClick={(e)=>this.update(e,data,item)} className="button-solid button-solid--primary">Xác nhận</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>:''}
+                    </div>
+                </div>
+            </div>
+            <div className="shop-item-price-origin item-center">
+                <span className={`_1CXksa ${item.discount_price>0?'_1k1Vcm':''}`}>₫{formatter.format(item.price)}</span>
+                {item.discount_price>0?
+                <span className="_1CXksa">₫{formatter.format(item.price-item.discount_price)}</span>
+                :''}
+            </div>
+            <div className="shop-item-quantity">
+                <div className="item-center">
+                    <button onClick={(e)=>this.minus(e,data,item,index)} className={`minus-btn btn-adjust`}>
+                        <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon "><polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon></svg>
+                    </button>
+                    <input className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={item.quantity} />
+                    <button onClick={(e)=>this.add(e,data,item,index)} className={`plus-btn btn-adjust ${item.inventory<=item.quantity?'disable':''}`}>
+                        <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg>
+                    </button>
+                </div>
+            </div>
+            <div className="shop-item-price item-centers">₫{formatter.format(item.total_price)}</div>
+            <div className='_2y8iJi _2qPRqW' >
+                <button onClick={e=>this.removeitem(e,data,item,index,cartitem)} className="item-delete button-no-outline">Xóa</button>
+                <div className={`_1-rOD0 ${item.show?'_1EMX1h':''}`}>
+                    {this.state.items.length>0 && item.show?
+                    <div className="_2Nuk_- _2kB0Ra">
+                        {this.state.loading_item?
+                        <>
+                        <div className="_1bmRDE">
+                        {this.state.items.map(item=>
+                            <div className="grid__column-2-4" key={item.item_id}>
+                                <Link className="home-product-item" to={item.item_url}>
+                                    <div className="home-product-item__image" style={{backgroundImage: `url(${item.item_image})`}}></div>
+                                    <div className="home-product-item-info">
+                                        <div className="home-product-item__name">{item.item_name}</div>
+                                        <div className="home-product-item__discount">
+                                            {<div className="home-product-item__discount-voucher">
+                                                <svg className="clipath-left" viewBox="-0.5 -0.5 4 16">
+                                                    <path d="M4 0h-3q-1 0 -1 1a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3q0 1 1 1h3" strokeWidth="1" transform="" stroke="currentColor" fill="#f69113"></path>
+                                                </svg>   
+                                                <div className="home-product-item__discount-voucher-content">{item.voucher_percent}%Reduce </div>
+                                                <svg className="clipath-right" viewBox="-0.5 -0.5 4 16">
+                                                    <path d="M4 0h-3q-1 0 -1 1a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3q0 1 1 1h3" strokeWidth="1" transform="rotate(180) translate(-3 -15)" stroke="currentColor" fill="#f69113"></path>
+                                                </svg>
+                                            </div>}
+                                        
+                                            <div className="home-product-item__discount-deal-shock">mua kèm deal soc</div>
+                                        </div>
+                                        <div className="_3_FVSo">  
+                                            <div className={`${item.percent_discount>0 && item.program_valid>0?'home-product-item__price-old zp9xm9':'home-product-item__price _3c5u7X'}`}>₫{formatter.format((item.max_price+item.min_price)/2)}</div>
+                                            {item.percent_discount>0 && item.program_valid>0?
+                                            <div className="home-product-item__price-current">
+                                                <span className="_1y2DMk">₫</span><span className="_3c5u7X">{formatter.format((item.max_price+item.min_price)/2*(100-item.percent_discount)/100)}</span>
+                                            </div>
+                                            :''}
+                                            <div className="_2YM55k">
+                                                <svg height="12" viewBox="0 0 20 12" width="20" className="svg-icon icon-free-shipping"><g fill="none" fillRule="evenodd" transform=""><rect fill="#00bfa5" fillRule="evenodd" height="9" rx="1" width="12" x="4"></rect><rect height="8" rx="1" stroke="#00bfa5" width="11" x="4.5" y=".5"></rect><rect fill="#00bfa5" fillRule="evenodd" height="7" rx="1" width="7" x="13" y="2"></rect><rect height="6" rx="1" stroke="#00bfa5" width="6" x="13.5" y="2.5"></rect><circle cx="8" cy="10" fill="#00bfa5" r="2"></circle><circle cx="15" cy="10" fill="#00bfa5" r="2"></circle><path d="m6.7082481 6.7999878h-.7082481v-4.2275391h2.8488017v.5976563h-2.1405536v1.2978515h1.9603297v.5800782h-1.9603297zm2.6762505 0v-3.1904297h.6544972v.4892578h.0505892c.0980164-.3134765.4774351-.5419922.9264138-.5419922.0980165 0 .2276512.0087891.3003731.0263672v.6210938c-.053751-.0175782-.2624312-.038086-.3762568-.038086-.5122152 0-.8758247.3017578-.8758247.75v1.8837891zm3.608988-2.7158203c-.5027297 0-.8536919.328125-.8916338.8261719h1.7390022c-.0158092-.5009766-.3446386-.8261719-.8473684-.8261719zm.8442065 1.8544922h.6544972c-.1549293.571289-.7050863.9228515-1.49238.9228515-.9864885 0-1.5903965-.6269531-1.5903965-1.6464843 0-1.0195313.6165553-1.6669922 1.5872347-1.6669922.9580321 0 1.5366455.6064453 1.5366455 1.6083984v.2197266h-2.4314412v.0351562c.0221328.5595703.373095.9140625.9169284.9140625.4110369 0 .6924391-.1376953.8189119-.3867187zm2.6224996-1.8544922c-.5027297 0-.853692.328125-.8916339.8261719h1.7390022c-.0158091-.5009766-.3446386-.8261719-.8473683-.8261719zm.8442064 1.8544922h.6544972c-.1549293.571289-.7050863.9228515-1.49238.9228515-.9864885 0-1.5903965-.6269531-1.5903965-1.6464843 0-1.0195313.6165553-1.6669922 1.5872347-1.6669922.9580321 0 1.5366455.6064453 1.5366455 1.6083984v.2197266h-2.4314412v.0351562c.0221328.5595703.373095.9140625.9169284.9140625.4110369 0 .6924391-.1376953.8189119-.3867187z" fill="#fff"></path><path d="m .5 8.5h3.5v1h-3.5z" fill="#00bfa5"></path><path d="m0 10.15674h3.5v1h-3.5z" fill="#00bfa5"></path><circle cx="8" cy="10" fill="#047565" r="1"></circle><circle cx="15" cy="10" fill="#047565" r="1"></circle></g></svg>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="home-product-item__action">
+                                            <div className="home-product-item__like">
+                                                <svg height="16" viewBox="0 0 16 16" width="16" version="1.1"><path d="m7.251221 4.2145388c-.549143-.4552525-1.2488781-.7145388-1.951221-.7145388-1.5719593 0-2.8 1.2269253-2.8 2.7970027 0 .5878515.158291 1.1598348.483492 1.7618948.6414654 1.1875754 1.5644044 2.1358244 4.4829309 4.7799304l.5348542.4864596.5326254-.4807607c2.9306205-2.660747 3.8471674-3.6039919 4.486777-4.7931984.3223805-.5993922.4793205-1.1689848.4793205-1.7543257 0-1.5700774-1.2280407-2.7970027-2.8-2.7970027-.7029148 0-1.4032175.2597087-1.9497845.7133288l-.0367779.0309601c-.1203966.1029087-.2318185.2143106-.3329071.3329122l-.3805305.4464557-.3805305-.4464557c-.1010886-.1186016-.2125105-.2300035-.3301434-.3305672z" fill="none" stroke="#000" strokeOpacity=".54"></path></svg>
+                                            </div>
+                                            <div className="home-product-item__rating" data-sqe="rating">
+                                                <div className="rating-stars">
+                                                    <div className="d-flex">
+                                                        {rating(item,6)}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="home-product-item__sold item-center">Đã bán {item.num_order}</div>
+                                        </div>
+                                        <div className="home-product-item__origin">
+                                            <span className="home-product-item__brand">{item.item_brand}</span>
+                                            <span className="home-product-item__origin-name">{item.shop_city}</span>
+                                        </div>
+                                        <div className="home-product-item__favourite">
+                                            
+                                            <span>Yêu thích</span>
+                                        </div>
+                                        <div className="home-product-item__sale-off">
+                                            <div className="flex-col">
+                                                <span className="home-product-item__sale-off-percent">{item.percent_discount}</span>
+                                                <span className="home-product-item__sale-off-label">GIẢM</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Link>
+                            </div>
+                        )}
+                        </div>
+                        <div className='page-controller page-controller--v2'>
+                            <Pagination
+                                classActive={`button-solid button-solid--primary`}
+                                classNormal={`button-no-outline`}
+                                classIcon={`icon-button`}
+                                currentPage={this.state.page_no}
+                                totalCount={this.state.page_count}
+                                pageSize={PageSize}
+                                onPageChange={page => this.handlePageChange(page,data,item)}
+                            />
+                        </div>
+                        </>
+                        :<div className="loading">
+                            <div className="loading_item item-center">
+                                <div className="ball"></div>
+                                <div className="ball"></div>
+                                <div className="ball"></div>
+                            </div>
+                        </div>}
+                    </div>
+                    :''}
+                    <button onClick={(e)=>this.finditem(e,data,item)} className={`button-no-outline NJSFiA item-center ${item.show?'_1OWzl_':''}`}>
+                        <span className="_1pXUYq">Tìm sản phẩm tương tự</span>
+                        <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon _27CqwY icon-down-arrow-filled"><path d="m6.5 12.9-6-7.9s-1.4-1.5.5-1.5h13s1.8 0 .6 1.5l-6 7.9c-.1 0-.9 1.3-2.1 0z"></path></svg>
+                    </button>
+                </div>
+            </div> 
+        </div>
+        )
+    }
 class Cart extends React.Component{
     constructor(props) {
     super(props);
@@ -161,25 +383,10 @@ class Cart extends React.Component{
             }
             
             
-            for(let j=0;j<obj1.data.cart_item.length;j++){
-                if(obj1.data.cart_item[j].promotion){ 
-                    list_item_promotions.push(obj1.data.cart_item[j])
-                    if(list_item_promotion[obj1.data.cart_item[j].promotion.id]) continue;
-                    list_item_promotion[obj1.data.cart_item[j].promotion.id] = true;
-                    list_item_promotion_unique.push(obj1.data.cart_item[j])
-                }
-                if(!obj1.data.cart_item[j].promotion){
-                    list_item_remainder.push(obj1.data.cart_item[j])
-                }
-            }
-            for(let j=0;j<list_item_promotion_unique.length;j++){
-                for(let k=0;k<list_item_promotions.length;k++){
-                    if(list_item_promotion_unique[j].promotion.id==list_item_promotions[k].promotion.id && list_item_promotion_unique[j].variation_id!==list_item_promotions[k].variation_id){
-                        list_item_promotion_unique[j].byproduct.push(list_item_promotions[k])
-                    }
-                }
-            }
-            this.setState({count:obj1.data.cart_item.length,
+            
+            this.setState({
+                count:obj1.data.cart_item.length,
+                list_cartitem:obj1.data.cart_item,
                 list_item_promotion_unique:list_item_promotion_unique,
                 list_item_remainder:list_item_remainder,
                 list_voucher_shop:list_voucher_shop,
@@ -202,7 +409,7 @@ class Cart extends React.Component{
             if(clientHeight + scrollTop == scrollHeight && this.state.list_item_recommend.length==0){
                 (async () => {
                     try {
-                        const res = await axios.get(itemrecentlyURL)
+                        const res = await axios.get(itemrecentlyURL,headers)
                         let data=res.data
                         this.setState({list_item_recommend:data}); 
                     } catch (error) {
@@ -470,10 +677,6 @@ class Cart extends React.Component{
                 }
             }
             this.setState({size_id:this.state.size_id,color_id:this.state.color_id,variation_color:this.state.variation_color,variation_size:this.state.variation_size,count_variation:data.count_variation,variation_id:data.variation_id})
-            ReactDOM.render(<Divbox 
-                shop={shop}
-                elem={e.target}
-            />,document.getElementById('modal'))
         }
     }
    
@@ -648,204 +851,7 @@ class Cart extends React.Component{
         
     }
 
-    iteminfo(data,item,index,cartitem,shop){
-        return(
-        <div key={item.id} className="d-flex p-1">
-             <div className="item-check item-center">
-                {data.check!==undefined?
-                <label className={`stardust-checkbox ${data.check?'stardust-checkbox--checked':''}`}>
-                    <input onChange={(e)=>this.checked(e,data,item,index)} type="checkbox" value={data.id} checked={data.check?true:false} className="stardust-checkbox__input" type="checkbox"/>
-                    <div className="stardust-checkbox__box"></div>
-                </label>
-                :''}
-            </div>
-            <div className="shop-item-info item-center">
-                <Link to={data.item_url}>
-                    <div className="shop-item-image" style={{backgroundImage: `url(${data.item_image})`}}></div>
-                </Link>
-                <div className="shop-item-name">{data.item_name}</div>
-            </div>
-            <div className="shop-item-variation">
-                <div  className="aUj6f2">
-                    <div onClick={(e)=>this.variation(e,data,item,index,cartitem,shop)} className="ns42ir">
-                        <div className="shop-item-variation-title item-center"> phân loại
-                            <button className={`_2Ipt-j ${data.open && data.variation_id==this.state.variation_id?'_2zsvOt':''}`}></button>
-                        </div>
-                        <div className="shop-item-variation-content">
-                            {itemvariation(data)}
-                        </div>
-                    </div>
-                    <div>
-                        {data.open && data.variation_id==this.state.variation_id?
-                        <div className="_3qAzj1 modal__transition-enter-done">
-                            <div className="arrow-box__container">
-                                <div className="arrow-box__arrow arrow-box__arrow--center">
-                                    <div className="arrow-box__arrow-outer">
-                                        <div className="arrow-box__arrow-inner"></div>
-                                    </div>
-                                </div>
-                                <div className="arrow-box__content">
-                                    <div className="_32z-AY">
-                                        <div className="_39MbPI">
-                                            {data.color.length>0?
-                                            <div className="_3gvvQI">
-                                                <div className="_3_Bulc">{data.color[0].name}:</div>
-                                                {data.color.map(item=>
-                                                    <button key={item.id} onClick={(e)=>this.setcolor(e,item,data)} className={`product-variation${this.state.variation_size.length>0?`${item.variation.some(r=> this.state.variation_size.includes(r))?'':' disable'}`:''}${item.id==this.state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
-                                                        {this.state.color_id==item.id?
-                                                        <div className="product-variation__tick">
-                                                        <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
-                                                        </div>
-                                                        :''}
-                                                    </button>
-                                                )}
-                                            </div>
-                                            :''}
-                                            {data.size.length>0?
-                                            <div className="_3gvvQI">
-                                                <div className="_3_Bulc">{data.size[0].name}:</div>
-                                                {data.size.map(item=>
-                                                    <button key={item.id} onClick={(e)=>this.setsize(e,item,data)} className={`product-variation${this.state.variation_color.length>0?`${item.variation.some(r=> this.state.variation_color.includes(r))?'':' disable'}`:''}${item.id==this.state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
-                                                        {this.state.size_id==item.id?
-                                                          <div className="product-variation__tick">
-                                                            <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
-                                                          </div>
-                                                        :''}
-                                                    </button>                
-                                                )}
-                                            </div>
-                                            :''}
-                                            <div className="_18oYnx">
-                                                <button onClick={(e)=>this.update(e,data,item)} className="cancel-btn">Trở Lại</button>
-                                                <button onClick={(e)=>this.update(e,data,item)} className="button-solid button-solid--primary">Xác nhận</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>:''}
-                    </div>
-                </div>
-            </div>
-            <div className="shop-item-price-origin item-center">
-                <span className={`_1CXksa ${data.discount_price>0?'_1k1Vcm':''}`}>₫{formatter.format(data.price)}</span>
-                {data.discount_price>0?
-                <span className="_1CXksa">₫{formatter.format(data.price-data.discount_price)}</span>
-                :''}
-            </div>
-            <div className="shop-item-quantity">
-                <div className="item-center">
-                    <button onClick={(e)=>this.minus(e,data,item,index)} className={`minus-btn btn-adjust`}>
-                        <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon "><polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon></svg>
-                    </button>
-                    <input className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={data.quantity} />
-                    <button onClick={(e)=>this.add(e,data,item,index)} className={`plus-btn btn-adjust ${data.inventory<=data.quantity?'disable':''}`}>
-                        <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg>
-                    </button>
-                </div>
-            </div>
-            <div className="shop-item-price item-centers">₫{formatter.format(data.total_price)}</div>
-            <div className='_2y8iJi _2qPRqW' >
-                <button onClick={e=>this.removeitem(e,data,item,index,cartitem)} className="item-delete button-no-outline">Xóa</button>
-                <div className={`_1-rOD0 ${data.show?'_1EMX1h':''}`}>
-                    {this.state.items.length>0 && data.show?
-                    <div className="_2Nuk_- _2kB0Ra">
-                        {this.state.loading_item?
-                        <>
-                        <div className="_1bmRDE">
-                        {this.state.items.map(item=>
-                            <div className="grid__column-2-4" key={item.item_id}>
-                                <Link className="home-product-item" to={item.item_url}>
-                                    <div className="home-product-item__image" style={{backgroundImage: `url(${item.item_image})`}}></div>
-                                    <div className="home-product-item-info">
-                                        <div className="home-product-item__name">{item.item_name}</div>
-                                        <div className="home-product-item__discount">
-                                            {<div className="home-product-item__discount-voucher">
-                                                <svg className="clipath-left" viewBox="-0.5 -0.5 4 16">
-                                                    <path d="M4 0h-3q-1 0 -1 1a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3q0 1 1 1h3" strokeWidth="1" transform="" stroke="currentColor" fill="#f69113"></path>
-                                                </svg>   
-                                                <div className="home-product-item__discount-voucher-content">{item.voucher_percent}%Reduce </div>
-                                                <svg className="clipath-right" viewBox="-0.5 -0.5 4 16">
-                                                    <path d="M4 0h-3q-1 0 -1 1a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3q0 1 1 1h3" strokeWidth="1" transform="rotate(180) translate(-3 -15)" stroke="currentColor" fill="#f69113"></path>
-                                                </svg>
-                                            </div>}
-                                        
-                                            <div className="home-product-item__discount-deal-shock">mua kèm deal soc</div>
-                                        </div>
-                                        <div className="_3_FVSo">  
-                                            <div className={`${item.percent_discount>0 && item.program_valid>0?'home-product-item__price-old zp9xm9':'home-product-item__price _3c5u7X'}`}>₫{formatter.format((item.max_price+item.min_price)/2)}</div>
-                                            {item.percent_discount>0 && item.program_valid>0?
-                                            <div className="home-product-item__price-current">
-                                                <span className="_1y2DMk">₫</span><span className="_3c5u7X">{formatter.format((item.max_price+item.min_price)/2*(100-item.percent_discount)/100)}</span>
-                                            </div>
-                                            :''}
-                                            <div className="_2YM55k">
-                                                <svg height="12" viewBox="0 0 20 12" width="20" className="svg-icon icon-free-shipping"><g fill="none" fillRule="evenodd" transform=""><rect fill="#00bfa5" fillRule="evenodd" height="9" rx="1" width="12" x="4"></rect><rect height="8" rx="1" stroke="#00bfa5" width="11" x="4.5" y=".5"></rect><rect fill="#00bfa5" fillRule="evenodd" height="7" rx="1" width="7" x="13" y="2"></rect><rect height="6" rx="1" stroke="#00bfa5" width="6" x="13.5" y="2.5"></rect><circle cx="8" cy="10" fill="#00bfa5" r="2"></circle><circle cx="15" cy="10" fill="#00bfa5" r="2"></circle><path d="m6.7082481 6.7999878h-.7082481v-4.2275391h2.8488017v.5976563h-2.1405536v1.2978515h1.9603297v.5800782h-1.9603297zm2.6762505 0v-3.1904297h.6544972v.4892578h.0505892c.0980164-.3134765.4774351-.5419922.9264138-.5419922.0980165 0 .2276512.0087891.3003731.0263672v.6210938c-.053751-.0175782-.2624312-.038086-.3762568-.038086-.5122152 0-.8758247.3017578-.8758247.75v1.8837891zm3.608988-2.7158203c-.5027297 0-.8536919.328125-.8916338.8261719h1.7390022c-.0158092-.5009766-.3446386-.8261719-.8473684-.8261719zm.8442065 1.8544922h.6544972c-.1549293.571289-.7050863.9228515-1.49238.9228515-.9864885 0-1.5903965-.6269531-1.5903965-1.6464843 0-1.0195313.6165553-1.6669922 1.5872347-1.6669922.9580321 0 1.5366455.6064453 1.5366455 1.6083984v.2197266h-2.4314412v.0351562c.0221328.5595703.373095.9140625.9169284.9140625.4110369 0 .6924391-.1376953.8189119-.3867187zm2.6224996-1.8544922c-.5027297 0-.853692.328125-.8916339.8261719h1.7390022c-.0158091-.5009766-.3446386-.8261719-.8473683-.8261719zm.8442064 1.8544922h.6544972c-.1549293.571289-.7050863.9228515-1.49238.9228515-.9864885 0-1.5903965-.6269531-1.5903965-1.6464843 0-1.0195313.6165553-1.6669922 1.5872347-1.6669922.9580321 0 1.5366455.6064453 1.5366455 1.6083984v.2197266h-2.4314412v.0351562c.0221328.5595703.373095.9140625.9169284.9140625.4110369 0 .6924391-.1376953.8189119-.3867187z" fill="#fff"></path><path d="m .5 8.5h3.5v1h-3.5z" fill="#00bfa5"></path><path d="m0 10.15674h3.5v1h-3.5z" fill="#00bfa5"></path><circle cx="8" cy="10" fill="#047565" r="1"></circle><circle cx="15" cy="10" fill="#047565" r="1"></circle></g></svg>
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="home-product-item__action">
-                                            <div className="home-product-item__like">
-                                                <svg height="16" viewBox="0 0 16 16" width="16" version="1.1"><path d="m7.251221 4.2145388c-.549143-.4552525-1.2488781-.7145388-1.951221-.7145388-1.5719593 0-2.8 1.2269253-2.8 2.7970027 0 .5878515.158291 1.1598348.483492 1.7618948.6414654 1.1875754 1.5644044 2.1358244 4.4829309 4.7799304l.5348542.4864596.5326254-.4807607c2.9306205-2.660747 3.8471674-3.6039919 4.486777-4.7931984.3223805-.5993922.4793205-1.1689848.4793205-1.7543257 0-1.5700774-1.2280407-2.7970027-2.8-2.7970027-.7029148 0-1.4032175.2597087-1.9497845.7133288l-.0367779.0309601c-.1203966.1029087-.2318185.2143106-.3329071.3329122l-.3805305.4464557-.3805305-.4464557c-.1010886-.1186016-.2125105-.2300035-.3301434-.3305672z" fill="none" stroke="#000" strokeOpacity=".54"></path></svg>
-                                            </div>
-                                            <div className="home-product-item__rating" data-sqe="rating">
-                                                <div className="rating-stars">
-                                                    <div className="d-flex">
-                                                        {rating(item,6)}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="home-product-item__sold item-center">Đã bán {item.num_order}</div>
-                                        </div>
-                                        <div className="home-product-item__origin">
-                                            <span className="home-product-item__brand">{item.item_brand}</span>
-                                            <span className="home-product-item__origin-name">{item.shop_city}</span>
-                                        </div>
-                                        <div className="home-product-item__favourite">
-                                            
-                                            <span>Yêu thích</span>
-                                        </div>
-                                        <div className="home-product-item__sale-off">
-                                            <div className="flex-col">
-                                                <span className="home-product-item__sale-off-percent">{item.percent_discount}</span>
-                                                <span className="home-product-item__sale-off-label">GIẢM</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-                            </div>
-                        )}
-                        </div>
-                        <div className='page-controller page-controller--v2'>
-                            <Pagination
-                                classActive={`button-solid button-solid--primary`}
-                                classNormal={`button-no-outline`}
-                                classIcon={`icon-button`}
-                                currentPage={this.state.page_no}
-                                totalCount={this.state.page_count}
-                                pageSize={PageSize}
-                                onPageChange={page => this.handlePageChange(page,data,item)}
-                            />
-                        </div>
-                        </>
-                        :<div className="loading">
-                            <div className="loading_item item-center">
-                                <div className="ball"></div>
-                                <div className="ball"></div>
-                                <div className="ball"></div>
-                            </div>
-                        </div>}
-                    </div>
-                    :''}
-                    <button onClick={(e)=>this.finditem(e,data,item)} className={`button-no-outline NJSFiA item-center ${data.show?'_1OWzl_':''}`}>
-                        <span className="_1pXUYq">Tìm sản phẩm tương tự</span>
-                        <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon _27CqwY icon-down-arrow-filled"><path d="m6.5 12.9-6-7.9s-1.4-1.5.5-1.5h13s1.8 0 .6 1.5l-6 7.9c-.1 0-.9 1.3-2.1 0z"></path></svg>
-                    </button>
-                </div>
-            </div> 
-         </div>
-        )
-    }
+ 
 
     list_voucher(list_shop,shop,cartitem){
         let list_voucher_unique=[]
@@ -901,11 +907,14 @@ class Cart extends React.Component{
         })
       }
 
+    item_promotion=(shop)=>{
+        return this.item_promotion
+    }
     render(){
         console.log(this.props.user)
         let {count,count_order,total,discount_promotion,loading,count_cartitem,
         discount_deal,total_discount,discount_voucher,list_shop,list_item_promotion_unique,
-        list_item_remainder,list_voucher_shop,warring}=this.state
+        list_item_remainder,list_voucher_shop,warring,list_cartitem}=this.state
         return(
             <>
                 <div id="main">
@@ -975,58 +984,59 @@ class Cart extends React.Component{
                                                     </button>
                                                 </div>
                                                 <div className="shop_item">
-                                                    {list_item_promotion_unique.map((cartitem,i)=>{
-                                                        if(shop.shop_name==cartitem.shop_name){
-                                                            return (
-                                                                <div className="shop-item-order" key={cartitem.id}>
-                                                                    <div className="shop-discount">
-                                                                        <span className="discount">Promotion combo</span>
-                                                                        <span className="discount-title">Buy {cartitem.promotion.quantity_to_reduced} more {cartitem.promotion.combo_type=='1'?` (will be reduced ${cartitem.promotion.discount_percent}%)`:cartitem.promotion.combo_type=='2'?` (will be reduced ₫${formatter.format(cartitem.promotion.discount_price)}`:` (only with ₫${formatter.format(cartitem.promotion.price_special_sale)}`}</span>
+                                                    {this.item_promotion(shop)?
+                                                        <div className="shop-item-order">
+                                                            <div className="shop-discount">
+                                                                <span className="discount">Promotion combo</span>
+                                                                <span className="discount-title">Buy {this.item_promotion(shop).promotion.quantity_to_reduced} more {this.item_promotion(shop).promotion.combo_type=='1'?` (will be reduced ${this.item_promotion(shop).promotion.discount_percent}%)`:this.item_promotion(shop).promotion.combo_type=='2'?` (will be reduced ₫${formatter.format(this.item_promotion(shop).promotion.discount_price)}`:` (only with ₫${formatter.format(this.item_promotion(shop).promotion.price_special_sale)}`}</span>
+                                                                    <span className="add-byproduct">
+                                                                        <Link to={this.item_promotion(shop).promotion.combo_url}>Add
+                                                                            <svg viewBox="0 0 12 12" fill="none" width="12" height="12" color="#ee4d2d" className="_1KsfYG"><path fillRule="evenodd" clipRule="evenodd" d="M9.293 6L4.146.854l.708-.708L10 5.293a1 1 0 010 1.414l-5.146 5.147-.708-.707L9.293 6z" fill="currentColor"></path></svg>
+                                                                        </Link>
+                                                                    </span>
+                                                                </div>
+                                                                {list_cartitem.filter(cartitem=>cartitem.promotion && cartitem.shop_name==shop.shop_name).map((item,i)=>{
+                                                                    <Iteminfo
+                                                                    item={item}
+                                                                    i={i}
+                                                                    shop={shop}
+                                                                    />
+                    
+                                                                }
+                                                            )}
+                                                        </div>
+                                                    :''}
+                                                    {list_cartitem.filter(cartitem=>!cartitem.promotion &&shop.shop_name==cartitem.shop_name).map((cartitem,i)=>
+                                                        <div className="shop-item-order">
+                                                            {cartitem.shock_deal_type!==null?
+                                                                <div className="shop-discount">
+                                                                    <span className="discount">Deal sốc</span>
+                                                                    <span className="discount-title">{cartitem.shock_deal_type=='1'?'Mua kèm deal shock':'Buy to receive gift'}</span>
                                                                         <span className="add-byproduct">
-                                                                            <Link to={cartitem.promotion.combo_url}>Add
+                                                                            <Link to={cartitem.variation_url}>{cartitem.byproduct.length>0?'Edit':'Add'}
                                                                                 <svg viewBox="0 0 12 12" fill="none" width="12" height="12" color="#ee4d2d" className="_1KsfYG"><path fillRule="evenodd" clipRule="evenodd" d="M9.293 6L4.146.854l.708-.708L10 5.293a1 1 0 010 1.414l-5.146 5.147-.708-.707L9.293 6z" fill="currentColor"></path></svg>
                                                                             </Link>
                                                                         </span>
-                                                                    </div>
-                                                                    {this.iteminfo(this.state.list_item_promotion_unique[i],list_item_promotion_unique,i,this.state.list_item_promotion_unique,shop,list_shop)}
-                                                                    {list_item_promotion_unique[i].byproduct.map((item,j)=>{
-                                                                        return (<>{this.iteminfo(this.state.list_item_promotion_unique[i].byproduct[j],list_item_promotion_unique,j,this.state.list_item_promotion_unique[i].byproduct,shop)}</>
-                                                                        )
-                                                                    })}
                                                                 </div>
-                                                            ) 
-                                                        }
-                                                    })}
-                                                    {list_item_remainder.map((cartitem,i)=>{
-                                                        if(shop.shop_name==cartitem.shop_name){
-                                                        
-                                                            return(
-                                                                <div className="shop-item-order">
-                                                                    {cartitem.shock_deal_type!==null?
-                                                                    <div className="shop-discount">
-                                                                        <span className="discount">Deal sốc</span>
-                                                                        <span className="discount-title">{list_item_remainder[i].shock_deal_type=='1'?'Mua kèm deal shock':'Buy to receive gift'}</span>
-                                                                        <span className="add-byproduct">
-                                                                            <Link to={list_item_remainder[i].variation_url}>{list_item_remainder[i].byproduct.length>0?'Edit':'Add'}
-                                                                                <svg viewBox="0 0 12 12" fill="none" width="12" height="12" color="#ee4d2d" className="_1KsfYG"><path fillRule="evenodd" clipRule="evenodd" d="M9.293 6L4.146.854l.708-.708L10 5.293a1 1 0 010 1.414l-5.146 5.147-.708-.707L9.293 6z" fill="currentColor"></path></svg>
-                                                                            </Link>
-                                                                        </span>
-                                                                    </div>
-                                                                    :''}
-                                                                    {this.iteminfo(this.state.list_item_remainder[i],list_item_remainder,i,this.state.list_item_remainder,shop,list_shop)}
-                                                                    {list_item_remainder[i].byproduct.length>0?<div className="_1fU7BV"></div>:""}
-                                                                    {list_item_remainder[i].byproduct.map((item,j)=>{
-                                                                        
-                                                                        return(
-                                                                            <>{this.iteminfo(this.state.list_item_remainder[i].byproduct[j],list_item_remainder,j,this.state.list_item_remainder[i].byproduct,shop,list_shop)}</>
-                                                                            )
-                                                                        }   
-                                                                    )}
-                                                                </div>
-                                                            )
-                                                        }
-                                                    })
-                                                    }
+                                                            :''}
+                                                            <Iteminfo
+                                                                item={cartitem}
+                                                                i={i}
+                                                                shop={shop}
+                                                            />
+                                                            {cartitem.byproduct.length>0?<div className="_1fU7BV"></div>:""}
+                                                                {cartitem.byproduct.map((item,j)=>{     
+                                                                    <Iteminfo
+                                                                    item={item}
+                                                                    i={j}
+                                                                    shop={shop}
+                                                                    cartitem={cartitem}
+                                                                    />
+                                                                }   
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                    
                                                 </div>
                                                 { shop.list_voucher_unique.length>0?
                                                 <div className="_2KyioW">
