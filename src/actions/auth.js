@@ -14,11 +14,15 @@ import {
     FACEBOOK_AUTH_SUCCESS,
     FACEBOOK_AUTH_FAIL,
     LOGOUT,
-    SHOW_CHAT
+    SHOW_CHAT,
+    SHOW_THREADS
 } from './types';
-import {createthreadURL} from "../urls"
+import {createthreadURL, listThreadlURL} from "../urls"
 import axios from 'axios';
 axios.defaults.withCredentials = true;
+const expirationDate = localStorage.getItem("expirationDate")
+export const expiry=new Date(expirationDate).getTime() - new Date().getTime()
+export const headers={'headers': localStorage.token!='null' && expiry>0?{ Authorization:`JWT ${localStorage.token}`,'Content-Type': 'application/json' }:{'Content-Type': 'application/json'}}
 export const checkAuthenticated = () => async dispatch => {
     if (localStorage.getItem('access')) {
         try {
@@ -278,7 +282,18 @@ export const logout = () => dispatch => {
         type: LOGOUT
     });
 };
-
+export const showthreads=()=> async dispatch=>{
+    try{
+        const res=await axios.get(listThreadlURL,headers)
+        dispatch({
+            type: SHOW_THREADS,
+            payload: res.data
+        })
+    }
+    catch(e){
+        console.log(e)
+    }
+}
 export const showchat = (data) => async dispatch => {
     try{
         if(!data.thread){
@@ -300,6 +315,3 @@ export const showchat = (data) => async dispatch => {
         console.log(e)
     }
 } 
-const expirationDate = localStorage.getItem("expirationDate")
-export const expiry=new Date(expirationDate).getTime() - new Date().getTime()
-export const headers={'headers': localStorage.token!='null' && expiry>0?{ Authorization:`JWT ${localStorage.token}`,'Content-Type': 'application/json' }:{'Content-Type': 'application/json'}}

@@ -2,23 +2,18 @@ import axios from 'axios';
 import Navbar from "./Navbar"
 import {Link, Navigate,useNavigate} from 'react-router-dom'
 import Address from "../hocs/Address"
-import { headers,expiry} from '../actions/auth';
+import { headers,expiry,showchat, showthreads} from '../actions/auth';
 import React, {useState, useEffect,useCallback} from 'react'
 import { connect } from 'react-redux';
 import {formatter,itemvariation,arraymove} from "../constants"
 import {localhost,checkoutURL,threadlURL,savevoucherURL,updateAddressURL,cityListURL,listThreadlURL} from "../urls"
-const Checkout =({user})=>{
+const Checkout =({user,showchat})=>{
     const [state,setState] = useState({show_message:false,show_thread:false,loading:false,orders:[],address:null,method_payment:['Ví Điện tử','Thẻ Tín dụng/Ghi nợ',
     'Paypal','Số dư TK Shopee','Payment on delivery'],
     method_choice:'Ví Điện tử',address_choice:null,address_order:null,list_addresses:[],show:false,show_message:false,
     show_message:false})
-    const [list_threads,setThreads]=useState([]);
     const [address,setAddress]=useState({address_type:"S",address:'',address_choice:'',default:false,name:'',phone_number:''});
-    const [threadchoice,setThreadchoice]=useState(null)
-    const[threads,setlistThreads]=useState([])
-    const [listMessages,setListmessage]=useState([])
     const [show,setShow]=useState(false)
-    const[showthread,setShowthread]=useState(false)
     const [city,setCity]=useState({list_city:[]})
     const [addresschoice,setAddressChoice]=useState({city_choice:{'name':null,'matp':null,level:1},
     district_choice:{'name':null,'matp':null,level:2,'maqh':null},
@@ -38,7 +33,6 @@ const Checkout =({user})=>{
                 let discount_promotion=0
                 let discount_voucher=0
                 let address_order=null
-                setThreads(data.list_threads)
                 data.a.map(order=>{
                     total_final+=order.total_final
                     total+=order.total
@@ -141,9 +135,9 @@ const Checkout =({user})=>{
     }, [addresschoice]);
 
     const addressChoice=useCallback((item)=>{
-        state.address.address_choice=item
-        setState({...state,address:state.address})
-    }, [state]);
+        
+        setAddress({...address,address_choice:item})
+    }, [address]);
 
     const setlistaddress=useCallback((data) => {
         console.log(data)
@@ -166,45 +160,13 @@ const Checkout =({user})=>{
         setState({...state,address:state.address})
     }, [state]);
 
-    const setthreadchoice=(data)=>{
-        setThreadchoice(data)
+    const setshowthread=(e,order)=>{
+        e.preventDefault()
+        let data={member:[order.user_id,user.id],thread:null}
+        showchat(data)
+        showthreads()
     }
-    const setshowthread=(order)=>{
-            setShowthread(true)
-            setState({...state,show_message:false})
-            if(list_threads.length>0&& list_threads.some(thread=>thread.list_participants.includes(user.id) && thread.list_participants.includes(order.shop_user))){
-                let threadchoice=list_threads.find(thread=>thread.list_participants.includes(user.id) && thread.list_participants.includes(order.shop_user))
-                let url=new URL(listThreadlURL)
-                let search_params=url.searchParams
-                search_params.append('list_thread','ok')
-                search_params.append('thread_id',threadchoice.id)
-                url.search = search_params.toString();
-                let new_url = url.toString();
-                axios.get(new_url,headers)
-                .then(res => {  
-                    setlistThreads(res.data.threads)
-                    setListmessage(res.data.messages)
-                    setState({...state,show_message:true})
-                    setthreadchoice(res.data.threads.find(item=>item.id==threadchoice.id))
-                })
-            }
-            else{
-                create_thread(order)
-            }
-    }
-    const create_thread=(order)=>{
-        let form=new FormData()
-        form.append('participants',user.id)
-        form.append('participants',order.shop_user)
-        form.append('order_id',order.id)
-        axios.post(listThreadlURL,form,headers)
-        .then(res=>{
-          setlistThreads(res.data.threads)
-          setListmessage(res.data.messages)
-          setState({...state,threadchoice:res.data.threadchoice,show_thread:true,show_message:true})
-        })
-      }
-
+    
     return(
         <>
         <div id="main">
@@ -307,7 +269,7 @@ const Checkout =({user})=>{
                                                 <svg viewBox="0 0 24 11"><g fill="#fff" fillRule="evenodd"><path d="M19.615 7.143V1.805a.805.805 0 0 0-1.611 0v5.377H18c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm3 0V1.805a.805.805 0 0 0-1.611 0v5.377H21c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm-7.491-2.985c.01-.366.37-.726.813-.726.45 0 .814.37.814.742v5.058c0 .37-.364.73-.813.73-.395 0-.725-.278-.798-.598a3.166 3.166 0 0 1-1.964.68c-1.77 0-3.268-1.456-3.268-3.254 0-1.797 1.497-3.328 3.268-3.328a3.1 3.1 0 0 1 1.948.696zm-.146 2.594a1.8 1.8 0 1 0-3.6 0 1.8 1.8 0 1 0 3.6 0z"></path><path d="M.078 1.563A.733.733 0 0 1 .565.89c.423-.15.832.16 1.008.52.512 1.056 1.57 1.88 2.99 1.9s2.158-.85 2.71-1.882c.19-.356.626-.74 1.13-.537.342.138.477.4.472.65a.68.68 0 0 1 .004.08v7.63a.75.75 0 0 1-1.5 0V3.67c-.763.72-1.677 1.18-2.842 1.16a4.856 4.856 0 0 1-2.965-1.096V9.25a.75.75 0 0 1-1.5 0V1.648c0-.03.002-.057.005-.085z" fillRule="nonzero"></path></g></svg>
                                             </div>
                                             <span className="_3xBVfW">{order.shop}</span>
-                                            <div onClick={()=>setshowthread(order)} className="_3j3nK5">
+                                            <div onClick={(e)=>setshowthread(e,order)} className="_3j3nK5">
                                                 <svg viewBox="0 0 16 16" className="svg-icon _3WJbe6 "><g fillRule="evenodd"><path d="M15 4a1 1 0 01.993.883L16 5v9.932a.5.5 0 01-.82.385l-2.061-1.718-8.199.001a1 1 0 01-.98-.8l-.016-.117-.108-1.284 8.058.001a2 2 0 001.976-1.692l.018-.155L14.293 4H15zm-2.48-4a1 1 0 011 1l-.003.077-.646 8.4a1 1 0 01-.997.923l-8.994-.001-2.06 1.718a.5.5 0 01-.233.108l-.087.007a.5.5 0 01-.492-.41L0 11.732V1a1 1 0 011-1h11.52zM3.646 4.246a.5.5 0 000 .708c.305.304.694.526 1.146.682A4.936 4.936 0 006.4 5.9c.464 0 1.02-.062 1.608-.264.452-.156.841-.378 1.146-.682a.5.5 0 10-.708-.708c-.185.186-.445.335-.764.444a4.004 4.004 0 01-2.564 0c-.319-.11-.579-.258-.764-.444a.5.5 0 00-.708 0z"></path></g></svg>
                                                 Chat ngay
                                             </div>
@@ -548,4 +510,4 @@ const Checkout =({user})=>{
 const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated,user:state.user
 });
-export default connect(mapStateToProps)(Checkout);
+export default connect(mapStateToProps,{showchat,showthreads})(Checkout);

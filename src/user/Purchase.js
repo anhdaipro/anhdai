@@ -8,9 +8,9 @@ import Listreview from "../hocs/Review"
 
 import {Link} from 'react-router-dom'
 import {formatter,itemvariation} from "../constants"
-import { headers,expiry } from "../actions/auth";
+import { headers,expiry ,showchat,showthreads} from "../actions/auth";
 import {purchaselistdURL,listThreadlURL} from "../urls"
-const Purchase =({user})=>{
+const Purchase =({user,showchat,showthreads})=>{
     const [state, setState] = useState({count_order:0,orders:[],user:null,list_review:[],list_type_order:[{name:'Tất cả',type:'1'},{name:'Chờ xác nhận',type:'2'},{name:'Chờ lấy hàng',type:'3'}
 ,{name:'Đang giao',type:'4'},{name:'Đã giao',type:'5'},{name:'Đã Hủy',type:'6'}],
 
@@ -19,9 +19,6 @@ const Purchase =({user})=>{
     const [loading,setLoading]=useState(false)
     const [edit,setEdit]=useState(false)
     const [cancel,setCancel]=useState(false)
-    const [list_threads,setThreads]=useState([]);
-    const[threads,setlistThreads]=useState([])
-    const [listMessages,setListmessage]=useState([])
     useEffect(() => {
         const getJournal = async () => {
             await axios(purchaselistdURL,headers)
@@ -29,7 +26,6 @@ const Purchase =({user})=>{
             .then(res=>{
                 let data=res.data
                 setLoading(true)
-                setThreads(data.list_threads)
                 setState({...state,count_order:data.count_order,orders:data.a,loading:true
             })
           })
@@ -37,45 +33,13 @@ const Purchase =({user})=>{
         getJournal();
     }, []);
 
-    const setshowthread=(order)=>{
-        if(list_threads.length>0){
-            if(list_threads.some(thread=>thread.list_participants.includes(user.id) && thread.list_participants.includes(order.shop_user))){
-                let threadchoice=list_threads.find(thread=>thread.list_participants.includes(user.id) && thread.list_participants.includes(order.shop_user))
-                let url=new URL(listThreadlURL)
-                let search_params=url.searchParams
-                search_params.append('list_thread','ok')
-                search_params.append('thread_id',threadchoice.id)
-                url.search = search_params.toString();
-                let new_url = url.toString();
-                if(state.threadchoice.id!=threadchoice.id){
-                    axios.get(new_url,headers)
-                    .then(res => { 
-                        setlistThreads(res.data.threads)
-                        setListmessage(res.data.messages)
-                        setState({...state,threadchoice:threadchoice,show_thread:true,show_message:true})
-                    })
-                }
-            }
-            else{
-                create_thread(order)
-            }
-        }
-            else{
-            create_thread(order)
-        }
+    const setshowthread=(e,order)=>{
+        e.preventDefault()
+        let data={member:[order.user_id,user.id],thread:null,order_id:order.id}
+        showthreads()
+        showchat(data) 
     }
-    const create_thread=(order)=>{
-        let form=new FormData()
-        form.append('participants',user.id)
-        form.append('participants',order.shop_user)
-        form.append('order_id',order.id)
-        axios.post(listThreadlURL,form,headers)
-        .then(res=>{
-          setlistThreads(res.data.threads)
-          setListmessage(res.data.messages)
-          setState({...state,threadchoice:res.data.threadchoice,show_thread:true,show_message:true})
-        })
-      }
+    
     window.onscroll=()=>{
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
         if(clientHeight + scrollTop >= scrollHeight-300 && loading && state.orders.length<state.count_order){
@@ -206,7 +170,7 @@ const Purchase =({user})=>{
                                                             <svg viewBox="0 0 24 11"><g fill="#fff" fillRule="evenodd"><path d="M19.615 7.143V1.805a.805.805 0 0 0-1.611 0v5.377H18c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm3 0V1.805a.805.805 0 0 0-1.611 0v5.377H21c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm-7.491-2.985c.01-.366.37-.726.813-.726.45 0 .814.37.814.742v5.058c0 .37-.364.73-.813.73-.395 0-.725-.278-.798-.598a3.166 3.166 0 0 1-1.964.68c-1.77 0-3.268-1.456-3.268-3.254 0-1.797 1.497-3.328 3.268-3.328a3.1 3.1 0 0 1 1.948.696zm-.146 2.594a1.8 1.8 0 1 0-3.6 0 1.8 1.8 0 1 0 3.6 0z"></path><path d="M.078 1.563A.733.733 0 0 1 .565.89c.423-.15.832.16 1.008.52.512 1.056 1.57 1.88 2.99 1.9s2.158-.85 2.71-1.882c.19-.356.626-.74 1.13-.537.342.138.477.4.472.65a.68.68 0 0 1 .004.08v7.63a.75.75 0 0 1-1.5 0V3.67c-.763.72-1.677 1.18-2.842 1.16a4.856 4.856 0 0 1-2.965-1.096V9.25a.75.75 0 0 1-1.5 0V1.648c0-.03.002-.057.005-.085z" fillRule="nonzero"></path></g></svg>
                                                         </div>
                                                         <div className="_1CIbL0">{order.shop}</div>
-                                                        <div onClick={()=>setshowthread(order)} className="_1q53YG">
+                                                        <div onClick={(e)=>setshowthread(e,order)} className="_1q53YG">
                                                             <button className="stardust-button stardust-button--primary">
                                                                 <svg viewBox="0 0 17 17" className="svg-icon icon-btn-chat" style={{fill: 'white'}}><g fillRule="evenodd"><path d="M13.89 0C14.504 0 15 .512 15 1.144l-.003.088-.159 2.117.162.001c.79 0 1.46.558 1.618 1.346l.024.15.008.154v9.932a1.15 1.15 0 01-1.779.963l-.107-.08-1.882-1.567-7.962.002a1.653 1.653 0 01-1.587-1.21l-.036-.148-.021-.155-.071-.836h-.01L.91 13.868a.547.547 0 01-.26.124L.556 14a.56.56 0 01-.546-.47L0 13.429V1.144C0 .512.497 0 1.11 0h12.78zM15 4.65l-.259-.001-.461 6.197c-.045.596-.527 1.057-1.106 1.057L4.509 11.9l.058.69.01.08a.35.35 0 00.273.272l.07.007 8.434-.001 1.995 1.662.002-9.574-.003-.079a.35.35 0 00-.274-.3L15 4.65zM13.688 1.3H1.3v10.516l1.413-1.214h10.281l.694-9.302zM4.234 5.234a.8.8 0 011.042-.077l.187.164c.141.111.327.208.552.286.382.131.795.193 1.185.193s.803-.062 1.185-.193c.225-.078.41-.175.552-.286l.187-.164a.8.8 0 011.042 1.209c-.33.33-.753.579-1.26.753A5.211 5.211 0 017.2 7.4a5.211 5.211 0 01-1.706-.28c-.507-.175-.93-.424-1.26-.754a.8.8 0 010-1.132z" fillRule="nonzero"></path></g></svg>
                                                                 <span>Chat</span>
@@ -390,5 +354,5 @@ const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated,user:state.user
 });
 
-export default connect(mapStateToProps)(Purchase);
+export default connect(mapStateToProps,{showchat,showthreads})(Purchase);
 

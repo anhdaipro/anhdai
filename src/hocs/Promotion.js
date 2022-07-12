@@ -46,7 +46,7 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
             if(variation_active.length>=count_variation){
             let url=new URL(addToCartURL)
             let search_params=url.searchParams
-            search_params.append('item_id',state.data.item_info.item_id)
+            search_params.append('item_id',state.data.item_id)
             if(variation.color_id!=0){
               search_params.set('color_id',variation.color_id)
             }
@@ -82,7 +82,7 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
             setwarring(true)
             let form =new FormData()
             form.append('id',state.variation_id)
-            form.append('item_id',state.data.item_info.item_id)
+            form.append('item_id',state.data.item_id)
             form.append('quantity',variation.quantity) 
             axios.post(addToCartURL,form,headers)
             .then(res=>{
@@ -105,7 +105,7 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
                     <div className="popup-form__main">
                         <div className="mlJd9h popup-form__main-container">
                             <div className="_3WGoff">
-                                <h2 className="_1zFCl4">{data.item_info.item_name}</h2>
+                                <h2 className="_1zFCl4">{data.item_name}</h2>
                                 <div className="_1KT0Ub _15STwc">
                                     <div className="_2cH9zc" style={{display: 'none'}}>
                                         <div className="image-placeholder _2E6Dva">

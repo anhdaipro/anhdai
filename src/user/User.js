@@ -89,7 +89,7 @@ const User =({user,image}) =>{
                     </div>
                     <div className="stardust-dropdown">
                         <div className="stardust-dropdown__item-header">
-                            <Link className="_3aAm2h" to="/user/account/purchase">
+                            <Link className="_3aAm2h" to="/user/purchase">
                                 <div className="_21F-bS">
                                     <img src="https://cf.shopee.vn/file/f0049e9df4e536bc3e7f140d071e9078"/>
                                 </div>

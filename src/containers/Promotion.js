@@ -161,6 +161,7 @@ const Promotion = () => {
                 </div>
             </div>
             <div id="modal">
+                {variation.data?
                 <Variationitem
                     data={variation.data}
                     count_variation={variation.count_variation}
@@ -168,7 +169,7 @@ const Promotion = () => {
                     setshow={es=>setshow(es)}
                     seterrow={err=>seterrow(err)}
                     setwarring={war=>setwarring(war)}
-                />
+                />:''}
             </div>
            
         </>

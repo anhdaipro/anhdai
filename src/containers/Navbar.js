@@ -120,7 +120,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                             {state.view_account?
                             <div className="log">
                                 <Link to="/user/account/profile" className="navbar-account-drawer__button navbar-user-link"> Account</Link>
-                                <Link to="/user/account/purchase" className="navbar-account-drawer__button navbar-user-link">Order</Link>
+                                <Link to="/user/purchase" className="navbar-account-drawer__button navbar-user-link">Order</Link>
                                 <a onClick={(e)=>logout_user(e)} className="navbar-account-drawer__button navbar-user-link">Logout</a>
                             </div>
                             :''}

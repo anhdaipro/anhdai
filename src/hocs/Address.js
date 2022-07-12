@@ -2,7 +2,7 @@
 import axios from 'axios';
 import React, {useState, memo} from 'react'
 import {updateAddressURL} from "../urls"
-import GoogleMap from './GoogleMap'
+import GoogleMaps from './GoogleMap'
 import {address_null,typeaddress,} from "../constants"
 import { headers } from '../actions/auth';
 const Address=({address,show,setshow,list_city,action,city_choice,district_choice,town_choice,setlistaddress,
@@ -222,7 +222,7 @@ const Address=({address,show,setshow,list_city,action,city_choice,district_choic
                                     </div>
                                     <div className="_2F4oEw">
                                         <div className="_1BFeyX _1Phfo7">
-                                            <GoogleMap/>
+                                            <GoogleMaps/>
                                         </div>
                                         <button className="_3Zh1N0"></button>
                                         <button className="TV2hWu LFlESV">Xem bản đồ</button>

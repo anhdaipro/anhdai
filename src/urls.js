@@ -33,6 +33,7 @@ export const  cartURL=`${endpoint}/cartview`;
 export const paymentURL = `${endpoint}/payment`;
 export const detailURL = `${endpoint}/detail/`;
 export const addToCartURL = `${endpoint}/add-to-cart`;
+export const shoporderURL = `${endpoint}/shop/order`;
 export const addToCartBatchURL = `${endpoint}/add-to-cart-batch`;
 export const checkoutURL = `${endpoint}/checkout`;
 export const verifyotpURL=`${endpoint}/verify-sms`;

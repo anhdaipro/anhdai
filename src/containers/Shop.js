@@ -5,8 +5,8 @@ import {useNavigate , Link,useLocation, Navigate,useParams,useSearchParams} from
 import Itemsearch from "./Listitem"
 import {connect} from "react-redux"
 import {listThreadlURL,detailURL,} from "../urls"
-import { expiry, headers } from "../actions/auth";
-const Shopinfo = ({setshow,data,setthreadchoice,setsearchitem,setthread,setsearchcategory,user,
+import { expiry, headers,showchat, showthreads } from "../actions/auth";
+const Shopinfo = ({data,showchat,setsearchitem,showthreads,setsearchcategory,user,
     params,searchitem,listitem}) => {
     const [state, setState] = useState(null)
     const {slug}=useParams()
@@ -16,41 +16,13 @@ const Shopinfo = ({setshow,data,setthreadchoice,setsearchitem,setthread,setsearc
     },[data])
     const search=Object.fromEntries([...params])
     
-    const setshowthread=()=>{
-        setshow(true)
-            if(state.exist_thread){
-              let url=new URL(listThreadlURL)
-              let search_params=url.searchParams
-              search_params.append('list_thread','ok')
-              search_params.append('thread_id',state.thread_id)
-              url.search = search_params.toString();
-              let new_url = url.toString();
-              axios.get(new_url,headers)
-              .then(res => { 
-                let data=res.data
-                setthread(data)
-                setthreadchoice(data.threads.find(item=>item.id==state.thread_id))
-              })
-            }
-            else{
-            create_thread()
-        }
+    const setshowthread=(e)=>{
+        e.preventDefault()
+        let data={member:[state.data.user_id,user.id],thread:null}
+        showchat(data)
+        showthreads()
     }
     
-    const create_thread=()=>{
-        setshow(true)
-        let form=new FormData()
-        form.append('participants',user.id)
-        form.append('participants',state.data.shop_user)
-        axios.post(listThreadlURL,form,headers)
-        .then(res=>{
-            setState({...state,exist_thread:true})
-            let data=res.data
-            const array=[user.id,state.data.shop_user]
-            setthread(data)
-            setthreadchoice(data.threads.find(thread=>thread.info_thread.every(item=>array.includes(item.user_id))))
-        })
-    }
     const setsearch=(name,value)=>{
         delete searchitem.order
         const searchitems={...searchitem,[name]:value}
@@ -113,7 +85,7 @@ const Shopinfo = ({setshow,data,setthreadchoice,setsearchitem,setthread,setsearc
                                     </button>
                                 </a>
                                 <a argettype="chatButton" className="section-seller-overview-horizontal__button">
-                                    <button onClick={()=>setshowthread()} className="button-outline button-outline--complement button-outline--fill">
+                                    <button onClick={(e)=>setshowthread(e)} className="button-outline button-outline--complement button-outline--fill">
                                         <span className="section-seller-overview-horizontal__icon">
                                             <svg viewBox="0 0 16 16" className="svg-icon"><g fill-rule="evenodd"><path d="M15 4a1 1 0 01.993.883L16 5v9.932a.5.5 0 01-.82.385l-2.061-1.718-8.199.001a1 1 0 01-.98-.8l-.016-.117-.108-1.284 8.058.001a2 2 0 001.976-1.692l.018-.155L14.293 4H15zm-2.48-4a1 1 0 011 1l-.003.077-.646 8.4a1 1 0 01-.997.923l-8.994-.001-2.06 1.718a.5.5 0 01-.233.108l-.087.007a.5.5 0 01-.492-.41L0 11.732V1a1 1 0 011-1h11.52zM3.646 4.246a.5.5 0 000 .708c.305.304.694.526 1.146.682A4.936 4.936 0 006.4 5.9c.464 0 1.02-.062 1.608-.264.452-.156.841-.378 1.146-.682a.5.5 0 10-.708-.708c-.185.186-.445.335-.764.444a4.004 4.004 0 01-2.564 0c-.319-.11-.579-.258-.764-.444a.5.5 0 00-.708 0z"></path></g></svg>
                                             </span>chat
@@ -352,4 +324,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated,user:state.user
 });
 
-export default connect(mapStateToProps)(Shopinfo);
+export default connect(mapStateToProps,{showchat,showthreads})(Shopinfo);

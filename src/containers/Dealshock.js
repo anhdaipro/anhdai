@@ -225,7 +225,7 @@ const Dealshock = () => {
                     </label>
                     
                     <Link className="_2WnPtj" to={data.item_url}>
-                        <img className="_2QpYlF" src={`${localhost}${data.item_image}`}/>
+                        <img className="_2QpYlF" src={`${data.item_image}`}/>
                     </Link >
                     <div className="q7k-yX">
                         <p className="_2eCTrn">{data.item_name}</p>

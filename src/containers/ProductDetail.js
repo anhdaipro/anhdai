@@ -14,9 +14,9 @@ import {
 import { FacebookIcon,FacebookMessengerIcon,TwitterIcon,PinterestIcon } from "react-share";
 import {connect} from "react-redux"
 import {useNavigate , Link,useLocation, Navigate,useParams} from 'react-router-dom';
-import { expiry, headers } from "../actions/auth";
+import { expiry, headers,showchat, showthreads } from "../actions/auth";
 let pageSize=5
-const ProductDetail = ({report_complete,reviewchoice,show_report,setreport,setthreadchoice,setshow,data_product,setthread,addcartitem,showmediaitem,user}) => {
+const ProductDetail = ({report_complete,showchat,show_report,setreport,showthreads,data_product,setthread,addcartitem,showmediaitem,user}) => {
     const [state, setState] = useState({request_report:false,list_host_sale:[],data:null,inventory:null,count_variation:0,quantity:1,review_choice:'all',
     color_id:0,size_id:0,variation_color:[],variation_size:[],page_count:1,rating:[],has_comment:0,
     has_media:0,
@@ -227,29 +227,11 @@ const ProductDetail = ({report_complete,reviewchoice,show_report,setreport,setth
         setVariation({...variation,quantity:variation.quantity})
     }
     
-    const setshowthread=()=>{
-        if(user!=null && state.data.shop_user!=user.id){
-            setshow(false)
-            if(state.exist_thread){
-                let url=new URL(listThreadlURL)
-                let search_params=url.searchParams
-                search_params.append('list_thread','ok')
-                search_params.append('seen',true)
-                search_params.append('thread_id',state.thread_id)
-                url.search = search_params.toString();
-                let new_url = url.toString();
-                axios.get(new_url,headers)
-                .then(res => { 
-                    let data=res.data
-                    setshow(true)
-                    setthread(data)
-                    setthreadchoice(data.threads.find(item=>item.id==state.thread_id))
-              })
-            }
-            else{
-            create_thread()
-            }
-        }
+    const setshowthread=(e)=>{
+        e.preventDefault()
+        let data={member:[state.data.user_id,user.id],thread:null,item_id:state.data.id}
+        showchat(data)
+        showthreads()
     }
   
     const setlikereview=(e,review)=>{
@@ -276,23 +258,7 @@ const ProductDetail = ({report_complete,reviewchoice,show_report,setreport,setth
             navigate(`/buyer/login?next=${window.location}`, { replace: true });
         }
     }
-    const create_thread=()=>{  
-        let form=new FormData()
-        form.append('participants',user.id)
-        form.append('participants',state.data.shop_user)
-        form.append('item_id',state.data.id)
-        axios.post(listThreadlURL,form,headers)
-        .then(res=>{
-            setState({...state,exist_thread:true})
-            let data=res.data
-            setshow(true)
-            const array=[user.id,state.data.shop_user]
-            setthread(data)
-            setthreadchoice(data.threads.find(thread=>thread.info_thread.every(item=>array.includes(item.user_id))))
-            
-        })
-    }
-
+    
     const showreview=(value,name)=>{
         setPage(value)
         let url=new URL(productinfoURL)
@@ -837,7 +803,7 @@ const ProductDetail = ({report_complete,reviewchoice,show_report,setreport,setth
                             <p className="time_off pb-1_2">Online {!shop.online?`${timeago(shop.is_online)} ago`:''}</p>
                             
                             <div className="d-flex ">
-                                <button onClick={(e)=>setshowthread(e,state.data.item_id)} className="mr-1 item-center btn-m btn-tinted">
+                                <button onClick={(e)=>setshowthread(e)} className="mr-1 item-center btn-m btn-tinted">
                                     <svg viewBox="0 0 16 16" className="svg-icon _8j52Y0"><g fillRule="evenodd"><path d="M15 4a1 1 0 01.993.883L16 5v9.932a.5.5 0 01-.82.385l-2.061-1.718-8.199.001a1 1 0 01-.98-.8l-.016-.117-.108-1.284 8.058.001a2 2 0 001.976-1.692l.018-.155L14.293 4H15zm-2.48-4a1 1 0 011 1l-.003.077-.646 8.4a1 1 0 01-.997.923l-8.994-.001-2.06 1.718a.5.5 0 01-.233.108l-.087.007a.5.5 0 01-.492-.41L0 11.732V1a1 1 0 011-1h11.52zM3.646 4.246a.5.5 0 000 .708c.305.304.694.526 1.146.682A4.936 4.936 0 006.4 5.9c.464 0 1.02-.062 1.608-.264.452-.156.841-.378 1.146-.682a.5.5 0 10-.708-.708c-.185.186-.445.335-.764.444a4.004 4.004 0 01-2.564 0c-.319-.11-.579-.258-.764-.444a.5.5 0 00-.708 0z"></path></g></svg>
                                     CHAT NOW
                                 </button>
@@ -1153,4 +1119,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated,user:state.user
 });
 
-export default connect(mapStateToProps,)(ProductDetail);
+export default connect(mapStateToProps,{showchat,showthreads})(ProductDetail);

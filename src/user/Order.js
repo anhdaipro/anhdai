@@ -1,74 +1,39 @@
 import {formatter,itemvariation} from "../constants"
 import axios from 'axios';
 import Navbar from "../containers/Navbar"
-
+import {connect} from "react-redux"
 import User from "./User"
 import React, {useState, useEffect,useCallback} from 'react'
 import { useParams,useLocation, Navigate,useSearchParams,Link } from "react-router-dom";
-import { headers,expiry } from "../actions/auth";
+import { headers,expiry,showchat, showthreads } from "../actions/auth";
 import {listThreadlURL,orderURL} from "../urls"
-const Orderuser=()=>{
+const Orderuser=(props)=>{
+    const {showchat,user,showthreads}=props
     const { id } = useParams(); // <-- access id match param here
-  const [list_threads,setThreads]=useState([]);
-  const [data,setData]=useState(null);
-  const [state, setState] = useState({show_thread:false,show_message:false,show_media:false});
-  const [threadchoice,setThreadchoice]=useState()
-  const[threads,setlistThreads]=useState([])
-  const [listMessages,setListmessage]=useState([])
-  const [params, setSearchParams] = useSearchParams();
-  const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
-  if(expiry<=0 || localStorage.token=='null'){
-    window.location.href="/buyer/login"
-}
-  useEffect(() => {
-    const getJournal = async () => {
-    await axios.get(orderURL+id+'?'+params,headers)
-        .then(res=>{
-            setData(res.data)
-            setThreads(res.data.list_threads)
-      })
+    const [data,setData]=useState(null);
+    const [state, setState] = useState({show_thread:false,show_message:false,show_media:false});
+    const [params, setSearchParams] = useSearchParams();
+    const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
+    if(expiry<=0 || localStorage.token=='null'){
+        window.location.href="/buyer/login"
     }
-  getJournal();
-  },[id,params])
-
-
-    const setshowthread=()=>{
-        if(data.exist){
-            let threadchoice=list_threads.find(thread=>thread.list_participants.includes(state.data.user) && thread.list_participants.includes(state.data.shop_user))
-            let url=new URL(listThreadlURL)
-            let search_params=url.searchParams
-            search_params.append('list_thread','ok')
-            search_params.append('thread_id',threadchoice.id)
-            url.search = search_params.toString();
-            let new_url = url.toString();
-            axios.get(new_url,headers)
-            .then(res => { 
-                let data=res.data
-                setthread(data)
-            })
-        }
-        else{
-        create_thread()
-        }
-    }
-
-    const setthread=(data)=>{
-        setlistThreads(data.threads)
-        setListmessage(data.messages)
-        setThreadchoice(data.threadchoice)
-        setState({...state,show_thread:true,show_message:true})
-      }
-    const create_thread=()=>{
-        let form=new FormData()
-        form.append('participants',state.data.user)
-        form.append('participants',state.data.shop_user)
-        form.append('item_id',state.data.id)
-        axios.post(listThreadlURL,form,headers)
-        .then(res=>{
-            let data=res.data
-            setthread(data)
+    useEffect(() => {
+        const getJournal = async () => {
+        await axios.get(orderURL+id+'?'+params,headers)
+            .then(res=>{
+                setData(res.data)
         })
+        }
+    getJournal();
+    },[id,params])
+
+    const setshowthread=(e)=>{
+        e.preventDefault()
+        let data={member:[data.user_id,user.id],thread:null,order_id:data.id}
+        showchat(data)
+        showthreads()
     }
+
   return(
     <>
         <div id="main">
@@ -190,7 +155,7 @@ const Orderuser=()=>{
                                                 <div className="item-center">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="62" height="16" fill="none"><path fill="#EE4D2D" fill-rule="evenodd" d="M0 2C0 .9.9 0 2 0h58a2 2 0 012 2v12a2 2 0 01-2 2H2a2 2 0 01-2-2V2z" clip-rule="evenodd"></path><g clip-path="url(#clip0)"><path fill="#fff" d="M8.7 13H7V8.7L5.6 6.3A828.9 828.9 0 004 4h2l2 3.3a1197.3 1197.3 0 002-3.3h1.6L8.7 8.7V13zm7.9-1.7h1.7c0 .3-.2.6-.5 1-.2.3-.5.5-1 .7l-.6.2h-.8c-.5 0-1 0-1.5-.2l-1-.8a4 4 0 01-.9-2.4c0-1 .3-1.9 1-2.6a3 3 0 012.4-1l.8.1a2.8 2.8 0 011.3.7l.4.6.3.8V10h-4.6l.2 1 .4.7.6.5.7.1c.4 0 .7 0 .9-.2l.2-.6v-.1zm0-2.3l-.1-1-.3-.3c0-.2-.1-.2-.2-.3l-.8-.2c-.3 0-.6.2-.9.5l-.3.5a4 4 0 00-.3.8h3zm-1.4-4.2l-.7.7h-1.4l1.5-2h1.1l1.5 2h-1.4l-.6-.7zm8.1 1.6H25V13h-1.7v-.5.1H23l-.7.5-.9.1-1-.1-.7-.4c-.3-.2-.4-.5-.6-.8l-.2-1.3V6.4h1.7v3.7c0 1 0 1.6.3 1.7.2.2.5.3.7.3h.4l.4-.2.3-.3.3-.5.2-1.4V6.4zM34.7 13a11.2 11.2 0 01-1.5.2 3.4 3.4 0 01-1.3-.2 2 2 0 01-.5-.3l-.3-.5-.2-.6V7.4h-1.2v-1h1.1V5h1.7v1.5h1.9v1h-2v3l.2 1.2.1.3.2.2h.3l.2.1c.2 0 .6 0 1.3-.3v1zm2.4 0h-1.7V3.5h1.7v3.4a3.7 3.7 0 01.2-.1 2.8 2.8 0 013.4 0l.4.4.2.7V13h-1.6V9.3 8.1l-.4-.6-.6-.2a1 1 0 00-.4.1 2 2 0 00-.4.2l-.3.3a3 3 0 00-.3.5l-.1.5-.1.9V13zm5.4-6.6H44V13h-1.6V6.4zm-.8-.9l1.8-2h1.8l-2.1 2h-1.5zm7.7 5.8H51v.5l-.4.5a2 2 0 01-.4.4l-.6.3-1.4.2c-.5 0-1 0-1.4-.2l-1-.7c-.3-.3-.5-.7-.6-1.2-.2-.4-.3-.9-.3-1.4 0-.5.1-1 .3-1.4a2.6 2.6 0 011.6-1.8c.4-.2.9-.3 1.4-.3.6 0 1 .1 1.5.3.4.1.7.4 1 .6l.2.5.1.5h-1.6c0-.3-.1-.5-.3-.6-.2-.2-.4-.3-.8-.3s-.8.2-1.2.6c-.3.4-.4 1-.4 2 0 .9.1 1.5.4 1.8.4.4.8.6 1.2.6h.5l.3-.2.2-.3v-.4zm4 1.7h-1.6V3.5h1.7v3.4a3.7 3.7 0 01.2-.1 2.8 2.8 0 013.4 0l.3.4.3.7V13h-1.6V9.3L56 8.1c-.1-.3-.2-.5-.4-.6l-.6-.2a1 1 0 00-.3.1 2 2 0 00-.4.2l-.3.3a3 3 0 00-.3.5l-.2.5V13z"></path></g><defs><clipPath id="clip0"><path fill="#fff" d="M0 0h55v16H0z" transform="translate(4)"></path></clipPath></defs></svg>
                                                     </div>
-                                                    <div onClick={()=>setshowthread(data)} className="_1CIbL0">{data.shop}</div>
+                                                    <div onClick={(e)=>setshowthread(e)} className="_1CIbL0">{data.shop}</div>
                                                     <div className="_1q53YG">
                                                         <button className="stardust-button stardust-button--primary">
                                                             <svg viewBox="0 0 17 17" className="svg-icon icon-btn-chat" style={{fill: 'white'}}><g fill-rule="evenodd"><path d="M13.89 0C14.504 0 15 .512 15 1.144l-.003.088-.159 2.117.162.001c.79 0 1.46.558 1.618 1.346l.024.15.008.154v9.932a1.15 1.15 0 01-1.779.963l-.107-.08-1.882-1.567-7.962.002a1.653 1.653 0 01-1.587-1.21l-.036-.148-.021-.155-.071-.836h-.01L.91 13.868a.547.547 0 01-.26.124L.556 14a.56.56 0 01-.546-.47L0 13.429V1.144C0 .512.497 0 1.11 0h12.78zM15 4.65l-.259-.001-.461 6.197c-.045.596-.527 1.057-1.106 1.057L4.509 11.9l.058.69.01.08a.35.35 0 00.273.272l.07.007 8.434-.001 1.995 1.662.002-9.574-.003-.079a.35.35 0 00-.274-.3L15 4.65zM13.688 1.3H1.3v10.516l1.413-1.214h10.281l.694-9.302zM4.234 5.234a.8.8 0 011.042-.077l.187.164c.141.111.327.208.552.286.382.131.795.193 1.185.193s.803-.062 1.185-.193c.225-.078.41-.175.552-.286l.187-.164a.8.8 0 011.042 1.209c-.33.33-.753.579-1.26.753A5.211 5.211 0 017.2 7.4a5.211 5.211 0 01-1.706-.28c-.507-.175-.93-.424-1.26-.754a.8.8 0 010-1.132z" fill-rule="nonzero"></path></g></svg>
@@ -303,9 +268,10 @@ const Orderuser=()=>{
                 </div>
             </div>
         </div>
-        
-    </>
-          
+    </>     
   )
 }
-export default Orderuser
+const mapStateToProps = state => ({
+    isAuthenticated: state.isAuthenticated,user:state.user
+});
+export default connect(mapStateToProps,{showchat,showthreads})(Orderuser);

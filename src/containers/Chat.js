@@ -13,7 +13,7 @@ const listaction=[ {name:'Ghim Trò Chuyện',gim:true},{name:'Bỏ gim cuộc T
 const list_type_chat=[{'name':'All',value:1},{'name':'Unread',value:2},{'name':'Đã gim',value:3}]
 
 const Message=(props)=>{
-    const {threadstate,isAuthenticated,user,messages,members,showchat,count_message_unseen}=props
+    const {threadstate,isAuthenticated,list_threads,user,messages,members,showchat,count_message_unseen}=props
     const [state, setState] = useState({show_type_chat:false,type_chat:1,user_search:null,loading:false,
     show_product:false,show_order:false,loading_more:false});
     const [show, setShow] = useState(false);
@@ -23,7 +23,7 @@ const Message=(props)=>{
     const [threads,setThreads]=useState([]);
     const [thread,setThread]=useState();
     const [showemoji,setShowemoji]=useState(false)
-    const [loading,setLoading]=useState(false)
+    const [show_type_chat,setShow_type_chat]=useState(false)
     const [receiver,setReceiver]=useState()
     const [listfile,setListfile]=useState([]);
     const [listmember,setListmember]=useState([])
@@ -31,15 +31,37 @@ const Message=(props)=>{
     const [messagefile,setMessagefile]=useState([])
     const socket=useRef()   
     const scrollRef=useRef(null);
+    const typechatref=useRef(null);
     useEffect(() =>  {
         if(showchat){
         setListmember(members)
         setShow(showchat)
+        setState({...state,loading_more:true,loading:true})
         setThread(threadstate)
         setListmessages(messages.reverse())
         }
     }, [threadstate,members,messages,showchat]);
+    useEffect(()=>{
+        if(list_threads){
+            setThreads(list_threads)
+        }
+    },[list_threads])
 
+    useEffect(() => {
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [])
+
+    const handleClick = (event) => {
+        const { target } = event
+        if(typechatref.current!=null){
+            if (!typechatref.current.contains(target)) {
+                setShow_type_chat(false)
+            }
+        }
+    }
     useEffect(() => {
         socket.current=io.connect('https://server-socket-123.herokuapp.com')
         socket.current.on('message',data=>{
@@ -83,32 +105,36 @@ const Message=(props)=>{
         axios.get(listThreadlURL,headers)
         .then(res=>{
             setState({...state,loading:true})
-            const threads=res.data.threads.map(item=>{
-                return({...item,show_action:false,choice:false})
+            const threads=res.data.map(item=>{
+                return({...item,show_action:false})
             })
             setThreads(threads)
+            
         })
     }
 
     const showmessage=(e,threadchoice)=>{
         e.stopPropagation()
-        setState({...state,loading:false})
-        const list_thread=threads.map(thread=>{
-            if(thread.id==threadchoice.id){
-                return({...thread,choice:true})
-            }
-            return({...thread,choice:false})
-        })
-        setThreads(list_thread)
-        setListmember(thread.members)
-        axios.get(`${conversationsURL}/${threadchoice.id}`,headers)
-        .then(res=>{
-            setState({...state,loading:true})
-            setListmessages(res.data)
-            if(scrollRef.current){
-                scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-            }
-        })
+        if(!thread || (threadchoice && threadchoice.id!=thread.id)){
+            setState({...state,loading:false})
+            const list_thread=threads.map(thread=>{
+                if(thread.id==threadchoice.id){
+                    return({...thread,choice:true})
+                }
+                return({...thread,choice:false})
+            })
+            setThreads(list_thread)
+            setThread(threadchoice)
+            setListmember(threadchoice.members)
+            axios.get(`${conversationsURL}/${threadchoice.id}`,headers)
+            .then(res=>{
+                setState({...state,loading:true})
+                setListmessages(res.data)
+                if(scrollRef.current){
+                    scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+                }
+            })
+        }
     }
 
     console.log(list_messages)
@@ -411,6 +437,9 @@ const Message=(props)=>{
     }
 
     const direact=listmember.find(member=>member.user_id!=user.id)
+    const direact_chat=(thread)=>{
+        return(thread.members.find(member=>member.user_id!=user.id))
+    }
 
     ///set tychat
     const settypechat=(item)=>{
@@ -442,6 +471,7 @@ const Message=(props)=>{
         })
         setThreads(list_convesations)
     }
+
     return(
         <>
         {user!=null?
@@ -488,10 +518,10 @@ const Message=(props)=>{
                 </div>
             </div>
             <div className="chat-body">
-                {threads.some(thread=>thread.choice)?
+                {thread?
                 <div className="chat-window-detail">
                     <div className="chat-shop-info item-center"> 
-                        <div className="chat-shop-name">{direact.username}</div>
+                        <div className="chat-shop-name">{direact.name}</div>
                         <i className="icon-dropdown icon">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" className="chat-icon"><path d="M6.243 6.182L9.425 3l1.06 1.06-4.242 4.243L2 4.061 3.06 3z"></path></svg>
                         </i>
@@ -806,8 +836,8 @@ const Message=(props)=>{
                         </div>
                         <div className="chat-conversationlists-headerbar-index-index__filter chat-conversationlists-headerbar-index-index__reddot-filter--1McFP">
                             <div className="chat-conversationlists-headerbar-index-index__reddot"></div>
-                            <div className="chat-components-common-menus-index__root">
-                                <div onClick={e=>setState({...state,show_type_chat:!state.show_type_chat})} className="chat-components-common-menus-index__popover">
+                            <div ref={typechatref} className="chat-components-common-menus-index__root">
+                                <div onClick={e=>setShow_type_chat(!show_type_chat)} className="chat-components-common-menus-index__popover">
                                     <div className="chat-components-common-menus-index__button">
                                         <div className="chat-conversationlists-headerbar-index-index__selected">Tất cả
                                             <i className="icon chat-conversationlists-headerbar-index-index__arrow-down">
@@ -816,7 +846,7 @@ const Message=(props)=>{
                                         </div>
                                     </div>
                                 </div>
-                                {state.show_type_chat?
+                                {show_type_chat?
                                 <div className="drop-chat">
                                     <div className="list-type-chat">
                                         {list_type_chat.map(item=>
@@ -836,22 +866,25 @@ const Message=(props)=>{
                         <div className="chat-message-container" style={{height: '100%',boxSizing: 'border-box',direction: 'ltr',position: 'relative',width: '222px',willChange: 'transform',overflow: 'auto'}}>
                             <div className="chat-message-container">
                                 {threads.map((thread,i)=>{
-                                    if(state.user_search==null ||state.user_search=='' || (state.user_search!='' && direact.username.toUpperCase().indexOf(state.user_search.toUpperCase())>-1)){
+                                    if(state.user_search==null ||state.user_search=='' || (state.user_search!='' && direact_chat(thread).name.toUpperCase().indexOf(state.user_search.toUpperCase())>-1)){
                                         return(
-                                        <div key={i} onClick={(e)=>showmessage(e,thread)} className="chat-pages-index__root" style={{height: '48px', left: '0px', position: 'absolute', top: `${i*48}px`, width: '100%'}}>
+                                        <div key={i} onClick={(e)=>{
+                                                showmessage(e,thread)
+                                            }} className="chat-pages-index__root" style={{height: '48px', left: '0px', position: 'absolute', top: `${i*48}px`, width: '100%'}}>
                                             <div className="chat-pages-index__avatar">
                                                 <div className="chat-avatar-index__avatar-wrapper">
-                                                    <img alt="" src={`${direact.avatar}`}/>
+                                                    <img alt="" src={`${direact_chat(thread).avatar}`}/>
                                                     <div className="chat-avatar-index__avatar-border"></div>
                                                 </div>
                                             </div>
                                             <div className="chat-pages-index__container">
                                                 <div className="chat-pages-index__upper">
-                                                    <div className="chat-pages-index__username" title={direact.username}>{direact.username}</div>
+                                                    <div className="chat-pages-index__username" title={direact_chat(thread).name}>{direact_chat(thread).name}</div>
                                                 </div>
                                                 <div className="chat-pages-index__lower"> 
                                                     <>
-                                                    {thread.message_last.message_type=='1'?
+                                                    {!thread.message_last?'':
+                                                    thread.message_last.message_type=='1'?
                                                     <div className={`${thread.message[0].user_id!=user.id?'q66pz984':''} text-overflow`}>{thread.message_last.message}</div>
                                                     :thread.message_last.message_type=='2'?
                                                     <>
@@ -873,16 +906,18 @@ const Message=(props)=>{
                                                             </g>
                                                         </svg>
                                                     </i>
-                                                    video</>:
+                                                    video
+                                                    </>:
                                                     thread.message_last.message_type=='5'?
                                                     <div className="text-overflow">Cam on ban da dat hang</div>:
                                                     <div className="text-overflow">Cam on ban da quan tam san pham</div>}
                                                     </>  
                                                 </div>
                                             </div>
+                                        
                                             <div className="action-thread">
                                                 <div className="chat-messsage-time-last">
-                                                    {thread.message.length>0?`${("0" + new Date(thread.message[0].created).getHours()).slice(-2)} : ${("0" + new Date(thread.message[0].created).getMinutes()).slice(-2)}`:''}
+                                                    {thread.message_last?`${("0" + new Date(thread.message[0].created).getHours()).slice(-2)} : ${("0" + new Date(thread.message[0].created).getMinutes()).slice(-2)}`:''}
                                                 </div>
                                                 
                                                 <div onClick={(e)=>setshowaction(e,thread)} id="460390502831204148" className="src-pages-index__three-dots">
@@ -911,9 +946,9 @@ const Message=(props)=>{
                                                     </div> 
                                                 </div>:''}
                                             </div>
-                                            {thread.count_message_not_seen>0 && thread.message[0].sender!=user.username?
+                                            {thread.message_last && thread.count_message_not_seen>0 && thread.message_last.user_id!=user.id?
                                             <div className="unread-message" id="unRead1">
-                                                <span className="badge badge-soft-danger rounded-pill">{thread.count_message_not_seen>0 && thread.message[0].sender!=user.username?thread.count_message_not_seen>99?'99+':thread.count_message_not_seen:''}</span>
+                                                <span className="badge badge-soft-danger rounded-pill">{thread.count_message_not_seen>0 && thread.message_last.user_id!=user.id?thread.count_message_not_seen>99?'99+':thread.count_message_not_seen:''}</span>
                                             </div>:""}
                                         </div>)
                                     }}
@@ -1032,18 +1067,18 @@ const Message=(props)=>{
                                         </div>
                                     </div>
                                     <div className="src-modules-order-index__products--3f0tb">
-                                        {order.cart_item.map(orderitem=>
-                                            <div className="src-modules-orderCard-index__product--KTy0W" key={orderitem.id}>
+                                        {order.cart_item.map(cartitem=>
+                                            <div className="src-modules-orderCard-index__product--KTy0W" key={cartitem.id}>
                                                 <div className="src-modules-orderCard-index__left--1P7zN src-modules-orderCard-index__center--3wE9z">
-                                                    <img alt="" className="src-modules-orderCard-index__picture--2xI6-" src={orderitem.item_image}/>
+                                                    <img alt="" className="src-modules-orderCard-index__picture--2xI6-" src={cartitem.item_image}/>
                                                     <div>
-                                                        <div className="src-modules-orderCard-index__name--hZc60">{orderitem.item_name}</div>
-                                                        <div className="src-modules-orderCard-index__details--3V7Qm">Phân loại: {itemvariation(orderitem)}</div>
+                                                        <div className="src-modules-orderCard-index__name--hZc60">{cartitem.item_name}</div>
+                                                        <div className="src-modules-orderCard-index__details--3V7Qm">Phân loại: {itemvariation(cartitem)}</div>
                                                     </div>
                                                 </div>
                                                 <div className="src-modules-orderCard-index__right--1ZZpT">
-                                                    <div className="src-modules-orderCard-index__money--fhUD7">₫{orderitem.price}</div>
-                                                    <div className="src-modules-orderCard-index__count--27aZv">x{orderitem.quantity}</div>
+                                                    <div className="src-modules-orderCard-index__money--fhUD7">₫{cartitem.price}</div>
+                                                    <div className="src-modules-orderCard-index__count--27aZv">x{cartitem.quantity}</div>
                                                 </div>
                                             </div>
                                         )}
@@ -1076,7 +1111,7 @@ const Message=(props)=>{
 }
 const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated,user:state.user,count_message_unseen:state.count_message_unseen,
-    showchat:state.showchat,
+    showchat:state.showchat,list_threads:state.threads,
     messages:state.messages,threadstate:state.thread,members:state.members
 });
 export default connect(mapStateToProps)(Message);

@@ -15,6 +15,7 @@ import {
     FACEBOOK_AUTH_FAIL,
     LOGOUT,
     SHOW_CHAT,
+    SHOW_THREADS,
 } from '../actions/types';
 
 let initialState = {
@@ -26,6 +27,7 @@ let initialState = {
     count_message_unseen:0,
     thread:null,
     messages:[],
+    threads:[],
     showchat:false
 };
 
@@ -55,6 +57,11 @@ const rootReducer=(state = initialState, action)=>{
             return {
                 ...state,
                 isAuthenticated: false
+            }
+        case SHOW_THREADS:
+            return{
+                ...state,
+                threads:payload
             }
         case SHOW_CHAT:
             return{
