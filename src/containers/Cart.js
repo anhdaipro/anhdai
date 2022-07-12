@@ -908,7 +908,7 @@ class Cart extends React.Component{
                                                                 <span className="discount">Promotion combo</span>
                                                                 <span className="discount-title">Buy {this.item_promotion(shop).promotion.quantity_to_reduced} more {this.item_promotion(shop).promotion.combo_type=='1'?` (will be reduced ${this.item_promotion(shop).promotion.discount_percent}%)`:this.item_promotion(shop).promotion.combo_type=='2'?` (will be reduced ₫${formatter.format(this.item_promotion(shop).promotion.discount_price)}`:` (only with ₫${formatter.format(this.item_promotion(shop).promotion.price_special_sale)}`}</span>
                                                                     <span className="add-byproduct">
-                                                                        <Link to={this.item_promotion(shop).promotion.combo_url}>Add
+                                                                        <Link to={this.item_promotion(shop).promotion.id}>Add
                                                                             <svg viewBox="0 0 12 12" fill="none" width="12" height="12" color="#ee4d2d" className="_1KsfYG"><path fillRule="evenodd" clipRule="evenodd" d="M9.293 6L4.146.854l.708-.708L10 5.293a1 1 0 010 1.414l-5.146 5.147-.708-.707L9.293 6z" fill="currentColor"></path></svg>
                                                                         </Link>
                                                                     </span>
