@@ -210,7 +210,9 @@ const Checkout =({user})=>{
         <div id="main">
             <div className="_193wCc">
                 <div className="top container-wrapper">
-                    <Navbar/>
+                    <Navbar
+                    hidesearch={true}
+                    />
                 </div>
                 <div className="checkout-content">
                 <div className="_3qBcH8">

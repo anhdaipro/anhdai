@@ -55,7 +55,9 @@ export default function Payment() {
     return (
         <>  
             <div className="top container-wrapper">
-                <Navbar/>
+                <Navbar
+                hidesearch={true}
+                />
             </div>
             {show?
             <div className="containers">

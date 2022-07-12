@@ -469,7 +469,7 @@ export default class HomePage extends React.Component {
                                                 {
                                                 items.map(item=>
                                                     <div className="_2x8AVA" key={item.item_id}>
-                                                        <Link to={{pathname:item.item_url}}>
+                                                        <Link to={item.item_url}>
                                                             <div className="_1C-0ut _3GgDBN">
                                                                 <div className="_1gZS6z _1rL6dF">
                                                                     <div className="_25_r8I ggJllv">

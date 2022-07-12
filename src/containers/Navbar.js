@@ -6,7 +6,7 @@ import { logout,headers,expiry } from '../actions/auth';
 import { connect } from 'react-redux';
 import React, { Fragment, useState,useEffect } from 'react';
 import {useNavigate , Link,useLocation,useSearchParams} from 'react-router-dom';
-const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user}) => {
+const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) => {
     const location = useLocation();
     const [state, setState] = useState({category_home:[],items:[],user_name:null,loading:false,show_choice:false});
     const [keyword,setKeyword]=useState(null);
@@ -140,7 +140,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user}) => {
                     </div> 
                     </div>
                 </div>
-                {location.pathname!='/cart' && location.pathname!='/checkout' && location.pathname!='/payment'?
+                {hidesearch?
                 <div className="container-wrapper header-with-search-wrapper">
                     <div className="item-center header-with-search">
                         <Link className="header-with-search__logo-section" to="/">

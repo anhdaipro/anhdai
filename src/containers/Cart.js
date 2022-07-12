@@ -830,8 +830,8 @@ class Cart extends React.Component{
     render(){
         console.log(this.props.user)
         let {count,count_order,total,discount_promotion,loading,count_cartitem,
-        discount_deal,total_discount,discount_voucher,list_shop,list_item_promotion_unique,
-        list_item_remainder,list_voucher_shop,warring,list_cartitem}=this.state
+        discount_deal,total_discount,discount_voucher,list_shop,
+        warring,list_cartitem}=this.state
         return(
             <>
                 <div id="main">
