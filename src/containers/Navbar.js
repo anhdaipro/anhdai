@@ -24,11 +24,14 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
         if(expiry>0 && localStorage.token!=='null'){
             (async () => {
                 try {
-                await isAuthenticated
-                  const res = await axios.get(cartviewURL,headers)
-                  setState({...state,loading:true,view:false,view_account:false,items:res.data.a,user_name:res.data.user_name,image:res.data.image,count:res.data.count}) 
-                } catch (error) {
-                  console.log(error);
+                    await isAuthenticated
+                    if(!hidesearch){
+                    const res = await axios.get(cartviewURL,headers)
+                    setState({...state,loading:true,view:false,view_account:false,items:res.data.a,user_name:res.data.user_name,image:res.data.image,count:res.data.count}) 
+                    }
+                }   
+                catch (error) {
+                    console.log(error);
                 }
             })();
         }
