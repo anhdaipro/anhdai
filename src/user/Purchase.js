@@ -107,8 +107,8 @@ const Purchase =({user})=>{
         setEdit(ed);
     }, [edit]);
 
-    const setorderitem = useCallback((or) => {
-        setState({...state,orderitem:or});
+    const setcartitem = useCallback((or) => {
+        setState({...state,cartitem:or});
     }, [state]);
 
     const setlistreview=useCallback((edit) => {
@@ -124,15 +124,15 @@ const Purchase =({user})=>{
     }, [state]);
 
     const setChoice=useCallback((item) => {
-        const list_orderitem=state.list_orderitem.map(orderitem=>{
-            if(item.id==orderitem.id){
+        const list_cartitem=state.list_cartitem.map(cartitem=>{
+            if(item.id==cartitem.id){
                 return({...item})
             }
             else{
-                return({...orderitem})
+                return({...cartitem})
             }
         })
-        setState({...state,orderitem:list_orderitem});
+        setState({...state,cartitem:list_cartitem});
     }, [state]);
 
     const editreview=(e,order)=>{
@@ -155,11 +155,11 @@ const Purchase =({user})=>{
     const review=(e,order)=>{
         setShow(true)
         setEdit(true)
-        const orderitem_shop=order.order_item.map((orderitem)=>{
-            return{...orderitem,list_image:[],video:null,review_rating:0,rating_bab_category:[0,0,0],rating_anonymous:false,
+        const cartitem_shop=order.cart_item.map((cartitem)=>{
+            return{...cartitem,list_image:[],video:null,review_rating:0,rating_bab_category:[0,0,0],rating_anonymous:false,
                 info_more:'',list_text:[],review_text:''}
         })
-        setState({...state,list_orderitem:orderitem_shop,order_choice:order})
+        setState({...state,list_cartitem:cartitem_shop,order_choice:order})
     }
 
     const cancelorder=(e,order)=>{
@@ -253,7 +253,7 @@ const Purchase =({user})=>{
                                                 <div className="_39XDzv"></div>
                                                 <Link to={`/user/purchase/order/${order.id}`}>
                                                     <div className="_2lVoQ1">
-                                                        {order.order_item.map(orderitem=>
+                                                        {order.cart_item.map(cartitem=>
                                                             <div className="_1limL3">
                                                                 <div>
                                                                     <span className="_1BJEKe">
@@ -263,7 +263,7 @@ const Purchase =({user})=>{
                                                                                     <div className="image__place-holder">
                                                                                         <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-loading-image"><g><rect fill="none" height="8" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="10" x="1" y="4.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="6.5" y2="6.5"></line><rect fill="none" height="3" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="3" x="11" y="6.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="14.5" y2="14.5"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="6" x2="6" y1=".5" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="3.5" x2="3.5" y1="1" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="8.5" x2="8.5" y1="1" y2="3"></line></g></svg>
                                                                                     </div>
-                                                                                    <div className="image__content" style={{backgroundImage: `url(${orderitem.item_image})`}}>
+                                                                                    <div className="image__content" style={{backgroundImage: `url(${cartitem.item_image})`}}>
                                                                                         <div className="image__content--blur"></div>
                                                                                     </div>
                                                                                 </div>
@@ -271,19 +271,19 @@ const Purchase =({user})=>{
                                                                             <div className="_1cxKtp">
                                                                                 <div>
                                                                                     <div className="_1xHDVY">
-                                                                                        <span className="_30COVM">{orderitem.item_name}</span>
+                                                                                        <span className="_30COVM">{cartitem.item_name}</span>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div>
-                                                                                    <div className="y8ewrc">Phân loại hàng:{itemvariation(orderitem)!=''?`Phân loại hàng: ${itemvariation(orderitem)}`:''}</div>
-                                                                                    <div className="_2H6lAy">x{orderitem.quantity}</div>
+                                                                                    <div className="y8ewrc">Phân loại hàng:{itemvariation(cartitem)!=''?`Phân loại hàng: ${itemvariation(cartitem)}`:''}</div>
+                                                                                    <div className="_2H6lAy">x{cartitem.quantity}</div>
                                                                                     <span className="_1RV20z">7 ngày trả hàng</span>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                         <div className="_1kvNGb">
-                                                                            <span className={`${orderitem.discount_price==0?'mBERmM':'_34DOjq'}`}>₫{formatter.format(orderitem.price)}</span>
-                                                                            {orderitem.discount_price>0?<span className="mBERmM _2mEJ4q">₫{orderitem.price-orderitem.discount_price}</span>:''}
+                                                                            <span className={`${cartitem.discount_price==0?'mBERmM':'_34DOjq'}`}>₫{formatter.format(cartitem.price)}</span>
+                                                                            {cartitem.discount_price>0?<span className="mBERmM _2mEJ4q">₫{cartitem.price-cartitem.discount_price}</span>:''}
                                                                         </div>
                                                                     </span>
                                                                 </div>
@@ -369,14 +369,14 @@ const Purchase =({user})=>{
             edit={edit}
             cancel={cancel}
             list_review={state.list_review}
-            list_orderitem={state.list_orderitem}
+            list_cartitem={state.list_cartitem}
             list_orders={state.orders}
             order_choice={state.order_choice}
             updateorder={value=>updateorder(value)}
             setshow={es=>setshow(es)}
             setcancel={es=>setcancel(es)}
             setedit={ed=>setedit(ed)}
-            setorderitem={or=>setorderitem(or)}
+            setcartitem={or=>setcartitem(or)}
             user={user}
             setChoice={item=>setChoice(item)}
             setlistreview={edit=>setlistreview(edit)}

@@ -207,10 +207,10 @@ const Orderuser=()=>{
                                                 <div className="_1lE6Rh"></div>
                                             </div>
                                             <div className="_24pt-Y"></div>
-                                            {data.order_item.map(orderitem=>
+                                            {data.cart_item.map(cartitem=>
                                             <div className="_1limL3">
                                                 <div>
-                                                    <Link className="_1BJEKe" to={orderitem.item_url}><div>
+                                                    <Link className="_1BJEKe" to={cartitem.item_url}><div>
                                                         </div>
                                                         <div className="_3huAcN">
                                                             <div className="_3btL3m">
@@ -218,7 +218,7 @@ const Orderuser=()=>{
                                                                     <div className="image__place-holder">
                                                                         <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-loading-image"><g><rect fill="none" height="8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" width="10" x="1" y="4.5"></rect><line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="1" x2="11" y1="6.5" y2="6.5"></line><rect fill="none" height="3" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" width="3" x="11" y="6.5"></rect><line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="1" x2="11" y1="14.5" y2="14.5"></line><line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="6" x2="6" y1=".5" y2="3"></line><line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="3.5" x2="3.5" y1="1" y2="3"></line><line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="8.5" x2="8.5" y1="1" y2="3"></line></g></svg>
                                                                     </div>
-                                                                    <div className="image__content" style={{backgroundImage: `url(${orderitem.item_image})`}}>
+                                                                    <div className="image__content" style={{backgroundImage: `url(${cartitem.item_image})`}}>
                                                                         <div className="image__content--blur"> </div>
                                                                     </div>
                                                                 </div>
@@ -226,20 +226,20 @@ const Orderuser=()=>{
                                                             <div className="_1cxKtp">
                                                                 <div>
                                                                     <div className="_1xHDVY">
-                                                                        <span className="_30COVM">{data.order_item.item_name}</span>
+                                                                        <span className="_30COVM">{data.cart_item.item_name}</span>
                                                                     </div>
                                                                 </div>
                                                                 <div>
-                                                                    <div className="y8ewrc">Phân loại hàng:{itemvariation(orderitem)!=''?`Phân loại hàng: ${itemvariation(orderitem)}`:''}</div>
-                                                                        <div className="_2H6lAy">x{orderitem.quantity}</div>
+                                                                    <div className="y8ewrc">Phân loại hàng:{itemvariation(cartitem)!=''?`Phân loại hàng: ${itemvariation(cartitem)}`:''}</div>
+                                                                        <div className="_2H6lAy">x{cartitem.quantity}</div>
                                                                     <span className="_1RV20z">7 ngày trả hàng</span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div className="_1kvNGb">
                                                             <div>
-                                                                <span className="_34DOjq">₫{formatter.format(orderitem.price)}</span>
-                                                                <span className="mBERmM _2mEJ4q">₫{formatter.format(orderitem.total_price)}</span>
+                                                                <span className="_34DOjq">₫{formatter.format(cartitem.price)}</span>
+                                                                <span className="mBERmM _2mEJ4q">₫{formatter.format(cartitem.total_price)}</span>
                                                             </div>
                                                         </div>
                                                     </Link>

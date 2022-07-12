@@ -308,21 +308,21 @@ const Shippingmanagement=()=>{
                                                 <div className="order-ref-code">ID đơn hàng: {order.ref_code}</div>
                                             </div>
                                             <div className="order-detail">
-                                                {order.order_item.map(orderitem=>
-                                                <div className="order-orderitem">
+                                                {order.cart_item.map(cartitem=>
+                                                <div className="order-cartitem">
                                                     <div className="item-product d-flex">
                                                         <div className="item-product-image">
-                                                            <div className="image__content" style={{backgroundImage: `url(${orderitem.item_image})`}}></div>
+                                                            <div className="image__content" style={{backgroundImage: `url(${cartitem.item_image})`}}></div>
                                                         </div>
                                                         <div className="order-item-info">
-                                                            <div className="order-item-name">{orderitem.item_info.item_name}</div>
-                                                            <div>{itemvariation(orderitem)}</div>
+                                                            <div className="order-item-name">{cartitem.item_name}</div>
+                                                            <div>{itemvariation(cartitem)}</div>
                                                         </div>
-                                                        <div>{orderitem.quantity}</div>
+                                                        <div>{cartitem.quantity}</div>
                                                     </div>
                                                     <div className="item-total">
-                                                        <div>{orderitem.total_price}</div>
-                                                        <div>{orderitem.canceled}</div>
+                                                        <div>{cartitem.total_price}</div>
+                                                        <div>{cartitem.canceled}</div>
                                                     </div>
                                                     <div className="item-status">
                                                         <div>{order.received?'Đã giao':order.being_delivered?'Đang vận chuyển':order.canceled?'Đã hủy':order.accepted?'Đã xử lý':!order.canceled && new Date().getTime()>new Date(order.ordered_date).getTime()+30*1000*1800?'Chờ lấy hàng':'Chờ xác nhận'}</div>

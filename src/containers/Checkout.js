@@ -326,20 +326,20 @@ const Checkout =({user})=>{
                                                     </div>
                                                 </div>
                                             </div>
-                                            {order.order_item.map(orderitem=>
-                                                <div key={orderitem} className="_3HkBPE _Fqc2-">
+                                            {order.cart_item.map(cartitem=>
+                                                <div key={cartitem} className="_3HkBPE _Fqc2-">
                                                     <div className="_1ASQkt _2rJzUE">
-                                                        <img className="_1Qtf1H" src={orderitem.item_image} width="40" height="40"/>
+                                                        <img className="_1Qtf1H" src={cartitem.item_image} width="40" height="40"/>
                                                         <span className="_11r44J">
-                                                        <span className="_3F5vLQ">[Mã LTDEC giảm 50K đơn 150K] {orderitem.item_info.item_name}</span>
+                                                        <span className="_3F5vLQ">[Mã LTDEC giảm 50K đơn 150K] {cartitem.item_name}</span>
                                                         </span>
                                                     </div>
                                                     <div className="_1ASQkt Aw_HtH">
-                                                    {itemvariation(orderitem)!=''?<span className="_3y8KEH">Loại: {itemvariation(orderitem)}</span>:""}
+                                                    {itemvariation(cartitem)!=''?<span className="_3y8KEH">Loại: {itemvariation(cartitem)}</span>:""}
                                                     </div>
-                                                    <div className="_1ASQkt">₫{formatter.format(orderitem.price)}</div>
-                                                    <div className="_1ASQkt">{orderitem.quantity}</div>
-                                                    <div className="_1ASQkt _2z5WqO">₫{formatter.format(orderitem.total_price)}</div>
+                                                    <div className="_1ASQkt">₫{formatter.format(cartitem.price)}</div>
+                                                    <div className="_1ASQkt">{cartitem.quantity}</div>
+                                                    <div className="_1ASQkt _2z5WqO">₫{formatter.format(cartitem.total_price)}</div>
                                                 </div>
                                             )}
                                         </div>

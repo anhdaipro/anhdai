@@ -220,7 +220,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user}) => {
                                                     <div className="item-center">
                                                         <div className="cart-item-name">
                                                             {item.promotion?<span className="_2-s53F">Combo khuyến mãi</span>:item.shock_deal_type!=null?<span className="_2-s53F">{item.shock_deal_type=='1'?'Buy to receive gift':'Buy with shock deal'}</span>:''}
-                                                            {item.item_info.item_name}
+                                                            {item.item_name}
                                                         </div>
                                                         <div className="cart-item-price">₫{formatter.format(item.price)}</div>
                                                     </div>

@@ -216,7 +216,7 @@ class Cart extends React.Component{
         this.setState({page_no:page})
         let url= new URL(updatecartURL)
         let search_params=url.searchParams
-        search_params.set('item_id',data.item_info.item_id)
+        search_params.set('item_id',data.item_id)
         search_params.set('page',this.state.page_no)
         url.search = search_params.toString();
         let new_url = url.toString();
@@ -386,7 +386,7 @@ class Cart extends React.Component{
                 else{
                     form.append('byproduct_id',data.id)
                 }
-                form.append('item_id',data.item_info.item_id)
+                form.append('item_id',data.item_id)
                 if(this.state.color_id!==0){
                     form.append('color_id',this.state.color_id)
                     }
@@ -529,7 +529,7 @@ class Cart extends React.Component{
     finditem(e,data,item){
         let url= new URL(updatecartURL)
         let search_params=url.searchParams
-        search_params.set('item_id',data.item_info.item_id)
+        search_params.set('item_id',data.item_id)
         this.state.show=!this.state.show
         data.show=!data.show
         if(data.show){
@@ -662,7 +662,7 @@ class Cart extends React.Component{
                 <Link to={data.item_url}>
                     <div className="shop-item-image" style={{backgroundImage: `url(${data.item_image})`}}></div>
                 </Link>
-                <div className="shop-item-name">{data.item_info.item_name}</div>
+                <div className="shop-item-name">{data.item_name}</div>
             </div>
             <div className="shop-item-variation">
                 <div  className="aUj6f2">
@@ -753,11 +753,11 @@ class Cart extends React.Component{
                         <>
                         <div className="_1bmRDE">
                         {this.state.items.map(item=>
-                            <div className="grid__column-2-4" key={item.item_info.item_id}>
+                            <div className="grid__column-2-4" key={item.item_id}>
                                 <Link className="home-product-item" to={item.item_url}>
                                     <div className="home-product-item__image" style={{backgroundImage: `url(${item.item_image})`}}></div>
                                     <div className="home-product-item-info">
-                                        <div className="home-product-item__name">{item.item_info.item_name}</div>
+                                        <div className="home-product-item__name">{item.item_name}</div>
                                         <div className="home-product-item__discount">
                                             {<div className="home-product-item__discount-voucher">
                                                 <svg className="clipath-left" viewBox="-0.5 -0.5 4 16">

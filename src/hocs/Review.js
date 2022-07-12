@@ -5,8 +5,8 @@ import {formatter,itemvariation,hidestring,list_review_text_star,
 star_solid,star_empty,dataURLtoFile,rating_score,list_rating_category_bab,list_reason_cancel} from "../constants"
 import {threadlURL,purchaselistdURL,localhost,} from "../urls"
 const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,user,setshow,updateorder,
-    edit,setedit,list_orderitem,setorderitem,setChoice,setlistreview})=>{
-    const [state, setState] = useState({list_orderitem:list_orderitem,loading:false,review:null,open_info_review:false,submit:false,
+    edit,setedit,list_cartitem,setcartitem,setChoice,setlistreview})=>{
+    const [state, setState] = useState({list_cartitem:list_cartitem,loading:false,review:null,open_info_review:false,submit:false,
     reason_choice:null});
     const [submit,setSubmit]=useState(false)
     console.log(user)
@@ -162,7 +162,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
             })
             function remURL() {(window.URL || window.webkitURL).revokeObjectURL(this.src)}
     }
-    console.log(list_orderitem)
+    console.log(list_cartitem)
     function setopenreview(e){
         e.stopPropagation()
         setshow(false)
@@ -175,7 +175,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
         setshow(false)
         setedit(false)
         setState({...state,review:null})
-        setorderitem(null)
+        setcartitem(null)
     }
 
     function removevideo(e,item){
@@ -279,23 +279,23 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
             let status_submit=true
             setSubmit(status_submit)
             form.append('total_xu',receivexu())
-            list_orderitem.map(orderitem=>{
-                form.append('orderitem_id',orderitem.id)
-                form.append('review_rating',orderitem.review_rating)
-                form.append('rating_anonymous',orderitem.rating_anonymous)
-                form.append('review_text',orderitem.list_text)
-                form.append('rating_bab_category',orderitem.rating_bab_category)
-                form.append('info_more',orderitem.info_more)
-                orderitem.list_image.map(image=>{
+            list_cartitem.map(cartitem=>{
+                form.append('cartitem_id',cartitem.id)
+                form.append('review_rating',cartitem.review_rating)
+                form.append('rating_anonymous',cartitem.rating_anonymous)
+                form.append('review_text',cartitem.list_text)
+                form.append('rating_bab_category',cartitem.rating_bab_category)
+                form.append('info_more',cartitem.info_more)
+                cartitem.list_image.map(image=>{
                     form.append('file_preview',image.file_preview)
                     form.append('file_choice',image.file_choice)
                     form.append('duration',image.duration)
                     form.append('id',image.id)
                 })
-                if(orderitem.video!=null){
-                    form.append('file_preview',orderitem.video.file_preview)
-                    form.append('file_choice',orderitem.video.file_choice)
-                    form.append('duration',orderitem.video.duration)
+                if(cartitem.video!=null){
+                    form.append('file_preview',cartitem.video.file_preview)
+                    form.append('file_choice',cartitem.video.file_choice)
+                    form.append('duration',cartitem.video.duration)
                     form.append('id',state.review.video.id)
                 }
                 listidremove.map(item=>{
@@ -312,11 +312,11 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
             axios.post(purchaselistdURL,form,headers)
             .then(res=>{
                 let data=res.data
-                if(list_orderitem!=null){
+                if(list_cartitem!=null){
                     document.getElementById('modal').onclick=(event)=>{
                         setedit(false)
                         setState({...state,review:null})
-                        setorderitem(null)
+                        setcartitem(null)
                         setSubmit(false)
                         setStatusreview(false)
                         setshow(false)
@@ -340,7 +340,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
     
     function rating_product(item){
         return(
-            <div className={`rating-modal-handler__container ${(item==state.review &&state.review!=null) || (item==list_orderitem[list_orderitem.length-1] && list_orderitem!=undefined)?"rating-modal-handler__container--last":''}`}>
+            <div className={`rating-modal-handler__container ${(item==state.review &&state.review!=null) || (item==list_cartitem[list_cartitem.length-1] && list_cartitem!=undefined)?"rating-modal-handler__container--last":''}`}>
                 <a className="c1C69v _1uii4D" href={item.item_url} target="_blank" rel="noopener noreferrer">
                     <div className="image__wrapper _2ylgGg">
                         <div className="image__place-holder">
@@ -456,19 +456,19 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
     function setopenmodal(e){
         setedit(false)
         setState({...state,review:null})
-        setorderitem(null)
+        setcartitem(null)
         setSubmit(false)
         setshow(false)
     }
 
     function receivexu(){
         let total_xu=0
-        list_orderitem.map(orderitem=>{
-            if(orderitem.info_more.length>=50){
-                if(orderitem.video!=null&& orderitem.list_image.length>0){
+        list_cartitem.map(cartitem=>{
+            if(cartitem.info_more.length>=50){
+                if(cartitem.video!=null&& cartitem.list_image.length>0){
                     total_xu+=200
                 }
-                else if(orderitem.video!=null&& orderitem.list_image.length==0 ||orderitem.video==null&& orderitem.list_image.length>0){
+                else if(cartitem.video!=null&& cartitem.list_image.length==0 ||cartitem.video==null&& cartitem.list_image.length>0){
                     total_xu+=100
                 }
             }
@@ -485,13 +485,13 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                 }
             }
         }
-        if(list_orderitem!=null){
-            const list_valid=list_orderitem.filter(item=>item.review_rating==0)
+        if(list_cartitem!=null){
+            const list_valid=list_cartitem.filter(item=>item.review_rating==0)
             if(list_valid.length>0){
                 disable=true
             }
 
-            const valid_bab=list_orderitem.filter(item=>(item.review_rating<3 && item.rating_bab_category.some(category=>category==0)||(item.review_rating<3 && item.rating_bab_category.every(category=>category>2))))
+            const valid_bab=list_cartitem.filter(item=>(item.review_rating<3 && item.rating_bab_category.some(category=>category==0)||(item.review_rating<3 && item.rating_bab_category.every(category=>category>2))))
             if(valid_bab.length>0){
                 disable=true
             }
@@ -506,8 +506,8 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                 errow=true
             }
         }
-        if(list_orderitem!=null){
-            const valid_bab=list_orderitem.filter(item=>item.review_rating<3 && item.rating_bab_category.every(category=>category>2))
+        if(list_cartitem!=null){
+            const valid_bab=list_cartitem.filter(item=>item.review_rating<3 && item.rating_bab_category.every(category=>category>2))
             if(valid_bab.length>0){
                 errow=true
             }
@@ -553,7 +553,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
         <div className='popup modal__transition-enter-done'>
             <div className="popup__overlay"></div>
             <div className="popup__container">
-                {submit && list_orderitem!=null?
+                {submit && list_cartitem!=null?
                 <>
                 {receivexu()>0?<>
                 <div className="rONIza">
@@ -637,8 +637,8 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                             {state.review!=null?
                                 <>{rating_product(state.review)}</>
                             :<>
-                            {list_orderitem.map(orderitem=>
-                                <>{rating_product(orderitem)}</>
+                            {list_cartitem.map(cartitem=>
+                                <>{rating_product(cartitem)}</>
                             )}
                             </>}
                             </>
@@ -738,7 +738,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                     <div className="popup-form__footer">
                         {edit?<>
                         <button onClick={e=>{setclosereview(e)}} className="cancel-btn">Trở Lại</button>
-                        <button onClick={e=>{list_orderitem!=null?submitreview(e):setStatusreview(true)}} type="button" className={`btn btn-solid-primary ${checkdisable()?'disable':''} btn--s btn--inline _1wSE68`}>Hoàn thành</button>
+                        <button onClick={e=>{list_cartitem!=null?submitreview(e):setStatusreview(true)}} type="button" className={`btn btn-solid-primary ${checkdisable()?'disable':''} btn--s btn--inline _1wSE68`}>Hoàn thành</button>
                         </>:<button onClick={(e)=>setopenreview(e)} className="button-outline">OK</button>}
                     </div>
                 </div>}

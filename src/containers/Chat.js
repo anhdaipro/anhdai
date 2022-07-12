@@ -1032,7 +1032,7 @@ const Message=(props)=>{
                                         </div>
                                     </div>
                                     <div className="src-modules-order-index__products--3f0tb">
-                                        {order.order_item.map(orderitem=>
+                                        {order.cart_item.map(orderitem=>
                                             <div className="src-modules-orderCard-index__product--KTy0W" key={orderitem.id}>
                                                 <div className="src-modules-orderCard-index__left--1P7zN src-modules-orderCard-index__center--3wE9z">
                                                     <img alt="" className="src-modules-orderCard-index__picture--2xI6-" src={orderitem.item_image}/>

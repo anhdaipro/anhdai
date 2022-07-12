@@ -58,7 +58,7 @@ const Promotion = () => {
         setVariation({...variation,count_variation:count_variation,data:data})
         if(data.color.length==0&&data.size.length==0){
             let form =new FormData()
-            form.append('item_id',data.item_info.item_id)
+            form.append('item_id',data.item_id)
             axios.post(addToCartURL,form,headers)
             .then(res=>{
             })
@@ -96,7 +96,7 @@ const Promotion = () => {
                                                 <div className="_1C-0ut">
                                                     <div className="_1gZS6z">
                                                         <div className="_25_r8I ggJllv">
-                                                            <img width="invalid-value" height="invalid-value" alt={item.item_info.item_name} className="_3-N5L6 _2GchKS" style={{objectFit: 'contain'}} src={item.item_image}/>
+                                                            <img width="invalid-value" height="invalid-value" alt={item.item_name} className="_3-N5L6 _2GchKS" style={{objectFit: 'contain'}} src={item.item_image}/>
                                                             <div className="_39tdMd">
                                                                 <div className="T_lEwS _1WH8c-" style={{color: 'rgb(242, 82, 32)'}}>
                                                                     <span className="_1OUheB">Yêu thích</span>
@@ -109,7 +109,7 @@ const Promotion = () => {
                                                         <div className="_2x8wqR">
                                                             <div className="_3GAFiR">
                                                                 <div className="ZG__4J">
-                                                                    <div className="_10Wbs- _2STCsK _3IqNCf">{item.item_info.item_name}</div>
+                                                                    <div className="_10Wbs- _2STCsK _3IqNCf">{item.item_name}</div>
                                                                 </div>
                                                             </div>
                                                             <div className="_13Jarb">

@@ -18,7 +18,7 @@ const Dealshock = () => {
          // <-- passed to API URL
         .then(res=>{
           let data=res.data
-            setState({...state,items:data.list_product,loading:true,deal_id:data.deal_id,orderitem_id:data.orderitem_id})
+            setState({...state,items:data.list_product,loading:true,deal_id:data.deal_id,cartitem_id:data.cartitem_id})
         })
       }
       getJournal();
@@ -47,7 +47,7 @@ const Dealshock = () => {
     const addtocart=(e,data)=>{
         let url=new URL(addToCartBatchURL)
         let search_params=url.searchParams
-        search_params.append('item_id',data.item_info.item_id)
+        search_params.append('item_id',data.item_id)
         if(variation.size_id!=0){
             search_params.set('size_id',variation.size_id)
         }
@@ -60,7 +60,7 @@ const Dealshock = () => {
         axios.get(new_url)
         .then(res => { 
             const list_item=state.items.map(item=>{
-                if(item.item_info.item_id==data.item_info.item_id){
+                if(item.item_id==data.item_id){
                     return{...item,variation_id:res.data.variation_id,price:res.data.price,discount_price:res.data.discount_price,
                     size_value:res.data.size_value,color_value:res.data.color_value,
                     inventory:res.data.inventory,show:false,check:true
@@ -88,7 +88,7 @@ const Dealshock = () => {
     
     function adjust(e,data){
         const list_item=state.items.map(item=>{
-            if(item.item_info.item_id==data.item_info.item_id){
+            if(item.item_id==data.item_id){
                 return {...item,quantity:data.quantity}
             }
             else{
@@ -101,7 +101,7 @@ const Dealshock = () => {
     const check_variation=(e,data)=>{
         e.stopPropagation()
         const list_item=state.items.map(item=>{
-            if (item.item_info.item_id==data.item_info.item_id){
+            if (item.item_id==data.item_id){
                 if(item.variation_id!=undefined ){
                     return {...item, check: !data.check};
                 }
@@ -120,7 +120,7 @@ const Dealshock = () => {
     }
     function variationitem(e,data){
         const list_items=state.items.map(item=>{
-            if (item.item_info.item_id==data.item_info.item_id){
+            if (item.item_id==data.item_id){
                 return {...item, show: !item.show};
             }
             else{
@@ -181,11 +181,11 @@ const Dealshock = () => {
     const addtocartbatch=(e)=>{
         e.stopPropagation()
         let form=new FormData()
-        form.append('orderitem_id',state.orderitem_id)
+        form.append('cartitem_id',state.cartitem_id)
         form.append('deal_id',state.deal_id)
         state.items.map(item=>{
             if(item.main==true){
-                form.append('item_id',item.item_info.item_id)
+                form.append('item_id',item.item_id)
                 form.append('variation_id_chocie',item.variation_id)
                 form.append('quantity_product',item.quantity)
             }
@@ -228,7 +228,7 @@ const Dealshock = () => {
                         <img className="_2QpYlF" src={`${localhost}${data.item_image}`}/>
                     </Link >
                     <div className="q7k-yX">
-                        <p className="_2eCTrn">{data.item_info.item_name}</p>
+                        <p className="_2eCTrn">{data.item_name}</p>
                     </div>
                     <div className="stardust-popover _348Lnr" id="stardust-popover5">
                         {data.color.length==0&&data.size.length==0?
