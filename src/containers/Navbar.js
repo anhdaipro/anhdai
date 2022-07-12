@@ -26,8 +26,12 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                 try {
                     await isAuthenticated
                     if(!hidesearch){
-                    const res = await axios.get(cartviewURL,headers)
-                    setState({...state,loading:true,view:false,view_account:false,items:res.data.a,user_name:res.data.user_name,image:res.data.image,count:res.data.count}) 
+                        const [obj1,obj2]= await axios.all([
+                            axios.get(cartviewURL,headers),
+                            axios.get(categoryhomeURL,headers),
+                        ])
+                        setState({...state,loading:true,view:false,view_account:false,items:obj1.data.a,count:obj1.data.count}) 
+                        setCategory(obj2.data)
                     }
                 }   
                 catch (error) {
@@ -38,17 +42,6 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     }, []);
 
     
-    useEffect(() =>  {
-        (async () => {
-            try {
-            const res = await axios.get(categoryhomeURL)
-                  setCategory(res.data)
-            } catch (error) {
-                console.log(error);
-            }
-        })();
-    }, []);
-
     let count_item=state.count
     let list_items=state.items
     if(cartitem!=undefined){
