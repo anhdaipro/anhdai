@@ -825,7 +825,7 @@ class Cart extends React.Component{
       }
 
     item_promotion=(shop)=>{
-        return this.item_promotion
+        return this.state.list_cartitem.find(cartitem=>cartitem.promotion && shop.shop_name==cartitem.shop_name)
     }
     render(){
         console.log(this.props.user)
