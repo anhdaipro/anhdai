@@ -836,7 +836,9 @@ class Cart extends React.Component{
             <>
                 <div id="main">
                     <div className="top container-wrapper">
-                        <Navbar/>
+                        <Navbar
+                        hidesearch={true}
+                        />
                     </div>
                     {loading?
                     <div className="_164M6a">
