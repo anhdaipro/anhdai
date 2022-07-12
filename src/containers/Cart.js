@@ -913,17 +913,15 @@ class Cart extends React.Component{
                                                                         </Link>
                                                                     </span>
                                                                 </div>
-                                                                {list_cartitem.filter(cartitem=>cartitem.promotion && cartitem.shop_name==shop.shop_name).map((item,i)=>{
-                                                                    <Iteminfo
+                                                                {list_cartitem.filter(cartitem=>cartitem.promotion && cartitem.shop_name==shop.shop_name).map((item,i)=>
+                                                                <Iteminfo
                                                                     item={item}
                                                                     adjustitem={(e,item,product,cartitemchoice,value)=>this.adjustitem(e,item,product,cartitemchoice,value)}
                                                                     removeitem={(e,item,product)=>this.removeitem(e,item,product)}
                                                                     checked={(e,item)=>this.checked(e,item)}
                                                                     product='mainproduct'
                                                                     shop={shop}
-                                                                    />
-                    
-                                                                }
+                                                                />  
                                                             )}
                                                         </div>
                                                     :''}
