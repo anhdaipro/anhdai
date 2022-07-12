@@ -140,7 +140,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                     </div> 
                     </div>
                 </div>
-                {hidesearch?
+                {!hidesearch?
                 <div className="container-wrapper header-with-search-wrapper">
                     <div className="item-center header-with-search">
                         <Link className="header-with-search__logo-section" to="/">
