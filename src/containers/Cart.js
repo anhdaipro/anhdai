@@ -772,10 +772,10 @@ class Cart extends React.Component{
                                             <div className="home-product-item__discount-deal-shock">mua kèm deal soc</div>
                                         </div>
                                         <div className="_3_FVSo">  
-                                            <div className={`${item.percent_discount>0 && item.program_valid>0?'home-product-item__price-old zp9xm9':'home-product-item__price _3c5u7X'}`}>₫{formatter.format((item.item_max+item.item_min)/2)}</div>
+                                            <div className={`${item.percent_discount>0 && item.program_valid>0?'home-product-item__price-old zp9xm9':'home-product-item__price _3c5u7X'}`}>₫{formatter.format((item.max_price+item.min_price)/2)}</div>
                                             {item.percent_discount>0 && item.program_valid>0?
                                             <div className="home-product-item__price-current">
-                                                <span className="_1y2DMk">₫</span><span className="_3c5u7X">{formatter.format((item.item_max+item.item_min)/2*(100-item.percent_discount)/100)}</span>
+                                                <span className="_1y2DMk">₫</span><span className="_3c5u7X">{formatter.format((item.max_price+item.min_price)/2*(100-item.percent_discount)/100)}</span>
                                             </div>
                                             :''}
                                             <div className="_2YM55k">

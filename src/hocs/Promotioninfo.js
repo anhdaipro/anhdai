@@ -506,7 +506,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                                                 </div>
                                                 <div className="table_main-header" style={{width:'800px'}}>
                                                     <div>
-                                                        ₫{formatter.format(item.item_min)} {item.item_min!=item.item_max?`- ${formatter.format(item.item_max)}`:''}
+                                                        ₫{formatter.format(item.min_price)} {item.min_price!=item.max_price?`- ${formatter.format(item.max_price)}`:''}
                                                     </div>
                                                     <div>{item.item_inventory}</div>
                                                     <div className="column_edit-shipping">{item.item_shipping}</div>

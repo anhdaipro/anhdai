@@ -56,7 +56,7 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
                     <div className="table_main-header">
                         <div className="item-center">{item.number_order}</div>
                         <div className="item-center">
-                            ₫{formatter.format(item.item_min)} {item.item_min!=item.item_max?<>- <br/> ₫{formatter.format(item.item_max)}</>:''}                                          
+                            ₫{formatter.format(item.min_price)} {item.min_price!=item.max_price?<>- <br/> ₫{formatter.format(item.max_price)}</>:''}                                          
                         </div>
                         <div className="item-center">{item.item_inventory}</div>
                     </div> 

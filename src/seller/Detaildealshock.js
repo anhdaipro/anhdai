@@ -757,7 +757,7 @@ const Detaildealshock=()=>{
                                                     </div>
                                                     <div className="table_main-header" style={{width:'800px'}}>
                                                         <div className="main-price">
-                                                            ₫{formatter.format(item.item_min)} {item.item_min!=item.item_max?`- ${formatter.format(item.item_max)}`:''}
+                                                            ₫{formatter.format(item.min_price)} {item.min_price!=item.max_price?`- ${formatter.format(item.max_price)}`:''}
                                                         </div>
                                                         <div>{item.item_inventory}</div>
                                                         <div className="column_edit-shipping">{item.item_shipping}</div>
@@ -1231,7 +1231,7 @@ const Detaildealshock=()=>{
                                                                 <img src={itemshop.items_choice[0].item_image} alt="" className="product-preview"/>
                                                             </div> 
                                                             <p className="price-box">
-                                                                <span className="price">₫{formatter.format(itemshop.items_choice[0].item_min)} {itemshop.items_choice[0].item_max!=itemshop.items_choice[0].item_min?`- ₫${formatter.format(itemshop.items_choice[0].item_max)}`:''}</span>
+                                                                <span className="price">₫{formatter.format(itemshop.items_choice[0].min_price)} {itemshop.items_choice[0].max_price!=itemshop.items_choice[0].min_price?`- ₫${formatter.format(itemshop.items_choice[0].max_price)}`:''}</span>
                                                             </p>
                                                         </div>
                                                         {list_enable_on.length>1?
@@ -1278,10 +1278,10 @@ const Detaildealshock=()=>{
                                                     </div> 
                                                     <div className="price-total">
                                                         <p className="price-box">
-                                                            <span className="price">₫{formatter.format(itemshop.items_choice[0].item_min+get_price().total_discount)} {itemshop.items_choice[0].item_min!=itemshop.items_choice[0].item_max?` - ₫${formatter.format(itemshop.items_choice[0].item_min+get_price().total_discount)}`:""}</span>
+                                                            <span className="price">₫{formatter.format(itemshop.items_choice[0].min_price+get_price().total_discount)} {itemshop.items_choice[0].min_price!=itemshop.items_choice[0].max_price?` - ₫${formatter.format(itemshop.items_choice[0].min_price+get_price().total_discount)}`:""}</span>
                                                         </p> 
                                                         <p className="price-origin-box">
-                                                            <span className="price-origin">₫{formatter.format(itemshop.items_choice[0].item_min+get_price().total_price)} {itemshop.items_choice[0].item_min!=itemshop.items_choice[0].item_max?` - ₫${formatter.format(itemshop.items_choice[0].item_min+get_price().total_price)}`:""}</span>
+                                                            <span className="price-origin">₫{formatter.format(itemshop.items_choice[0].min_price+get_price().total_price)} {itemshop.items_choice[0].min_price!=itemshop.items_choice[0].max_price?` - ₫${formatter.format(itemshop.items_choice[0].min_price+get_price().total_price)}`:""}</span>
                                                         </p>
                                                     </div>
                                                 </div> 

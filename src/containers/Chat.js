@@ -657,13 +657,13 @@ const Message=(props)=>{
                                                             <div className="_3YQ_qVknzTkiquZzAybJ5x wv-n-n7UHQV6SLVBAt4Mx">
                                                                 <div className="_2vu1W9DIq3TR0Pv9Pjv5oy">
                                                                     <div className={`chat-product-price-${message.item.program_valid>0?'old':'current'}`}>
-                                                                        ₫{formatter.format(message.item.item_min)} {message.item.item_min!==message.item.item_max?`- ₫${formatter.format(message.item.item_max)}`:''}
+                                                                        ₫{formatter.format(message.item.min_price)} {message.item.min_price!==message.item.max_price?`- ₫${formatter.format(message.item.max_price)}`:''}
                                                                     </div>
                                                                     {message.item.program_valid>0?
                                                                     <div className="chat-product-price-curent">
-                                                                        ₫{formatter.format(message.item.item_min*(100-message.item.percent_discount)/100)}
-                                                                        {message.item.item_min!==message.item.item_max?
-                                                                        `- ₫${formatter.format(message.item.item_max*(100-message.item.percent_discount)/100)}`:''}
+                                                                        ₫{formatter.format(message.item.min_price*(100-message.item.percent_discount)/100)}
+                                                                        {message.item.min_price!==message.item.max_price?
+                                                                        `- ₫${formatter.format(message.item.max_price*(100-message.item.percent_discount)/100)}`:''}
                                                                     </div>
                                                                     :''}
                                                                 </div>
@@ -988,7 +988,7 @@ const Message=(props)=>{
                                                         <div style={{width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', wordBreak: 'break-all', whiteSpace: 'nowrap'}}> {item.item_name}</div>
                                                     </div>
                                                 </div>
-                                                {formatter.format(item.item_min)} {item.item_min!=item.item_max?`- ${formatter.format(item.item_max)}`:''}
+                                                {formatter.format(item.min_price)} {item.min_price!=item.max_price?`- ${formatter.format(item.max_price)}`:''}
                                             </div>
                                         </div>
                                         <div className="src-modules-index__product-footer--1mBzI ">

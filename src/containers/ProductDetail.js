@@ -762,7 +762,7 @@ const ProductDetail = ({report_complete,reviewchoice,show_report,setreport,setth
                                     </div>
                                 </div>
                                 <div className="_3m5v9Z">
-                                    <span className="_3BOLsU">₫{(state.data.item_min+state.data.item_max)/2}</span>
+                                    <span className="_3BOLsU">₫{(state.data.min_price+state.data.max_price)/2}</span>
                                     {state.data.count_discount_valid?
                                     <span className="_3QGCLf">₫{(state.data.item_discount_min+state.data.item_discount_min)/2}</span>:''}
                                 </div>
@@ -796,7 +796,7 @@ const ProductDetail = ({report_complete,reviewchoice,show_report,setreport,setth
                                         </div>
                                     </div>
                                     <div className="_3m5v9Z">
-                                        <span className="_3BOLsU">₫{(state.data.item_min+state.data.item_max)/2}</span>
+                                        <span className="_3BOLsU">₫{(state.data.min_price+state.data.max_price)/2}</span>
                                         {state.data.count_discount_valid?
                                         <span className="_3QGCLf">₫{(state.data.item_discount_min+state.data.item_discount_min)/2}</span>:''}
                                     </div>
@@ -986,7 +986,7 @@ const ProductDetail = ({report_complete,reviewchoice,show_report,setreport,setth
                                 <div className="item-card-special__lower-padding">
                                     <div className="item-card-special__name item-card-special__name--special">🔥{item.item_name}</div>
                                     <div className="item-card-special__section-price item-card-special__section-price--special">
-                                        <div className="item-card-special__current-price item-card-special__current-price--special">₫{formatter.format(item.item_min*(100-item.percent_discount))} {item.item_max!=item.item_min?`₫${formatter.format(item.item_max*(100-item.percent_discount))}`:''}</div>
+                                        <div className="item-card-special__current-price item-card-special__current-price--special">₫{formatter.format(item.min_price*(100-item.percent_discount))} {item.max_price!=item.min_price?`₫${formatter.format(item.max_price*(100-item.percent_discount))}`:''}</div>
                                     </div>
                                 </div>
                             </div>

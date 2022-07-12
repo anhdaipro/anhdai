@@ -259,7 +259,7 @@ const Itemflashsale =()=> {
                                                         <div className="flash-sale-item-card__lower-left">
                                                             <div className="flash-sale-item-card__current-price flash-sale-item-card__current-price--home-page">
                                                                 <span className="item-price-dollar-sign">₫ </span>
-                                                                <span className="item-price-number">{formatter.format(((item.item_max+item.item_min)/2)*(100-item.percent_discount)/100)}</span> 
+                                                                <span className="item-price-number">{formatter.format(((item.max_price+item.min_price)/2)*(100-item.percent_discount)/100)}</span> 
                                                             </div>
                                                             <div className="flash-sale-progress-bar__wrapper flash-sale-progress-bar__wrapper--home-page">
                                                                 <div className="flash-sale-progress-bar flash-sale-progress-bar--home-page">
@@ -502,7 +502,7 @@ export default class HomePage extends React.Component {
                                                                         <div className="_7rV1tW _3_FVSo">
                                                                             <div className="zp9xm9 _2Dfuwn">
                                                                                 <span className="_3DgLDE">₫</span>
-                                                                                <span className="_19hRcI">{formatter.format((item.item_max+item.item_min)/2)}</span>
+                                                                                <span className="_19hRcI">{formatter.format((item.max_price+item.min_price)/2)}</span>
                                                                             </div>
                                                                             <div className="_1uq9fs _3yTzjb"></div>
                                                                         </div>
