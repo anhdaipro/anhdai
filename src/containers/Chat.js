@@ -29,6 +29,7 @@ const Message=(props)=>{
     const [listmember,setListmember]=useState([])
     const [typing,setTyping]=useState({typing:false,send_to:null})
     const [messagefile,setMessagefile]=useState([])
+    const [length,setLength]=useState(40)
     const socket=useRef()   
     const scrollRef=useRef(null);
     const typechatref=useRef(null);
@@ -595,7 +596,7 @@ const Message=(props)=>{
                                     </div>
                                 </section>
                             </div>:''}
-                            <div ref={scrollRef} onScroll={(e)=>addmessage(e)} className="chat-message-container" style={{overflowX: 'hidden',boxSizing: 'border-box',direction: 'ltr',height: '242px',position: 'relative',padding: '0 7.5px',width: '283px',willChange: 'transform',overflowY: 'auto'}}> 
+                            <div ref={scrollRef} onScroll={(e)=>addmessage(e)} className="chat-message-container" style={{overflowX: 'hidden',boxSizing: 'border-box',direction: 'ltr',height: `${242-parseInt(message.length/length)*20}px`,position: 'relative',padding: '0 7.5px',width: '283px',willChange: 'transform',overflowY: 'auto'}}> 
                                 {state.loading?'':<div className="item-centers">
                                     <div className="loader"></div>
                                 </div>}
@@ -724,7 +725,7 @@ const Message=(props)=>{
                                     <textarea onChange={(e)=>settyping(e)} 
                                     value={message.message}
                                     className="chat-inputfield-chateditor-index__editor" 
-                                    placeholder="Gửi tin nhắn" style={{overflow: 'hidden',height: '26px'}}></textarea>
+                                    placeholder="Gửi tin nhắn" style={{overflow: 'hidden',height:`${26+parseInt(message.length/length)*20}px`}}></textarea>
                                     <div onClick={(e)=>senmessage(e)} className="chat-send-button">
                                         <div className="chat-send-tooltip">
                                             <i className="icon chat-index__button">
