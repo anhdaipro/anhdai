@@ -131,7 +131,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                             </div>
                             <span className="navbar__link-text pl-1_2 navbar__link--hoverable">Hỗ Trợ</span>
                         </Link>
-                        {user!==null?
+                        {user?
                         <div onMouseLeave={()=>hideaccount()} onMouseEnter={()=>viewaccount()} className="item-center pl-2" id="nav">
                             <img id="img-preview2" src={image!=undefined?image:user.avatar}/>
                             <span className="pl-1_2">{user.username}</span>
@@ -211,7 +211,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                                 </div>
                             </div>
                         </div>
-                        {user!=null?
+                        {user?
                         <div onMouseLeave={()=>hidecart()} onMouseEnter={()=>viewcart()} className="stardust-popover ml-2">
                             <div aria-describedby="stardust-popover5" className="stardust-popover__target">
                                 <div  className="cart-drawer-container">
