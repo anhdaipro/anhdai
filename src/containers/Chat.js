@@ -37,6 +37,9 @@ const Message=(props)=>{
     const direact_chat=(thread)=>{
         return(thread.members.find(member=>member.user_id!=user.id))
     }
+    const user_chat=(thread)=>{
+        return(thread.members.find(member=>member.user_id==user.id))
+    }
     useEffect(() =>  {
         if(showchat){
         setListmember(members)
@@ -960,9 +963,9 @@ const Message=(props)=>{
                                                     </div> 
                                                 </div>:''}
                                             </div>
-                                            {direact_chat(thread).count_message_unseen>0?
+                                            {user_chat(thread).count_message_unseen>0?
                                             <div className="unread-message" id="unRead1">
-                                                <span className="badge badge-soft-danger rounded-pill">{direact_chat(thread).count_message_unseen>99?'99+':direact_chat(thread).count_message_unseen}</span>
+                                                <span className="badge badge-soft-danger rounded-pill">{user_chat(thread).count_message_unseen>99?'99+':user_chat(thread).count_message_unseen}</span>
                                             </div>:""}
                                         </div>)
                                     }}
