@@ -130,22 +130,25 @@ const Message=(props)=>{
 
     const showmessage=(e,threadchoice)=>{
         e.stopPropagation()
+        const list_thread=threads.map(thread=>{
+            if(thread.id==threadchoice.id){
+                return({...thread,members:thread.members.map(member=>{
+                    if(member.user_id==user.id){
+                        return({...member,count_message_unseen:0})
+                    }
+                    return({...member})
+                })})
+            }
+            return({...thread})
+        })
+        setThreads(list_thread)
+        setThread(threadchoice)
+        setListmember(threadchoice.members)
+        if(scrollRef.current){
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+        }
         if(!thread || threadchoice.members.some(member=>member.count_message_unseen>0 && member.user_id==user.id) ||  (threadchoice && threadchoice.id!=thread.id)){
             setState({...state,loading:false})
-            const list_thread=threads.map(thread=>{
-                if(thread.id==threadchoice.id){
-                    return({...thread,members:thread.members.map(member=>{
-                        if(member.user_id==user.id){
-                            return({...member,count_message_unseen:0})
-                        }
-                        return({...member})
-                    })})
-                }
-                return({...thread})
-            })
-            setThreads(list_thread)
-            setThread(threadchoice)
-            setListmember(threadchoice.members)
             axios.get(`${conversationsURL}/${threadchoice.id}`,headers)
             .then(res=>{
                 setState({...state,loading:true})
@@ -155,11 +158,6 @@ const Message=(props)=>{
                     scrollRef.current.scrollTop = scrollRef.current.scrollHeight
                 }
             })
-        }
-        else{
-            if(scrollRef.current){
-                scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-            }
         }
     }
 
