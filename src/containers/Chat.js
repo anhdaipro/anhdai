@@ -170,19 +170,19 @@ const Message=(props)=>{
     }
 
     const settyping=(e)=>{ 
-        const value=e.target.value 
-        setMessage({...message,message:e.target.value,messagecreate:e.target.value})
+        let value=e.target.value 
+        setMessage(e.target.value)
         sentyping(value)
     }
 
     const sentyping= useCallback(debounce((value)=>{
         let data={
-        typing:message,
+        typing:value,
         send_by: user.id,
         receiver:listmember.filter(member=>user.id!=member.user_id),
         }
         socket.current.emit('sendData',data)
-    },1000),[user,listmember,message])
+    },1000),[user,listmember])
     
     const senmessage=(e)=>{
         if(listfile.filter(file=>file.filetype=='image').length>0 || message.trim()!=''){ 
@@ -723,7 +723,7 @@ const Message=(props)=>{
                             <div className="chat-input-field-index">
                                 <div className="chat-inputfield-chateditor-index__root">
                                     <textarea onChange={(e)=>settyping(e)} 
-                                    value={message.message}
+                                    value={message}
                                     className="chat-inputfield-chateditor-index__editor" 
                                     placeholder="Gửi tin nhắn" style={{overflow: 'hidden',height:`${26+parseInt(message.length/length)*20}px`}}></textarea>
                                     <div onClick={(e)=>senmessage(e)} className="chat-send-button">
