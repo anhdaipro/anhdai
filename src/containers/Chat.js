@@ -11,7 +11,198 @@ const listaction=[ {name:'Ghim Trò Chuyện',gim:true},{name:'Bỏ gim cuộc T
 {name:'Đánh dấu đã đọc',unread:false},{name:'Đánh dấu đã đọc',unread:true},
 {name:'Xóa trò chuyện',delete:true}]
 const list_type_chat=[{'name':'All',value:'1'},{'name':'Unread',value:'2'},{'name':'Đã gim',value:'3'}]
+const Shopmember=(props)=>{
+    const {thread,setshop,showdata,sendproduct,sendorder,loadingdata,setloading,shopchoice,user,listmember,showmoreitem,setshopchoice,shop}=props
+    const [show,setShow]=useState(false)
+    const [keyword,setKeyword]=useState('')
+    const shopref=useRef()
+    useEffect(()=>{
+        if(showdata.show_product||showdata.show_order){
+            setShow(true)
+        }
+        else{
+            setShow(false)
+        }
+    },[showdata])
+    useEffect(() => {
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [])
+    const handleClick = (event) => {
+        const { target } = event
+        if(shopref.current!=null){
+            if (!shopref.current.contains(target)) {
+                setShow(false)
+            }
+        }
+    }
+    const fetchkey=(e)=>{
+        const value=e.target.value
+        setKeyword(value)
+        fetchdata(value)
+    }
+    const fetchdata=useCallback(debounce((value)=>{
+        (async()=>{
+            setloading(false)
+            const res= await axios.get(`${conversationsURL}/${thread.id}?user_id=${shop.user_id}&action=showitem&keyword=${value}`,headers)
+            setshop({list_items:res.data.list_items})
+            setloading(true)
+        })()
+        
+    },1000),[thread,shop])
 
+    return(
+        <>
+        {show?
+        <div ref={shopref} className="src-product">
+            <div className="src-product-content--1mfan">
+                <div className="src-components-index__root--3vLtz">
+                    <div className="_7-BLd7BF4x null">
+                    <div className="_3vLtzAtDd0qclx5tZzPjE1">
+                    {shop.choice=='item'?
+                    <>
+                    <div className="src-components-index__tabs--Y19NK">
+                        {listmember.filter(member=>member.count_product_shop>0).map(member=>
+                        <div onClick={(e)=>setshopchoice(member.user_id)} className={`${member.user_id==shopchoice?'src-components-index__active--2KOj5':''} src-components-index__header--2FJYt src-modules-ProductPopover-index__complete--3dtzk`}>
+                            <div className={`${member.user_id==shopchoice?'_2KOj5VuVuj4vllVcc2JdME':''} _2FJYtfdtHjeRTnhvvl2K60 VVy7Epss6jbZON_gAV8DL`}>
+                                <div className="_3QOGROVLeZnXLm4tuSQ1mw">
+                                    <div className="_2SUuRqTi0kYb8yVs0qG7Vy">
+                                        <div className="_2xGjvAuHdCo364lNgvhQYC undefined">
+                                            <div className="_29uoglXEwg_2RaVW0_CFBG">
+                                                <img alt="" src="https://cf.shopee.vn/file/e09b7eec5fbf3add1ed6287059ad87cd"/>
+                                                <div className="_2Wkz3CDhCMDEZwE7G91OSy"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="_33otEWhJi9FGHJjr-QenUb" title={`${member.user_id==user.id?'Shop của Tôi':member.username}`}>{member.user_id==user.id?'Shop của Tôi':member.username}</div>
+                                </div>
+                            </div>
+                        </div>
+                        )}
+                    </div>
+                    <div className="src-components-index__main--RhtCG">
+                        <section className="src-modules-index__container--2BjL8">
+                        <div className="Wm99cbuMTHUN-lPHdXJcw">
+                            <div title="" className="Cgb3ZVppxcdV9lpRAtf_Z _1DNCoJpKBYj0FIH4kdEoQ2 ">
+                            <input className="_3oQvjrwelQNbCCFf7TLCw2" placeholder="Tìm kiếm" onChange={e=>fetchkey(e)} value={keyword}/>
+                            <div className="eFqTfAmTMJ6cXc3Y2pFCG _1DNCoJpKBYj0FIH4kdEoQ2">
+                                <div className="_3d4w9o9pz5PFzKbRKZsBnn"><i className="_3kEAcT1Mk5 _2w7NPuMDjqdQj1bLEtEyn3"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><g transform="translate(3 3)"><path d="M393.846 708.923c174.012 0 315.077-141.065 315.077-315.077S567.858 78.77 393.846 78.77 78.77 219.834 78.77 393.846s141.065 315.077 315.077 315.077zm0 78.77C176.331 787.692 0 611.36 0 393.845S176.33 0 393.846 0c217.515 0 393.846 176.33 393.846 393.846 0 217.515-176.33 393.846-393.846 393.846z"></path><rect transform="rotate(135 825.098 825.098)" x="785.713" y="588.79" width="78.769" height="472.615" rx="1"></rect></g></svg></i></div></div></div></div>
+                            <div className="_3-vMpVByDVfsbNbjW0Gevd">
+                                <div onScroll={(e)=>showmoreitem(e,'item')} className="_31xcV2AYAe7PQCE5go9tBW">
+                                    
+                                    {shop.list_items.map(item=>
+                                        <div className="_1DGA-XJjpraK9hM8eikWlD" key={item.id}>
+                                            <div className="_1xYuf-CUfbCu2l4v3KD11l">
+                                                <img alt="" className="_2xTkYOoqGC3DJpd0pTYF66" src={item.image}/>
+                                                <div className="_2c8yVDz8vsa8w41K7EsTMn">
+                                                    <div className="_1Cq62Bf6tvJC3Bf6efiMj7">
+                                                        <div style={{overflow: 'hidden', textOverflow: 'ellipsis', WebkitBoxOrient: 'vertical', display: '-webkit-box', WebkitLineClamp: 1}}>
+                                                            <div title={`${item.name}`} style={{width: `100%`, wordBreak: `break-all`}}> {item.name}</div>
+                                                        </div>
+                                                    </div>
+                                                <div className="_3a6r65Fja-PAPufuq_uQ6I"></div>
+                                                <div className="_3gFaGjBODalETgK02YnB_F">₫{formatter.format(item.min_price*(1-item.percent_discount/100))} {item.min_price<item.max_price?` - ₫${formatter.format(item.max_price*(1-item.percent_discount/100))}`:''}</div>
+                                            </div>
+                                        </div>
+                                        <div className="_2_gLCkJ8OCG2K6t27pYdD2 ">
+                                            <div onClick={(e)=>sendproduct(e,item)} className="_2Al9UPDLsxMEfnJkCa3HQD">Gửi</div>
+                                            <div className="_3bQkg0Y5mVCrvuPfuQSEM-">
+                                                <div className="_10VxDOhu-xe6SAa18uZyqh">{item.item_inventory} có sẵn</div>
+                                                <div>{item.number_order} đã bán</div>
+                                            </div>
+                                        </div>
+                                    </div>     
+                                    )}
+                                    {loadingdata?<>
+                                    {shop.list_items.length==0?
+                                    <div class="_3YurerlznH jHfK1c-Py0hqmZG0XqDnq">
+                                        <img src='https://res.cloudinary.com/dupep1afe/image/upload/v1657708116/download_5_jxvcq5.png' class="_1jxtCX6jiG"/>
+                                        <div class="_3l9IBXMpxr">Không có kết quả nào</div>
+                                    </div>:''}</>:
+                                    <div className="_3YurerlznH jHfK1c-Py0hqmZG0XqDnq">
+                                        <div className="loading_item item-center">
+                                            <div className="ball"></div>
+                                            <div className="ball"></div>
+                                            <div className="ball"></div>
+                                        </div>
+                                    </div>}
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    </>
+                    :
+                    <>
+                    <div className="src-components-Common-ListContainer-index__tabs--Y19NK">
+                        <div className="src-components-Common-ListContainer-index__header--2FJYt ">Mua</div>
+                    </div>
+                    <div className="src-components-index__main--RhtCG">
+                        <div onScroll={(e)=>showmoreitem(e,'order')} className="src-components-Common-ScrollList-style__root--31xcV">
+                            {shop.list_orders.map(order=>
+                                <div className="src-modules-order-index__root--yf6BH" key={order.id}>
+                                    <div className="src-modules-order-index__header--MQYX3">
+                                        <div className="src-modules-order-index__shop--3s53F">
+                                            <div className="src-modules-order-index__avatar--3WmjS">
+                                                <div className="src-components-avatar-index__root--2xGjv undefined">
+                                                    <i className=" _3kEAcT1Mk5 src-components-avatar-index__shop--1erCv">
+                                                        <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path fillRule="evenodd" clip-rule="evenodd" d="M1.438.5a.5.5 0 00-.485.382L.073 4.5A1.461 1.461 0 000 4.957C0 5.81.733 6.5 1.636 6.5a1.65 1.65 0 001.455-.835 1.65 1.65 0 001.454.835A1.65 1.65 0 006 5.665a1.65 1.65 0 001.455.835 1.65 1.65 0 001.454-.835 1.65 1.65 0 001.455.835C11.267 6.5 12 5.81 12 4.957c0-.102-.01-.201-.03-.298h.002L11.048.881A.5.5 0 0010.562.5H1.438zm8.926 6.98c.27 0 .532-.04.779-.114v3.277a1 1 0 01-1 1H1.857a1 1 0 01-1-1V7.366a2.704 2.704 0 001.5.017v2.76h7.286v-2.76c.23.063.473.097.72.097z"></path></svg>
+                                                    </i>
+                                                </div>
+                                            </div>
+                                            <div className="src-modules-order-index__name--MHX5O">{order.shop}</div>
+                                        </div>
+                                        <div className="src-modules-order-index__status--1opb5">
+                                            <i className={`_3kEAcT1Mk5 src-modules-order-index__status-icon--BSEvA src-modules-order-index__${order.received?'completed':order.canceled?'canceled':'waiting'}--yk7cQ`}>
+                                            <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path d="M6 2.25v1.5h6v-1.5h3a.75.75 0 01.75.75v12a.75.75 0 01-.75.75H3a.75.75 0 01-.75-.75V3A.75.75 0 013 2.25h3zm1.409 8.553L5.288 8.682l-1.061 1.06 3.182 3.183 6.364-6.364-1.06-1.061-5.304 5.303zM7.5 1.5h3a.75.75 0 01.75.75V3h-4.5v-.75a.75.75 0 01.75-.75z"></path></svg>
+                                            </i>{order.received?'Hoàn tất':order.canceled?'Đã hủy':order.being_delivery?"Đang vận chuyển":'Chờ xác nhận'}
+                                        </div>
+                                    </div>
+                                    <div className="src-modules-order-index__products--3f0tb">
+                                        {order.cart_item.map(cartitem=>
+                                            <div className="src-modules-orderCard-index__product--KTy0W" key={cartitem.id}>
+                                                <div className="src-modules-orderCard-index__left--1P7zN src-modules-orderCard-index__center--3wE9z">
+                                                    <img alt="" className="src-modules-orderCard-index__picture--2xI6-" src={cartitem.item_image}/>
+                                                    <div>
+                                                        <div className="src-modules-orderCard-index__name--hZc60">{cartitem.item_name}</div>
+                                                        <div className="src-modules-orderCard-index__details--3V7Qm">Phân loại: {itemvariation(cartitem)}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="src-modules-orderCard-index__right--1ZZpT">
+                                                    <div className="src-modules-orderCard-index__money--fhUD7">₫{cartitem.price}</div>
+                                                    <div className="src-modules-orderCard-index__count--27aZv">x{cartitem.quantity}</div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="src-modules-order-index__details--1RkzD src-modules-order-index__content--JZYlh">
+                                        <div>Tổng Cộng</div>
+                                        <div className="src-modules-order-index__content--JZYlh">
+                                            <div className="src-modules-order-index__counts--274SY">{order.count_item} products</div>
+                                            <div className="src-modules-order-index__payment--69nYO">₫{formatter.format(order.total_final_order)}</div>
+                                        </div>
+                                    </div>
+                                    <div className="src-modules-order-index__cancel--O-khp">
+                                        {order.canceled?'Hủy bởi bạn':''}
+                                    </div>
+                                    <div>
+                                        <div className="src-modules-order-index__button--2IX82">Chi Tiết</div>
+                                        <div onClick={(e)=>sendorder(e,order)} className="src-modules-order-index__button--2IX82">Gửi</div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>   
+                    </div>
+                    </>}
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>:''}
+        </>
+    )
+}
 const Message=(props)=>{
     const {threadstate,isAuthenticated,list_threads,user,messages,members,showchat,count_message_unseen}=props
     const [state, setState] = useState({show_type_chat:false,type_chat:1,user_search:null,loading:false,
@@ -22,7 +213,6 @@ const Message=(props)=>{
     const [list_messages,setListmessages]=useState([]);
     const [message,setMessage]=useState('')
     const [threads,setThreads]=useState([]);
-    const [shopchoice,setShopchoice]=useState();
     const [thread,setThread]=useState();
     const [showemoji,setShowemoji]=useState(false)
     const [show_type_chat,setShow_type_chat]=useState(false)
@@ -32,10 +222,11 @@ const Message=(props)=>{
     const [typing,setTyping]=useState({typing:false,send_to:null})
     const [messagefile,setMessagefile]=useState([])
     const [length,setLength]=useState(40)
+    const [loading,setLoading]=useState(false)
+    const [shopchoice,setShopchoice]=useState();
     const socket=useRef()   
     const scrollRef=useRef(null);
     const typechatref=useRef(null);
-    const shopref=useRef()
     const direact=listmember.find(member=>member.user_id!=user.id)
     const direact_user=listmember.find(member=>member.user_id==user.id)
     const direact_chat=(thread)=>{
@@ -71,11 +262,6 @@ const Message=(props)=>{
         if(typechatref.current!=null){
             if (!typechatref.current.contains(target)) {
                 setShow_type_chat(false)
-            }
-        }
-        if(shopref.current!=null){
-            if (!shopref.current.contains(target)) {
-                setShowshop({show_product:false,show_order:false})
             }
         }
     }
@@ -175,6 +361,7 @@ const Message=(props)=>{
             try{
                 let form=new FormData()
                 form.append('item_id',item.id) 
+                form.append('action','create-message')
                 form.append('send_to',direact.user_id)
                 const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers)
                 setShowshop({show_product:false,show_order:false})
@@ -193,6 +380,7 @@ const Message=(props)=>{
                 let form=new FormData()
                 form.append('order_id',order.id) 
                 form.append('send_to',direact.user_id)
+                form.append('action','create-message')
                 const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers)
                 setShowshop({show_product:false,show_order:false})
                 const messages={message:res.data,thread_id:thread.id,send_by:user.id}
@@ -355,13 +543,11 @@ const Message=(props)=>{
 
     const chatproduct=()=>{
         setShop({...shop,choice:'item'})
-        setShowshop({...showshop,show_order:false,show_product:!showshop.show_product})
+        setShowshop({...showshop,show_product:!showshop.show_product,show_order:false})
         const user_id=direact_user.count_product_shop>0?user.id:direact.user_id
-        axios.get(`${conversationsURL}/${thread.id}?user_id=${user_id}&action=showitem`,headers)
-        .then(res=>{
-            setShop({...shop,user_id:user_id,list_items:res.data.list_items,choice:'item',count_product:res.data.count_product})
-            setState({...state,loading:true})
-        })
+        if(!showshop.show_product && shop.list_items.length==0){
+            setShopchoice(user_id)
+        }
     }
 
 
@@ -369,9 +555,10 @@ const Message=(props)=>{
         (async ()=>{
             try{
                 if(shopchoice){
-                const res= await axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showitem`,headers)
-                setShop({...shop,user_id:shopchoice,list_items:res.data.list_items,choice:'item',count_product:res.data.count_product})
-                setState({...state,loading:true})
+                    setLoading(false)
+                    const res= await axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showitem`,headers)
+                    setShop({...shop,list_items:res.data.list_items,choice:'item',count_product:res.data.count_product})
+                    setLoading(true)
                 }
             }
             catch(e){
@@ -382,34 +569,39 @@ const Message=(props)=>{
    
     const chatorder=()=>{
         setShop({...shop,choice:'order'})
-        setShowshop({...showshop,show_order:!state.show_order,show_product:false})
-        if(!state.show_order && shop.list_orders.length==0){
+        setShowshop({...showshop,show_order:!showshop.show_order,show_product:false})
+        if(!showshop.show_order && shop.list_orders.length==0){
+            setLoading(false)
             axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showorder`,headers)
             .then(res=>{
-                setState({...state,loading:true})
+                setLoading(true)
                 setShop({...shop,user_id:direact.user_id,list_orders:res.data.list_orders,choice:'order',count_order:res.data.count_order})
             })
         }
     }
 
-    const showmoreitem=(e,name)=>{
+    const showmoreitem=useCallback((e,name)=>{
         if(e.target.scrollTop==e.target.scrollHeight-e.target.offsetHeight && state.loading){
             if(name=='item' && shop.count_product>shop.list_items.length){
-                axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showitem`)
+                setLoading(false)
+                axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showitem&offset=${shop.list_items.length}`,headers)
                 .then(res => {
                     const list_items=[...shop.list_items,...res.data.list_items]
                     setShop({...shop,list_items:list_items})
+                    setLoading(true)
                 })
             }
             if(name=='order' && shop.count_product>shop.list_orders.length){
-                axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showorder`)
+                setLoading(false)
+                axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showorder&offset=${shop.list_orders.length}`,headers)
                 .then(res => {
                     const list_orders=[...shop.list_orders,...res.data.list_orders]
                     setShop({...shop,list_orders:list_orders})
+                    setLoading(true)
                 })
             }
         }
-    }
+    },[shop,state])
     
     const setactionconversations=(e,thread,name,value)=>{
         e.stopPropagation()
@@ -470,6 +662,13 @@ const Message=(props)=>{
         setThreads(list_convesations)
     }
 
+    const setshopchoice=useCallback((data)=>{
+        setShopchoice(data)
+    },[shopchoice])
+
+    const setshop=useCallback((data)=>{
+        setShop({...shop,...data})
+    },[shop])
     return(
         <>
         {user!=null?
@@ -641,7 +840,7 @@ const Message=(props)=>{
                                                 </div> 
                                             </Link>)}
                                         </>
-                                        :message.message_type=='4'?
+                                        :message.message_type=='5'?
                                         <div className="onDrqkSpt9r3zn_6p3pRf _18r49d6bjodvFmJMZ-4Ew5">
                                             <div className="KIDOiX8kg8qYOZk2r28XZ">
                                                 <div className="_2rOpog8D_jhF1evUqNokLy">ĐƠN HÀNG</div>
@@ -666,30 +865,21 @@ const Message=(props)=>{
                                                 </div>
                                             </div>
                                         </div>: 
-                                        <div className="xaMUYIRSRlS1WYaJbpOwG DAgS9n3scQ7kWR3b9O-Va _1-jFwlhhdMvfDXAJH72LUv">
-                                            <div className="_3QAhrlbRryynyUr5qWoKQI lz9DXMa2SXtyOYAO75qni _35qRx_AaOlKkCRdT9mxgpd">
-                                                <div className="_23vIMkrJSmAutLCB7Ij2em _2X1TUK7H0DhwKmtYbhlI-X">SẢN PHẨM</div>
-                                                <div className="_6Xm-D7r5WnFY6uYol5Kap _2epMrgoXN2eHh21pkul4Mb">
-                                                    <div className="_3pFyGIEaNgxkRnbeKyPPH_ _3BJ3YZnd5in6Oa4OeXk46l">
-                                                        <img alt="" src={message.item.item_image}/>
-                                                        <div className="_3S9lhUuu_xLD2wRIFTBHcu UQVw8QcM73dDYBLjXSHWx"></div>
-                                                    </div>
-                                                    <div className="_3thfodiVvC50D2x1ugPwYo _3n6zITUI2b4Lg7e1__VQEA">
-                                                        <div className="_26g_TvGhI16BdqQtLfO9Zg _3UFMQVR3oMb11RwBYnnlX-" title={message.item.item_name}>{message.item.item_name}</div>
-                                                        <div className="_2Mx59X86NQm-jW1ofkSA3U WI3qR2JrgxwzAK6vV2M7g">
-                                                            <div className="_3YQ_qVknzTkiquZzAybJ5x wv-n-n7UHQV6SLVBAt4Mx">
-                                                                <div className="_2vu1W9DIq3TR0Pv9Pjv5oy">
-                                                                    <div className={`chat-product-price-${message.item.program_valid>0?'old':'current'}`}>
-                                                                        ₫{formatter.format(message.item.min_price)} {message.item.min_price!==message.item.max_price?`- ₫${formatter.format(message.item.max_price)}`:''}
-                                                                    </div>
-                                                                    {message.item.program_valid>0?
-                                                                    <div className="chat-product-price-curent">
-                                                                        ₫{formatter.format(message.item.min_price*(100-message.item.percent_discount)/100)}
-                                                                        {message.item.min_price!==message.item.max_price?
-                                                                        `- ₫${formatter.format(message.item.max_price*(100-message.item.percent_discount)/100)}`:''}
-                                                                    </div>
-                                                                    :''}
-                                                                </div>
+                                        <div className="xaMUYIRSRlS1WYaJbpOwG DAgS9n3scQ7kWR3b9O-Va _2IM8caVK5bv3GniwHQxIv4 _1-jFwlhhdMvfDXAJH72LUv">
+                                            <div class="x9sshLfmzEnXDsbF57Qmx _2j0RH_nXNLwh2Q73wyiUu7">
+                                                <div class="_3-nmomaD6LPerIxLhiPYxJ _3PPerJ_xDR4sC-MObqPua0">SẢN PHẨM</div>
+                                                <div class="_34yQfy01N86VpubvG6CS4a _2koJrpCamdLkmdKUGhwdKU">
+                                                    <div class="_2PjYtS6WFYVM7M2Q5IAr5U">
+                                                        <div class="_3-NQ41O_LLyQ367SS_0dcY UMm4MDR5mkB_ctVxJocZq">
+                                                            <img alt="" src={message.message_product.image}/>
+                                                            <div class="xrgygwVVBiOr5X2mHjO92 _3I8LHfvixxTAYbK5RR8_SI"></div>
+                                                        </div>
+                                                        <div class="MK4RAJcIfHxp1tEXQDzts ITzmll2K9ovLC9mx6zS62 _3T4Jgbn-JoFBpuheVCmlnh _1IsSL6qNYQwomYLW5H4pW1">
+                                                            <div class="_1zCv57JLI668_Ek5DSiDDH _3qYzFdZiOTp_Rfs0EvFcUZ undefined" title={`${message.message_product.name}`}>{message.message_product.name}</div>
+                                                            <div class="GIqgeOS-QZ5DGb-i8L8qg item-center _3cL3bjO1xbF4C-mj5bENVs iVpMx9O-viRKqBFvDuEO_ undefined _3OFGwHwOoNti2VXQOaGl2m">
+                                                                {message.message_product.min_price==message.message_product.max_price?
+                                                                <span class="_1BDeEH9Fg1p0_-0lSNOrc0">₫{formatter.format(message.message_product.min_price*(1-message.message_product.percent_discount/100))}</span>:
+                                                                <div class="_3F2ZINemDNbvVrHyEorcG5"><span>₫{formatter.format(message.message_product.min_price*(1-message.message_product.percent_discount/100))}</span> - <span> ₫{formatter.format(message.message_product.max_price*(1-message.message_product.percent_discount/100))}</span></div>}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -932,140 +1122,23 @@ const Message=(props)=>{
                 </div>
             </div>
         </div>
-        :''}
-        {showshop.show_product || showshop.show_order?
-        <div ref={shopref} className="src-product">
-            <div className="src-product-content--1mfan">
-                <div className="src-components-index__root--3vLtz">
-                    {shop.choice=='item'?
-                    <>
-                    <div className="src-components-index__tabs--Y19NK">
-                        {listmember.filter(member=>member.count_product_shop>0).map(member=>
-                        <div onClick={(e)=>setShopchoice(member.user_id)} className={`${member.user_id==shop.user_id?'src-components-index__active--2KOj5':''} src-components-index__header--2FJYt src-modules-ProductPopover-index__complete--3dtzk`}>
-                            <div className="src-modules-ProductPopover-index__tab-nav--2eBWV">
-                                <div className="src-modules-ProductPopover-index__shop-icon--2Vxmd">
-                                    <div className="src-components-avatar-index__root--2xGjv undefined">
-                                        <div className="src-components-avatar-index__avatar-wrapper--29uog">
-                                            <img alt="" src={member.avatar}/>
-                                            <div className="src-components-avatar-index__avatar-border--2Wkz3"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="src-modules-component-index__shop-name" title={`${member.user_id==user.id?'My shop':member.username}`}>{member.user_id==user.id?'My shop':member.username}</div>
-                            </div>
-                        </div>
-                        )}
-                    </div>
-                    <div className="src-components-index__main--RhtCG">
-                        <section className="src-modules-index__container--2BjL8">
-                            <div className="src-modules-index__search-bar--Qg28R">
-                                <div className="src-components-searchbar-index__root--Cgb3Z">
-                                    <div className="src-components-searchbar-index__wrapper--eFqTf ">
-                                        <div className="src-components-searchbar-index__icon-wrapper--3d4w9">
-                                            <i className="src-components-searchbar-index__icon--2w7NP">
-                                                <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><g transform="translate(3 3)"><path d="M393.846 708.923c174.012 0 315.077-141.065 315.077-315.077S567.858 78.77 393.846 78.77 78.77 219.834 78.77 393.846s141.065 315.077 315.077 315.077zm0 78.77C176.331 787.692 0 611.36 0 393.845S176.33 0 393.846 0c217.515 0 393.846 176.33 393.846 393.846 0 217.515-176.33 393.846-393.846 393.846z"></path><rect transform="rotate(135 825.098 825.098)" x="785.713" y="588.79" width="78.769" height="472.615" rx="1"></rect></g></svg>
-                                            </i>
-                                        </div>
-                                        <input className="src-components-searchbar-index__input--3oQvj" placeholder="Tìm kiếm" value=""/>
-                                        <div className="src-components-searchbar-index__cancel--35r5V" style={{display: 'none'}}></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="src-modules-ProductList-index__scroll-container--1nAlr">
-                                <div onScroll={(e)=>showmoreitem(e,'item')} className="src-components-Common-ScrollList-style__root--31xcV">
-                                    {shop.list_items.map(item=>
-                                        <div className="src-modules-index__product-item-wrapper--3-OJA" key={item.item_id}>
-                                        <div className="src-modules-index__product-body--1UERO ">
-                                            <img alt="" className="src-modules-index__product-pic--249Pa" src={item.item_image}/>
-                                            <div className="src-modules-index__product-info--3kIT7">
-                                                <div className="src-modules-index__product-name--1rUla">
-                                                    <div style={{overflow: 'hidden', textOverflow: 'ellipsis', webkitboxorient: 'vertical', display: 'webkitbox', webkitlineclamp: 1}}>
-                                                        <div style={{width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', wordBreak: 'break-all', whiteSpace: 'nowrap'}}> {item.item_name}</div>
-                                                    </div>
-                                                </div>
-                                                {formatter.format(item.min_price)} {item.min_price!=item.max_price?`- ${formatter.format(item.max_price)}`:''}
-                                            </div>
-                                        </div>
-                                        <div className="src-modules-index__product-footer--1mBzI ">
-                                            <div onClick={(e)=>sendproduct(e,item)} className="src-modules-component-index__send-btn">Gửi</div>
-                                            <div className="src-modules-index__sale-info--2zzaj">
-                                                <div className="src-modules-index__vertical-line--on9T6">{item.item_inventory} có sẵn</div>
-                                                <div>{item.num_order} đã bán</div>
-                                            </div>
-                                        </div>
-                                    </div>     
-                                    )}
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                    </>
-                    :
-                    <>
-                    <div className="src-components-Common-ListContainer-index__tabs--Y19NK">
-                        <div className="src-components-Common-ListContainer-index__header--2FJYt ">Mua</div>
-                    </div>
-                    <div className="src-components-index__main--RhtCG">
-                        <div onScroll={(e)=>showmoreitem(e,'order')} className="src-components-Common-ScrollList-style__root--31xcV">
-                            {shop.list_orders.map(order=>
-                                <div className="src-modules-order-index__root--yf6BH" key={order.id}>
-                                    <div className="src-modules-order-index__header--MQYX3">
-                                        <div className="src-modules-order-index__shop--3s53F">
-                                            <div className="src-modules-order-index__avatar--3WmjS">
-                                                <div className="src-components-avatar-index__root--2xGjv undefined">
-                                                    <i className=" _3kEAcT1Mk5 src-components-avatar-index__shop--1erCv">
-                                                        <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path fillRule="evenodd" clip-rule="evenodd" d="M1.438.5a.5.5 0 00-.485.382L.073 4.5A1.461 1.461 0 000 4.957C0 5.81.733 6.5 1.636 6.5a1.65 1.65 0 001.455-.835 1.65 1.65 0 001.454.835A1.65 1.65 0 006 5.665a1.65 1.65 0 001.455.835 1.65 1.65 0 001.454-.835 1.65 1.65 0 001.455.835C11.267 6.5 12 5.81 12 4.957c0-.102-.01-.201-.03-.298h.002L11.048.881A.5.5 0 0010.562.5H1.438zm8.926 6.98c.27 0 .532-.04.779-.114v3.277a1 1 0 01-1 1H1.857a1 1 0 01-1-1V7.366a2.704 2.704 0 001.5.017v2.76h7.286v-2.76c.23.063.473.097.72.097z"></path></svg>
-                                                    </i>
-                                                </div>
-                                            </div>
-                                            <div className="src-modules-order-index__name--MHX5O">{order.shop}</div>
-                                        </div>
-                                        <div className="src-modules-order-index__status--1opb5">
-                                            <i className={`_3kEAcT1Mk5 src-modules-order-index__status-icon--BSEvA src-modules-order-index__${order.received?'completed':order.canceled?'canceled':'waiting'}--yk7cQ`}>
-                                            <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path d="M6 2.25v1.5h6v-1.5h3a.75.75 0 01.75.75v12a.75.75 0 01-.75.75H3a.75.75 0 01-.75-.75V3A.75.75 0 013 2.25h3zm1.409 8.553L5.288 8.682l-1.061 1.06 3.182 3.183 6.364-6.364-1.06-1.061-5.304 5.303zM7.5 1.5h3a.75.75 0 01.75.75V3h-4.5v-.75a.75.75 0 01.75-.75z"></path></svg>
-                                            </i>{order.received?'Hoàn tất':order.canceled?'Đã hủy':order.being_delivery?"Đang vận chuyển":'Chờ xác nhận'}
-                                        </div>
-                                    </div>
-                                    <div className="src-modules-order-index__products--3f0tb">
-                                        {order.cart_item.map(cartitem=>
-                                            <div className="src-modules-orderCard-index__product--KTy0W" key={cartitem.id}>
-                                                <div className="src-modules-orderCard-index__left--1P7zN src-modules-orderCard-index__center--3wE9z">
-                                                    <img alt="" className="src-modules-orderCard-index__picture--2xI6-" src={cartitem.item_image}/>
-                                                    <div>
-                                                        <div className="src-modules-orderCard-index__name--hZc60">{cartitem.item_name}</div>
-                                                        <div className="src-modules-orderCard-index__details--3V7Qm">Phân loại: {itemvariation(cartitem)}</div>
-                                                    </div>
-                                                </div>
-                                                <div className="src-modules-orderCard-index__right--1ZZpT">
-                                                    <div className="src-modules-orderCard-index__money--fhUD7">₫{cartitem.price}</div>
-                                                    <div className="src-modules-orderCard-index__count--27aZv">x{cartitem.quantity}</div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="src-modules-order-index__details--1RkzD src-modules-order-index__content--JZYlh">
-                                        <div>Tổng Cộng</div>
-                                        <div className="src-modules-order-index__content--JZYlh">
-                                            <div className="src-modules-order-index__counts--274SY">{order.count_item} products</div>
-                                            <div className="src-modules-order-index__payment--69nYO">₫{formatter.format(order.total_final_order)}</div>
-                                        </div>
-                                    </div>
-                                    <div className="src-modules-order-index__cancel--O-khp">
-                                        {order.canceled?'Hủy bởi bạn':''}
-                                    </div>
-                                    <div>
-                                        <div className="src-modules-order-index__button--2IX82">Chi Tiết</div>
-                                        <div onClick={(e)=>sendorder(e,order)} className="src-modules-order-index__button--2IX82">Gửi</div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>   
-                    </div>
-                    </>}
-                </div>
-            </div>
-        </div>
-        :''}
+        :''} 
+        <Shopmember
+            sendproduct={(e,item)=>sendproduct(e,item)}
+            sendorder={(e,order)=>sendorder(e,order)}
+            shop={shop}
+            showdata={showshop}
+            setshop={data=>setshop(data)}
+            thread={thread}
+            listmember={listmember}
+            loadingdata={loading}
+            setloading={data=>setLoading(data)}
+            setshowshop={()=>setShowshop({show_order:false,show_product:false})}
+            user={user}
+            shopchoice={shopchoice}
+            setshopchoice={data=>setshopchoice(data)}
+            showmoreitem={(e,name)=>showmoreitem(e,name)}
+        />
         </>
     )
 }

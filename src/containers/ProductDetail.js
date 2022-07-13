@@ -462,8 +462,8 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
                         <div className="item_product-flash-sale">
                             <div className=" price__flash-sale">
                                 <div className="items-price item-center">
-                                <div className={`${state.data.program_valid===0?'price_current':'price_min_max'}`}>₫{variation.data===null?`${formatter.format(state.data.min_price)}${state.data.min_price!=state.data.max_price?` -  ₫${formatter.format(state.data.max_price)}`:''}`:`${formatter.format(variation.data.price)}`}</div>
-                                {state.data.percent_discount>0 && state.data.program_valid>0?
+                                <div className={`${!state.data.program_valid?'price_current':'price_min_max'}`}>₫{variation.data===null?`${formatter.format(state.data.min_price)}${state.data.min_price!=state.data.max_price?` -  ₫${formatter.format(state.data.max_price)}`:''}`:`${formatter.format(variation.data.price)}`}</div>
+                                {state.data.percent_discount>0 && state.data.program_valid?
                                 <div className="item-center">
                                     ₫{variation.data===null?`${formatter.format(state.data.min_price*(1-state.data.percent_discount/100))}${state.data.min_price!=state.data.max_price?` -  ₫${formatter.format(state.data.max_price*(1-state.data.percent_discount/100))}`:''}`:`${variation.price*(1-variation.data.percent_discount/100)}`}
                                     <div className="box-color">

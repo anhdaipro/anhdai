@@ -289,7 +289,7 @@ const Dealshock = () => {
                     </div>
                 </div>
                 <div className="tZZGU7">
-                    {data.get_count_deal>0?
+                    {data.get_deal?
                     <><p className="_3Y8VHD">₫{formatter.format(data.price)}</p></>:
                     <><p className="_2SppbF">₫{formatter.format(data.price)}</p>
                     <p className="_3Y8VHD">₫{formatter.format(data.price-data.discount_price)}</p></>}
