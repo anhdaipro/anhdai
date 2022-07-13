@@ -10,7 +10,7 @@ import {debounce} from 'lodash';
 const listaction=[ {name:'Ghim Trò Chuyện',gim:true},{name:'Bỏ gim cuộc Trò Chuyện',gim:false},
 {name:'Đánh dấu đã đọc',unread:false},{name:'Đánh dấu đã đọc',unread:true},
 {name:'Xóa trò chuyện',delete:true}]
-const list_type_chat=[{'name':'All',value:1},{'name':'Unread',value:2},{'name':'Đã gim',value:3}]
+const list_type_chat=[{'name':'All',value:'1'},{'name':'Unread',value:'2'},{'name':'Đã gim',value:'3'}]
 
 const Message=(props)=>{
     const {threadstate,isAuthenticated,list_threads,user,messages,members,showchat,count_message_unseen}=props
@@ -22,6 +22,7 @@ const Message=(props)=>{
     const [list_messages,setListmessages]=useState([]);
     const [message,setMessage]=useState('')
     const [threads,setThreads]=useState([]);
+    const [shopchoice,setShopchoice]=useState();
     const [thread,setThread]=useState();
     const [showemoji,setShowemoji]=useState(false)
     const [show_type_chat,setShow_type_chat]=useState(false)
@@ -78,6 +79,7 @@ const Message=(props)=>{
             }
         }
     }
+
     useEffect(() => {
         socket.current=io.connect('https://server-socket-123.herokuapp.com')
         socket.current.on('message',data=>{
@@ -168,13 +170,14 @@ const Message=(props)=>{
     }
 
     console.log(list_messages)
-    const sendproduct=(item)=>{
+    const sendproduct=(e,item)=>{
         (async ()=>{
             try{
                 let form=new FormData()
                 form.append('item_id',item.id) 
                 form.append('send_to',direact.user_id)
                 const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers)
+                setShowshop({show_product:false,show_order:false})
                 const messages={message:res.data,thread_id:thread.id,send_by:user.id}
                 socket.current.emit("sendData",messages)
             }
@@ -184,13 +187,14 @@ const Message=(props)=>{
         })() 
     }
 
-    const sendorder=(order)=>{
+    const sendorder=(e,order)=>{
         (async ()=>{
             try{
                 let form=new FormData()
                 form.append('order_id',order.id) 
                 form.append('send_to',direact.user_id)
                 const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers)
+                setShowshop({show_product:false,show_order:false})
                 const messages={message:res.data,thread_id:thread.id,send_by:user.id}
                 socket.current.emit("sendData",messages)
             }
@@ -353,15 +357,29 @@ const Message=(props)=>{
         setShop({...shop,choice:'item'})
         setShowshop({...showshop,show_order:false,show_product:!showshop.show_product})
         const user_id=direact_user.count_product_shop>0?user.id:direact.user_id
-        if(shop.list_items.length==0){
-            axios.get(`${conversationsURL}/${thread.id}?user_id=${user_id}&action=showitem`)
-            .then(res=>{
-                setShop({...shop,list_items:res.data.list_items,choice:'item',count_product:res.data.count_product})
-                setState({...state,loading:true})
-            })
-        }
+        axios.get(`${conversationsURL}/${thread.id}?user_id=${user_id}&action=showitem`)
+        .then(res=>{
+            setShop({...shop,user_id:user_id,list_items:res.data.list_items,choice:'item',count_product:res.data.count_product})
+            setState({...state,loading:true})
+        })
     }
 
+    
+    useEffect(()=>{
+        (async ()=>{
+            try{
+                if(shopchoice){
+                const res= await axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showitem`)
+                setShop({...shop,user_id:shopchoice,list_items:res.data.list_items,choice:'item',count_product:res.data.count_product})
+                setState({...state,loading:true})
+                }
+            }
+            catch(e){
+                console.log(e)
+            }
+        })()
+    },[shopchoice])
+   
     const chatorder=()=>{
         setShop({...shop,choice:'order'})
         setShowshop({...showshop,show_order:!state.show_order,show_product:false})
@@ -369,7 +387,7 @@ const Message=(props)=>{
             axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showorder`)
             .then(res=>{
                 setState({...state,loading:true})
-                setShop({...shop,list_orders:res.data.list_orders,choice:'order',count_order:res.data.count_order})
+                setShop({...shop,user_id:direact.user_id,list_orders:res.data.list_orders,choice:'order',count_order:res.data.count_order})
             })
         }
     }
@@ -396,53 +414,45 @@ const Message=(props)=>{
     const setactionconversations=(e,thread,name,value)=>{
         e.stopPropagation()
         let form=new FormData()
-        form.append(name,value)
+        fomr.append('action',name)
         axios.post(`${conversationsURL}${thread.id}`,form,headers)
         .then(res=>{
-            if(name=='delete'){
-                const list_convesations=threads.filter(item=>item.id!=thread.id)
-                setThreads(list_convesations)
-            }
-            else if(name=='unread'){
-                const list_convesations=threads.map(item=>{
+            const list_convesations=name=='delete'?
+                threads.filter(item=>item.id!=thread.id)
+                :name=='seen'?threads.map(item=>{
                     if(item.id==thread.id){
-                        if(value){
-                        return({...item,count_unread:1})
-                        }
-                        return({...item,count_unread:0})
+                        return({...item,members:item.members.map(member=>{
+                            if(member.user_id==user.id){
+                                return({...member,count_message_unseen:value?0:1})
+                            }
+                            return({...member})
+                        })})
                     }
                     return({...item})
                 })
-                setThreads(list_convesations)
-            }
-            else{
-                const list_convesations=threads.map(item=>{
+                
+                :threads.map(item=>{
                     if(item.id==thread.id){
                         return({...item,[name]:value}) 
                     }
                     return({...item})
                 })
-                setThreads(list_convesations) 
-            }
+            setThreads(list_convesations) 
         })
     }
-
-    
 
     ///set tychat
     const settypechat=(item)=>{
         setState({...state,type_chat:item.value})
-        let url= new URL(listThreadlURL)
-        let search_params=url.searchParams
-        axios.get(`${listThreadlURL}?type_chat=${item.value.toString()}`,headers)
+        axios.get(`${listThreadlURL}?type_chat=${item.value}`,headers)
         .then(res=>{
-            const threads=res.data.threads.map(item=>{
-                return({...item,show_action:false})
+            const threads=res.data.threads.map(thread=>{
+                return({...thread,show_action:false})
             })
             setThreads(threads)
-            setState({...state,show_type_chat:false})
-            if(!res.data.some(item=>item.id==message.thread_choice.id)){
-                setMessage({...message,thread_choice:null})
+            setShow_type_chat(false)
+            if(!res.data.some(thread=>thread.id==thread.id)){
+                setThread()
                 setListmessages([])
             }
         })
@@ -813,7 +823,7 @@ const Message=(props)=>{
                                 <div className="drop-chat">
                                     <div className="list-type-chat">
                                         {list_type_chat.map(item=>
-                                        <div onClick={()=>settypechat(item)} className="type-chat">{item.name}</div>
+                                        <div onClick={(e)=>settypechat(e,item)} className="type-chat">{item.name}</div>
                                         )}
                                     </div>
                                 </div>:''}
@@ -899,7 +909,7 @@ const Message=(props)=>{
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M11.29 16.243H4.54v-2.872l2.927-1.9V2.444a1 1 0 011-1h7.073a1 1 0 011 1v8.957l3 1.97v2.872h-6.75v6.201h-1.5v-6.201zm6.75-1.5v-.563l-3-1.97V2.944H8.967v9.342l-2.927 1.9v.557h12z"></path></svg>
                                                             </i>{!thread.gim?'Ghim Trò Chuyện':'Bỏ gim trò chuyện'}
                                                         </div>
-                                                        <div onClick={(e)=>setactionconversations(e,thread,'unread',direact_chat(thread).count_message_unseen==0?true:false)} className="conversation-action-option">
+                                                        <div onClick={(e)=>setactionconversations(e,thread,'seen',direact_chat(thread).count_message_unseen==0?true:false)} className="conversation-action-option">
                                                             <i className="action-options-icon">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M15 4c-.337.448-.6.954-.771 1.5H3.5v13.85l3.085-1.85H19.5v-5.525a4.968 4.968 0 001.5-.391V18a1 1 0 01-1 1H7l-5 3V5a1 1 0 011-1h12zm4 6.75a3.75 3.75 0 110-7.5 3.75 3.75 0 010 7.5zm0-1.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"></path></svg>
                                                             </i>{direact_chat(thread).count_message_unseen>0?'Đánh dấu đã đọc':'Đánh dấu chưa đọc'}
@@ -930,8 +940,8 @@ const Message=(props)=>{
                     {shop.choice=='item'?
                     <>
                     <div className="src-components-index__tabs--Y19NK">
-                        {(message.thread_choice.avatar_sender!=null && message.thread_choice.sender.user_id==user.id || message.thread_choice.avatar_receiver!=null && message.thread_choice.received.user_id==user.id)?
-                        <div className="src-components-index__active--2KOj5 src-components-index__header--2FJYt src-modules-ProductPopover-index__complete--3dtzk">
+                        {listmember.filter(member=>member.count_product_shop>0).map(member=>
+                        <div onClick={(e)=>setShopchoice(member.user_id)} className={`${member.user_id==shop.user_id?'src-components-index__active--2KOj5':''} src-components-index__header--2FJYt src-modules-ProductPopover-index__complete--3dtzk`}>
                             <div className="src-modules-ProductPopover-index__tab-nav--2eBWV">
                                 <div className="src-modules-ProductPopover-index__shop-icon--2Vxmd">
                                     <div className="src-components-avatar-index__root--2xGjv undefined">
@@ -943,21 +953,8 @@ const Message=(props)=>{
                                 </div>
                                 <div className="src-modules-component-index__shop-name" title="My shop">My shop</div>
                             </div>
-                        </div>:''}
-                        {message.thread_choice.avatar_receiver!=null?
-                        <div className=" src-components-index__header--2FJYt src-modules-ProductPopover-index__complete--3dtzk">
-                            <div className="src-modules-ProductPopover-index__tab-nav--2eBWV">
-                                <div className="src-modules-ProductPopover-index__shop-icon--2Vxmd">
-                                    <div className="src-components-avatar-index__root--2xGjv undefined">
-                                        <div className="src-components-avatar-index__avatar-wrapper--29uog">
-                                            <img alt="" src="${info_item[0].avatar}"/>
-                                            <div className="src-components-avatar-index__avatar-border--2Wkz3"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="src-modules-component-index__shop-name" title="${info_item[0].shop_name}">{message.thread_choice.shop_name}</div>
-                            </div>
-                        </div>:''}
+                        </div>
+                        )}
                     </div>
                     <div className="src-components-index__main--RhtCG">
                         <section className="src-modules-index__container--2BjL8">
@@ -990,7 +987,7 @@ const Message=(props)=>{
                                             </div>
                                         </div>
                                         <div className="src-modules-index__product-footer--1mBzI ">
-                                            <div onClick={()=>sendproduct(item)} className="src-modules-component-index__send-btn">Gửi</div>
+                                            <div onClick={(e)=>sendproduct(e,item)} className="src-modules-component-index__send-btn">Gửi</div>
                                             <div className="src-modules-index__sale-info--2zzaj">
                                                 <div className="src-modules-index__vertical-line--on9T6">{item.item_inventory} có sẵn</div>
                                                 <div>{item.num_order} đã bán</div>
@@ -1058,7 +1055,7 @@ const Message=(props)=>{
                                     </div>
                                     <div>
                                         <div className="src-modules-order-index__button--2IX82">Chi Tiết</div>
-                                        <div onClick={()=>sendorder(order)} className="src-modules-order-index__button--2IX82">Gửi</div>
+                                        <div onClick={(e)=>sendorder(e,order)} className="src-modules-order-index__button--2IX82">Gửi</div>
                                     </div>
                                 </div>
                             )}

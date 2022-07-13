@@ -785,7 +785,7 @@ class Cart extends React.Component{
         const {showchat,user,showthreads}=this.props
         const setshowthread=(e,shop)=>{
             e.preventDefault()
-            let data={member:[shop.user_id,user.id],thread:null,send_to:shop.user_id}
+            let data={member:[user.id,shop.user_id],thread:null,send_to:shop.user_id}
             showchat(data)
             showthreads()
         }

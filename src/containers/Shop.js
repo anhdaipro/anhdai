@@ -18,7 +18,7 @@ const Shopinfo = ({data,showchat,setsearchitem,showthreads,setsearchcategory,use
     
     const setshowthread=(e)=>{
         e.preventDefault()
-        let data={member:[state.data.user_id,user.id],thread:null,send_to:state.data.user_id}
+        let data={member:[user.id,state.data.user_id],thread:null,send_to:state.data.user_id}
         showchat(data)
         showthreads()
     }

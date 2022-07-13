@@ -29,7 +29,7 @@ const Orderuser=(props)=>{
 
     const setshowthread=(e)=>{
         e.preventDefault()
-        let data={member:[data.user_id,user.id],thread:null,order_id:data.id,send_to:data.user_id}
+        let data={member:[user.id,data.user_id],thread:null,order_id:data.id,send_to:data.user_id}
         showchat(data)
         showthreads()
     }

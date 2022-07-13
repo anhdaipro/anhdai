@@ -162,7 +162,7 @@ const Checkout =({user,showchat})=>{
 
     const setshowthread=(e,order)=>{
         e.preventDefault()
-        let data={member:[order.user_id,user.id],thread:null}
+        let data={member:[user.id,order.user_id],thread:null}
         showchat(data)
         showthreads()
     }
