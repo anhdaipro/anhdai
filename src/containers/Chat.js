@@ -357,7 +357,7 @@ const Message=(props)=>{
         setShop({...shop,choice:'item'})
         setShowshop({...showshop,show_order:false,show_product:!showshop.show_product})
         const user_id=direact_user.count_product_shop>0?user.id:direact.user_id
-        axios.get(`${conversationsURL}/${thread.id}?user_id=${user_id}&action=showitem`)
+        axios.get(`${conversationsURL}/${thread.id}?user_id=${user_id}&action=showitem`,headers)
         .then(res=>{
             setShop({...shop,user_id:user_id,list_items:res.data.list_items,choice:'item',count_product:res.data.count_product})
             setState({...state,loading:true})
@@ -369,7 +369,7 @@ const Message=(props)=>{
         (async ()=>{
             try{
                 if(shopchoice){
-                const res= await axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showitem`)
+                const res= await axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showitem`,headers)
                 setShop({...shop,user_id:shopchoice,list_items:res.data.list_items,choice:'item',count_product:res.data.count_product})
                 setState({...state,loading:true})
                 }
@@ -384,7 +384,7 @@ const Message=(props)=>{
         setShop({...shop,choice:'order'})
         setShowshop({...showshop,show_order:!state.show_order,show_product:false})
         if(!state.show_order && shop.list_orders.length==0){
-            axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showorder`)
+            axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showorder`,headers)
             .then(res=>{
                 setState({...state,loading:true})
                 setShop({...shop,user_id:direact.user_id,list_orders:res.data.list_orders,choice:'order',count_order:res.data.count_order})
