@@ -264,8 +264,8 @@ const Message=(props)=>{
         let list_days_unique=[]
         let list_days=[]
         const list_day=list_messages.map(message=>{
-            return(("0" + new Date(message.created).getDate()).slice(-2) + "-" + ("0"+(new Date(message.created).getMonth()+1)).slice(-2) + "-" +
-            new Date(message.created).getFullYear())
+            return(("0" + new Date(message.date_created).getDate()).slice(-2) + "-" + ("0"+(new Date(message.date_created).getMonth()+1)).slice(-2) + "-" +
+            new Date(message.date_created).getFullYear())
         })
         for(let j=0;j<list_day.length;j++){
             if(list_days[list_day[j]]) continue;
@@ -603,7 +603,7 @@ const Message=(props)=>{
                                 {list_messages.map((message,i)=>
                                 <div key={i}>
                                     {listdate().includes(i)?
-                                        <div className="chat-message-time">{checkDay(new Date(message.created))=="Today"?`${("0" + new Date(message.created).getHours()).slice(-2)}:${("0" + new Date(message.created).getMinutes()).slice(-2)}`:checkDay(new Date(message.created))=="Yesterday"?`Yesterday, ${("0" + new Date(message.created).getHours()).slice(-2)}:${("0" + new Date(message.created).getMinutes()).slice(-2)}`:`${("0" + new Date(message.created).getDate()).slice(-2)} Th${("0"+(new Date(message.created).getMonth()+1)).slice(-2)} ${new Date(message.created).getFullYear()}, ${("0" + new Date(message.created).getHours()).slice(-2)}:${("0" + new Date(message.created).getMinutes()).slice(-2)}`}</div>
+                                        <div className="chat-message-time">{checkDay(new Date(message.date_created))=="Today"?`${("0" + new Date(message.date_created).getHours()).slice(-2)}:${("0" + new Date(message.date_created).getMinutes()).slice(-2)}`:checkDay(new Date(message.date_created))=="Yesterday"?`Yesterday, ${("0" + new Date(message.date_created).getHours()).slice(-2)}:${("0" + new Date(message.date_created).getMinutes()).slice(-2)}`:`${("0" + new Date(message.date_created).getDate()).slice(-2)} Th${("0"+(new Date(message.date_created).getMonth()+1)).slice(-2)} ${new Date(message.date_created).getFullYear()}, ${("0" + new Date(message.date_created).getHours()).slice(-2)}:${("0" + new Date(message.date_created).getMinutes()).slice(-2)}`}</div>
                                     :''}
                                     <div className={`chat-message-table ${message.sender==user.username?'chat-message-sender':'chat-message-receiver'}`}>
                                         <div className="chat-message">
@@ -612,22 +612,17 @@ const Message=(props)=>{
                                         :
                                         message.message_type=='2'?
                                         <div className="chat-message-images">
-                                            {message.list_file.map(file=>{
-                                                if(file.filetype=='image'){
-                                                    return(
-                                                        <div key={file.file_name} style={{width:`${message.list_file.length==1?'200px':''}`}} className={`chat-file ${message.list_file.length>2?'kuivcneq':message.list_file.length==2?'hkbzh7o3':''}`}>
-                                                            <Link to={`/message_media?thread_id=${thread.id}&message_id=${message.id}&id=${file.id}`}>
-                                                                <div className="chat-message-image">
-                                                                    <div className="image">
-                                                                        <img className="chat-image" src={file.file} alt="" />
-                                                                    </div>
-                                                                </div>
-                                                            </Link>
+                                            {message.list_file.map(file=>                                                                                              
+                                                <div key={file.file_name} style={{width:`${message.list_file.length==1?'200px':''}`}} className={`chat-file ${message.list_file.length>2?'kuivcneq':message.list_file.length==2?'hkbzh7o3':''}`}>
+                                                    <Link to={`/message_media?thread_id=${thread.id}&message_id=${message.id}&id=${file.id}`}>
+                                                        <div className="chat-message-image">
+                                                            <div className="image">
+                                                                <img className="chat-image" src={file.file} alt="" />
+                                                            </div>
                                                         </div>
-                                                       
-                                                    )
-                                                }
-                                            })}
+                                                    </Link>
+                                                </div>                                                                                                                                                           
+                                            )}
                                         </div>
                                         :message.message_type=='3'?
                                         <>
@@ -917,7 +912,7 @@ const Message=(props)=>{
                                         
                                             <div className="action-thread">
                                                 <div className="chat-messsage-time-last">
-                                                    {thread.message_last?<>{checkDay(new Date(thread.message_last.date_createad))=="Today"?`${("0" + new Date(thread.message_last.date_createad).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_createad).getMinutes()).slice(-2)}`:checkDay(new Date(thread.message_last.date_createad))=="Yesterday"?`Yesterday, ${("0" + new Date(thread.message_last.date_createad).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_createad).getMinutes()).slice(-2)}`:new Date(thread.message_last.date_createad).getFullYear()<new Date().getFullYear()?`${("0" + new Date(thread.message_last.date_createad).getDate()).slice(-2)} Tháng ${("0"+(new Date(thread.message_last.date_createad).getMonth()+1)).slice(-2)}, ${new Date(thread.message_last.date_createad).getFullYear()}`:`${("0" + new Date(thread.message_last.date_createad).getDate()).slice(-2)} Tháng ${(new Date(thread.message_last.date_createad).getMonth()+1)} lúc ${("0" + new Date(thread.message_last.date_createad).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_createad).getMinutes()).slice(-2)}`}</>:''}
+                                                    {thread.message_last?<>{checkDay(new Date(thread.message_last.date_created))=="Today"?`${("0" + new Date(thread.message_last.date_created).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_created).getMinutes()).slice(-2)}`:checkDay(new Date(thread.message_last.date_created))=="Yesterday"?`Yesterday, ${("0" + new Date(thread.message_last.date_created).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_created).getMinutes()).slice(-2)}`:new Date(thread.message_last.date_created).getFullYear()<new Date().getFullYear()?`${("0" + new Date(thread.message_last.date_created).getDate()).slice(-2)} Tháng ${("0"+(new Date(thread.message_last.date_created).getMonth()+1)).slice(-2)}, ${new Date(thread.message_last.date_created).getFullYear()}`:`${("0" + new Date(thread.message_last.date_created).getDate()).slice(-2)} Tháng ${(new Date(thread.message_last.date_created).getMonth()+1)}`}</>:''}
                                                 </div>
                                                 
                                                 <div onClick={(e)=>setshowaction(e,thread)} id="460390502831204148" className="src-pages-index__three-dots">
