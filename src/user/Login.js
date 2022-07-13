@@ -46,9 +46,10 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
    
     
     
-     console.log(expiry)
+     
      const responseGoogle = (res) => {
         googleLogin(res.accessToken);
+        console.log(expiry)
         const config = {
             headers: {
                 'Content-Type': 'application/json'
