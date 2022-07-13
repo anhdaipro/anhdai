@@ -16,9 +16,8 @@ const Layout = ({children,checkAuthenticated,user }) => {
             {children}
             <div id="modal"></div>
             <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                {localStorage.token?
                 <Message
-                /> :''}
+                />
             </div>
             
         </>  

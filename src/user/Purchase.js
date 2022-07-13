@@ -35,7 +35,7 @@ const Purchase =({user,showchat,showthreads})=>{
 
     const setshowthread=(e,order)=>{
         e.preventDefault()
-        let data={member:[order.user_id,user.id],thread:null,order_id:order.id}
+        let data={member:[order.user_id,user.id],thread:null,order_id:order.id,send_to:order.user_id}
         showthreads()
         showchat(data) 
     }

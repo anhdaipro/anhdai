@@ -33,6 +33,10 @@ const Message=(props)=>{
     const socket=useRef()   
     const scrollRef=useRef(null);
     const typechatref=useRef(null);
+    const direact=listmember.find(member=>member.user_id!=user.id)
+    const direact_chat=(thread)=>{
+        return(thread.members.find(member=>member.user_id!=user.id))
+    }
     useEffect(() =>  {
         if(showchat){
         setListmember(members)
@@ -73,7 +77,9 @@ const Message=(props)=>{
                 }
                 else{
                 setTyping({typing:true})
-                setReceiver(data.receiver)
+                if(thread.id==data.thread_id){
+                    setReceiver(data.receiver)
+                }
                 }
             }
             else{
@@ -85,7 +91,12 @@ const Message=(props)=>{
                 setTyping({typing:false,send_to:data.send_to})
                 const convesations=threads.map(thread=>{
                     if(data.thread_id==thread.id){
-                    return({...thread,message_last:data[data.length-1]})
+                    return({...thread,message_last:data.message[data.message.length-1],members:thread.members.map(member=>{
+                        if(member.user_id!=data.send_by){
+                            return({...member,count_message_unseen:member.count_message_unseen+data.message.length})
+                        }
+                        return({...member})
+                    })})
                     }
                     return({...thread})
                 })
@@ -130,7 +141,7 @@ const Message=(props)=>{
             axios.get(`${conversationsURL}/${threadchoice.id}`,headers)
             .then(res=>{
                 setState({...state,loading:true})
-                setListmessages(res.data)
+                setListmessages(res.data.reverse())
                 if(scrollRef.current){
                     scrollRef.current.scrollTop = scrollRef.current.scrollHeight
                 }
@@ -144,6 +155,7 @@ const Message=(props)=>{
             try{
                 let form=new FormData()
                 form.append('item_id',item.id) 
+                form.append('send_to',direact.user_id)
                 const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers)
                 const messages={message:res.data,thread_id:thread.id,send_by:user.id}
                 socket.current.emit("sendData",messages)
@@ -159,6 +171,7 @@ const Message=(props)=>{
             try{
                 let form=new FormData()
                 form.append('order_id',order.id) 
+                form.append('send_to',direact.user_id)
                 const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers)
                 const messages={message:res.data,thread_id:thread.id,send_by:user.id}
                 socket.current.emit("sendData",messages)
@@ -178,7 +191,8 @@ const Message=(props)=>{
     const sentyping= useCallback(debounce((value)=>{
         let data={
         typing:value,
-        send_by: user.id,
+        thread_id: thread.id,
+        send_by:user.id,
         receiver:listmember.filter(member=>user.id!=member.user_id),
         }
         socket.current.emit('sendData',data)
@@ -188,6 +202,7 @@ const Message=(props)=>{
         if(listfile.filter(file=>file.filetype=='image').length>0 || message.trim()!=''){ 
             let form=new FormData()
             form.append('action','create-message')
+            form.append('send_to',direact.user_id)
             form.append('send_by',user.id)
             if(message.trim()!=''){
                 form.append('message',message)
@@ -210,6 +225,7 @@ const Message=(props)=>{
                 let formfile=new FormData()
                 formfile.append('action','create-message')
                 formfile.append('send_by',user.id)
+                form.append('send_to',direact.user_id)
                 listfile.filter(file=>file.filetype!=='image').map((file,i)=>{
                     formfile.append('file',file.file)
                     formfile.append('filetype',file.filetype)
@@ -436,10 +452,7 @@ const Message=(props)=>{
         })
     }
 
-    const direact=listmember.find(member=>member.user_id!=user.id)
-    const direact_chat=(thread)=>{
-        return(thread.members.find(member=>member.user_id!=user.id))
-    }
+    
 
     ///set tychat
     const settypechat=(item)=>{
@@ -928,10 +941,10 @@ const Message=(props)=>{
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M11.29 16.243H4.54v-2.872l2.927-1.9V2.444a1 1 0 011-1h7.073a1 1 0 011 1v8.957l3 1.97v2.872h-6.75v6.201h-1.5v-6.201zm6.75-1.5v-.563l-3-1.97V2.944H8.967v9.342l-2.927 1.9v.557h12z"></path></svg>
                                                             </i>{!thread.gim?'Ghim Trò Chuyện':'Bỏ gim trò chuyện'}
                                                         </div>
-                                                        <div onClick={(e)=>setactionconversations(e,thread,'unread',thread.count_unread==0?true:false)} className="conversation-action-option">
+                                                        <div onClick={(e)=>setactionconversations(e,thread,'unread',direact_chat(thread).count_message_unseen==0?true:false)} className="conversation-action-option">
                                                             <i className="action-options-icon">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M15 4c-.337.448-.6.954-.771 1.5H3.5v13.85l3.085-1.85H19.5v-5.525a4.968 4.968 0 001.5-.391V18a1 1 0 01-1 1H7l-5 3V5a1 1 0 011-1h12zm4 6.75a3.75 3.75 0 110-7.5 3.75 3.75 0 010 7.5zm0-1.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"></path></svg>
-                                                            </i>{thread.count_unread>0?'Đánh dấu đã đọc':'Đánh dấu chưa đọc'}
+                                                            </i>{direact_chat(thread).count_message_unseen>0?'Đánh dấu đã đọc':'Đánh dấu chưa đọc'}
                                                         </div>
                                                         <div onClick={(e)=>setactionconversations(e,thread,'delete',true)} className="conversation-action-option">
                                                             <i className="action-options-icon">
@@ -941,9 +954,9 @@ const Message=(props)=>{
                                                     </div> 
                                                 </div>:''}
                                             </div>
-                                            {thread.message_last && thread.count_message_not_seen>0 && thread.message_last.user_id!=user.id?
+                                            {direact_chat(thread).count_message_unseen>0?
                                             <div className="unread-message" id="unRead1">
-                                                <span className="badge badge-soft-danger rounded-pill">{thread.count_message_not_seen>0 && thread.message_last.user_id!=user.id?thread.count_message_not_seen>99?'99+':thread.count_message_not_seen:''}</span>
+                                                <span className="badge badge-soft-danger rounded-pill">{direact_chat(thread).count_message_unseen>99?'99+':direact_chat(thread).count_message_unseen}</span>
                                             </div>:""}
                                         </div>)
                                     }}

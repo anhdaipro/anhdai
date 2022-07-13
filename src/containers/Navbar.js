@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import {formatter,} from "../constants"
-import {cartviewURL,categoryhomeURL} from "../urls"
+import {cartviewURL,categoryhomeURL,updateuseronlineURL} from "../urls"
 import { logout,headers,expiry } from '../actions/auth';
 import { connect } from 'react-redux';
 import React, { Fragment, useState,useEffect } from 'react';
@@ -16,7 +16,6 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     let navigate=useNavigate();
     console.log(location)
     useEffect(() =>  {
-        
         setSearchchoice(data!=undefined?data:null)
     },[data])
     
@@ -41,7 +40,22 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
         }
     }, []);
 
-    
+    useEffect(() => {
+        document.addEventListener('beforeunload', onUnload)
+        return () => {
+            document.removeEventListener('beforeunload', onUnload)
+        }
+    }, [])
+
+    const onUnload=(e)=>{
+        (async ()=>{
+            if(expiry>0 && localStorage.token){
+                let form =new FormData()
+                form.append('online',false)
+                axios.post(updateuseronlineURL,form,headers)
+            }
+        })()
+    }
     let count_item=state.count
     let list_items=state.items
     if(cartitem!=undefined){
@@ -70,9 +84,10 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     };
     
     console.log(params)
+
     
+
     const searchitem=()=>{
-        
         if(searchchoice!=null){
         navigate(`/search?keyword=${keyword}&${searchchoice.shop!=undefined?`shop=${data.shop.name}`:`category=${data.category_info.id}`}`)
         }
