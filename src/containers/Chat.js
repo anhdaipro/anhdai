@@ -130,7 +130,7 @@ const Message=(props)=>{
 
     const showmessage=(e,threadchoice)=>{
         e.stopPropagation()
-        if(!thread || (threadchoice && threadchoice.id!=thread.id)){
+        if(!thread || threadchoice.members.some(member=>member.count_message_unseen>0 && member.user_id==user.id) ||  (threadchoice && threadchoice.id!=thread.id)){
             setState({...state,loading:false})
             const list_thread=threads.map(thread=>{
                 if(thread.id==threadchoice.id){
