@@ -414,7 +414,7 @@ const Message=(props)=>{
     const setactionconversations=(e,thread,name,value)=>{
         e.stopPropagation()
         let form=new FormData()
-        fomr.append('action',name)
+        form.append('action',name)
         axios.post(`${conversationsURL}${thread.id}`,form,headers)
         .then(res=>{
             const list_convesations=name=='delete'?
