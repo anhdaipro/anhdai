@@ -49,7 +49,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
     
      
      const responseGoogle = (res) => {
-         if(googleLogin){
+         if(logingoogle){
             googleLogin(res.accessToken);
             console.log(expiry)
             const config = {
