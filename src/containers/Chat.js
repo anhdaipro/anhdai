@@ -16,7 +16,7 @@ const Message=(props)=>{
     const {threadstate,isAuthenticated,list_threads,user,messages,members,showchat,count_message_unseen}=props
     const [state, setState] = useState({show_type_chat:false,type_chat:1,user_search:null,loading:false,
     show_product:false,show_order:false,loading_more:false});
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState({show_product:false,show_order:false});
     const [showshop, setShowshop] = useState(false);
     const [shop,setShop]=useState({list_orders:[],list_items:[],count_product:0,count_order:0,choice:null})
     const [list_messages,setListmessages]=useState([]);
@@ -34,6 +34,7 @@ const Message=(props)=>{
     const socket=useRef()   
     const scrollRef=useRef(null);
     const typechatref=useRef(null);
+    const shopref=useRef()
     const direact=listmember.find(member=>member.user_id!=user.id)
     const direact_user=listmember.find(member=>member.user_id==user.id)
     const direact_chat=(thread)=>{
@@ -69,6 +70,11 @@ const Message=(props)=>{
         if(typechatref.current!=null){
             if (!typechatref.current.contains(target)) {
                 setShow_type_chat(false)
+            }
+        }
+        if(shopref.current!=null){
+            if (!shopref.current.contains(target)) {
+                setShowshop({show_product:false,show_order:false})
             }
         }
     }
@@ -345,61 +351,40 @@ const Message=(props)=>{
 
     const chatproduct=()=>{
         setShop({...shop,choice:'item'})
+        setShowshop({...showshop,show_order:false,show_product:!showshop.show_product})
         const user_id=direact_user.count_product_shop>0?user.id:direact.user_id
         if(shop.list_items.length==0){
             axios.get(`${conversationsURL}/${thread.id}?user_id=${user_id}&action=showitem`)
             .then(res=>{
                 setShop({...shop,list_items:res.data.list_items,choice:'item',count_product:res.data.count_product})
-                setState({...state,loading:true,show_order:false,show_product:!state.show_product})
+                setState({...state,loading:true})
             })
         }
     }
 
     const chatorder=()=>{
-        setState({...state,loading:false,show_product:false,show_order:!state.show_order})
         setShop({...shop,choice:'order'})
+        setShowshop({...showshop,show_order:!state.show_order,show_product:false})
         if(!state.show_order && shop.list_orders.length==0){
             axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showorder`)
             .then(res=>{
-                setState({...state,loading:true,show_product:false,show_order:!state.show_order})
+                setState({...state,loading:true})
                 setShop({...shop,list_orders:res.data.list_orders,choice:'order',count_order:res.data.count_order})
             })
         }
     }
 
     const showmoreitem=(e,name)=>{
-        let url= new URL(listThreadlURL)
-        let search_params=url.searchParams
         if(e.target.scrollTop==e.target.scrollHeight-e.target.offsetHeight && state.loading){
             if(name=='item' && shop.count_product>shop.list_items.length){
-                if(message.thread_choice.shop_name_sender!=null && message.thread_choice.sender==state.user){
-                    search_params.append('name',message.thread_choice.shop_name_sender)
-                }
-                else{
-                    search_params.append('name',message.thread_choice.shop_name_receiver)
-                }
-                search_params.append('item','item')
-                search_params.append('from_item',shop.list_items.length)
-                url.search=search_params.toString()
-                let new_url=url.toString()
-                axios.get(new_url,headers)
+                axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showitem`)
                 .then(res => {
                     const list_items=[...shop.list_items,...res.data.list_items]
                     setShop({...shop,list_items:list_items})
                 })
             }
             if(name=='order' && shop.count_product>shop.list_orders.length){
-                if(message.thread_choice.sender!=state.user){
-                    search_params.append('name',message.thread_choice.shop_name_sender)
-                }
-                else{
-                    search_params.append('name',message.thread_choice.shop_name_receiver)
-                }
-                search_params.append('order','order')
-                search_params.append('from_item',shop.list_orders.length)
-                url.search = search_params.toString();
-                let new_url = url.toString();
-                axios.get(new_url,headers)
+                axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showorder`)
                 .then(res => {
                     const list_orders=[...shop.list_orders,...res.data.list_orders]
                     setShop({...shop,list_orders:list_orders})
@@ -938,8 +923,8 @@ const Message=(props)=>{
             </div>
         </div>
         :''}
-        {state.show_product || state.show_order?
-        <div className="src-product">
+        {showshop.show_product || showshop.show_order?
+        <div ref={shopref} className="src-product">
             <div className="src-product-content--1mfan">
                 <div className="src-components-index__root--3vLtz">
                     {shop.choice=='item'?
