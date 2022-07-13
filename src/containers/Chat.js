@@ -134,9 +134,14 @@ const Message=(props)=>{
             setState({...state,loading:false})
             const list_thread=threads.map(thread=>{
                 if(thread.id==threadchoice.id){
-                    return({...thread,choice:true})
+                    return({...thread,members:thread.members.map(member=>{
+                        if(member.user_id==user.id){
+                            return({...member,count_message_unseen:0})
+                        }
+                        return({...member})
+                    })})
                 }
-                return({...thread,choice:false})
+                return({...thread})
             })
             setThreads(list_thread)
             setThread(threadchoice)
