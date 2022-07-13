@@ -789,26 +789,6 @@ const Message=(props)=>{
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div onClick={(e)=>onBtnClick(e)} className="chat-inputfield-toolbar-index__drawer" aria-label="File">
-                                                <div>
-                                                    <input onChange={(e)=>previewFile(e)} multiple="" type="file" style={{display: 'none'}}/>
-                                                    <div className="">
-                                                        <i className="icon chat-inputfield-toolbar-index__file chat-inputfield-toolbar__label chat-inputfield-toolbar__inactive-label">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" width="45.057px" height="45.057px" viewBox="0 0 45.057 45.057" style={{enableBackground:'new 0 0 45.057 45.057'}} xmlSpace="preserve">
-                                                                <g>
-                                                                <path d="M13.323,13.381c6.418,0,12.834,0,19.252,0c1.613,0,1.613-2.5,0-2.5c-6.418,0-12.834,0-19.252,0     C11.711,10.881,11.711,13.381,13.323,13.381z"></path>
-                                                                <path d="M32.577,16.798c-6.418,0-12.835,0-19.253,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.835,0,19.253,0     C34.188,19.298,34.188,16.798,32.577,16.798z"></path>
-                                                                <path d="M32.577,22.281c-6.418,0-12.835,0-19.253,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.835,0,19.253,0     C34.188,24.781,34.188,22.281,32.577,22.281z"></path>
-                                                                <path d="M32.577,28.197c-6.418,0-12.835,0-19.253,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.835,0,19.253,0     C34.188,30.697,34.188,28.197,32.577,28.197z"></path>
-                                                                <path d="M32.204,33.781c-6.418,0-12.834,0-19.252,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.834,0,19.252,0     C33.817,36.281,33.817,33.781,32.204,33.781z"></path>
-                                                                <path d="M33.431,0H5.179v45.057h34.699V6.251L33.431,0z M36.878,42.056H8.179V3h23.707v4.76h4.992V42.056z"></path>
-                                                                </g>
-                                                            </svg>
-                                                        
-                                                        </i>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             
                                             <div onClick={()=>chatproduct()} className="chat-inputfield-toolbar-index__drawer" aria-label="Porducts">
                                                 <div className="">
@@ -934,10 +914,13 @@ const Message=(props)=>{
                                             </div>
                                         
                                             <div className="action-thread">
+                                                {user_chat(thread).count_message_unseen>0?
+                                                <div className="unread-message" id="unRead1">
+                                                    <span className="badge badge-soft-danger rounded-pill">{user_chat(thread).count_message_unseen>99?'99+':user_chat(thread).count_message_unseen}</span>
+                                                </div>:""}
                                                 <div className="chat-messsage-time-last">
                                                     {thread.message_last?<>{checkDay(new Date(thread.message_last.date_created))=="Today"?`${("0" + new Date(thread.message_last.date_created).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_created).getMinutes()).slice(-2)}`:checkDay(new Date(thread.message_last.date_created))=="Yesterday"?`Yesterday, ${("0" + new Date(thread.message_last.date_created).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_created).getMinutes()).slice(-2)}`:new Date(thread.message_last.date_created).getFullYear()<new Date().getFullYear()?`${("0" + new Date(thread.message_last.date_created).getDate()).slice(-2)} Tháng ${("0"+(new Date(thread.message_last.date_created).getMonth()+1)).slice(-2)}, ${new Date(thread.message_last.date_created).getFullYear()}`:`${("0" + new Date(thread.message_last.date_created).getDate()).slice(-2)} Tháng ${(new Date(thread.message_last.date_created).getMonth()+1)}`}</>:''}
                                                 </div>
-                                                
                                                 <div onClick={(e)=>setshowaction(e,thread)} id="460390502831204148" className="src-pages-index__three-dots">
                                                     <i className="_3kEAcT1Mk5 src-pages-ConversationLists-ConversationCells-index__three-dots-icon--1psZR ">
                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" className="chat-icon"><path d="M224 576c-35.3 0-64-28.7-64-64s28.7-64 64-64 64 28.7 64 64-28.7 64-64 64zM512 576c-35.3 0-64-28.7-64-64s28.7-64 64-64 64 28.7 64 64-28.7 64-64 64zM800 576c-35.3 0-64-28.7-64-64s28.7-64 64-64 64 28.7 64 64-28.7 64-64 64z"></path></svg>
@@ -964,10 +947,7 @@ const Message=(props)=>{
                                                     </div> 
                                                 </div>:''}
                                             </div>
-                                            {user_chat(thread).count_message_unseen>0?
-                                            <div className="unread-message" id="unRead1">
-                                                <span className="badge badge-soft-danger rounded-pill">{user_chat(thread).count_message_unseen>99?'99+':user_chat(thread).count_message_unseen}</span>
-                                            </div>:""}
+                                            
                                         </div>)
                                     }}
                                 )}
