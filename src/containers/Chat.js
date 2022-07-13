@@ -147,6 +147,11 @@ const Message=(props)=>{
                 }
             })
         }
+        else{
+            if(scrollRef.current){
+                scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+            }
+        }
     }
 
     console.log(list_messages)
