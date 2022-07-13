@@ -141,7 +141,8 @@ const Message=(props)=>{
             axios.get(`${conversationsURL}/${threadchoice.id}`,headers)
             .then(res=>{
                 setState({...state,loading:true})
-                setListmessages(res.data.reverse())
+                const datamesssage=res.data.reverse()
+                setListmessages(datamesssage)
                 if(scrollRef.current){
                     scrollRef.current.scrollTop = scrollRef.current.scrollHeight
                 }
