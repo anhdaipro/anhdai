@@ -179,7 +179,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
                                         onFailure={responseGoogle}
                                         cookiePolicy={'single_host_origin'}
                                         render={renderProps => (
-                                            <button type="button" onClick={renderProps.onClick} disabled={renderProps.disabled} className="_1hKScg _2Ct2Hr _1rblAp _2P7qLN">
+                                            <button type="button" onClick={()=>renderProps.onClick} disabled={renderProps.disabled} className="_1hKScg _2Ct2Hr _1rblAp _2P7qLN">
                                                 <div className="BnBJFp _3RUHTS">
                                                     <div className="_30SGUu social-white-background social-white-google-png"></div>
                                                 </div>
