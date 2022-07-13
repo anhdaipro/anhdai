@@ -684,6 +684,13 @@
       align-items: center;
       justify-content: center;
       margin-top: 8px;
+      display:none
+    }
+    .chat-pages-index__root:hover .src-pages-index__three-dots{
+      display: block;
+    }
+    .chat-pages-index__root:hover .chat-messsage-time-last{
+      display: none;
     }
     .src-pages-ConversationLists-ConversationCells-index__three-dots-icon--1psZR{
       width: 20px;
