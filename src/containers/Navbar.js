@@ -10,6 +10,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     const location = useLocation();
     const [state, setState] = useState({category_home:[],items:[],user_name:null,loading:false,show_choice:false});
     const [keyword,setKeyword]=useState(null);
+    const [items,setItems]=useState([])
     const [category,setCategory]=useState([]);
     const [searchchoice,setSearchchoice]=useState(null);
     const [params, setSearchParams] = useSearchParams();
@@ -29,8 +30,9 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                             axios.get(cartviewURL,headers),
                             axios.get(categoryhomeURL,headers),
                         ])
-                        setState({...state,loading:true,view:false,view_account:false,items:obj1.data.a,count:obj1.data.count}) 
+                        setState({...state,loading:true,view:false,view_account:false,count:obj1.data.count}) 
                         setCategory(obj2.data)
+                        setItems(obj1.data.a)
                     }
                 }   
                 catch (error) {
@@ -56,13 +58,14 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
             }
         })()
     }
-    let count_item=state.count
-    let list_items=state.items
-    if(cartitem!=undefined){
-        count_item=state.count+cartitem.length
-        list_items=[...cartitem,...state.items]
-    }
-    
+   
+    useEffect(()=>{
+        if(cartitem){
+            setState({...state,count:state.count+cartitem.length})
+            setItems([...cartitem,items])
+        }
+    },[cartitem])
+
     const logout_user=(e)=> {
         logout();
         window.location.href=`/buyer/login?next=${window.location}`
@@ -214,7 +217,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                                 <div  className="cart-drawer-container">
                                     <Link className="cart-drawer item-center" to="/cart">
                                         <svg viewBox="0 0 26.6 25.6" className="svg-icon navbar__link-icon icon-shopping-cart-2"><polyline fill="none" points="2 1.7 5.5 1.7 9.6 18.3 21.2 18.3 24.6 6.1 7 6.1" ></polyline><circle cx="10.7" cy="23" r="2.2" stroke="none"></circle><circle cx="19.7" cy="23" r="2.2" stroke="none"></circle></svg>
-                                        <div className="cart-number-badge">{count_item}</div>
+                                        <div className="cart-number-badge">{state.count}</div>
                                     </Link>
                                 </div>
                             </div>
@@ -222,7 +225,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                             <div className="cart_view">
                                 <div className="_2VDxqS item-center">Sản phẩm mới thêm</div>
                                 {
-                                    list_items.map((item,index)=>{
+                                    items.map((item,index)=>{
                                         if(index<5){
                                             return(
                                             <div key={item.id} onClick={()=>navigate(`${item.item_url}`)} className='item-start cart-item'>
@@ -242,8 +245,8 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                                 }
                                 <div className="item-space _14Rqcu">
                                     <div className="_2UHtwe">
-                                        {count_item>5?
-                                        <><span className="cart-drawer__more-items-count">{count_item-5}</span>
+                                        {state.count>5?
+                                        <><span className="cart-drawer__more-items-count">{state.count-5}</span>
                                         <span> add to cart</span></>:''}
                                     </div>  
                                     <Link to="/cart" className="btn-solid-red item-center btn-m">View Cart</Link>

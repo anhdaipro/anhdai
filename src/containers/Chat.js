@@ -231,7 +231,7 @@ const Message=(props)=>{
                 let formfile=new FormData()
                 formfile.append('action','create-message')
                 formfile.append('send_by',user.id)
-                form.append('send_to',direact.user_id)
+                formfile.append('send_to',direact.user_id)
                 listfile.filter(file=>file.filetype!=='image').map((file,i)=>{
                     formfile.append('file',file.file)
                     formfile.append('filetype',file.filetype)

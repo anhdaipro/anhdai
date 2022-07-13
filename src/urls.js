@@ -6,6 +6,7 @@ export const forgotpasswordURL=`${endpoint}/buyer/forgot_password`;
 export const purchaselistdURL=`${endpoint}/purchase`;
 export const addresslistdURL=`${endpoint}/get_address`;
 export const profiledURL=`${endpoint}/profile`;
+export const updateuseronlineURL=`${endpoint}/update/pnline`
 export const resetpassdURL=`${endpoint}/user/account/password-reset`;
 export const cityListURL = `${endpoint}/get_city`;
 export const passwordURL=`${endpoint}/user/account/password`;
