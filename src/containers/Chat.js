@@ -144,9 +144,7 @@ const Message=(props)=>{
         setThreads(list_thread)
         setThread(threadchoice)
         setListmember(threadchoice.members)
-        if(scrollRef.current){
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-        }
+        
         if(!thread || threadchoice.members.some(member=>member.count_message_unseen>0 && member.user_id==user.id) ||  (threadchoice && threadchoice.id!=thread.id)){
             setState({...state,loading:false})
             axios.get(`${conversationsURL}/${threadchoice.id}`,headers)
