@@ -16,8 +16,8 @@ const Message=(props)=>{
     const {threadstate,isAuthenticated,list_threads,user,messages,members,showchat,count_message_unseen}=props
     const [state, setState] = useState({show_type_chat:false,type_chat:1,user_search:null,loading:false,
     show_product:false,show_order:false,loading_more:false});
-    const [show, setShow] = useState({show_product:false,show_order:false});
-    const [showshop, setShowshop] = useState(false);
+    const [show, setShow] = useState(false);
+    const [showshop, setShowshop] = useState({show_product:false,show_order:false});
     const [shop,setShop]=useState({list_orders:[],list_items:[],count_product:0,count_order:0,choice:null})
     const [list_messages,setListmessages]=useState([]);
     const [message,setMessage]=useState('')
@@ -58,7 +58,7 @@ const Message=(props)=>{
             setThreads(list_threads)
         }
     },[list_threads])
-
+    console.log(show)
     useEffect(() => {
         document.addEventListener('click', handleClick)
         return () => {
@@ -519,7 +519,7 @@ const Message=(props)=>{
                 {thread?
                 <div className="chat-window-detail">
                     <div className="chat-shop-info item-center"> 
-                        <div className="chat-shop-name">{direact.name}</div>
+                        <div className="chat-shop-name">{direact.username}</div>
                         <i className="icon-dropdown icon">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" className="chat-icon"><path d="M6.243 6.182L9.425 3l1.06 1.06-4.242 4.243L2 4.061 3.06 3z"></path></svg>
                         </i>
