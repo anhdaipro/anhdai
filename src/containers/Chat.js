@@ -17,6 +17,7 @@ const Message=(props)=>{
     const [state, setState] = useState({show_type_chat:false,type_chat:1,user_search:null,loading:false,
     show_product:false,show_order:false,loading_more:false});
     const [show, setShow] = useState(false);
+    const [showshop, setShowshop] = useState(false);
     const [shop,setShop]=useState({list_orders:[],list_items:[],count_product:0,count_order:0,choice:null})
     const [list_messages,setListmessages]=useState([]);
     const [message,setMessage]=useState('')
@@ -34,6 +35,7 @@ const Message=(props)=>{
     const scrollRef=useRef(null);
     const typechatref=useRef(null);
     const direact=listmember.find(member=>member.user_id!=user.id)
+    const direact_user=listmember.find(member=>member.user_id==user.id)
     const direact_chat=(thread)=>{
         return(thread.members.find(member=>member.user_id!=user.id))
     }
@@ -342,21 +344,10 @@ const Message=(props)=>{
     }                
 
     const chatproduct=()=>{
-        setState({...state,loading:false,show_order:false,show_product:!state.show_product,choice:'item'})
         setShop({...shop,choice:'item'})
-        let url= new URL(listThreadlURL)
-        let search_params=url.searchParams
-        if(message.thread_choice.shop_name_sender!=null && message.thread_choice.sender.user_id==user.id){
-            search_params.append('shop_name',message.thread_choice.shop_name_sender)
-            }
-        else{
-            search_params.append('shop_name',message.thread_choice.shop_name_receiver)
-        }
-        search_params.append('item','item')
-        url.search = search_params.toString();
-        let new_url = url.toString();
+        const user_id=direact_user.count_product_shop>0?user.id:direact.user_id
         if(shop.list_items.length==0){
-            axios.get(new_url,headers)
+            axios.get(`${conversationsURL}/${thread.id}?user_id=${user_id}&action=showitem`)
             .then(res=>{
                 setShop({...shop,list_items:res.data.list_items,choice:'item',count_product:res.data.count_product})
                 setState({...state,loading:true,show_order:false,show_product:!state.show_product})
@@ -367,19 +358,8 @@ const Message=(props)=>{
     const chatorder=()=>{
         setState({...state,loading:false,show_product:false,show_order:!state.show_order})
         setShop({...shop,choice:'order'})
-        let url= new URL(listThreadlURL)
-        let search_params=url.searchParams
-        if(message.thread_choice.sender.user_id!=user.id){
-            search_params.append('shop_name',message.thread_choice.shop_name_sender)
-        }
-        else{
-            search_params.append('shop_name',message.thread_choice.shop_name_receiver)
-        }
-        search_params.append('order','order')
-        url.search = search_params.toString();
-        let new_url = url.toString();
         if(!state.show_order && shop.list_orders.length==0){
-            axios.get(new_url,headers)
+            axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showorder`)
             .then(res=>{
                 setState({...state,loading:true,show_product:false,show_order:!state.show_order})
                 setShop({...shop,list_orders:res.data.list_orders,choice:'order',count_order:res.data.count_order})
