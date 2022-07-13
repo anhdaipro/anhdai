@@ -946,12 +946,12 @@ const Message=(props)=>{
                                 <div className="src-modules-ProductPopover-index__shop-icon--2Vxmd">
                                     <div className="src-components-avatar-index__root--2xGjv undefined">
                                         <div className="src-components-avatar-index__avatar-wrapper--29uog">
-                                            <img alt="" src={message.thread_choice.avatar_sender}/>
+                                            <img alt="" src={member.avatar}/>
                                             <div className="src-components-avatar-index__avatar-border--2Wkz3"></div>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="src-modules-component-index__shop-name" title="My shop">My shop</div>
+                                <div className="src-modules-component-index__shop-name" title={`${member.user_id==user.id?'My shop':member.username}`}>{member.user_id==user.id?'My shop':member.username}</div>
                             </div>
                         </div>
                         )}
