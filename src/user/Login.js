@@ -178,7 +178,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
                                         clientId="487987454497-pgoqpfq7s8tp7icr8c3c7pqm7mvmulbp.apps.googleusercontent.com"
                                         onSuccess={responseGoogle}
                                         onFailure={responseGoogle}
-                                        onRequest={setLogingoogle(true)}
+                                        onRequest={()=>setLogingoogle(true)}
                                         cookiePolicy={'single_host_origin'}
                                         render={renderProps => (
                                             <button type="button" onClick={renderProps.onClick} disabled={renderProps.disabled} className="_1hKScg _2Ct2Hr _1rblAp _2P7qLN">
