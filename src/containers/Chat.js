@@ -885,7 +885,7 @@ const Message=(props)=>{
                                                     <>
                                                     {!thread.message_last?'':
                                                     thread.message_last.message_type=='1'?
-                                                    <div className={`${thread.message[0].user_id!=user.id?'q66pz984':''} text-overflow`}>{thread.message_last.message}</div>
+                                                    <div className={`${thread.message_last.user_id!=user.id?'q66pz984':''} text-overflow`}>{thread.message_last.message}</div>
                                                     :thread.message_last.message_type=='2'?
                                                     <>
                                                     <i className="icon image-icon">
