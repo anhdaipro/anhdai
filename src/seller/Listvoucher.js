@@ -82,7 +82,7 @@ const Listvoucher=()=>{
                                 </div>
                             </div>
                             <div data-v-6b00c90e=""> 
-                                <button data-v-6b00c90e="" type="button" className="btn-new button button--primary button--large">
+                                <button onClick={()=>navite('/marketing/vouchers/new')} data-v-6b00c90e="" type="button" className="btn-new button button--primary button--large">
                                     <i className="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.48176704,1.5 C8.75790942,1.5 8.98176704,1.72385763 8.98176704,2 L8.981,7.997 L15,7.99797574 C15.2761424,7.99797574 15.5,8.22183336 15.5,8.49797574 C15.5,8.77411811 15.2761424,8.99797574 15,8.99797574 L8.981,8.997 L8.98176704,15 C8.98176704,15.2761424 8.75790942,15.5 8.48176704,15.5 C8.20562467,15.5 7.98176704,15.2761424 7.98176704,15 L7.981,8.997 L2,8.99797574 C1.72385763,8.99797574 1.5,8.77411811 1.5,8.49797574 C1.5,8.22183336 1.72385763,7.99797574 2,7.99797574 L7.981,7.997 L7.98176704,2 C7.98176704,1.72385763 8.20562467,1.5 8.48176704,1.5 Z"></path></svg>
                                     </i>
