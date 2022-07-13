@@ -180,7 +180,6 @@ const Message=(props)=>{
         send_by: user.id,
         receiver:listmember.filter(member=>user.id!=member.user_id),
         }
-        
         socket.current.emit('sendData',data)
     },1000),[user,listmember,message])
     
@@ -605,7 +604,7 @@ const Message=(props)=>{
                                     {listdate().includes(i)?
                                         <div className="chat-message-time">{checkDay(new Date(message.date_created))=="Today"?`${("0" + new Date(message.date_created).getHours()).slice(-2)}:${("0" + new Date(message.date_created).getMinutes()).slice(-2)}`:checkDay(new Date(message.date_created))=="Yesterday"?`Yesterday, ${("0" + new Date(message.date_created).getHours()).slice(-2)}:${("0" + new Date(message.date_created).getMinutes()).slice(-2)}`:`${("0" + new Date(message.date_created).getDate()).slice(-2)} Th${("0"+(new Date(message.date_created).getMonth()+1)).slice(-2)} ${new Date(message.date_created).getFullYear()}, ${("0" + new Date(message.date_created).getHours()).slice(-2)}:${("0" + new Date(message.date_created).getMinutes()).slice(-2)}`}</div>
                                     :''}
-                                    <div className={`chat-message-table ${message.sender==user.username?'chat-message-sender':'chat-message-receiver'}`}>
+                                    <div className={`chat-message-table ${message.user_id==user.id?'chat-message-sender':'chat-message-receiver'}`}>
                                         <div className="chat-message">
                                         {message.message_type=='1'?
                                         <pre className="message-send message-text">{message.message}</pre>
@@ -703,7 +702,7 @@ const Message=(props)=>{
                                     </div> 
                                 </div>
                                 )}
-                                {typing.typing && user.id==typing.send_to?
+                                {typing.typing && receiver.some(item=>item.id==user.id)?
                                 <div className="chat-message-table chat-message-receiver" style={{marginTop: '8px'}}>
                                     <div className="chat-message">
                                         <div className="chat-typing">
