@@ -49,6 +49,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
     
      
      const responseGoogle = (res) => {
+         if(googleLogin){
             googleLogin(res.accessToken);
             console.log(expiry)
             const config = {
@@ -74,7 +75,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
                     }
                 })
             }, 100);
-        
+         }
     }
     const  responseFb=(response)=> {
         facebookLogin(response.accessToken);
@@ -177,9 +178,10 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
                                         clientId="487987454497-pgoqpfq7s8tp7icr8c3c7pqm7mvmulbp.apps.googleusercontent.com"
                                         onSuccess={responseGoogle}
                                         onFailure={responseGoogle}
+                                        onRequest={setLogingoogle(true)}
                                         cookiePolicy={'single_host_origin'}
                                         render={renderProps => (
-                                            <button type="button" onClick={()=>renderProps.onClick} disabled={renderProps.disabled} className="_1hKScg _2Ct2Hr _1rblAp _2P7qLN">
+                                            <button type="button" onClick={renderProps.onClick} disabled={renderProps.disabled} className="_1hKScg _2Ct2Hr _1rblAp _2P7qLN">
                                                 <div className="BnBJFp _3RUHTS">
                                                     <div className="_30SGUu social-white-background social-white-google-png"></div>
                                                 </div>
