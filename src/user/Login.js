@@ -11,6 +11,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
         password: '' 
     });
     const [state,setState]=useState({showpass:false,showrepass:false,error_login:0})
+    const [logingoogle,setLogingoogle]=useState(false)
     let navigate = useNavigate();
     const { username, password } = formData;
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -48,32 +49,33 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
     
      
      const responseGoogle = (res) => {
-        googleLogin(res.accessToken);
-        console.log(expiry)
-        const config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        setTimeout(() => {
-            let form=new FormData()
-            form.append('token',localStorage.access_token)
+            googleLogin(res.accessToken);
+            console.log(expiry)
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            setTimeout(() => {
+                let form=new FormData()
+                form.append('token',localStorage.access_token)
+            
+                axios.post('https://anhdai.herokuapp.com/api/v4/login',form, config)
+                .then(res=>{
+                const token = res.data.access;
+                localStorage.setItem('token',token);
+                const search = window.location.search;
+                    const params = new URLSearchParams(search);
+                    if(params.get('next')!=null){
+                        window.location.href=params.get('next')
+                    }
+                    else{
+                        window.location.href='/'
+                    }
+                })
+            }, 100);
         
-            axios.post('https://anhdai.herokuapp.com/api/v4/login',form, config)
-            .then(res=>{
-            const token = res.data.access;
-            localStorage.setItem('token',token);
-            const search = window.location.search;
-                const params = new URLSearchParams(search);
-                if(params.get('next')!=null){
-                    window.location.href=params.get('next')
-                }
-                else{
-                    window.location.href='/'
-                }
-            })
-        }, 100);
-      }
+    }
     const  responseFb=(response)=> {
         facebookLogin(response.accessToken);
         const config = {
@@ -173,7 +175,6 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
                                    
                                     <GoogleLogin
                                         clientId="487987454497-pgoqpfq7s8tp7icr8c3c7pqm7mvmulbp.apps.googleusercontent.com"
-                                        buttonText="Google"
                                         onSuccess={responseGoogle}
                                         onFailure={responseGoogle}
                                         cookiePolicy={'single_host_origin'}
