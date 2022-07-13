@@ -157,7 +157,7 @@ const Message=(props)=>{
         
         if(!thread || threadchoice.members.some(member=>member.count_message_unseen>0 && member.user_id==user.id) ||  (threadchoice && threadchoice.id!=thread.id)){
             setState({...state,loading:false})
-            axios.get(`${conversationsURL}/${threadchoice.id}`,headers)
+            axios.get(`${conversationsURL}/${threadchoice.id}?action=showmessage`,headers)
             .then(res=>{
                 setState({...state,loading:true})
                 const datamesssage=res.data.reverse()
@@ -364,7 +364,7 @@ const Message=(props)=>{
         })
     }
 
-    
+
     useEffect(()=>{
         (async ()=>{
             try{
