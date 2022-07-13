@@ -303,7 +303,7 @@ const Listdealshop=()=>{
                                                                                                 </span>)
                                                                                             }
                                                                                         })}
-                                                                                        {deal.list_byproduct.length>5?<div className="product-gallery-mask gallery-mask__small">+{deal.list_product.length-5}</div>:''}
+                                                                                        {deal.list_byproduct.length>5?<div className="product-gallery-mask gallery-mask__small">+{deal.list_byproduct.length-5}</div>:''}
                                                                                     </div>
                                                                                 </div>
                                                                             </td>

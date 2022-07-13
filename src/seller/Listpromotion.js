@@ -253,23 +253,14 @@ const Listcomboshop=()=>{
                                                                                             <div data-v-76c9812a="" className="ellipsis-text-wrapper info-right-item promotion-name">
                                                                                                 <div data-v-76c9812a="" className="tooltip popover popover--dark">
                                                                                                     <div className="popover__ref">
-                                                                                                        <div data-v-76c9812a="" className="ellipsis-content single">wwwwwwwwwwwwww</div>
+                                                                                                        <div data-v-76c9812a="" className="ellipsis-content single">{combo.promotion_combo_name}</div>
                                                                                                     </div> 
                                                                                                     <div className="popper popover__popper popover__popper--dark tooltip__popper" style={{display: 'none', maxWidth: '280px', wordBreak: 'break-all', overflowWrap: 'break-word'}}>
-                                                                                                        <div className="popover__content">wwwwwwwwwwwwww</div>
+                                                                                                        <div className="popover__content">{combo.promotion_combo_name}</div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
-                                                                                            <div data-v-76c9812a="" className="ellipsis-text-wrapper has-tooltips info-right-item promotion-desc">
-                                                                                                <div data-v-76c9812a="" className="tooltip popover popover--dark">
-                                                                                                    <div className="popover__ref">
-                                                                                                        <div data-v-76c9812a="" className="ellipsis-content single">16801924</div>
-                                                                                                    </div> 
-                                                                                                    <div className="popper popover__popper popover__popper--dark tooltip__popper" style={{display: 'none', maxWidth: '280px', wordBreak: 'break-all', overflowWrap: 'break-word'}}>
-                                                                                                        <div className="popover__content">16801924</div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
+                                                                                            
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
