@@ -24,7 +24,7 @@ const Message=(props)=>{
     const [thread,setThread]=useState();
     const [showemoji,setShowemoji]=useState(false)
     const [show_type_chat,setShow_type_chat]=useState(false)
-    const [receiver,setReceiver]=useState()
+    const [receiver,setReceiver]=useState([])
     const [listfile,setListfile]=useState([]);
     const [listmember,setListmember]=useState([])
     const [typing,setTyping]=useState({typing:false,send_to:null})
