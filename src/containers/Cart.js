@@ -1074,6 +1074,9 @@ class Cart extends React.Component{
                                 </div>
                             </div>
                         </div>
+                        <div className="containers">
+
+                        </div>
                     </div>
                     :
                     <div className="_3BIslJ">

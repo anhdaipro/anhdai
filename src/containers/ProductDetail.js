@@ -790,7 +790,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
             </div>
             <div>
             {state.data.deal_shock.length>0?
-            <div style="display: contents;">
+            <div style={{display: 'contents'}}>
                 <section className="_3zEHx0">
                     <div className="_18qwfY">
                         <div className="_2stg1K">
@@ -806,7 +806,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
                                 <a className="_1HN33t" href="/Quần-Baggy-Nam-Ống-Rộng-vải-Hàn-Cao-Cấp-Quần-Âu-công-sở-chất-liệu-co-giãn-phong-cách-Hàn-Quốc-i.275899480.12372283368">
                                     <span>
                                         <div className="_2xjPnf">
-                                            <div className="_13tcE_ _2LFWga" style="background-image: url(&quot;https://cf.shopee.vn/file/e66d8780015636588a0c4c8d797564d7_tn&quot;); background-size: contain; background-repeat: no-repeat;"></div>
+                                            <div className="_13tcE_ _2LFWga" style={{backgroundImage: `url(&quothttps://cf.shopee.vn/file/e66d8780015636588a0c4c8d797564d7_tn&quot)`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
                                         </div>
                                     </span>
                                     <div className="_3lizqa">
@@ -840,7 +840,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
                                     <a className="_1HN33t" href="/Quần-Baggy-Nam-Ống-Rộng-vải-Hàn-Cao-Cấp-Quần-Âu-công-sở-chất-liệu-co-giãn-phong-cách-Hàn-Quốc-i.275899480.12372283368">
                                         <span>
                                             <div className="_2xjPnf">
-                                                <div className="_13tcE_ _2LFWga" style="background-image: url(&quot;https://cf.shopee.vn/file/e66d8780015636588a0c4c8d797564d7_tn&quot;); background-size: contain; background-repeat: no-repeat;"></div>
+                                                <div className="_13tcE_ _2LFWga" style={{backgroundImage: `url(&quot;https://cf.shopee.vn/file/e66d8780015636588a0c4c8d797564d7_tn&quot;)`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
                                             </div>
                                         </span>
                                         <div className="_3lizqa">
