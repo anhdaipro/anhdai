@@ -104,7 +104,7 @@ const Divbox=(props)=>{
                                 <button onClick={()=>save_voucher(item)} type="button" className="btn btn--s btn--inline btn-solid-primary">Lưu</button>:
                                 <button onClick={()=>{apply_voucher(item)
                                     setShow(false)
-                                }} type="button" className={`btn btn--s btn--inline _19mZp5 ${list_cartitem.find(item=>item.shop_name==shop.name && item.check)?'':'disable'}`}>Áp dụng</button>}
+                                }} type="button" className={`btn btn--s btn--inline _19mZp5 ${list_cartitem.find(item=>item.shop_id==shop.id && item.check)?'':'disable'}`}>Áp dụng</button>}
                             </div>
                             {item.id==shop.voucher?
                             <div onClick={()=>remove_voucher(item)} className="_1DC8ps">
@@ -326,8 +326,8 @@ const Iteminfo=(props)=>{
                                             <div className="home-product-item__discount-deal-shock">mua kèm deal soc</div>
                                         </div>
                                         <div className="_3_FVSo">  
-                                            <div className={`${item.percent_discount>0 && item.program_valid?'home-product-item__price-old zp9xm9':'home-product-item__price _3c5u7X'}`}>₫{formatter.format((item.max_price+item.min_price)/2)}</div>
-                                            {item.percent_discount>0 && item.program_valid?
+                                            <div className={`${item.percent_discount>0?'home-product-item__price-old zp9xm9':'home-product-item__price _3c5u7X'}`}>₫{formatter.format((item.max_price+item.min_price)/2)}</div>
+                                            {item.percent_discount>0?
                                             <div className="home-product-item__price-current">
                                                 <span className="_1y2DMk">₫</span><span className="_3c5u7X">{formatter.format((item.max_price+item.min_price)/2*(100-item.percent_discount)/100)}</span>
                                             </div>
@@ -444,8 +444,8 @@ class Cart extends React.Component{
                 count_cartitem+=order.count_cartitem
             })
             const list_shop=obj3.data.map(shop=>{
-                let order=obj2.data.orders.find(order=>order.shop_name==shop.name)
-                if(order&& order.shop_name==shop.name){
+                let order=obj2.data.orders.find(order=>order.shop_id==shop.id)
+                if(order&& order.shop_id==shop.id){
                     return({...shop,voucher:order.voucher,discount_voucher_shop:order.discount_voucher_shop,loading_voucher:true,show_voucher:false})
                 }
                 return({...shop,show_voucher:false})
@@ -489,7 +489,7 @@ class Cart extends React.Component{
     checkall(e){
         let form=new FormData()
         this.state.list_shop.map(shop=>{
-            form.append('shop_name',shop.name)
+            form.append('shop_id',shop.id)
         })
 
         this.state.list_cartitem.map(item=>{
@@ -516,9 +516,9 @@ class Cart extends React.Component{
     
     checkshop(e,shop){
         let form=new FormData()
-        form.append('shop_name',shop.name)
+        form.append('shop_id',shop.id)
         this.state.list_cartitem.map(item=>{
-            if(item.shop_name===shop.name){
+            if(item.shop_id===shop.id){
                 if(e.target.checked){
                     item.check=true
                     form.append('id_checked',item.id)
@@ -551,7 +551,7 @@ class Cart extends React.Component{
         else{
             form.append('id_checked',item.id)
         }
-        form.append('shop_name',item.shop_name)
+        form.append('shop_id',item.shop_id)
         const list_cartitem=this.state.list_cartitem.map(cartitem=>{
             if(item.id==cartitem.id){
                 return({...cartitem,check:!cartitem.check})
@@ -672,7 +672,7 @@ class Cart extends React.Component{
         let form=new FormData()
         console.log(this.shopchoice())
         form.append('voucher_id',voucher.id)
-        form.append('shop_name',this.shopchoice().name)
+        form.append('shop_id',this.shopchoice().id)
         axios.post(cartURL,form,headers)
         .then(rep=>{
             let data=rep.data
@@ -688,7 +688,7 @@ class Cart extends React.Component{
 
     remove_voucher(voucher){
         let form=new FormData()
-        form.append('shop_name',this.shopchoice().name)
+        form.append('shop_id',this.shopchoice().id)
         form.append('voucher_id_remove',voucher.id)
         axios.post(cartURL,form,headers)
         .then(rep=>{
@@ -779,7 +779,7 @@ class Cart extends React.Component{
       }
 
     item_promotion=(shop)=>{
-        return this.state.list_cartitem.find(cartitem=>cartitem.promotion && shop.name==cartitem.shop_name)
+        return this.state.list_cartitem.find(cartitem=>cartitem.promotion && shop.id==cartitem.shop_id)
     }
     render(){
         const {showchat,user,showthreads}=this.props
@@ -852,8 +852,8 @@ class Cart extends React.Component{
                                             <div className="order-total-shop" key={shop.name}>
                                                 <div className="item-center shop-info _3ApheT">
                                                     <div className="item-check">
-                                                        <label className={`stardust-checkbox ${list_cartitem.some(item => !item.check && item.shop_name==shop.name)?'':'stardust-checkbox--checked'}`}>
-                                                            <input onChange={(e)=>this.checkshop(e,shop)} checked={list_cartitem.some(item => !item.check&&item.shop_name==shop.name)?false:true} className="stardust-checkbox__input" type="checkbox"/>
+                                                        <label className={`stardust-checkbox ${list_cartitem.some(item => !item.check && item.shop_id==shop.id)?'':'stardust-checkbox--checked'}`}>
+                                                            <input onChange={(e)=>this.checkshop(e,shop)} checked={list_cartitem.some(item => !item.check&&item.shop_id==shop.id)?false:true} className="stardust-checkbox__input" type="checkbox"/>
                                                             <div className="stardust-checkbox__box"></div>
                                                         </label>
                                                     </div>
@@ -874,7 +874,7 @@ class Cart extends React.Component{
                                                                         </Link>
                                                                     </span>
                                                                 </div>
-                                                                {list_cartitem.filter(cartitem=>cartitem.promotion && cartitem.shop_name==shop.name).map((item,i)=>
+                                                                {list_cartitem.filter(cartitem=>cartitem.promotion && cartitem.shop_id==shop.id).map((item,i)=>
                                                                 <Iteminfo
                                                                     item={item}
                                                                     adjustitem={(e,item,product,cartitemchoice,value)=>this.adjustitem(e,item,product,cartitemchoice,value)}
@@ -887,7 +887,7 @@ class Cart extends React.Component{
                                                             )}
                                                         </div>
                                                     :''}
-                                                    {list_cartitem.filter(cartitem=>!cartitem.promotion &&shop.name==cartitem.shop_name).map((cartitem,i)=>
+                                                    {list_cartitem.filter(cartitem=>!cartitem.promotion &&shop.id==cartitem.shop_id).map((cartitem,i)=>
                                                         <div className="shop-item-order">
                                                             {cartitem.shock_deal_type!==null?
                                                                 <div className="shop-discount">
