@@ -21,9 +21,7 @@ const Shopmember=(props)=>{
         if(showdata.show_product||showdata.show_order){
             setShow(true)
         }
-        else{
-            setShow(false)
-        }
+       
     },[showdata])
     useEffect(() => {
         document.addEventListener('click', handleClick)
@@ -36,7 +34,9 @@ const Shopmember=(props)=>{
         if(shopref.current!=null){
             if (!shopref.current.contains(target)) {
                 setShow(false)
-                
+                if (!btnorder.current.contains(target) && !btnproduct.current.contains(target)) {
+                    setshowshop()
+                }
             }
         }
     }
