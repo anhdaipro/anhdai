@@ -8,9 +8,9 @@ import Listreview from "../hocs/Review"
 
 import {Link, useNavigate} from 'react-router-dom'
 import {formatter,itemvariation} from "../constants"
-import { headers,expiry ,showchat,showthreads} from "../actions/auth";
-import {purchaselistdURL,listThreadlURL} from "../urls"
-const Purchase =({user,showchat,showthreads})=>{
+import { headers,expiry ,showchat,showthreads,buyagain} from "../actions/auth";
+import {purchaselistdURL,listThreadlURL,buyagainURL} from "../urls"
+const Purchase =({user,showchat,showthreads,buyagain})=>{
     const [state, setState] = useState({count_order:0,orders:[],user:null,list_type_order:[{name:'Tất cả',type:'1'},{name:'Chờ xác nhận',type:'2'},{name:'Chờ lấy hàng',type:'3'}
 ,{name:'Đang giao',type:'4'},{name:'Đã giao',type:'5'},{name:'Đã Hủy',type:'6'}],
 
@@ -137,6 +137,10 @@ const Purchase =({user,showchat,showthreads})=>{
         setState({...state,orders:value})
     }
     
+    const buyagainitem=(e,order)=>{
+        buyagain(order)
+        navigate('/cart')
+    }
     return(
         <>
             <div id="main">
@@ -287,11 +291,11 @@ const Purchase =({user,showchat,showthreads})=>{
                                                         <button className="stardust-button stardust-button--primary _2x5SvJ">Đánh Giá</button>
                                                     </div>:
                                                     <div className="_2BTXui">
-                                                        <button onClick={e=>navigate(`/cart`)} className="stardust-button stardust-button--primary _2x5SvJ">Mua lại</button>
+                                                        <button onClick={e=>buyagainitem(e,order)} className="stardust-button stardust-button--primary _2x5SvJ">Mua lại</button>
                                                     </div>
                                                     :order.canceled?
                                                     <div className="_2BTXui">
-                                                        <button onClick={e=>navigate(`/cart`)} className="stardust-button stardust-button--primary _2x5SvJ">Mua lại</button>
+                                                        <button onClick={e=>buyagainitem(e,order)} className="stardust-button stardust-button--primary _2x5SvJ">Mua lại</button>
                                                     </div>:<div className="_2BTXui">
                                                         <button className="stardust-button stardust-button--secondary _2x5SvJ">Chờ</button>
                                                     </div>}
@@ -303,7 +307,7 @@ const Purchase =({user,showchat,showthreads})=>{
                                                         <button className="stardust-button stardust-button--secondary _2x5SvJ">Xem đánh giá shop</button>
                                                     </div>:Math.abs(new Date() - new Date(order.received_date))/(1000 * 3600 * 24)<15?
                                                     <div className="_3YxeCv">
-                                                        <button onClick={e=>navigate(`/cart`)} className="stardust-button stardust-button--secondary _2x5SvJ">Mua lại</button>
+                                                        <button onClick={e=>buyagainitem(e,order)} className="stardust-button stardust-button--secondary _2x5SvJ">Mua lại</button>
                                                     </div>
                                                     :'':order.canceled?
                                                     <div className="_3YxeCv">
@@ -357,5 +361,5 @@ const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated,user:state.user
 });
 
-export default connect(mapStateToProps,{showchat,showthreads})(Purchase);
+export default connect(mapStateToProps,{showchat,showthreads,buyagain})(Purchase);
 

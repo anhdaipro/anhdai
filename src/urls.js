@@ -18,6 +18,7 @@ export const categoryhomeURL=`${endpoint}/category/home`
 export const changepassURL=`${endpoint}/change/password/`
 export const registeremailURL=`${endpoint}/register/email`
 export const verifyemailURL=`${endpoint}/verify/email`
+export const buyagainURL=`${endpoint}/buy_again`
 //home
 export const savevoucherURL=`${endpoint}/save_voucher`
 export const imagehomeURL=`${endpoint}/imagehome`;

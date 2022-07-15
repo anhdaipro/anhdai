@@ -19,3 +19,4 @@ export const FACEBOOK_AUTH_FAIL = 'FACEBOOK_AUTH_FAIL';
 export const LOGOUT = 'LOGOUT';
 export const SHOW_CHAT="SHOW_CHAT"
 export const SHOW_THREADS="SHOW_THREADS"
+export const BUYAGAIN="BUYAGAIN"

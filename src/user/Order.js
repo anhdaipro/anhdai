@@ -5,10 +5,10 @@ import {connect} from "react-redux"
 import User from "./User"
 import React, {useState, useEffect,useCallback} from 'react'
 import { useParams,useLocation, Navigate,useSearchParams,Link, useNavigate } from "react-router-dom";
-import { headers,expiry,showchat, showthreads } from "../actions/auth";
-import {listThreadlURL,orderURL} from "../urls"
+import { headers,expiry,showchat, showthreads,buyagain } from "../actions/auth";
+import {listThreadlURL,orderURL,buyagainURL} from "../urls"
 const Orderuser=(props)=>{
-    const {showchat,user,showthreads}=props
+    const {showchat,user,showthreads,buyagain}=props
     const { id } = useParams(); // <-- access id match param here
     const [data,setData]=useState(null);
     const [state, setState] = useState({show_thread:false,show_message:false,show_media:false});
@@ -35,6 +35,17 @@ const Orderuser=(props)=>{
         showthreads()
     }
 
+    const buyagain=(e,order)=>{
+        (async()=>{
+            let form=new FormData()
+            data.cart_item.map(cartitem=>{
+                form.append('product_id',cartitem.product_id)
+            })
+            form.append('shop_id',data.shop.id)
+            const res=await axios.post(buyagainURL,form,headers)
+            navigate(`/cart`)
+        })()
+    }
   return(
     <>
         <div id="main">
@@ -102,7 +113,10 @@ const Orderuser=(props)=>{
                                     <div className="_1umrlw">
                                         <div className="_2c2kYQ">Đơn hàng đã bị hủy bởi hệ thống</div>
                                         <div className="_2iv7q8">
-                                            <button onClick={e=>navigate(`/cart`)} className="stardust-button stardust-button--primary _2x5SvJ">Mua lại</button>
+                                            <button onClick={e=>{
+                                                buyagain(data)
+                                                navigate('/cart')
+                                            }} className="stardust-button stardust-button--primary _2x5SvJ">Mua lại</button>
                                         </div>
                                     </div>
                                 </div>
@@ -275,4 +289,4 @@ const Orderuser=(props)=>{
 const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated,user:state.user
 });
-export default connect(mapStateToProps,{showchat,showthreads})(Orderuser);
+export default connect(mapStateToProps,{showchat,showthreads,buyagain})(Orderuser);

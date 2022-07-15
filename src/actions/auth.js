@@ -15,9 +15,10 @@ import {
     FACEBOOK_AUTH_FAIL,
     LOGOUT,
     SHOW_CHAT,
-    SHOW_THREADS
+    SHOW_THREADS,
+    BUYAGAIN
 } from './types';
-import {createthreadURL, listThreadlURL} from "../urls"
+import {createthreadURL, listThreadlURL,buyagainURL} from "../urls"
 import axios from 'axios';
 axios.defaults.withCredentials = true;
 const expirationDate = localStorage.getItem("expirationDate")
@@ -287,6 +288,23 @@ export const showthreads=()=> async dispatch=>{
         const res=await axios.get(listThreadlURL,headers)
         dispatch({
             type: SHOW_THREADS,
+            payload: res.data
+        })
+    }
+    catch(e){
+        console.log(e)
+    }
+}
+export const  buyagain=(data)=>async dispatch =>{
+    try{
+        let form=new FormData()
+        data.cart_item.map(cartitem=>{
+            form.append('product_id',cartitem.product_id)
+        })
+        form.append('shop_id',data.shop.id)
+        const res=await axios.post(buyagainURL,form,headers)
+        dispatch({
+            type: BUYAGAIN,
             payload: res.data
         })
     }
