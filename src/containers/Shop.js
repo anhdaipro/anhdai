@@ -11,9 +11,7 @@ const Shopinfo = ({data,showchat,setsearchitem,showthreads,setsearchcategory,use
     const [state, setState] = useState(null)
     const {slug}=useParams()
     let navigate = useNavigate();
-    useEffect(()=>{
-        setState({...state,thread_id:data.thread_id!=undefined?data.thread_id:undefined})
-    },[data])
+    console.log(data)
     const search=Object.fromEntries([...params])
     
     const setshowthread=(e)=>{
@@ -48,7 +46,7 @@ const Shopinfo = ({data,showchat,setsearchitem,showthreads,setsearchcategory,use
     
     return(
     <div className="shop-page">
-        {data!=null?
+        {data?
         <div className="">
             <div className="shop-page__info">
                 <div className="section-seller-overview-horizontal containers">
@@ -76,15 +74,15 @@ const Shopinfo = ({data,showchat,setsearchitem,showthreads,setsearchcategory,use
                                 </div>
                             </div>
                             <div className="section-seller-overview-horizontal__buttons">
-                                <a className={`section-seller-overview-horizontal__button ${data.follow!=undefined && data.follow?'section-seller-overview-horizontal__button--following':''}`}>
+                                <a className={`section-seller-overview-horizontal__button ${data.follow?'section-seller-overview-horizontal__button--following':''}`}>
                                     <button onClick={(e)=>setfollow(e)} className="button-outline button-outline--complement button-outline--fill">
-                                        {data.follow!=undefined && data.follow?"Đang theo":<>
+                                        {data.follow?"Đang theo":<>
                                         <span className="section-seller-overview-horizontal__icon">
                                             <svg enable-background="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg>
                                         </span>theo dõi</>}
                                     </button>
                                 </a>
-                                {user && user.id!=state.data.user_id?
+                                {user && user.id!=data.user_id?
                                 <a argettype="chatButton" className="section-seller-overview-horizontal__button">
                                     <button onClick={(e)=>setshowthread(e)} className="button-outline button-outline--complement button-outline--fill">
                                         <span className="section-seller-overview-horizontal__icon">

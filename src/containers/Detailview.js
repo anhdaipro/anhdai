@@ -34,9 +34,7 @@ const Detailview = () => {
       try {
         const res = await axios.get(detailURL+slug+'?'+params,headers)
           setData(res.data)
-          if(localStorage.token!=='null' && expiry>0){
-            setThreads(res.data.list_threads)
-          }
+          
         } catch (error) {
           console.log(error);
         }

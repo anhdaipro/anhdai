@@ -12,7 +12,8 @@ const listaction=[ {name:'Ghim Trò Chuyện',gim:true},{name:'Bỏ gim cuộc T
 {name:'Xóa trò chuyện',delete:true}]
 const list_type_chat=[{'name':'Tất cả',value:'1'},{'name':'Unread',value:'2'},{'name':'Đã gim',value:'3'}]
 const Shopmember=(props)=>{
-    const {thread,setshop,showdata,sendproduct,sendorder,loadingdata,setloading,shopchoice,user,listmember,showmoreitem,setshopchoice,shop}=props
+    const {thread,setshop,showdata,sendproduct,sendorder,loadingdata,setloading,shopchoice,user,
+        setshowshop,listmember,showmoreitem,setshopchoice,shop,btnorder,btnproduct}=props
     const [show,setShow]=useState(false)
     const [keyword,setKeyword]=useState('')
     const shopref=useRef()
@@ -36,6 +37,11 @@ const Shopmember=(props)=>{
             if (!shopref.current.contains(target)) {
                 setShow(false)
             }
+            
+            if (!btnorder.current.contains(target) && !btnproduct.current.contains(target)) {
+                setshowshop()
+            }
+            
         }
     }
     const fetchkey=(e)=>{
@@ -53,6 +59,15 @@ const Shopmember=(props)=>{
         
     },1000),[thread,shop])
 
+    const setshowall=(e,orderchocie)=>{
+        const listorder=shop.list_orders.map(order=>{
+            if(orderchocie.id==order.id){
+                return({...order,showall:order.showall?false:true})
+            }
+            return({...order})
+        })
+        setshop({list_orders:listorder})
+    }
     return(
         <>
         {show?
@@ -160,7 +175,8 @@ const Shopmember=(props)=>{
                                         </div>
                                     </div>
                                     <div className="src-modules-order-index__products--3f0tb">
-                                        {order.cart_item.map(cartitem=>
+                                        {order.cart_item.map((cartitem,i)=><>
+                                            {i<2 || i>=2 && order.showall?
                                             <div className="src-modules-orderCard-index__product--KTy0W" key={cartitem.id}>
                                                 <div className="src-modules-orderCard-index__left--1P7zN src-modules-orderCard-index__center--3wE9z">
                                                     <img alt="" className="src-modules-orderCard-index__picture--2xI6-" src={cartitem.item_image}/>
@@ -173,10 +189,18 @@ const Shopmember=(props)=>{
                                                     <div className="src-modules-orderCard-index__money--fhUD7">₫{cartitem.price}</div>
                                                     <div className="src-modules-orderCard-index__count--27aZv">x{cartitem.quantity}</div>
                                                 </div>
-                                            </div>
+                                            </div>:''}</>
                                         )}
+                                        {order.cart_item.length>2?
+                                        <div class="_1G14ELBfgOp33yi2WfA5WU">
+                                            <div class="_9vMeEtVFXFcu-y2a-vaI">{order.showall?'Thu nhỏ':'Xem tất cả'}</div>
+                                            <i class="_3kEAcT1Mk5 _3OohKJpPZFYR_L0v-dcZFV">
+                                                {order.showall?<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 13" class="chat-icon"><path d="M3.5 8.036h6.071a.5.5 0 00.354-.854L6.889 4.147a.5.5 0 00-.707 0L3.146 7.182a.5.5 0 00.354.854z"></path></svg>:
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" class="chat-icon"><path d="M2.5 4h6.071a.5.5 0 01.354.854L5.889 7.889a.5.5 0 01-.707 0L2.146 4.854A.5.5 0 012.5 4z"></path></svg>}
+                                            </i>
+                                        </div>:''}
                                     </div>
-                                    <div className="src-modules-order-index__details--1RkzD src-modules-order-index__content--JZYlh">
+                                    <div onClick={(e)=>setshowall(e,order)} className="src-modules-order-index__details--1RkzD src-modules-order-index__content--JZYlh">
                                         <div>Tổng Cộng</div>
                                         <div className="src-modules-order-index__content--JZYlh">
                                             <div className="src-modules-order-index__counts--274SY">{order.count_item} products</div>
@@ -186,10 +210,11 @@ const Shopmember=(props)=>{
                                     <div className="src-modules-order-index__cancel--O-khp">
                                         {order.canceled?'Hủy bởi bạn':''}
                                     </div>
-                                    <div>
-                                        <div className="src-modules-order-index__button--2IX82">Chi Tiết</div>
-                                        <div onClick={(e)=>sendorder(e,order)} className="src-modules-order-index__button--2IX82">Gửi</div>
+                                    <div class="_2W3Iet0mGFIq6IUDMQmvsO">
+                                        <div class="_3cCj5d3lfdLnipY98e6s-p">Chi Tiết</div>
+                                        <div onClick={(e)=>sendorder(e,order)} class="_3cCj5d3lfdLnipY98e6s-p ">Gửi</div>
                                     </div>
+                                    
                                 </div>
                             )}
                         </div>   
@@ -351,9 +376,8 @@ const Message=(props)=>{
     const direact_chat=(thread)=>{
         return(thread.members.find(member=>member.user_id!=user.id))
     }
-    const user_chat=(thread)=>{
-        return(thread.members.find(member=>member.user_id==user.id))
-    }
+    const btnproduct=useRef()
+    const btnorder=useRef()
     useEffect(()=>{
         setMessage_unseen(count_message_unseen)
     },[count_message_unseen])
@@ -1105,7 +1129,7 @@ const Message=(props)=>{
                                                 </div>
                                             </div>
                                             
-                                            <div onClick={()=>chatproduct()} className="chat-inputfield-toolbar-index__drawer" aria-label="Porducts">
+                                            <div ref={btnproduct} onClick={()=>chatproduct()} className="chat-inputfield-toolbar-index__drawer" aria-label="Porducts">
                                                 <div className="">
                                                     <div className="">
                                                         <i className="icon chat-inputField-toolbar-index__products chat-inputfield-toolbar__label chat-inputfield-toolbar__inactive-label">
@@ -1114,7 +1138,7 @@ const Message=(props)=>{
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div onClick={()=>chatorder()} className="chat-inputfield-toolbar-index__drawer" aria-label="Orrders">
+                                            <div ref={btnorder} onClick={()=>chatorder()} className="chat-inputfield-toolbar-index__drawer" aria-label="Orrders">
                                                 <div className="">
                                                     <div className="">
                                                         <i className="icon chat-inputField-toolbar-index__orders chat-inputfield-toolbar__label chat-inputfield-toolbar__inactive-label">
@@ -1205,6 +1229,8 @@ const Message=(props)=>{
             sendproduct={(e,item)=>sendproduct(e,item)}
             sendorder={(e,order)=>sendorder(e,order)}
             shop={shop}
+            btnorder={btnorder}
+            btnproduct={btnproduct}
             showdata={showshop}
             setshop={data=>setshop(data)}
             thread={thread}
