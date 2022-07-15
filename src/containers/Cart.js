@@ -450,7 +450,7 @@ class Cart extends React.Component{
                 return({...shop,show_voucher:false})
             })
 
-            const list_cartitem =obj2.reduce((result, value, i) => {
+            const list_cartitem =obj2.data.reduce((result, value, i) => {
                 let item = value.cart_item.map(cartitem=>{
                     return(cartitem)
                 })
