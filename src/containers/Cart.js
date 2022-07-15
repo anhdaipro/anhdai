@@ -849,8 +849,8 @@ class Cart extends React.Component{
                                         <div className="item-action">Action</div>    
                                     </div>
                                     {
-                                        this.state.list_shop.map((shop,index)=>{
-                                            return(
+                                        this.state.list_shop.map((shop,index)=><>
+                                            {list_cartitem.some(cartitem=>cartitem.shop_id==shop.id)?
                                             <div className="order-total-shop" key={shop.name}>
                                                 <div className="item-center shop-info _3ApheT">
                                                     <div className="item-check">
@@ -896,7 +896,7 @@ class Cart extends React.Component{
                                                                     <span class="_319wph">Mua Kèm</span>
                                                                     <span className="discount-title">{cartitem.shock_deal_type=='1'?'Mua kèm deal shock':'Buy to receive gift'}</span>
                                                                         <span className="add-byproduct">
-                                                                            <Link to={cartitem.product_id}>{cartitem.byproduct.length>0?'Edit':'Add'}
+                                                                            <Link to={`/addon-deal-cart-selection/${cartitem.product_id}`}>{cartitem.byproduct.length>0?'Edit':'Add'}
                                                                                 <svg viewBox="0 0 12 12" fill="none" width="12" height="12" color="#ee4d2d" className="_1KsfYG"><path fillRule="evenodd" clipRule="evenodd" d="M9.293 6L4.146.854l.708-.708L10 5.293a1 1 0 010 1.414l-5.146 5.147-.708-.707L9.293 6z" fill="currentColor"></path></svg>
                                                                             </Link>
                                                                         </span>
@@ -949,9 +949,9 @@ class Cart extends React.Component{
                                                         <span className="_3xILt1"> Tìm hiểu thêm </span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            )
-                                        })
+                                            </div>:''}
+                                        </>
+                                        ) 
                                     }
                                 </div>  
                                 <div className="_2jol0L _3GVi82">
