@@ -835,8 +835,8 @@ class Cart extends React.Component{
                                 <div className="item-col">
                                     <div className="order-total-header">
                                         <div className="item-check">
-                                            <label className={`stardust-checkbox ${count==count_cartitem?'stardust-checkbox--checked':''}`}>
-                                                <input defaultChecked onChange={e=>this.checkall(e)} checked={count_cartitem==count?true:false}  className="stardust-checkbox__input" type="checkbox"/>
+                                            <label className={`stardust-checkbox ${list_cartitem.every(item=>item.check)?'stardust-checkbox--checked':''}`}>
+                                                <input defaultChecked onChange={e=>this.checkall(e)} checked={list_cartitem.every(item=>item.check)?true:false}  className="stardust-checkbox__input" type="checkbox"/>
                                                 <div className="stardust-checkbox__box"></div>
                                             </label>
                                         </div>
@@ -982,8 +982,8 @@ class Cart extends React.Component{
                                     <div className="_1ri0rT _2amAdj"></div>
                                     <div className="W2HjBQ zzOmij">
                                         <div className="_1E2dyV">
-                                            <label className={`stardust-checkbox ${count==count_cartitem?'stardust-checkbox--checked':''}`}>
-                                                <input  onChange={e=>this.checkall(e)} checked={count_cartitem==count?true:false}  className="stardust-checkbox__input" type="checkbox"/>
+                                            <label className={`stardust-checkbox ${list_cartitem.every(item=>item.check)?'stardust-checkbox--checked':''}`}>
+                                                <input  onChange={e=>this.checkall(e)} checked={list_cartitem.every(item=>item.check)?true:false}  className="stardust-checkbox__input" type="checkbox"/>
                                                 <div className="stardust-checkbox__box"></div>
                                             </label>
                                         </div>
