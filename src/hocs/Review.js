@@ -241,6 +241,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
         e.stopPropagation()
         let form=new FormData()
         if (state.review){
+            form.append('action','update')
             form.append('review_rating',state.review.review_rating)
             form.append('anonymous_review',state.review.anonymous_review)
             form.append('review_text',state.review.list_text)
