@@ -4,7 +4,7 @@ import Navbar from "../containers/Navbar"
 import {connect} from "react-redux"
 import User from "./User"
 import React, {useState, useEffect,useCallback} from 'react'
-import { useParams,useLocation, Navigate,useSearchParams,Link } from "react-router-dom";
+import { useParams,useLocation, Navigate,useSearchParams,Link, useNavigate } from "react-router-dom";
 import { headers,expiry,showchat, showthreads } from "../actions/auth";
 import {listThreadlURL,orderURL} from "../urls"
 const Orderuser=(props)=>{
@@ -14,6 +14,7 @@ const Orderuser=(props)=>{
     const [state, setState] = useState({show_thread:false,show_message:false,show_media:false});
     const [params, setSearchParams] = useSearchParams();
     const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
+    const navigate=useNavigate()
     if(expiry<=0 || localStorage.token=='null'){
         window.location.href="/buyer/login"
     }
@@ -101,7 +102,7 @@ const Orderuser=(props)=>{
                                     <div className="_1umrlw">
                                         <div className="_2c2kYQ">Đơn hàng đã bị hủy bởi hệ thống</div>
                                         <div className="_2iv7q8">
-                                            <button className="stardust-button stardust-button--primary _2x5SvJ">Mua lại</button>
+                                            <button onClick={e=>navigate(`/cart`)} className="stardust-button stardust-button--primary _2x5SvJ">Mua lại</button>
                                         </div>
                                     </div>
                                 </div>

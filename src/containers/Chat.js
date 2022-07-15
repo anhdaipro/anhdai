@@ -15,6 +15,7 @@ const Shopmember=(props)=>{
     const {thread,setshop,showdata,sendproduct,sendorder,loadingdata,setloading,shopchoice,user,
         setshowshop,listmember,showmoreitem,setshopchoice,shop,btnorder,btnproduct}=props
     const [show,setShow]=useState(false)
+    const navigate=useNavigate()
     const [keyword,setKeyword]=useState('')
     const shopref=useRef()
     useEffect(()=>{
@@ -57,10 +58,11 @@ const Shopmember=(props)=>{
         
     },1000),[thread,shop])
 
-    const setshowall=(e,orderchocie)=>{
+    const setshowallcart=(e,orderchoice)=>{
+        console.log(orderchoice)
         const listorder=shop.list_orders.map(order=>{
-            if(orderchocie.id==order.id){
-                return({...order,showall:order.showall?false:true})
+            if(orderchoice.id==order.id){
+                return({...order,showall:!order.showall})
             }
             return({...order})
         })
@@ -174,7 +176,7 @@ const Shopmember=(props)=>{
                                     </div>
                                     <div className="src-modules-order-index__products--3f0tb">
                                         {order.cart_item.map((cartitem,i)=><>
-                                            {i<2 || i>=2 && order.showall?
+                                            {i<2 || (i>=2 && order.showall)?
                                             <div className="src-modules-orderCard-index__product--KTy0W" key={cartitem.id}>
                                                 <div className="src-modules-orderCard-index__left--1P7zN src-modules-orderCard-index__center--3wE9z">
                                                     <img alt="" className="src-modules-orderCard-index__picture--2xI6-" src={cartitem.item_image}/>
@@ -190,7 +192,7 @@ const Shopmember=(props)=>{
                                             </div>:''}</>
                                         )}
                                         {order.cart_item.length>2?
-                                        <div class="_1G14ELBfgOp33yi2WfA5WU">
+                                        <div onClick={(e)=>setshowallcart(e,order)} class="_1G14ELBfgOp33yi2WfA5WU">
                                             <div class="_9vMeEtVFXFcu-y2a-vaI">{order.showall?'Thu nhỏ':'Xem tất cả'}</div>
                                             <i class="_3kEAcT1Mk5 _3OohKJpPZFYR_L0v-dcZFV">
                                                 {order.showall?<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 13" class="chat-icon"><path d="M3.5 8.036h6.071a.5.5 0 00.354-.854L6.889 4.147a.5.5 0 00-.707 0L3.146 7.182a.5.5 0 00.354.854z"></path></svg>:
@@ -198,7 +200,7 @@ const Shopmember=(props)=>{
                                             </i>
                                         </div>:''}
                                     </div>
-                                    <div onClick={(e)=>setshowall(e,order)} className="src-modules-order-index__details--1RkzD src-modules-order-index__content--JZYlh">
+                                    <div  className="src-modules-order-index__details--1RkzD src-modules-order-index__content--JZYlh">
                                         <div>Tổng Cộng</div>
                                         <div className="src-modules-order-index__content--JZYlh">
                                             <div className="src-modules-order-index__counts--274SY">{order.count_item} products</div>
@@ -209,7 +211,7 @@ const Shopmember=(props)=>{
                                         {order.canceled?'Hủy bởi bạn':''}
                                     </div>
                                     <div class="_2W3Iet0mGFIq6IUDMQmvsO">
-                                        <div class="_3cCj5d3lfdLnipY98e6s-p">Chi Tiết</div>
+                                        <div onClick={()=>window.open(`/user/purchase/order/${order.id}/?shopid=${order.shop_id}`, '_blank')} class="_3cCj5d3lfdLnipY98e6s-p">Chi Tiết</div>
                                         <div onClick={(e)=>sendorder(e,order)} class="_3cCj5d3lfdLnipY98e6s-p ">Gửi</div>
                                     </div>
                                     
@@ -741,7 +743,10 @@ const Message=(props)=>{
             axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showorder`,headers)
             .then(res=>{
                 setLoading(true)
-                setShop({...shop,user_id:direact.user_id,list_orders:res.data.list_orders,choice:'order',count_order:res.data.count_order})
+                const listorder=res.data.list_orders.map(order=>{
+                    return({...order,showall:false})
+                })
+                setShop({...shop,user_id:direact.user_id,list_orders:listorder,choice:'order',count_order:res.data.count_order})
             })
         }
     }
@@ -761,7 +766,10 @@ const Message=(props)=>{
                 setLoading(false)
                 axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showorder&offset=${shop.list_orders.length}`,headers)
                 .then(res => {
-                    const list_orders=[...shop.list_orders,...res.data.list_orders]
+                    const listorder=res.data.list_orders.map(order=>{
+                        return({...order,showall:false})
+                    })
+                    const list_orders=[...shop.list_orders,...listorder]
                     setShop({...shop,list_orders:list_orders})
                     setLoading(true)
                 })

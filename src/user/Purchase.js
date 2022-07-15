@@ -6,7 +6,7 @@ import React, {useState, useEffect,useCallback} from 'react'
 import {connect} from "react-redux"
 import Listreview from "../hocs/Review"
 
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import {formatter,itemvariation} from "../constants"
 import { headers,expiry ,showchat,showthreads} from "../actions/auth";
 import {purchaselistdURL,listThreadlURL} from "../urls"
@@ -20,6 +20,7 @@ const Purchase =({user,showchat,showthreads})=>{
     const [edit,setEdit]=useState(false)
     const [listreview,setListreview]=useState([])
     const [cancel,setCancel]=useState(false)
+    const navigate=useNavigate()
     useEffect(() => {
         const getJournal = async () => {
             await axios(purchaselistdURL,headers)
@@ -286,11 +287,11 @@ const Purchase =({user,showchat,showthreads})=>{
                                                         <button className="stardust-button stardust-button--primary _2x5SvJ">Đánh Giá</button>
                                                     </div>:
                                                     <div className="_2BTXui">
-                                                        <button className="stardust-button stardust-button--primary _2x5SvJ">Mua lại</button>
+                                                        <button onClick={e=>navigate(`/cart`)} className="stardust-button stardust-button--primary _2x5SvJ">Mua lại</button>
                                                     </div>
                                                     :order.canceled?
                                                     <div className="_2BTXui">
-                                                        <button className="stardust-button stardust-button--primary _2x5SvJ">Mua lại</button>
+                                                        <button onClick={e=>navigate(`/cart`)} className="stardust-button stardust-button--primary _2x5SvJ">Mua lại</button>
                                                     </div>:<div className="_2BTXui">
                                                         <button className="stardust-button stardust-button--secondary _2x5SvJ">Chờ</button>
                                                     </div>}
@@ -302,7 +303,7 @@ const Purchase =({user,showchat,showthreads})=>{
                                                         <button className="stardust-button stardust-button--secondary _2x5SvJ">Xem đánh giá shop</button>
                                                     </div>:Math.abs(new Date() - new Date(order.received_date))/(1000 * 3600 * 24)<15?
                                                     <div className="_3YxeCv">
-                                                        <button className="stardust-button stardust-button--secondary _2x5SvJ">Mua lại</button>
+                                                        <button onClick={e=>navigate(`/cart`)} className="stardust-button stardust-button--secondary _2x5SvJ">Mua lại</button>
                                                     </div>
                                                     :'':order.canceled?
                                                     <div className="_3YxeCv">
