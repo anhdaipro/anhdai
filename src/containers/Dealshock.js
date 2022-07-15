@@ -9,12 +9,13 @@ import {formatter,itemvariation} from "../constants"
 const Dealshock = () => {
     let navigate = useNavigate();
     const { id } = useParams(); // <-- access id match param here
+    const {deal_id}=useParams()
     const [state, setState] = useState({loading:false,items:[]});
     const [waring, setWaring] = useState({warring:false})
     const [variation, setVariation] = useState({count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],count_variation:0,product_id:0})
     useEffect(() => {
       const getJournal = async () => {
-        await axios(dealURL+id,headers)
+        await axios(`${dealURL}/${id}`,headers)
          // <-- passed to API URL
         .then(res=>{
           let data=res.data
