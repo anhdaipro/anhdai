@@ -97,7 +97,7 @@ export const generateString=(length)=>{
 }
 export const list_review_choice=(number)=>{
   const list_review_choice=[]
-  list_review_choice.push({name:'All',value:'all',keys:'all'})
+  list_review_choice.push({name:'All',value:'true',keys:'review'})
   for(let i=number;i>0;i--){
     list_review_choice.push({name:`${i} Sao`,value:i,keys:'review_rating'})
   }

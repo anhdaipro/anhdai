@@ -5,7 +5,7 @@ import {formatter,} from "../constants"
 import { headers } from '../actions/auth';
 import {addToCartURL} from "../urls"
 const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
-    const [state, setState] = useState({data:data,inventory:null,price:null,percent_discount:null,variation_id:0});
+    const [state, setState] = useState({data:data,inventory:null,price:null,percent_discount:null,product_id:0});
     const [variation, setVariation] = useState({
         count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],
         quantity:1})
@@ -59,12 +59,12 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
             axios.get(new_url)
             .then(res => { 
                 setState({...state,
-                    variation_id:res.data.id,inventory:res.data.inventory,
+                    product_id:res.data.id,inventory:res.data.inventory,
                     price:res.data.price,percent_discount:res.data.percent_discout})
             }) 
           }
           else{
-            setState({...state,inventory:null,price:null,percent_discount:null,variation_id:0});
+            setState({...state,inventory:null,price:null,percent_discount:null,product_id:0});
           }
         },10)
     }
@@ -81,7 +81,7 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
             seterrow(false)
             setwarring(true)
             let form =new FormData()
-            form.append('id',state.variation_id)
+            form.append('id',state.product_id)
             form.append('item_id',state.data.item_id)
             form.append('quantity',variation.quantity) 
             axios.post(addToCartURL,form,headers)
@@ -91,7 +91,7 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
             setVariation({
                 count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],
                 quantity:1})
-            setState({data:data,inventory:null,price:null,percent_discount:null,variation_id:0})
+            setState({data:data,inventory:null,price:null,percent_discount:null,product_id:0})
           })
         }  
     }

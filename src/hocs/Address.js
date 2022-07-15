@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import React, {useState, memo} from 'react'
+import React, {useState,useEffect, memo,useRef} from 'react'
 import {updateAddressURL} from "../urls"
 import GoogleMaps from './GoogleMap'
 import {address_null,typeaddress,} from "../constants"
@@ -11,6 +11,7 @@ const Address=({address,show,setshow,list_city,action,city_choice,district_choic
 })=>{
     const [state, setState] = useState({loading:false,showcity:false,change:false,level:1,administrative_units:['Tỉnh/Thành phố','Quận/Huyện','Phường/Xã'], message:'',errors: {},address_chocie:''})
     const [errow,setErrow]=useState({name:'',phone_number:'',address:'',city:''})
+    const parentref=useRef()
     function createAddress(){
         let form=new FormData()
         form.append('name',address.name)
@@ -71,9 +72,20 @@ const Address=({address,show,setshow,list_city,action,city_choice,district_choic
     function showcity(e){
         e.stopPropagation()
         setState({...state,showcity:true,level:1})
-        window.onclick=(event)=>{
-            let parent=event.target.closest('.UErLHj')
-            if(!e.target.contains(event.target) && !parent){
+        
+    }
+
+    useEffect(() => {
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [])
+
+    const handleClick = (event) => {
+        const { target } = event
+        if(parentref.current!=null){
+            if (!parentref.current.contains(target)) {
                 setState({...state,change:false,showcity:false})
             }
         }
@@ -83,13 +95,9 @@ const Address=({address,show,setshow,list_city,action,city_choice,district_choic
         e.stopPropagation()
         setcitychoice(city)
         setState({...state,change:true,level:2})
-        window.onclick=(event)=>{
-            let parent=event.target.closest('.UErLHj')
-            if(!e.target.contains(event.target) && !parent){
-                setState({...state,change:false,showcity:false})
-            }
-        }
     }
+
+
 
     function setdistrict(e,city){
         e.stopPropagation()
@@ -148,7 +156,7 @@ const Address=({address,show,setshow,list_city,action,city_choice,district_choic
                                 </div>
                             </div>
                             <div className="_355Lqv">
-                                <div className="UErLHj">
+                                <div ref={parentref} className="UErLHj">
                                     <div className="_1x-Rjl">
                                         <div className={`B8ZmJ1 ${errow.city.errow?'FsE2Ma':''}`}>
                                             <div className={`_1nHl2N ${city_choice.name==null?'':'_1qqB7v'}`}>Tỉnh/ Thành phố, Quận/Huyện, Phường/Xã</div>

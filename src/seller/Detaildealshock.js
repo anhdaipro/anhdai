@@ -329,7 +329,7 @@ const Detaildealshock=()=>{
     const setdiscount=(e,name,variation,item)=>{
         let discount=parseInt(e.target.value)
         const byproduct=item.list_variation.map(varia=>{
-            if(varia.variation_id==variation.variation_id){
+            if(varia.product_id==variation.product_id){
                 if(name=='discount_price'){
                     if(isNaN(discount)){
                         return({...varia,error:true,discount_price:'',percent_discount:100})
@@ -391,7 +391,7 @@ const Detaildealshock=()=>{
 
     const setenableby=(e,variation,item)=>{
         const byproduct=item.list_variation.map(varia=>{
-            if(varia.variation_id==variation.variation_id){
+            if(varia.product_id==variation.product_id){
                 if(variation.percent_discount>0&& variation.percent_discount<100){
                     return({...varia,enable:!varia.enable,errow:false})
                 }
@@ -527,7 +527,7 @@ const Detaildealshock=()=>{
         list_enable_on.map(item=>{
             form.append('byproduct_id',item.item_id)
             item.list_variation.map(variation=>{
-                form.append('variation_id',variation.variation_id)
+                form.append('product_id',variation.product_id)
                 form.append('percent_discount',variation.enable?variation.percent_discount:0)
                 form.append('limit_order',variation.limit_order!=''?variation.limit_order:variation.inventory)
             })
@@ -535,7 +535,7 @@ const Detaildealshock=()=>{
         const list_enable_off=itemshop.byproduct_choice.filter(item=>list_enable_on.every(items=>item.item_id!=items.item_id))
         list_enable_off.map(item=>{
             item.list_variation.map(variation=>{
-                form.append('variation_id_off',variation.variation_id)
+                form.append('product_id_off',variation.product_id)
             })
         })
 

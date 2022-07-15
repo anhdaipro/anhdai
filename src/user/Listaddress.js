@@ -24,7 +24,7 @@ const Addressuser = ({user}) =>{
             // <-- passed to API URL
             .then(res=>{
                 let data=res.data
-                setState({...state,list_addresses:data.a,loading:true
+                setState({...state,list_addresses:data,loading:true
                 })
             })
             }
@@ -41,7 +41,7 @@ const Addressuser = ({user}) =>{
         if(city.list_city.length==0){
             axios.get(cityListURL)
             .then(res=>{
-                setCity({list_city:res.data.a})
+                setCity({list_city:res.data})
             })
         } 
     }
@@ -53,7 +53,7 @@ const Addressuser = ({user}) =>{
         if(city.list_city.length==0){
             axios.get(cityListURL)
             .then(res=>{
-                const list_city=res.data.a
+                const list_city=res.data
                 setCity({list_city:list_city})
             })
         } 

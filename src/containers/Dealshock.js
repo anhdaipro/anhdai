@@ -11,7 +11,7 @@ const Dealshock = () => {
     const { id } = useParams(); // <-- access id match param here
     const [state, setState] = useState({loading:false,items:[]});
     const [waring, setWaring] = useState({warring:false})
-    const [variation, setVariation] = useState({count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],count_variation:0,variation_id:0})
+    const [variation, setVariation] = useState({count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],count_variation:0,product_id:0})
     useEffect(() => {
       const getJournal = async () => {
         await axios(dealURL+id,headers)
@@ -61,7 +61,7 @@ const Dealshock = () => {
         .then(res => { 
             const list_item=state.items.map(item=>{
                 if(item.item_id==data.item_id){
-                    return{...item,variation_id:res.data.variation_id,price:res.data.price,discount_price:res.data.discount_price,
+                    return{...item,product_id:res.data.product_id,price:res.data.price,discount_price:res.data.discount_price,
                     size_value:res.data.size_value,color_value:res.data.color_value,
                     inventory:res.data.inventory,show:false,check:true
                     }
@@ -102,7 +102,7 @@ const Dealshock = () => {
         e.stopPropagation()
         const list_item=state.items.map(item=>{
             if (item.item_id==data.item_id){
-                if(item.variation_id!=undefined ){
+                if(item.product_id!=undefined ){
                     return {...item, check: !data.check};
                 }
                 else{
@@ -114,7 +114,7 @@ const Dealshock = () => {
             }
         })
         setState({...state,items:list_item})
-        if(data.variation_id==undefined){
+        if(data.product_id==undefined){
             open_variation(e,data)
         }
     }
@@ -186,7 +186,7 @@ const Dealshock = () => {
         state.items.map(item=>{
             if(item.main==true){
                 form.append('item_id',item.item_id)
-                form.append('variation_id_chocie',item.variation_id)
+                form.append('product_id_chocie',item.product_id)
                 form.append('quantity_product',item.quantity)
             }
             else{
@@ -200,8 +200,8 @@ const Dealshock = () => {
                     }
                 }
                 else{
-                    if(item.variation_id!=undefined && item.check==true){
-                        form.append('variation_id',item.variation_id)
+                    if(item.product_id!=undefined && item.check==true){
+                        form.append('product_id',item.product_id)
                         form.append('quantity',item.quantity)
                     }
                 }

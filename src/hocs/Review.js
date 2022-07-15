@@ -1,22 +1,28 @@
 import axios from 'axios';
-import React, {useState, useEffect,useCallback,memo} from 'react'
+import React, {useState, useEffect,useCallback,memo,useRef} from 'react'
 import { headers } from '../actions/auth';
 import {formatter,itemvariation,hidestring,list_review_text_star,
 star_solid,star_empty,dataURLtoFile,rating_score,list_rating_category_bab,list_reason_cancel} from "../constants"
-import {threadlURL,purchaselistdURL,localhost,} from "../urls"
+import {threadlURL,purchaselistdURL,localhost, reviewURL,} from "../urls"
 const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,user,setshow,updateorder,
     edit,setedit,list_cartitem,setcartitem,setChoice,setlistreview})=>{
-    const [state, setState] = useState({list_cartitem:list_cartitem,loading:false,review:null,open_info_review:false,submit:false,
+    const [state, setState] = useState({loading:false,review:null,submit:false,
     reason_choice:null});
     const [submit,setSubmit]=useState(false)
     console.log(user)
-    const [listidremove,setListidremove]=useState([])
+    const [showinfo,setShowinfo]=useState(false)
+    const [showdata,setShowdata]=useState(false)
+    const inforef=useRef()
     const [statusreview,setStatusreview]=useState(false)
     const [preview,setPreview]=useState({width:520,index:0})
+    useEffect(()=>{
+        setShowdata(show)
+    },[show])
+
     function rating_score_main(number,item){
         let rating=[]
         for(let k=1;k<number;k++){
-            if(item.review_rating!=undefined){
+            if(item.review_rating){
                 let score=item.review_rating 
                 rating.push(<div onClick={(e)=>rating_choice(e,k,item)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '36px', height: '36px'}}>{k<=score?star_solid:star_empty}</div>)
             }
@@ -41,6 +47,22 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
         return rating
     }
     
+    useEffect(() => {
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [])
+
+    const handleClick = (event) => {
+        const { target } = event
+        if(inforef.current!=null){
+            if (!inforef.current.contains(target)) {
+                setShowinfo(false)
+            }
+        }
+    }
+
     const editreview=(e,review)=>{
         e.stopPropagation()
         setedit(true)
@@ -63,17 +85,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
         setState({...state,review:state.review})
     }
 
-    const setshowinfo=(e)=>{
-        const open_info_review=!state.open_info_review
-        setState({...state,open_info_review:open_info_review})
-        window.onclick=(event)=>{
-            let parent=event.target.closest('._13tPpj')
-            if(!e.target.contains(event.target) && !parent){
-                setState({...state,open_info_review:false})
-            }
-        }
-    }
-
+    
     function rating_choice(e,k,item){
         e.stopPropagation()
         const list_text=item.review_text.split(',').filter(it=>it!='')
@@ -102,12 +114,9 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
         [].forEach.call(e.target.files, function(file) {
             e.stopPropagation()
             if ((/image\/.*/.test(file.type))){
-                var img = new Image;
-                img.onload = remURL;               // to remove Object-URL after use
-                img.className='_3KQNXANNUSJKR1Z2adRPjF'        // use style, "width" defaults to "auto"
-                img.src = (window.URL || window.webkitURL).createObjectURL(file);
+                
                 // convert image file to base64 string
-                item.list_image.push({file:img.src,file_choice:file,duration:0,file_preview:null,id:item.id})
+                item.list_image.push({file:(window.URL || window.webkitURL).createObjectURL(file),file_choice:file,duration:0,file_preview:null,id:item.id})
                 if(item==state.review){
                     setState({...state,review:item})
                 }
@@ -116,63 +125,46 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                 }
             }
             else{ 
-                
                 var url = (window.URL || window.webkitURL).createObjectURL(file);
                 var video = document.createElement('video');
-                var timeupdate = function() {
-                if (snapImage()) {
-                    video.removeEventListener('timeupdate', timeupdate);
-                    video.pause();
-                  }
-                };
+                video.src = url;
                 video.addEventListener('loadeddata', e =>{
-                        
-                if (snapImage()) {
-                    video.removeEventListener('timeupdate', timeupdate);
-                  }
+                    video.currentTime=1
                 });
-                let snapImage = function() {
-                let canvas = document.createElement('canvas');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-                let image = canvas.toDataURL("image/png");
-                let file_preview = dataURLtoFile(image,'dbc9a-rg53.png');
-                let success = image.length > 100000;
-                if (success) {
+                video.addEventListener('timeupdate',e=>{
+                    let canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                    let image = canvas.toDataURL("image/png");
+                    let file_preview = dataURLtoFile(image,'dbc9a-rg53.png');
                     item.video={filetype:'video',file_choice:file,id:item.id,media_preview:image,file_preview:file_preview,duration:video.duration}
                     if(item==state.review){
                         setState({...state,review:item})
                     }
                     else{
                         setChoice(item)
-                    }
-                    URL.revokeObjectURL(url);
-                  }
-                  return success;
-                };
-                video.addEventListener('timeupdate', timeupdate);
+                    } 
+                })
                 video.preload = 'metadata';
-                video.src = url;
                 // Load video in Safari / IE11
                 video.muted = true;
                 video.playsInline = true;
-                video.play();
                 }
             })
-            function remURL() {(window.URL || window.webkitURL).revokeObjectURL(this.src)}
     }
+
     console.log(list_cartitem)
     function setopenreview(e){
         e.stopPropagation()
-        setshow(false)
+        setShowdata(false)
         setedit(false)
         setState({...state,review:null})
     }
 
     function setclosereview(e){
         e.stopPropagation()
-        setshow(false)
+        setShowdata(false)
         setedit(false)
         setState({...state,review:null})
         setcartitem(null)
@@ -191,12 +183,8 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
 
     function removeimage(e,image,item){
         e.stopPropagation()
-        if(item.file_id!=undefined){
-            setListidremove([listidremove,item.file_id])
-        }
         const array =item.list_image.filter(img=>img.file!=image.file)
         item.list_image=array
-        
         if(item==state.review){
             setState({...state,review:item})
         }
@@ -218,7 +206,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
 
     function setanonymous(e,item){
         e.stopPropagation()
-        item.rating_anonymous=!item.rating_anonymous
+        item.anonymous_review=!item.anonymous_review
         if(item==state.review){
             setState({...state,review:item})
         }
@@ -248,99 +236,86 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
         }
     }
 
+    console.log(state.review)
     const submitreview=(e)=>{
         e.stopPropagation()
         let form=new FormData()
-        if (state.review!=null){
-            form.append('review_id',state.review.id)
+        if (state.review){
             form.append('review_rating',state.review.review_rating)
-            form.append('rating_anonymous',state.review.rating_anonymous)
+            form.append('anonymous_review',state.review.anonymous_review)
             form.append('review_text',state.review.list_text)
             form.append('rating_bab_category',state.review.rating_bab_category)
             form.append('info_more',state.review.info_more)
-            if(state.review.video!=null){
-                if(state.review.video.file_choice!=null){
-                form.append('file_preview',state.review.video.file_preview)
-                form.append('file_choice',state.review.video.file_choice)
-                form.append('duration',state.review.video.duration)
-                
+            if(state.review.video){
+                if(state.review.video.file_choice){
+                    form.append('video_preview',state.review.video.file_preview)
+                    form.append('video',state.review.video.file_choice)
+                    form.append('duration',state.review.video.duration)
                 }
+                form.append('file_id',state.review.video.id)
             }
             state.review.list_image.map(image=>{
-                if(image.file_choice!=null){
-                    form.append('file_preview',image.file_preview)
-                    form.append('file_choice',image.file_choice)
-                    form.append('duration',image.duration)
-                    
+                if(image.file_choice){
+                    form.append('image',image.file_choice)
                 }
+                form.append('file_id',image.id)
+            })
+            axios.post(`${reviewURL}/${state.review.id}`,form,headers)
+            .then(res=>{
+                setedit(false)
+                setStatusreview(false)
+                setlistreview(res.data)
             })
         }
         else{
-            let status_submit=true
-            setSubmit(status_submit)
+            setSubmit(true)
             form.append('total_xu',receivexu())
             list_cartitem.map(cartitem=>{
                 form.append('cartitem_id',cartitem.id)
                 form.append('review_rating',cartitem.review_rating)
-                form.append('rating_anonymous',cartitem.rating_anonymous)
+                form.append('anonymous_review',cartitem.anonymous_review)
                 form.append('review_text',cartitem.list_text)
                 form.append('rating_bab_category',cartitem.rating_bab_category)
                 form.append('info_more',cartitem.info_more)
-                cartitem.list_image.map(image=>{
-                    form.append('file_preview',image.file_preview)
-                    form.append('file_choice',image.file_choice)
-                    form.append('duration',image.duration)
-                    form.append('id',image.id)
-                })
-                if(cartitem.video!=null){
-                    form.append('file_preview',cartitem.video.file_preview)
-                    form.append('file_choice',cartitem.video.file_choice)
+                if(cartitem.video){
+                    form.append('video_preview',cartitem.video.file_preview)
+                    form.append('video',cartitem.video.file_choice)
                     form.append('duration',cartitem.video.duration)
-                    form.append('id',state.review.video.id)
+                    form.append('id_video',cartitem.video.id)
                 }
-                listidremove.map(item=>{
-                    form.append('id_remove',item)
+                cartitem.list_image.map(image=>{
+                    form.append('image',image.file_choice)
+                    form.append('id_image',image.id)
                 })
+                
             })
-        
-           
-        }
-        if(checkvalidrating()){
-            alert('Đánh giá Chất lượng sản phẩm, Dịch vụ của Người bán và Dịch vụ vận chuyển của bạn đang cao hơn đánh giá chung, vui lòng kiểm tra lại.')
-        }
-        else{
-            axios.post(purchaselistdURL,form,headers)
-            .then(res=>{
-                let data=res.data
-                if(list_cartitem!=null){
-                    document.getElementById('modal').onclick=(event)=>{
-                        setedit(false)
-                        setState({...state,review:null})
-                        setcartitem(null)
-                        setSubmit(false)
-                        setStatusreview(false)
-                        setshow(false)
-                        const orders=list_orders.map(order=>{
-                            if(order.id==order_choice.id){
-                                return({...order,review:order_choice.order_item.length})
-                            }
-                            return({...order})
-                        })
-                        updateorder(orders)
-                    }
-                }
-                else{
+            if(checkvalidrating()){
+                alert('Đánh giá Chất lượng sản phẩm, Dịch vụ của Người bán và Dịch vụ vận chuyển của bạn đang cao hơn đánh giá chung, vui lòng kiểm tra lại.')
+            }
+            else{
+                axios.post(purchaselistdURL,form,headers)
+                .then(res=>{
+                    const orders=list_orders.map(order=>{
+                        if(order.id==order_choice.id){
+                            return({...order,review:true})
+                        }
+                        return({...order})
+                    })
+                    updateorder(orders)
                     setedit(false)
+                    setState({...state,review:null})
+                    setcartitem(null)
+                    setSubmit(false)
                     setStatusreview(false)
-                    setlistreview(data.list_review[0])
-                }
-            })
+                    setShowdata(false)  
+                })
+            }
         }
     }
     
     function rating_product(item){
         return(
-            <div className={`rating-modal-handler__container ${(item==state.review &&state.review!=null) || (item==list_cartitem[list_cartitem.length-1] && list_cartitem!=undefined)?"rating-modal-handler__container--last":''}`}>
+            <div className={`rating-modal-handler__container ${(item==state.review &&state.review) || (item==list_cartitem[list_cartitem.length-1] && list_cartitem)?"rating-modal-handler__container--last":''}`}>
                 <a className="c1C69v _1uii4D" href={item.item_url} target="_blank" rel="noopener noreferrer">
                     <div className="image__wrapper _2ylgGg">
                         <div className="image__place-holder">
@@ -389,8 +364,8 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                         {item.video || item.list_image.length>0?
                             <>
                             <>
-                            {item.video!=null?
-                            <div className="_2b-JH- M4LSKO" style={{backgroundImage:`url(${item.video.file_choice==undefined?localhost:''}${item.video.media_preview})`}}>
+                            {item.video?
+                            <div className="_2b-JH- M4LSKO" style={{backgroundImage:`url(${item.video.media_preview})`}}>
                                 <button onClick={(e)=>removevideo(e,item)}>
                                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path fillRule="evenodd" clip-rule="evenodd" d="M8.28268 0.908882C8.47794 0.71362 8.79452 0.71362 8.98978 0.908882L9.0908 1.0099C9.28606 1.20516 9.28606 1.52174 9.0908 1.717L1.71669 9.09112C1.52142 9.28638 1.20484 9.28638 1.00958 9.09112L0.908564 8.9901C0.713301 8.79484 0.713301 8.47826 0.908563 8.283L8.28268 0.908882Z" fill="#F6F6F6"></path><path fillRule="evenodd" clip-rule="evenodd" d="M1.00973 0.908882C1.20499 0.71362 1.52157 0.71362 1.71683 0.908882L9.09095 8.28299C9.28621 8.47826 9.28621 8.79484 9.09095 8.9901L8.98993 9.09112C8.79467 9.28638 8.47809 9.28638 8.28283 9.09112L0.908713 1.717C0.713451 1.52174 0.71345 1.20516 0.908713 1.0099L1.00973 0.908882Z" fill="#F6F6F6"></path></svg>
                                 </button>
@@ -401,7 +376,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                             </div>:''}
                             </>
                             <>{item.list_image.map(image=>
-                                <div className="_2b-JH-" style={{backgroundImage:`url(${image.file_choice==undefined?localhost:''}${image.file})`}}>
+                                <div className="_2b-JH-" style={{backgroundImage:`url(${image.file})`}}>
                                     <button onClick={(e)=>removeimage(e,image,item)}>
                                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path fillRule="evenodd" clip-rule="evenodd" d="M8.28268 0.908882C8.47794 0.71362 8.79452 0.71362 8.98978 0.908882L9.0908 1.0099C9.28606 1.20516 9.28606 1.52174 9.0908 1.717L1.71669 9.09112C1.52142 9.28638 1.20484 9.28638 1.00958 9.09112L0.908564 8.9901C0.713301 8.79484 0.713301 8.47826 0.908563 8.283L8.28268 0.908882Z" fill="#F6F6F6"></path><path fillRule="evenodd" clip-rule="evenodd" d="M1.00973 0.908882C1.20499 0.71362 1.52157 0.71362 1.71683 0.908882L9.09095 8.28299C9.28621 8.47826 9.28621 8.79484 9.09095 8.9901L8.98993 9.09112C8.79467 9.28638 8.47809 9.28638 8.28283 9.09112L0.908713 1.717C0.713451 1.52174 0.71345 1.20516 0.908713 1.0099L1.00973 0.908882Z" fill="#F6F6F6"></path></svg>
                                     </button>
@@ -413,7 +388,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                                 <span className="_1XedQJ">{5-item.list_image.length}/5</span>
                                 <input onChange={(e)=>previewFile(e,item)} className="_2M9Egi" type="file" multiple="" accept="image/*"/>
                             </label></>:''}
-                            {item.video==null?<>
+                            {!item.video?<>
                             <label onclick={(e)=>previewFile(e,item)} className="_2WUX_c">
                                 <svg width="20" height="15" viewBox="0 0 20 15" fill="none"><path fillRule="evenodd" clip-rule="evenodd" d="M1 0.0769348C0.447715 0.0769348 0 0.52465 0 1.07693V13.1946C0 13.7469 0.447715 14.1946 1 14.1946H13.1176C13.6699 14.1946 14.1176 13.7469 14.1176 13.1946V1.07693C14.1176 0.52465 13.6699 0.0769348 13.1176 0.0769348H1ZM10.5883 7.13563C10.5883 9.08487 9.00811 10.665 7.05887 10.665C5.10963 10.665 3.52946 9.08487 3.52946 7.13563C3.52946 5.18639 5.10963 3.60622 7.05887 3.60622C9.00811 3.60622 10.5883 5.18639 10.5883 7.13563ZM7.05916 9.48865C8.35865 9.48865 9.4121 8.4352 9.4121 7.13571C9.4121 5.83622 8.35865 4.78277 7.05916 4.78277C5.75966 4.78277 4.70622 5.83622 4.70622 7.13571C4.70622 8.4352 5.75966 9.48865 7.05916 9.48865ZM20.0003 1.25344L15.2944 4.78247V9.48873L20.0003 13.0181V1.25344Z" fill="black" fill-opacity="0.26"></path></svg>
                                 <span className="_1XedQJ">1/1</span>
@@ -436,16 +411,16 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                         </>
                         }
                     </div>
-                    {item!=state.review?<div className="_2RDJL3">{item.info_more.length>=50?item.video!=null||item.list_image.length>0? `Gửi đánh giá để nhận ${item.video!=null&&item.list_image.length>0?'200 Xu!':'100 Xu'}  ${item.video!=null&&item.list_image.length==0 || item.video==null&&item.list_image.length>0?`hoặc thêm 1 ${item.video==null&&item.list_image.length>0?'video':'hình ảnh'} để nhận 200 Xu`:''}`:"Thêm 1 hình ảnh và 1 video để nhận 200 Xu":`Thêm ${50-item.info_more.length} ký tự và ${item.list_image.length==0?'1 hinh anh':''} ${item.video==null?'và 1 video':''} để nhận 200 Xu`}</div>:''}
+                    {item!=state.review?<div className="_2RDJL3">{item.info_more.length>=50?item.video||item.list_image.length>0? `Gửi đánh giá để nhận ${item.video&&item.list_image.length>0?'200 Xu!':'100 Xu'}  ${item.video&&item.list_image.length==0 || !item.video&&item.list_image.length>0?`hoặc thêm 1 ${!item.video&&item.list_image.length>0?'video':'hình ảnh'} để nhận 200 Xu`:''}`:"Thêm 1 hình ảnh và 1 video để nhận 200 Xu":`Thêm ${50-item.info_more.length} ký tự và ${item.list_image.length==0?'1 hinh anh':''} ${!item.video?'và 1 video':''} để nhận 200 Xu`}</div>:''}
                 </div>
                 <div className="rating-modal-handler__rating-anonymous-wrapper">
-                    <label className={`stardust-checkbox ${item.rating_anonymous?'stardust-checkbox--checked':''}`}>
+                    <label className={`stardust-checkbox ${item.anonymous_review?'stardust-checkbox--checked':''}`}>
                         <input onChange={e=>(setanonymous(e,item))} className="stardust-checkbox__input" type="checkbox"/>
                         <div className="stardust-checkbox__box"></div>
                     </label>
                     <div onClick={e=>(setanonymous(e,item))} style={{marginLeft: '4px'}}>
                         <div className="rating-modal-handler__rating-anonymous-hint">Đánh giá ẩn danh</div>
-                        <div className="rating-modal-handler__rating-anonymous-username">Tên tài khoản sẽ được hiển thị như {item.rating_anonymous?`${user.username.substr(0,1)}${hidestring(user.username)}${user.username.substr(-1)}`:`${user.username}`}</div>
+                        <div className="rating-modal-handler__rating-anonymous-username">Tên tài khoản sẽ được hiển thị như {item.anonymous_review?`${user.username.substr(0,1)}${hidestring(user.username)}${user.username.substr(-1)}`:`${user.username}`}</div>
                     </div>
                 </div>
                 </>:''}
@@ -458,17 +433,17 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
         setState({...state,review:null})
         setcartitem(null)
         setSubmit(false)
-        setshow(false)
+        setShowdata(false)
     }
 
     function receivexu(){
         let total_xu=0
         list_cartitem.map(cartitem=>{
             if(cartitem.info_more.length>=50){
-                if(cartitem.video!=null&& cartitem.list_image.length>0){
+                if(cartitem.video&& cartitem.list_image.length>0){
                     total_xu+=200
                 }
-                else if(cartitem.video!=null&& cartitem.list_image.length==0 ||cartitem.video==null&& cartitem.list_image.length>0){
+                else if(cartitem.video&& cartitem.list_image.length==0 ||!cartitem.video&& cartitem.list_image.length>0){
                     total_xu+=100
                 }
             }
@@ -478,14 +453,14 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
     
     function checkdisable(){
         let disable=false
-        if(state.review!=null){
+        if(state.review){
             if(state.review.review_rating<3){
                 if(state.review.rating_bab_category.some(category=>category==0)|| state.review.rating_bab_category.every(category=>category>2)){
                     disable=true
                 }
             }
         }
-        if(list_cartitem!=null){
+        if(list_cartitem){
             const list_valid=list_cartitem.filter(item=>item.review_rating==0)
             if(list_valid.length>0){
                 disable=true
@@ -501,12 +476,12 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
 
     function checkvalidrating(){
         let errow=false
-        if(state.review!=null){
+        if(state.review){
             if(state.review.review_rating<3 && state.review.rating_bab_category.every(category=>category>2)){
                 errow=true
             }
         }
-        if(list_cartitem!=null){
+        if(list_cartitem){
             const valid_bab=list_cartitem.filter(item=>item.review_rating<3 && item.rating_bab_category.every(category=>category>2))
             if(valid_bab.length>0){
                 errow=true
@@ -549,11 +524,11 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
     }
     return(
         <>
-        {show?
+        {showdata?
         <div className='popup modal__transition-enter-done'>
             <div className="popup__overlay"></div>
             <div className="popup__container">
-                {submit && list_cartitem!=null?
+                {submit && list_cartitem?
                 <>
                 {receivexu()>0?<>
                 <div className="rONIza">
@@ -576,7 +551,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                     <div className="popup-form__header">
                         <div className="popup-form__title">
                             {edit?<>
-                            {state.review!=null?
+                            {state.review?
                             <div onClick={e=>setedit(false)} className="popup-form__back-btn">
                                 <svg height="17" width="21" className="svg-icon icon-back icon-back-to-home"><path d="M3.043 9.3h16.693a.749.749 0 1 0 0-1.5H3.041l5.64-5.639a.753.753 0 0 0 .004-1.066.752.752 0 0 0-1.066.005L.718 8.002a.758.758 0 0 0-.224.533.759.759 0 0 0 .224.561l6.901 6.902a.753.753 0 0 0 1.066.005.752.752 0 0 0-.005-1.066z" fill="#000" fillOpacity=".26" fillRule="evenodd"></path></svg>
                             </div>:''}
@@ -586,7 +561,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                     </div>
                     <div className="popup-form__main">
                         <div className="popup-form__main-container">
-                            {statusreview && state.review!=null?
+                            {statusreview && state.review?
                             <div className="_256LVu">
                                 <div className="l5QcqJ">
                                     <div className="WeXJ6A">Gửi đánh giá?</div>
@@ -599,15 +574,15 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                             </div>
                             :edit?
                             <>
-                            <div className="_2GNwsI">
+                            <div ref={inforef} className="_2GNwsI">
                                 <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon _2avHKU ">
                                     <linearGradient id="coingold-a" gradientTransform="matrix(1 0 0 -1 0 -810.11)" gradientUnits="userSpaceOnUse" x1="2.9694" x2="12.0447" y1="-811.8111" y2="-823.427"><stop offset="0" stopColor="#f6c430"></stop><stop offset=".5281" stopColor="#ffecaa"></stop><stop offset=".6639" stopColor="#fdde82"></stop><stop offset=".9673" stopColor="#f7bc1e"></stop><stop offset="1" stopColor="#f6b813"></stop></linearGradient><linearGradient id="coingold-b" gradientTransform="matrix(1 0 0 -1 0 -810.11)" gradientUnits="userSpaceOnUse" x1="7.5" x2="7.5" y1="-810.2517" y2="-824.9919"><stop offset="0" stopColor="#e49b00"></stop><stop offset=".9416" stopColor="#d67b00"></stop><stop offset="1" stopColor="#d57900"></stop></linearGradient><linearGradient id="coingold-c" gradientTransform="matrix(1 0 0 -1 0 -810.11)" gradientUnits="userSpaceOnUse" x1="4.0932" x2="10.9068" y1="-813.5499" y2="-821.6702"><stop offset="0" stopColor="#f99d00"></stop><stop offset=".1752" stopColor="#eea10b"></stop><stop offset=".5066" stopColor="#fcd21f"></stop><stop offset=".6657" stopColor="#f2ba10"></stop><stop offset="1" stopColor="#d57900"></stop></linearGradient><linearGradient id="coingold-d" gradientUnits="userSpaceOnUse" x1="5.4204" x2="9.7379" y1="5.0428" y2="10.188"><stop offset="0" stopColor="#ffec88"></stop><stop offset=".5003" stopColor="#fdf4cb"></stop><stop offset=".7556" stopColor="#fceba4"></stop><stop offset="1" stopColor="#fae17a"></stop></linearGradient><g><circle cx="7.5" cy="7.5" fill="url(#coingold-a)" r="7.4"></circle><path d="m7.5.4c3.9 0 7.1 3.2 7.1 7.1s-3.2 7.1-7.1 7.1-7.1-3.2-7.1-7.1 3.2-7.1 7.1-7.1m0-.3c-4.1 0-7.4 3.3-7.4 7.4s3.3 7.4 7.4 7.4 7.4-3.3 7.4-7.4-3.3-7.4-7.4-7.4z" fill="url(#coingold-b)"></path><path d="m14.4 7.7c0-.1 0-.1 0-.2 0-3.8-3.1-6.9-6.9-6.9s-6.9 3.1-6.9 6.9v.2c.1-3.7 3.1-6.7 6.9-6.7s6.8 3 6.9 6.7z" fill="#fff5c9"></path><circle cx="7.5" cy="7.5" fill="url(#coingold-c)" r="5.3"></circle><path d="m11.4 4c1.1 1 1.8 2.4 1.8 3.9 0 2.9-2.4 5.3-5.3 5.3-1.6 0-3-.7-3.9-1.8.9.8 2.2 1.4 3.5 1.4 2.9 0 5.3-2.4 5.3-5.3 0-1.4-.5-2.6-1.4-3.5z" fill="#ffeead"></path><path d="m11.4 4c-1-1.1-2.4-1.8-3.9-1.8-2.9 0-5.3 2.4-5.3 5.3 0 1.6.7 3 1.8 3.9-.8-.9-1.4-2.2-1.4-3.5 0-2.9 2.4-5.3 5.3-5.3 1.4 0 2.6.5 3.5 1.4z" fill="#c97201"></path><path d="m6.2 4.8c-.5.4-.6 1.1-.5 1.7.1.5.5 1 1.1 1.3.7.4 2.4.8 2.4 1.7 0 .2-.1.5-.2.6-.3.4-.8.5-1.3.5-.3 0-.7-.1-1-.2s-.6-.3-.9-.5c-.2-.1-.4 0-.5.1-.1.2 0 .4.1.5.5.4 1 .7 1.7.8.6.1 1.3.1 1.8-.2.5-.2.9-.6 1-1.2s-.1-1.2-.5-1.6c-.5-.5-2-1-2.4-1.3-.3-.2-.6-.5-.6-1 .1-.6.5-.9 1.1-.9.5 0 1.1.1 1.6.4.4.3.8-.4.4-.7-1-.6-2.5-.7-3.3 0z" fill="#c67830"></path><path d="m6.1 4.5c-.5.4-.6 1.1-.5 1.7.1.5.5 1 1.1 1.3.7.4 2.4.8 2.4 1.7 0 .2-.1.5-.2.6-.3.4-.8.5-1.3.5-.3 0-.7-.1-1-.2s-.6-.3-.9-.5c-.2-.1-.4 0-.5.1-.1.2 0 .4.1.5.5.4 1 .7 1.7.8.6.1 1.3.1 1.8-.2.5-.2.9-.6 1-1.2s-.2-1.2-.6-1.6c-.5-.5-1.9-1-2.3-1.3-.3-.2-.6-.5-.6-1 .1-.6.5-.9 1.1-.9.5 0 1.1.1 1.6.4.4.3.8-.4.4-.7-1-.6-2.5-.7-3.3 0z" fill="url(#coingold-d)"></path></g>
                                 </svg>
                                 <span className="_1j_6i5">Đánh giá và nhận đến 200 Xu!</span>
-                                <span onClick={(e)=>setshowinfo(e)} className="_3g8MuP">
+                                <span onClick={(e)=>setShowinfo(!showinfo)} className="_3g8MuP">
                                     <span className="_2MTf9A"></span>
                                 </span>
-                                {state.open_info_review?
+                                {showinfo?
                                 <div className="_13tPpj" style={{top:'2.375rem'}}>
                                     <div className="_3YbzHY">
                                         <div className="_1TTw_a">Điều kiện nhận Xu</div>
@@ -634,7 +609,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                                     </div>
                                 </div>:''}
                             </div>
-                            {state.review!=null?
+                            {state.review?
                                 <>{rating_product(state.review)}</>
                             :<>
                             {list_cartitem.map(cartitem=>
@@ -671,7 +646,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                                         </div>
                                     </div>
                                     <div className="_2KQmgr">
-                                        <div className="_3GnVV_">{review.rating_anonymous?`${user.username.substr(0,1)}${hidestring(user.username)}${user.username.substr(-1)}`:`${user.username}`}</div>
+                                        <div className="_3GnVV_">{review.anonymous_review?`${user.username.substr(0,1)}${hidestring(user.username)}${user.username.substr(-1)}`:`${user.username}`}</div>
                                         <div className="rating-stars__container">
                                             {rating_score(6,review)}
                                         </div>
@@ -738,7 +713,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                     <div className="popup-form__footer">
                         {edit?<>
                         <button onClick={e=>{setclosereview(e)}} className="cancel-btn">Trở Lại</button>
-                        <button onClick={e=>{list_cartitem!=null?submitreview(e):setStatusreview(true)}} type="button" className={`btn btn-solid-primary ${checkdisable()?'disable':''} btn--s btn--inline _1wSE68`}>Hoàn thành</button>
+                        <button onClick={e=>{list_cartitem?submitreview(e):setStatusreview(true)}} type="button" className={`btn btn-solid-primary ${checkdisable()?'disable':''} btn--s btn--inline _1wSE68`}>Hoàn thành</button>
                         </>:<button onClick={(e)=>setopenreview(e)} className="button-outline">OK</button>}
                     </div>
                 </div>}
@@ -777,7 +752,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                         </div>
                         <div className="popup-form__footer">
                             <button onClick={()=>setcancel(false)} className="cancel-btn mr-1">Không phải bây giờ</button>
-                            <button onClick={()=>completecancel()} type="button" className={`btn btn-solid-primary btn-m btn--inline ${state.reason_choice!=null?'':'disable'} _1wSE68`}>Hủy đơn hàng</button>
+                            <button onClick={()=>completecancel()} type="button" className={`btn btn-solid-primary btn-m btn--inline ${state.reason_choice?'':'disable'} _1wSE68`}>Hủy đơn hàng</button>
                         </div>
                     </div>
                 </div>

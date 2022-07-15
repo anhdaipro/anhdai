@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 import {conversationsURL,listThreadlURL,updatefileURL,} from "../urls"
 import { headers,expiry} from '../actions/auth';
 import io from "socket.io-client";
-import {Link} from "react-router-dom"
+import {Link,useNavigate} from "react-router-dom"
 import {debounce} from 'lodash';
 const listaction=[ {name:'Ghim Trò Chuyện',gim:true},{name:'Bỏ gim cuộc Trò Chuyện',gim:false},
 {name:'Đánh dấu đã đọc',unread:false},{name:'Đánh dấu đã đọc',unread:true},
 {name:'Xóa trò chuyện',delete:true}]
-const list_type_chat=[{'name':'All',value:'1'},{'name':'Unread',value:'2'},{'name':'Đã gim',value:'3'}]
+const list_type_chat=[{'name':'Tất cả',value:'1'},{'name':'Unread',value:'2'},{'name':'Đã gim',value:'3'}]
 const Shopmember=(props)=>{
     const {thread,setshop,showdata,sendproduct,sendorder,loadingdata,setloading,shopchoice,user,listmember,showmoreitem,setshopchoice,shop}=props
     const [show,setShow]=useState(false)
@@ -203,6 +203,122 @@ const Shopmember=(props)=>{
         </>
     )
 }
+
+const Threadinfo=(props)=>{
+    const [show,setShow]=useState(false)
+    const {thread,showmessage,setactionconversations,user,i}=props
+    const threadref=useRef()
+    const direact_chat=(thread)=>{
+        return(thread.members.find(member=>member.user_id!=user.id))
+    }
+    const user_chat=(thread)=>{
+        return(thread.members.find(member=>member.user_id==user.id))
+    }
+
+    useEffect(() => {
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [])
+    const handleClick = (event) => {
+        const { target } = event
+        if(threadref.current!=null){
+            if (!threadref.current.contains(target)) {
+                setShow(false)
+            }
+        }
+    }
+    const setaction=(e,thread,name,value)=>{
+        setactionconversations(e,thread,name,value)
+        setShow(false)
+    }
+    return(
+        <div key={i} onClick={(e)=>{
+            showmessage(e,thread)
+        }} className="chat-pages-index__root" style={{height: '48px', left: '0px', position: 'absolute', top: `${i*48}px`, width: '100%'}}>
+            <div className="chat-pages-index__avatar">
+                <div className="chat-avatar-index__avatar-wrapper">
+                    <img alt="" src={`${direact_chat(thread).avatar}`}/>
+                    <div className="chat-avatar-index__avatar-border"></div>
+                </div>
+            </div>
+            <div className="chat-pages-index__container">
+                <div className="chat-pages-index__upper">
+                    <div className="chat-pages-index__username" title={direact_chat(thread).name}>{direact_chat(thread).name}</div>
+                </div>
+                <div className="chat-pages-index__lower"> 
+                    <>
+                    {!thread.message_last?'':
+                    thread.message_last.message_type=='1'?
+                    <div className={`${thread.message_last.user_id!=user.id?'q66pz984':''} text-overflow`}>{thread.message_last.message}</div>
+                    :thread.message_last.message_type=='2'?
+                    <>
+                    <i className="icon image-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path d="M19 18.974V5H5v14h.005l4.775-5.594a.5.5 0 01.656-.093L19 18.974zM4 3h16a1 1 0 011 1v16a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm11.5 8a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"></path></svg>
+                    </i>
+                    image</>:
+                    thread.message_last.message_type=='3'?
+                    <>
+                    <i className="icon icon-document"> 
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" width="45.057px" height="45.057px" viewBox="0 0 45.057 45.057" style={{enableBackground:'new 0 0 45.057 45.057'}} xmlSpace="preserve">
+                            <g>
+                            <path d="M13.323,13.381c6.418,0,12.834,0,19.252,0c1.613,0,1.613-2.5,0-2.5c-6.418,0-12.834,0-19.252,0     C11.711,10.881,11.711,13.381,13.323,13.381z"></path>
+                            <path d="M32.577,16.798c-6.418,0-12.835,0-19.253,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.835,0,19.253,0     C34.188,19.298,34.188,16.798,32.577,16.798z"></path>
+                            <path d="M32.577,22.281c-6.418,0-12.835,0-19.253,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.835,0,19.253,0     C34.188,24.781,34.188,22.281,32.577,22.281z"></path>
+                            <path d="M32.577,28.197c-6.418,0-12.835,0-19.253,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.835,0,19.253,0     C34.188,30.697,34.188,28.197,32.577,28.197z"></path>
+                            <path d="M32.204,33.781c-6.418,0-12.834,0-19.252,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.834,0,19.252,0     C33.817,36.281,33.817,33.781,32.204,33.781z"></path>
+                            <path d="M33.431,0H5.179v45.057h34.699V6.251L33.431,0z M36.878,42.056H8.179V3h23.707v4.76h4.992V42.056z"></path>
+                            </g>
+                        </svg>
+                    </i>
+                    video
+                    </>:
+                    thread.message_last.message_type=='5'?
+                    <div className="text-overflow">Cam on ban da dat hang</div>:
+                    <div className="text-overflow">Cam on ban da quan tam san pham</div>}
+                    </>  
+                </div>
+            </div>
+        
+            <div ref={threadref} className="action-thread">
+                {user_chat(thread).count_message_unseen>0?
+                <div className="unread-message" id="unRead1">
+                    <span className="badge badge-soft-danger rounded-pill">{user_chat(thread).count_message_unseen>99?'99+':user_chat(thread).count_message_unseen}</span>
+                </div>:""}
+                <div className="chat-messsage-time-last">
+                    {thread.message_last?<>{checkDay(new Date(thread.message_last.date_created))=="Today"?`${("0" + new Date(thread.message_last.date_created).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_created).getMinutes()).slice(-2)}`:checkDay(new Date(thread.message_last.date_created))=="Yesterday"?`Yesterday, ${("0" + new Date(thread.message_last.date_created).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_created).getMinutes()).slice(-2)}`:new Date(thread.message_last.date_created).getFullYear()<new Date().getFullYear()?`${("0" + new Date(thread.message_last.date_created).getDate()).slice(-2)} Tháng ${("0"+(new Date(thread.message_last.date_created).getMonth()+1)).slice(-2)}, ${new Date(thread.message_last.date_created).getFullYear()}`:`${("0" + new Date(thread.message_last.date_created).getDate()).slice(-2)} Tháng ${(new Date(thread.message_last.date_created).getMonth()+1)}`}</>:''}
+                </div>
+                <div onClick={(e)=>setShow(!show)} id="460390502831204148" className="src-pages-index__three-dots">
+                    <i className="_3kEAcT1Mk5 src-pages-ConversationLists-ConversationCells-index__three-dots-icon--1psZR ">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" className="chat-icon"><path d="M224 576c-35.3 0-64-28.7-64-64s28.7-64 64-64 64 28.7 64 64-28.7 64-64 64zM512 576c-35.3 0-64-28.7-64-64s28.7-64 64-64 64 28.7 64 64-28.7 64-64 64zM800 576c-35.3 0-64-28.7-64-64s28.7-64 64-64 64 28.7 64 64-28.7 64-64 64z"></path></svg>
+                    </i>
+                </div>
+                {show?
+                <div className="drop-down-action-thread">
+                    <div className="list-actions">
+                        <div onClick={(e)=>setaction(e,thread,'gim',!thread.gim?true:false)} className="conversation-action-option">
+                            <i className="action-options-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M11.29 16.243H4.54v-2.872l2.927-1.9V2.444a1 1 0 011-1h7.073a1 1 0 011 1v8.957l3 1.97v2.872h-6.75v6.201h-1.5v-6.201zm6.75-1.5v-.563l-3-1.97V2.944H8.967v9.342l-2.927 1.9v.557h12z"></path></svg>
+                            </i>{!thread.gim?'Ghim Trò Chuyện':'Bỏ gim trò chuyện'}
+                        </div>
+                        <div onClick={(e)=>setaction(e,thread,'seen',direact_chat(thread).count_message_unseen==0?true:false)} className="conversation-action-option">
+                            <i className="action-options-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M15 4c-.337.448-.6.954-.771 1.5H3.5v13.85l3.085-1.85H19.5v-5.525a4.968 4.968 0 001.5-.391V18a1 1 0 01-1 1H7l-5 3V5a1 1 0 011-1h12zm4 6.75a3.75 3.75 0 110-7.5 3.75 3.75 0 010 7.5zm0-1.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"></path></svg>
+                            </i>{direact_chat(thread).count_message_unseen>0?'Đánh dấu đã đọc':'Đánh dấu chưa đọc'}
+                        </div>
+                        <div onClick={(e)=>setaction(e,thread,'delete',true)} className="conversation-action-option">
+                            <i className="action-options-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M3.5 5v.5h15V5h-4V3a.5.5 0 00-.5-.5H8a.5.5 0 00-.5.5v2h-4zM14 3v2H8V3h6zM9 9.5v8h.5v-8H9zm3.5 0v8h.5v-8h-.5zM5 7.5h-.5V21a.5.5 0 00.5.5h12a.5.5 0 00.5-.5V7.5H17V21H5V7.5z" stroke="#888"></path></svg>
+                            </i>Xóa trò chuyện
+                        </div>
+                    </div> 
+                </div>:''}
+            </div>
+            
+        </div>
+    )
+}
 const Message=(props)=>{
     const {threadstate,isAuthenticated,list_threads,user,messages,members,showchat,count_message_unseen}=props
     const [state, setState] = useState({show_type_chat:false,type_chat:1,user_search:null,loading:false,
@@ -222,8 +338,10 @@ const Message=(props)=>{
     const [typing,setTyping]=useState({typing:false,send_to:null})
     const [messagefile,setMessagefile]=useState([])
     const [length,setLength]=useState(40)
+    const [typechat,setTypechat]=useState()
     const [loading,setLoading]=useState(false)
     const [shopchoice,setShopchoice]=useState();
+    const navigate=useNavigate()
     const socket=useRef()   
     const scrollRef=useRef(null);
     const typechatref=useRef(null);
@@ -324,8 +442,7 @@ const Message=(props)=>{
         })
     }
 
-    const showmessage=(e,threadchoice)=>{
-        e.stopPropagation()
+    const showmessage=useCallback((e,threadchoice)=>{
         const list_thread=threads.map(thread=>{
             if(thread.id==threadchoice.id){
                 return({...thread,members:thread.members.map(member=>{
@@ -353,7 +470,7 @@ const Message=(props)=>{
                 }
             })
         }
-    }
+    },[list_messages,listmember,threads,thread,state])
 
     console.log(list_messages)
     const sendproduct=(e,item)=>{
@@ -365,8 +482,13 @@ const Message=(props)=>{
                 form.append('send_to',direact.user_id)
                 const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers)
                 setShowshop({show_product:false,show_order:false})
-                const messages={message:res.data,thread_id:thread.id,send_by:user.id}
-                socket.current.emit("sendData",messages)
+                if(!res.data.error){
+                    const messages={message:res.data,thread_id:thread.id,send_by:user.id}
+                    socket.current.emit("sendData",messages)
+                }
+                else{
+                    alert(res.data.error)
+                }
             }
             catch(e){
                 console.log(e)
@@ -383,8 +505,15 @@ const Message=(props)=>{
                 form.append('action','create-message')
                 const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers)
                 setShowshop({show_product:false,show_order:false})
+                if(!res.data.error){
                 const messages={message:res.data,thread_id:thread.id,send_by:user.id}
                 socket.current.emit("sendData",messages)
+                }
+                else{
+                   
+                alert(res.data.error)
+                    
+                }
             }
             catch(e){
                 console.log(e)
@@ -422,11 +551,17 @@ const Message=(props)=>{
             }) 
             setListfile(listfile.filter(file=>file.filetype!='image')) 
             axios.post(`${conversationsURL}/${thread.id}`,form,headers)
-            .then(res=>{  
-                const messages={message:res.data,thread_id:thread.id,send_by:user.id}
-                socket.current.emit("sendData",messages)
+            .then(res=>{ 
                 setShowemoji(false)
-                setMessage('')
+                setMessage('') 
+                if(!res.data.error){
+                    const messages={message:res.data,thread_id:thread.id,send_by:user.id}
+                    socket.current.emit("sendData",messages)
+                }
+                else{
+                    alert(res.data.error)
+                }
+                
             })
         } 
 
@@ -455,8 +590,13 @@ const Message=(props)=>{
                 axios.post(`${conversationsURL}/${thread.id}`,formfile,headers)
                 .then(res=>{
                     setMessagefile([])
+                    if(!res.data.error){
                     const messages={message:res.data,thread_id:thread.id,send_by:user.id}
-                    socket.current.emit("sendData",messages)      
+                    socket.current.emit("sendData",messages)   
+                    } 
+                    else{
+                        alert(res.data.error)
+                    }  
                 }) 
             },200)
         }
@@ -603,11 +743,11 @@ const Message=(props)=>{
         }
     },[shop,state])
     
-    const setactionconversations=(e,thread,name,value)=>{
+    const setactionconversations=useCallback((e,thread,name,value)=>{
         e.stopPropagation()
         let form=new FormData()
         form.append('action',name)
-        axios.post(`${conversationsURL}${thread.id}`,form,headers)
+        axios.post(`${conversationsURL}/${thread.id}`,form,headers)
         .then(res=>{
             const list_convesations=name=='delete'?
                 threads.filter(item=>item.id!=thread.id)
@@ -631,24 +771,28 @@ const Message=(props)=>{
                 })
             setThreads(list_convesations) 
         })
-    }
+    },[threads])
 
     ///set tychat
-    const settypechat=(item)=>{
-        setState({...state,type_chat:item.value})
-        axios.get(`${listThreadlURL}?type_chat=${item.value}`,headers)
-        .then(res=>{
-            const threads=res.data.threads.map(thread=>{
-                return({...thread,show_action:false})
-            })
-            setThreads(threads)
-            setShow_type_chat(false)
-            if(!res.data.some(thread=>thread.id==thread.id)){
-                setThread()
-                setListmessages([])
+    useEffect(()=>{
+        (async()=>{
+            if(typechat){
+                const res =await axios.get(`${listThreadlURL}?type_chat=${typechat}`,headers)
+                const threads=res.data.map(thread=>{
+                    return({...thread,show_action:false})
+                })
+                setThreads(threads)
+                
+                if(!res.data.some(thread=>thread.id==thread.id)){
+                    setThread()
+                    setListmessages([])
+                }
             }
-        })
-    }
+        })()
+    },[typechat])
+        
+     
+    
 
     // show actio
     const setshowaction=(e,thread)=>{
@@ -671,6 +815,7 @@ const Message=(props)=>{
     },[shop])
     return(
         <>
+        <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
         {user!=null?
         !show?
         <div onClick={()=>showthread()} className={`src-pages-index__root--1G_Ox ${count_message_unseen?'unread':''}`}>
@@ -1002,7 +1147,7 @@ const Message=(props)=>{
                             <div ref={typechatref} className="chat-components-common-menus-index__root">
                                 <div onClick={e=>setShow_type_chat(!show_type_chat)} className="chat-components-common-menus-index__popover">
                                     <div className="chat-components-common-menus-index__button">
-                                        <div className="chat-conversationlists-headerbar-index-index__selected">Tất cả
+                                        <div className="chat-conversationlists-headerbar-index-index__selected">{typechat?list_type_chat.find(item=>item.value==typechat).name:'Tất cả'}
                                             <i className="icon chat-conversationlists-headerbar-index-index__arrow-down">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" className="chat-icon"><path d="M6.243 6.182L9.425 3l1.06 1.06-4.242 4.243L2 4.061 3.06 3z"></path></svg>
                                             </i>
@@ -1013,7 +1158,9 @@ const Message=(props)=>{
                                 <div className="drop-chat">
                                     <div className="list-type-chat">
                                         {list_type_chat.map(item=>
-                                        <div onClick={(e)=>settypechat(e,item)} className="type-chat">{item.name}</div>
+                                        <div onClick={(e)=>{setTypechat(item.value)
+                                            setShow_type_chat(false)
+                                        }} className="type-chat">{item.name}</div>
                                         )}
                                     </div>
                                 </div>:''}
@@ -1031,89 +1178,14 @@ const Message=(props)=>{
                                 {threads.map((thread,i)=>{
                                     if(state.user_search==null ||state.user_search=='' || (state.user_search!='' && direact_chat(thread).name.toUpperCase().indexOf(state.user_search.toUpperCase())>-1)){
                                         return(
-                                        <div key={i} onClick={(e)=>{
-                                                showmessage(e,thread)
-                                            }} className="chat-pages-index__root" style={{height: '48px', left: '0px', position: 'absolute', top: `${i*48}px`, width: '100%'}}>
-                                            <div className="chat-pages-index__avatar">
-                                                <div className="chat-avatar-index__avatar-wrapper">
-                                                    <img alt="" src={`${direact_chat(thread).avatar}`}/>
-                                                    <div className="chat-avatar-index__avatar-border"></div>
-                                                </div>
-                                            </div>
-                                            <div className="chat-pages-index__container">
-                                                <div className="chat-pages-index__upper">
-                                                    <div className="chat-pages-index__username" title={direact_chat(thread).name}>{direact_chat(thread).name}</div>
-                                                </div>
-                                                <div className="chat-pages-index__lower"> 
-                                                    <>
-                                                    {!thread.message_last?'':
-                                                    thread.message_last.message_type=='1'?
-                                                    <div className={`${thread.message_last.user_id!=user.id?'q66pz984':''} text-overflow`}>{thread.message_last.message}</div>
-                                                    :thread.message_last.message_type=='2'?
-                                                    <>
-                                                    <i className="icon image-icon">
-                                                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path d="M19 18.974V5H5v14h.005l4.775-5.594a.5.5 0 01.656-.093L19 18.974zM4 3h16a1 1 0 011 1v16a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm11.5 8a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"></path></svg>
-                                                    </i>
-                                                    image</>:
-                                                    thread.message_last.message_type=='3'?
-                                                    <>
-                                                    <i className="icon icon-document"> 
-                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" width="45.057px" height="45.057px" viewBox="0 0 45.057 45.057" style={{enableBackground:'new 0 0 45.057 45.057'}} xmlSpace="preserve">
-                                                            <g>
-                                                            <path d="M13.323,13.381c6.418,0,12.834,0,19.252,0c1.613,0,1.613-2.5,0-2.5c-6.418,0-12.834,0-19.252,0     C11.711,10.881,11.711,13.381,13.323,13.381z"></path>
-                                                            <path d="M32.577,16.798c-6.418,0-12.835,0-19.253,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.835,0,19.253,0     C34.188,19.298,34.188,16.798,32.577,16.798z"></path>
-                                                            <path d="M32.577,22.281c-6.418,0-12.835,0-19.253,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.835,0,19.253,0     C34.188,24.781,34.188,22.281,32.577,22.281z"></path>
-                                                            <path d="M32.577,28.197c-6.418,0-12.835,0-19.253,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.835,0,19.253,0     C34.188,30.697,34.188,28.197,32.577,28.197z"></path>
-                                                            <path d="M32.204,33.781c-6.418,0-12.834,0-19.252,0c-1.612,0-1.612,2.5,0,2.5c6.418,0,12.834,0,19.252,0     C33.817,36.281,33.817,33.781,32.204,33.781z"></path>
-                                                            <path d="M33.431,0H5.179v45.057h34.699V6.251L33.431,0z M36.878,42.056H8.179V3h23.707v4.76h4.992V42.056z"></path>
-                                                            </g>
-                                                        </svg>
-                                                    </i>
-                                                    video
-                                                    </>:
-                                                    thread.message_last.message_type=='5'?
-                                                    <div className="text-overflow">Cam on ban da dat hang</div>:
-                                                    <div className="text-overflow">Cam on ban da quan tam san pham</div>}
-                                                    </>  
-                                                </div>
-                                            </div>
-                                        
-                                            <div className="action-thread">
-                                                {user_chat(thread).count_message_unseen>0?
-                                                <div className="unread-message" id="unRead1">
-                                                    <span className="badge badge-soft-danger rounded-pill">{user_chat(thread).count_message_unseen>99?'99+':user_chat(thread).count_message_unseen}</span>
-                                                </div>:""}
-                                                <div className="chat-messsage-time-last">
-                                                    {thread.message_last?<>{checkDay(new Date(thread.message_last.date_created))=="Today"?`${("0" + new Date(thread.message_last.date_created).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_created).getMinutes()).slice(-2)}`:checkDay(new Date(thread.message_last.date_created))=="Yesterday"?`Yesterday, ${("0" + new Date(thread.message_last.date_created).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_created).getMinutes()).slice(-2)}`:new Date(thread.message_last.date_created).getFullYear()<new Date().getFullYear()?`${("0" + new Date(thread.message_last.date_created).getDate()).slice(-2)} Tháng ${("0"+(new Date(thread.message_last.date_created).getMonth()+1)).slice(-2)}, ${new Date(thread.message_last.date_created).getFullYear()}`:`${("0" + new Date(thread.message_last.date_created).getDate()).slice(-2)} Tháng ${(new Date(thread.message_last.date_created).getMonth()+1)}`}</>:''}
-                                                </div>
-                                                <div onClick={(e)=>setshowaction(e,thread)} id="460390502831204148" className="src-pages-index__three-dots">
-                                                    <i className="_3kEAcT1Mk5 src-pages-ConversationLists-ConversationCells-index__three-dots-icon--1psZR ">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" className="chat-icon"><path d="M224 576c-35.3 0-64-28.7-64-64s28.7-64 64-64 64 28.7 64 64-28.7 64-64 64zM512 576c-35.3 0-64-28.7-64-64s28.7-64 64-64 64 28.7 64 64-28.7 64-64 64zM800 576c-35.3 0-64-28.7-64-64s28.7-64 64-64 64 28.7 64 64-28.7 64-64 64z"></path></svg>
-                                                    </i>
-                                                </div>
-                                                {thread.show_action?
-                                                <div className="drop-down-action-thread">
-                                                    <div className="list-actions">
-                                                        <div onClick={(e)=>setactionconversations(e,thread,'gim',!thread.gim?true:false)} className="conversation-action-option">
-                                                            <i className="action-options-icon">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M11.29 16.243H4.54v-2.872l2.927-1.9V2.444a1 1 0 011-1h7.073a1 1 0 011 1v8.957l3 1.97v2.872h-6.75v6.201h-1.5v-6.201zm6.75-1.5v-.563l-3-1.97V2.944H8.967v9.342l-2.927 1.9v.557h12z"></path></svg>
-                                                            </i>{!thread.gim?'Ghim Trò Chuyện':'Bỏ gim trò chuyện'}
-                                                        </div>
-                                                        <div onClick={(e)=>setactionconversations(e,thread,'seen',direact_chat(thread).count_message_unseen==0?true:false)} className="conversation-action-option">
-                                                            <i className="action-options-icon">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M15 4c-.337.448-.6.954-.771 1.5H3.5v13.85l3.085-1.85H19.5v-5.525a4.968 4.968 0 001.5-.391V18a1 1 0 01-1 1H7l-5 3V5a1 1 0 011-1h12zm4 6.75a3.75 3.75 0 110-7.5 3.75 3.75 0 010 7.5zm0-1.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"></path></svg>
-                                                            </i>{direact_chat(thread).count_message_unseen>0?'Đánh dấu đã đọc':'Đánh dấu chưa đọc'}
-                                                        </div>
-                                                        <div onClick={(e)=>setactionconversations(e,thread,'delete',true)} className="conversation-action-option">
-                                                            <i className="action-options-icon">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M3.5 5v.5h15V5h-4V3a.5.5 0 00-.5-.5H8a.5.5 0 00-.5.5v2h-4zM14 3v2H8V3h6zM9 9.5v8h.5v-8H9zm3.5 0v8h.5v-8h-.5zM5 7.5h-.5V21a.5.5 0 00.5.5h12a.5.5 0 00.5-.5V7.5H17V21H5V7.5z" stroke="#888"></path></svg>
-                                                            </i>Xóa trò chuyện
-                                                        </div>
-                                                    </div> 
-                                                </div>:''}
-                                            </div>
-                                            
-                                        </div>)
+                                            <Threadinfo
+                                                user={user}
+                                                i={i}
+                                                thread={thread}
+                                                setactionconversations={(e,thread,name,value)=>setactionconversations(e,thread,name,value)}
+                                                showmessage={(e,thread)=>showmessage(e,thread)}
+                                            />
+                                        )
                                     }}
                                 )}
                             </div>
@@ -1123,6 +1195,7 @@ const Message=(props)=>{
             </div>
         </div>
         :''} 
+        </div>
         <Shopmember
             sendproduct={(e,item)=>sendproduct(e,item)}
             sendorder={(e,order)=>sendorder(e,order)}
@@ -1139,6 +1212,40 @@ const Message=(props)=>{
             setshopchoice={data=>setshopchoice(data)}
             showmoreitem={(e,name)=>showmoreitem(e,name)}
         />
+            <div data-popper-reference-hidden="false" data-popper-escaped="false" data-popper-placement="bottom-start" class="_2QLhFk_X2O _1BzVU7fHvH" style={{position: 'absolute', inset: '0px auto auto 0px', transform: `translate(215px, 383px)`}}>
+                <div class="_15v99gbQSv">
+                    <div class="_3zpMyJKkl2WoOerymVZPuR">
+                        <div class="_32eIwz3LtMqgfk1YqB6IIN _18E_V1N5iaI_S92DHx8vqU">
+                            <div class="_3gUqnenePUrxbbMEeh9i4M">
+                                <div class="_2xGjvAuHdCo364lNgvhQYC undefined">
+                                    <div class="_29uoglXEwg_2RaVW0_CFBG">
+                                        <img alt="" src="https://cf.shopee.vn/file/abaee1d1cfd28d21dd4c67a2c7c0c218_tn"/>
+                                        <div class="_2Wkz3CDhCMDEZwE7G91OSy">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="_1quVkM8A5NvTpdli3Wc-rj">
+                                <div title="ccutun" class="_1h02b9izN7ZJFXg60EFE8- _3hKrXgKJrf8GP0HSHSC9JA">ccutun</div>
+                            </div>
+                        </div>
+                        <div class="_39MlxwpZU6">
+                            <div class="_1DylYknmeT"></div>
+                            <div onClick={e=>navigate('/shop')} class="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
+                                <div>Xem thông tin cá nhân</div>
+                            </div>
+                            <div class="_1DylYknmeT"></div>
+                            <div onClick={(e)=>setactionconversations(e)} class="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
+                                <div>Chặn người dùng</div>
+                            </div>
+                            <div class="_1DylYknmeT"></div>
+                            <div onClick={(e)=>setactionconversations(e)} class="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
+                                <div>Báo cáo</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     )
 }

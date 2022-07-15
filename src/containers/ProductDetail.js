@@ -1,20 +1,154 @@
 import {formatter,timecreate,timeago,
     itemvariation,hidestring,rating,ratingitem,list_review_choice,timepromotion} from "../constants"
 import axios from 'axios';
-import React, {useState, useEffect,useRef} from 'react'
+import React, {useState, useEffect,useRef, useCallback} from 'react'
 import ReactDOM from 'react-dom'
 import {addToCartURL,productinfoURL,listThreadlURL,} from "../urls"
 import Pagination from "../hocs/Pagination"
 import {
-    FacebookShareButton,
-    PinterestShareButton,
-    FacebookMessengerShareButton,
-    TwitterShareButton,
-  } from "react-share";
+FacebookShareButton,PinterestShareButton,FacebookMessengerShareButton,TwitterShareButton,
+} from "react-share";
 import { FacebookIcon,FacebookMessengerIcon,TwitterIcon,PinterestIcon } from "react-share";
 import {connect} from "react-redux"
-import {useNavigate , Link,useLocation, Navigate,useParams} from 'react-router-dom';
+import {useNavigate , Link,useLocation,useParams} from 'react-router-dom';
 import { expiry, headers,showchat, showthreads } from "../actions/auth";
+
+const ReviewItem=(props)=>{
+    const {review,showmedia,setlikereview,setreport,user}=props
+    const [show,setShow]=useState(false)
+    const parentref=useRef()
+    const [file,setFile]=useState()
+    const previewimage = useRef();
+    useEffect(() => {
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [])
+    const handleClick = (event) => {
+        const { target } = event
+        if(parentref.current!=null){
+            if (!parentref.current.contains(target)) {
+                setShow(false)
+            }
+        }
+    }
+
+    console.log(file)
+    const onImageLoad=(e) =>{
+        const { width, height } = e.currentTarget
+        setFile({width:e.currentTarget.naturalWidth,height:e.currentTarget.naturalHeight})
+    }
+    return(
+        <div className='product-rating'>
+        {review.shop!=''?
+            <a className="product-rating__avatar" href="${reviews[i].url_shop}">
+                <div className="avatar">
+                    <div className="avatar__placeholder">
+                        <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-headshot"><g><circle cx="7.5" cy="4.5" fill="none" r="3.8" stroke-miterlimit="10"></circle><path d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" strokeLinecap="round" stroke-miterlimit="10"></path></g></svg>
+                    </div>
+                </div>
+            </a>:
+            <div className="avatar">
+                <div className="avatar__placeholder">
+                    <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-headshot"><g><circle cx="7.5" cy="4.5" fill="none" r="3.8" stroke-miterlimit="10"></circle><path d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" strokeLinecap="round" stroke-miterlimit="10"></path></g></svg>
+                </div>
+            </div>}
+            <div className="product-rating__main">
+                {review.shop!=''?
+                <a className="product-rating__author-name" href={review.url_shop}>{review.anonymous_review?review.user.substr(0,1)+hidestring(review.user)+review.user.substr(-1):review.user}</a>
+                :
+                <div className="product-rating__author-name">{review.anonymous_review?review.user.substr(0,1)+hidestring(review.user)+review.user.substr(-1):review.user}</div>}
+                <div className="repeat-purchase-con">
+                    <div className="product-rating__rating d-flex">
+                        {ratingitem(6,review)}
+                    </div>
+                </div>
+                {itemvariation(review)!=''?<div className="y8ewrc">Phân loại hàng: {itemvariation(review)}</div>:''}
+                <div className="_3NrdYc">{review.info_more}</div>
+                {review.review_text!=''?
+                <div className="product-rating__tags">
+                    {review.review_text.split(',').map(text=>
+                    <div className="product-rating__tag">{text}</div>)}
+                </div>:""}
+                {review.list_file.length>0?
+                <div className="rating-modal__image-list-wrapper">
+                    <div className="rating-media-list">
+                        <div className="rating-media-list__container">
+                            {review.list_file.map((file,index)=>
+                                <div onClick={(e)=>showmedia(e,file,review)} className={`rating-media-list__image-wrapper rating-media-list__image-wrapper--${file.show?'':'in'}active`}>
+                                    <div className="rating-media-list-image__wrapper">
+                                        <div className="rating-media-list-image__place-holder">
+                                            <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-loading-image"><g><rect fill="none" height="8" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="10" x="1" y="4.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="6.5" y2="6.5"></line><rect fill="none" height="3" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="3" x="11" y="6.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="14.5" y2="14.5"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="6" x2="6" y1=".5" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="3.5" x2="3.5" y1="1" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="8.5" x2="8.5" y1="1" y2="3"></line></g></svg>
+                                        </div>
+                                        <div className="rating-media-list-image__content" style={{backgroundImage: `url(${file.filetype==='video'?file.media_preview:file.file})`}}>
+                                            <div className="rating-media-list-image__content--blur"> </div>
+                                        </div>
+                                    </div>
+                                    {file.filetype==='video'?
+                                    <div className="rating-media-list__video-cover">
+                                        <svg width="23" height="18" viewBox="0 0 23 18" fill="none"><g filter="url(#filter0_d)"><path fillRule="evenodd" clipRule="evenodd" d="M5 4C4.44772 4 4 4.44772 4 5V13C4 13.5523 4.44772 14 5 14H13C13.5523 14 14 13.5523 14 13V5C14 4.44772 13.5523 4 13 4H5ZM11.5 9C11.5 10.3807 10.3807 11.5 9 11.5C7.61929 11.5 6.5 10.3807 6.5 9C6.5 7.61929 7.61929 6.5 9 6.5C10.3807 6.5 11.5 7.61929 11.5 9ZM9 10.6667C9.92047 10.6667 10.6667 9.92047 10.6667 9C10.6667 8.07952 9.92047 7.33333 9 7.33333C8.07953 7.33333 7.33333 8.07952 7.33333 9C7.33333 9.92047 8.07953 10.6667 9 10.6667ZM18.1667 4.83333L14.8333 7.33306V10.6667L18.1667 13.1667V4.83333Z" fill="white"></path></g><defs><filter id="filter0_d" x="0" y="0" width="22.1667" height="18" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="BackgroundImageFix"></feFlood><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset></feOffset><feGaussianBlur stdDeviation="2"></feGaussianBlur><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.26 0"></feColorMatrix><feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"></feBlend><feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"></feBlend></filter></defs></svg>
+                                        <span>00:{('0'+Math.round(file.duration)).slice(-2)}</span>
+                                    </div>:''}
+                                </div>  
+                            )}
+                            
+                        </div>
+                        <div className={`rating-media-list__zoomed-image ${review.list_file.find(item=>item.show)?'rating-media-list__zoomed-image--active':''}`}>
+                            <div className="rating-media-list-image-carousel" style={{transition: 'all 500ms ease 0s', width: `${review.list_file.find(item=>item.show)?review.list_file.find(item=>item.show).filetype=='video'|| file.width>=536?536:file.width:''}px`}}>
+                                <div className="rating-media-list-image-carousel__item-list-wrapper">
+                                    <ul className="rating-media-list-image-carousel__item-list" ref={previewimage} style={{marginLeft: `${-536*review.list_file.indexOf(review.list_file.find(item=>item.show))}px`, marginTop: '0px',transition:'all 500ms ease 0s'}}>
+                                        {review.list_file.map(file=>
+                                            <li key={file.id} className="rating-media-list-image-carousel__item rating-media-list-image-carousel__item--fluid" style={{padding: '0px 0.625rem'}}>
+                                                {file.filetype==='video'?
+                                                <div className="_43iTyw">
+                                                    <video src={file.file} controls="" className="_12mVqG rating-media-list__zoomed-video-item" controlsList="nodownload"></video>
+                                                </div>:<img className="rating-media-list__zoomed-image-item" onLoad={(e)=>onImageLoad(e)} src={file.file}/>}
+                                            </li>
+                                        )}
+                                    </ul>
+                                </div>
+                                <div onClick={(e)=>showmedia(e,review.list_file[review.list_file.indexOf(review.list_file.find((file,i)=>file.show))-1],review)} className="rating-media-list-carousel-arrow rating-media-list-carousel-arrow--prev rating-media-list-carousel-arrow--hint rating-media-list-carousel-arrow--hidden" role="button" tabIndex="0" style={{opacity: 1, visibility: `${review.list_file.findIndex(file=>file.show)===0?'hidden':''}`, transform: 'translateX(calc(-50% + 0px))'}}>
+                                    <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
+                                </div>
+                                <div onClick={(e)=>showmedia(e,review.list_file[review.list_file.indexOf(review.list_file.find((file,i)=>file.show))+1],review)} className="rating-media-list-carousel-arrow rating-media-list-carousel-arrow--next rating-media-list-carousel-arrow--hint" role="button" tabIndex="0" style={{opacity: 1, visibility: `${review.list_file.findIndex(file=>file.show)===(review.list_file.length-1)?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
+                                    <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                :''}
+                <div className="product-rating__time">{timecreate(review.created)}</div>
+                <div className="product-rating__actions item-spaces">
+                    <div className='d-flex'>
+                        <div onClick={(e)=>setlikereview(e,review)} className={`product-rating__like-button ${user!=null&&review.user_like.some(item=>item==user.id)?'product-rating__like-button--liked':''}`}>
+                            <svg width="14px" height="13px" viewBox="0 0 14 13" version="1.1" xmlns="http://www.w3.org/2000/svg"><defs></defs><g stroke="none" strokeWidth="1" fillRule="evenodd"><g id="Product-Ratings-Working" transform="translate(-245.000000, -855.000000)" fillRule="nonzero"><g transform="translate(155.000000, 92.000000)"><g transform="translate(40.000000, 184.000000)"><g transform="translate(0.000000, 326.000000)"><g transform="translate(50.000000, 253.000000)"><g><path d="M0,12.7272727 L2.54545455,12.7272727 L2.54545455,5.09090909 L0,5.09090909 L0,12.7272727 Z M14,5.72727273 C14,5.02727273 13.4272727,4.45454545 12.7272727,4.45454545 L8.71818182,4.45454545 L9.35454545,1.52727273 L9.35454545,1.33636364 C9.35454545,1.08181818 9.22727273,0.827272727 9.1,0.636363636 L8.4,0 L4.2,4.2 C3.94545455,4.39090909 3.81818182,4.70909091 3.81818182,5.09090909 L3.81818182,11.4545455 C3.81818182,12.1545455 4.39090909,12.7272727 5.09090909,12.7272727 L10.8181818,12.7272727 C11.3272727,12.7272727 11.7727273,12.4090909 11.9636364,11.9636364 L13.8727273,7.44545455 C13.9363636,7.31818182 13.9363636,7.12727273 13.9363636,7 L13.9363636,5.72727273 L14,5.72727273 C14,5.79090909 14,5.72727273 14,5.72727273 Z"></path></g></g></g></g></g></g></g></svg>
+                        </div>
+                        <div className="product-rating__like-count">{review.num_like==0?'hữu ích':review.num_like}</div>
+                    </div>
+                    <div className='d-flex'>
+                        <div className="product-rating__report-menu-button">
+                            <div ref={parentref} className="stardust-dropdown">
+                                <div onClick={(e)=>setShow(!show)} className="stardust-dropdown__item-header">
+                                    <div>
+                                        <svg width="4px" height="16px" viewBox="0 0 4 16" version="1.1" xmlns="http://www.w3.org/2000/svg"><defs></defs><g stroke="none" strokeWidth="1" fillRule="evenodd"><g transform="translate(-1301.000000, -550.000000)" fill="#CCCCCC"><g transform="translate(155.000000, 92.000000)"><g transform="translate(40.000000, 184.000000)"><g transform="translate(0.000000, 161.000000)"><g><g transform="translate(50.000000, 2.000000)"><path d="M1058,122.2 C1056.895,122.2 1056,123.096 1056,124.2 C1056,125.306 1056.895,126.202 1058,126.202 C1059.104,126.202 1060,125.306 1060,124.2 C1060,123.096 1059.104,122.2 1058,122.2 M1058,116.6 C1056.895,116.6 1056,117.496 1056,118.6 C1056,119.706 1056.895,120.602 1058,120.602 C1059.104,120.602 1060,119.706 1060,118.6 C1060,117.496 1059.104,116.6 1058,116.6 M1058,111 C1056.895,111 1056,111.896 1056,113 C1056,114.106 1056.895,115.002 1058,115.002 C1059.104,115.002 1060,114.106 1060,113 C1060,111.896 1059.104,111 1058,111"></path></g></g></g></g></g></g></g></svg>
+                                    </div>
+                                </div>
+                                <div className={`stardust-dropdown__item-body ${show?'stardust-dropdown__item-body--open':''}`} style={{opacity:show?1:0}}>
+                                    <div onClick={(e)=>{
+                                        setShow(false)
+                                        setreport(e,review)}} className="product-rating__report-menu-dropdown">báo cáo</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 let pageSize=5
 const ProductDetail = ({report_complete,showchat,show_report,setreport,showthreads,data_product,setthread,addcartitem,showmediaitem,user}) => {
     const [state, setState] = useState({request_report:false,list_host_sale:[],data:null,inventory:null,count_variation:0,quantity:1,review_choice:'all',
@@ -27,6 +161,8 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
     const [shop,setShop]=useState(null)
     const [page,setPage]=useState(1)
     const [listmedia,setListmedia]=useState([])
+    const [typereview,setTypereview]=useState()
+    const [indextype,setIndextype]=useState()
     const [list_hot_sales,setListhostsale]=useState([])
     const [itemdeal,setItemdeal]=useState({main_prouct:null,byproduct:[],color_choice:null,size_choice:null})
     useEffect(() => {
@@ -57,24 +193,12 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
     const list_preview=listmedia.length>=5?listmedia.slice(state.index_choice-5,state.index_choice):listmedia
     console.log(state.index_choice)
     const { slug } = useParams();
-    const previewimage = useRef();
     
     window.onscroll=()=>{
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
         if(clientHeight + scrollTop === scrollHeight){
-            let url=new URL(productinfoURL)
-            let search_params=url.searchParams
-            search_params.set('item_id',state.data.id)
-            if(shop===null){
-            search_params.set('shop',true)
-            }
-            else if (listreview===null){
-                search_params.set('review','ok')
-            }
-            url.search = search_params.toString();
-            let new_url = url.toString();
             if(shop===null || listreview===null){
-                axios.get(new_url)
+                axios.get(`${productinfoURL}/${state.data.id}?choice=${!shop?'shop':'review'}`)
                 .then(res=>{
                     let data=res.data
                     if(shop===null){
@@ -234,7 +358,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
         showthreads()
     }
   
-    const setlikereview=(e,review)=>{
+    const setlikereview=useCallback((e,review)=>{
         let form=new FormData()
         form.append('review_id',review.id)
         if(localStorage.token!='null' && expiry>0){
@@ -257,31 +381,27 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
         else{
             navigate(`/buyer/login?next=${window.location}`, { replace: true });
         }
-    }
+    },[listreview])
     
-    const showreview=(value,name)=>{
-        setPage(value)
-        let url=new URL(productinfoURL)
-        let search_params=url.searchParams
-        search_params.set('item_id',state.data.id)
-        search_params.append('review','ok')
-        search_params.append([name],value)
-        url.search = search_params.toString();
-        let new_url = url.toString();
-        axios.get(new_url)
-        .then(res=>{
+    useEffect(()=>{
+        (async()=>{
+            if(indextype){
+            setPage(1)
+            const res = await axios.get(`${productinfoURL}/${state.data.id}?choice=review&${[typereview.name]}=${typereview.value}`)
             let data=res.data
             setReview(data.reviews)
-            setState({...state,review_choice:value,page_count:data.page_count,rating:data.rating,has_comment:data.has_comment,has_media:data.has_media})
-        })
-    }
-   
+            setState({...state,review_choice:typereview.value,page_count:data.page_count,rating:data.rating,has_comment:data.has_comment,has_media:data.has_media})
+        }
+        })()
+    },[indextype])
+        
+   console.log(indextype)
     const showfile=(e)=>{
         e.stopPropagation() ;
         showmediaitem(state.filechoice,listmedia)
         console.log(listmedia)
     }
-    function showmedia(item,reviewchoice){
+    const  showmedia=useCallback((e,item,reviewchoice)=>{
         const list_reviews=listreview.map(review=>{
             if(review.id===reviewchoice.id){
                 return({...review,list_file:review.list_file.map(file=>{
@@ -296,33 +416,12 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
             })})
         })
         console.log(list_reviews)
-        previewimage.current.style.marginLeft=`${-532*reviewchoice.list_file.indexOf(item)}px`
-        console.log(previewimage.current)
         setReview(list_reviews)
-    }
+    },[listreview])
+
     const setindex=(value)=>{
         setState({...state,index_choice:value})
     }
-    const setrequestreport=(e,reviewchoice)=>{
-        e.stopPropagation()
-        const list_reviews=listreview.map(review=>{
-            if(review.id===reviewchoice.id){
-                return({...review,request_report:!review.request_report})
-            } 
-            return({...review,request_report:false})
-        })
-        setReview(list_reviews)
-        window.onclick=(event)=>{
-            const parent=event.target.closest('.product-rating__report-menu-button')
-            if(!parent){
-                const list_reviews=listreview.map(review=>{
-                    return({...review,request_report:false})
-                })
-                setReview(list_reviews)
-            }
-        }
-    }
-
     
     useEffect(()=>{
         if(videoref!=undefined && videoref.current!=undefined){
@@ -462,8 +561,8 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
                         <div className="item_product-flash-sale">
                             <div className=" price__flash-sale">
                                 <div className="items-price item-center">
-                                <div className={`${!state.data.program_valid?'price_current':'price_min_max'}`}>₫{variation.data===null?`${formatter.format(state.data.min_price)}${state.data.min_price!=state.data.max_price?` -  ₫${formatter.format(state.data.max_price)}`:''}`:`${formatter.format(variation.data.price)}`}</div>
-                                {state.data.percent_discount>0 && state.data.program_valid?
+                                <div className={`${!state.data.percent_discount>0?'price_current':'price_min_max'}`}>₫{variation.data===null?`${formatter.format(state.data.min_price)}${state.data.min_price!=state.data.max_price?` -  ₫${formatter.format(state.data.max_price)}`:''}`:`${formatter.format(variation.data.price)}`}</div>
+                                {state.data.percent_discount>0?
                                 <div className="item-center">
                                     ₫{variation.data===null?`${formatter.format(state.data.min_price*(1-state.data.percent_discount/100))}${state.data.min_price!=state.data.max_price?` -  ₫${formatter.format(state.data.max_price*(1-state.data.percent_discount/100))}`:''}`:`${variation.price*(1-variation.data.percent_discount/100)}`}
                                     <div className="box-color">
@@ -808,7 +907,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
                                     <svg viewBox="0 0 16 16" className="svg-icon _8j52Y0"><g fillRule="evenodd"><path d="M15 4a1 1 0 01.993.883L16 5v9.932a.5.5 0 01-.82.385l-2.061-1.718-8.199.001a1 1 0 01-.98-.8l-.016-.117-.108-1.284 8.058.001a2 2 0 001.976-1.692l.018-.155L14.293 4H15zm-2.48-4a1 1 0 011 1l-.003.077-.646 8.4a1 1 0 01-.997.923l-8.994-.001-2.06 1.718a.5.5 0 01-.233.108l-.087.007a.5.5 0 01-.492-.41L0 11.732V1a1 1 0 011-1h11.52zM3.646 4.246a.5.5 0 000 .708c.305.304.694.526 1.146.682A4.936 4.936 0 006.4 5.9c.464 0 1.02-.062 1.608-.264.452-.156.841-.378 1.146-.682a.5.5 0 10-.708-.708c-.185.186-.445.335-.764.444a4.004 4.004 0 01-2.564 0c-.319-.11-.579-.258-.764-.444a.5.5 0 00-.708 0z"></path></g></svg>
                                     CHAT NOW
                                 </button>:''}
-                                <Link className=" btn-light btn-m item-center" to={shop.shop_url}>
+                                <Link className=" btn-light btn-m item-center" to={shop.url}>
                                     <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" strokeWidth="0" className="svg-icon _8j52Y0"><path d="m13 1.9c-.2-.5-.8-1-1.4-1h-8.4c-.6.1-1.2.5-1.4 1l-1.4 4.3c0 .8.3 1.6.9 2.1v4.8c0 .6.5 1 1.1 1h10.2c.6 0 1.1-.5 1.1-1v-4.6c.6-.4.9-1.2.9-2.3zm-11.4 3.4 1-3c .1-.2.4-.4.6-.4h8.3c.3 0 .5.2.6.4l1 3zm .6 3.5h.4c.7 0 1.4-.3 1.8-.8.4.5.9.8 1.5.8.7 0 1.3-.5 1.5-.8.2.3.8.8 1.5.8.6 0 1.1-.3 1.5-.8.4.5 1.1.8 1.7.8h.4v3.9c0 .1 0 .2-.1.3s-.2.1-.3.1h-9.5c-.1 0-.2 0-.3-.1s-.1-.2-.1-.3zm8.8-1.7h-1v .1s0 .3-.2.6c-.2.1-.5.2-.9.2-.3 0-.6-.1-.8-.3-.2-.3-.2-.6-.2-.6v-.1h-1v .1s0 .3-.2.5c-.2.3-.5.4-.8.4-1 0-1-.8-1-.8h-1c0 .8-.7.8-1.3.8s-1.1-1-1.2-1.7h12.1c0 .2-.1.9-.5 1.4-.2.2-.5.3-.8.3-1.2 0-1.2-.8-1.2-.9z"></path></svg> 
                                     XEM SHOP
                                 </Link>
@@ -977,8 +1076,13 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
                             </div>
                         </div>
                         <div className="product-rating-overview__filters">
-                            {list_review_choice(5).map(item=>
-                                <div onClick={()=>showreview(item.value,item.keys)} className={`product-rating-overview__filter ${item.value===state.review_choice?'product-rating-overview__filter--active':''} `}>{item.name} {item.keys==='all'?'':`(${item.keys==='comment'?state.has_comment:item.keys==='media'?state.has_media:state.rating.filter(i=>item.value==i).length})`}</div>
+                            {list_review_choice(5).map((item,i)=>
+                                <div onClick={()=>{
+                                    setIndextype(i+1)
+                                    console.log(i)
+                                    console.log(item.keys)
+                                    setTypereview({name:item.keys,value:item.value})}}
+                              key={i}  className={`product-rating-overview__filter ${item.value===state.review_choice?'product-rating-overview__filter--active':''} `}>{item.name} {item.keys==='all'?'':`(${item.keys==='comment'?state.has_comment:item.keys==='media'?state.has_media:state.rating.filter(i=>item.value==i).length})`}</div>
                             )}
                         </div>
                     </div>
@@ -992,110 +1096,14 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,showthrea
                     <div className="product-ratings__list">
                         <div className="product-comment-list">
                             {listreview.map(review=>
-                                <div className='product-rating'>
-                                    {review.shop!=''?
-                                    <a className="product-rating__avatar" href="${reviews[i].url_shop}">
-                                        <div className="avatar">
-                                            <div className="avatar__placeholder">
-                                                <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-headshot"><g><circle cx="7.5" cy="4.5" fill="none" r="3.8" stroke-miterlimit="10"></circle><path d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" strokeLinecap="round" stroke-miterlimit="10"></path></g></svg>
-                                            </div>
-                                        </div>
-                                    </a>:
-                                    <div className="avatar">
-                                        <div className="avatar__placeholder">
-                                            <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-headshot"><g><circle cx="7.5" cy="4.5" fill="none" r="3.8" stroke-miterlimit="10"></circle><path d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" strokeLinecap="round" stroke-miterlimit="10"></path></g></svg>
-                                        </div>
-                                    </div>}
-                                    <div className="product-rating__main">
-                                        {review.shop!=''?
-                                        <a className="product-rating__author-name" href={review.url_shop}>{review.rating_anonymous?review.user.substr(0,1)+hidestring(review.user)+review.user.substr(-1):review.user}</a>
-                                        :
-                                        <div className="product-rating__author-name">{review.rating_anonymous?review.user.substr(0,1)+hidestring(review.user)+review.user.substr(-1):review.user}</div>}
-                                        <div className="repeat-purchase-con">
-                                            <div className="product-rating__rating d-flex">
-                                                {ratingitem(6,review)}
-                                            </div>
-                                        </div>
-                                        {itemvariation(review)!=''?<div className="y8ewrc">Phân loại hàng: {itemvariation(review)}</div>:''}
-                                        <div className="_3NrdYc">{review.info_more}</div>
-                                        {review.review_text!=''?
-                                        <div className="product-rating__tags">
-                                            {review.review_text.split(',').map(text=>
-                                            <div className="product-rating__tag">{text}</div>)}
-                                        </div>:""}
-                                        {review.list_file.length>0?
-                                        <div className="rating-modal__image-list-wrapper">
-                                            <div className="rating-media-list">
-                                                <div className="rating-media-list__container">
-                                                    {review.list_file.map((file,index)=>
-                                                        <div onClick={()=>showmedia(file,review)} className={`rating-media-list__image-wrapper rating-media-list__image-wrapper--${file.show?'':'in'}active`}>
-                                                            <div className="rating-media-list-image__wrapper">
-                                                                <div className="rating-media-list-image__place-holder">
-                                                                    <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-loading-image"><g><rect fill="none" height="8" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="10" x="1" y="4.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="6.5" y2="6.5"></line><rect fill="none" height="3" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="3" x="11" y="6.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="14.5" y2="14.5"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="6" x2="6" y1=".5" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="3.5" x2="3.5" y1="1" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="8.5" x2="8.5" y1="1" y2="3"></line></g></svg>
-                                                                </div>
-                                                                <div className="rating-media-list-image__content" style={{backgroundImage: `url(${file.filetype==='video'?file.media_preview:file.file})`}}>
-                                                                    <div className="rating-media-list-image__content--blur"> </div>
-                                                                </div>
-                                                            </div>
-                                                            {file.filetype==='video'?
-                                                            <div className="rating-media-list__video-cover">
-                                                                <svg width="23" height="18" viewBox="0 0 23 18" fill="none"><g filter="url(#filter0_d)"><path fillRule="evenodd" clipRule="evenodd" d="M5 4C4.44772 4 4 4.44772 4 5V13C4 13.5523 4.44772 14 5 14H13C13.5523 14 14 13.5523 14 13V5C14 4.44772 13.5523 4 13 4H5ZM11.5 9C11.5 10.3807 10.3807 11.5 9 11.5C7.61929 11.5 6.5 10.3807 6.5 9C6.5 7.61929 7.61929 6.5 9 6.5C10.3807 6.5 11.5 7.61929 11.5 9ZM9 10.6667C9.92047 10.6667 10.6667 9.92047 10.6667 9C10.6667 8.07952 9.92047 7.33333 9 7.33333C8.07953 7.33333 7.33333 8.07952 7.33333 9C7.33333 9.92047 8.07953 10.6667 9 10.6667ZM18.1667 4.83333L14.8333 7.33306V10.6667L18.1667 13.1667V4.83333Z" fill="white"></path></g><defs><filter id="filter0_d" x="0" y="0" width="22.1667" height="18" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="BackgroundImageFix"></feFlood><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset></feOffset><feGaussianBlur stdDeviation="2"></feGaussianBlur><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.26 0"></feColorMatrix><feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"></feBlend><feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"></feBlend></filter></defs></svg>
-                                                                <span>00:{('0'+Math.round(file.duration)).slice(-2)}</span>
-                                                            </div>:''}
-                                                        </div>  
-                                                    )}
-                                                    
-                                                </div>
-                                                <div className={`rating-media-list__zoomed-image ${review.list_file.find(item=>item.show)?'rating-media-list__zoomed-image--active':''}`}>
-                                                    <div className="rating-media-list-image-carousel" style={{transition: 'all 500ms ease 0s', width: '520px'}}>
-                                                        <div className="rating-media-list-image-carousel__item-list-wrapper">
-                                                            <ul className="rating-media-list-image-carousel__item-list" ref={previewimage} style={{marginLeft: `${-530*review.list_file.indexOf(review.list_file.find(item=>item.show))}px`, marginTop: '0px',transition:'all 500ms ease 0s'}}>
-                                                                {review.list_file.map(file=>
-                                                                    <li key={file.id} className="rating-media-list-image-carousel__item rating-media-list-image-carousel__item--fluid" style={{padding: '0px 0.625rem'}}>
-                                                                        {file.filetype==='video'?
-                                                                        <div className="_43iTyw">
-                                                                            <video src={file.file} controls="" className="_12mVqG rating-media-list__zoomed-video-item" controlsList="nodownload"></video>
-                                                                        </div>:<img className="rating-media-list__zoomed-image-item" src={file.file}/>}
-                                                                    </li>
-                                                                )}
-                                                            </ul>
-                                                        </div>
-                                                        <div onClick={()=>showmedia(review.list_file[review.list_file.indexOf(review.list_file.find((file,i)=>file.show))-1],review)} className="rating-media-list-carousel-arrow rating-media-list-carousel-arrow--prev rating-media-list-carousel-arrow--hint rating-media-list-carousel-arrow--hidden" role="button" tabIndex="0" style={{opacity: 1, visibility: `${review.list_file.findIndex(file=>file.show)===0?'hidden':''}`, transform: 'translateX(calc(-50% + 0px))'}}>
-                                                            <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
-                                                        </div>
-                                                        <div onClick={()=>showmedia(review.list_file[review.list_file.indexOf(review.list_file.find((file,i)=>file.show))+1],review)} className="rating-media-list-carousel-arrow rating-media-list-carousel-arrow--next rating-media-list-carousel-arrow--hint" role="button" tabIndex="0" style={{opacity: 1, visibility: `${review.list_file.findIndex(file=>file.show)===(review.list_file.length-1)?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
-                                                            <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        :''}
-                                        <div className="product-rating__time">{timecreate(review.created)}</div>
-                                        <div className="product-rating__actions item-spaces">
-                                            <div className='d-flex'>
-                                                <div onClick={(e)=>setlikereview(e,review)} className={`product-rating__like-button ${user!=null&&review.user_like.some(item=>item==user.id)?'product-rating__like-button--liked':''}`}>
-                                                    <svg width="14px" height="13px" viewBox="0 0 14 13" version="1.1" xmlns="http://www.w3.org/2000/svg"><defs></defs><g stroke="none" strokeWidth="1" fillRule="evenodd"><g id="Product-Ratings-Working" transform="translate(-245.000000, -855.000000)" fillRule="nonzero"><g transform="translate(155.000000, 92.000000)"><g transform="translate(40.000000, 184.000000)"><g transform="translate(0.000000, 326.000000)"><g transform="translate(50.000000, 253.000000)"><g><path d="M0,12.7272727 L2.54545455,12.7272727 L2.54545455,5.09090909 L0,5.09090909 L0,12.7272727 Z M14,5.72727273 C14,5.02727273 13.4272727,4.45454545 12.7272727,4.45454545 L8.71818182,4.45454545 L9.35454545,1.52727273 L9.35454545,1.33636364 C9.35454545,1.08181818 9.22727273,0.827272727 9.1,0.636363636 L8.4,0 L4.2,4.2 C3.94545455,4.39090909 3.81818182,4.70909091 3.81818182,5.09090909 L3.81818182,11.4545455 C3.81818182,12.1545455 4.39090909,12.7272727 5.09090909,12.7272727 L10.8181818,12.7272727 C11.3272727,12.7272727 11.7727273,12.4090909 11.9636364,11.9636364 L13.8727273,7.44545455 C13.9363636,7.31818182 13.9363636,7.12727273 13.9363636,7 L13.9363636,5.72727273 L14,5.72727273 C14,5.79090909 14,5.72727273 14,5.72727273 Z"></path></g></g></g></g></g></g></g></svg>
-                                                </div>
-                                                <div className="product-rating__like-count">{review.num_like==0?'hữu ích':review.num_like}</div>
-                                            </div>
-                                            <div className='d-flex'>
-                                                <div className="product-rating__report-menu-button">
-                                                    <div className="stardust-dropdown">
-                                                        <div onClick={(e)=>setrequestreport(e,review)} className="stardust-dropdown__item-header">
-                                                            <div>
-                                                                <svg width="4px" height="16px" viewBox="0 0 4 16" version="1.1" xmlns="http://www.w3.org/2000/svg"><defs></defs><g stroke="none" strokeWidth="1" fillRule="evenodd"><g transform="translate(-1301.000000, -550.000000)" fill="#CCCCCC"><g transform="translate(155.000000, 92.000000)"><g transform="translate(40.000000, 184.000000)"><g transform="translate(0.000000, 161.000000)"><g><g transform="translate(50.000000, 2.000000)"><path d="M1058,122.2 C1056.895,122.2 1056,123.096 1056,124.2 C1056,125.306 1056.895,126.202 1058,126.202 C1059.104,126.202 1060,125.306 1060,124.2 C1060,123.096 1059.104,122.2 1058,122.2 M1058,116.6 C1056.895,116.6 1056,117.496 1056,118.6 C1056,119.706 1056.895,120.602 1058,120.602 C1059.104,120.602 1060,119.706 1060,118.6 C1060,117.496 1059.104,116.6 1058,116.6 M1058,111 C1056.895,111 1056,111.896 1056,113 C1056,114.106 1056.895,115.002 1058,115.002 C1059.104,115.002 1060,114.106 1060,113 C1060,111.896 1059.104,111 1058,111"></path></g></g></g></g></g></g></g></svg>
-                                                            </div>
-                                                        </div>
-                                                        <div className={`stardust-dropdown__item-body ${review.request_report?'stardust-dropdown__item-body--open':''}`} style={{opacity:review.request_report?1:0}}>
-                                                            <div onClick={(e)=>setreport(e,review)} className="product-rating__report-menu-dropdown">báo cáo</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <ReviewItem
+                                review={review}
+                                user={user}
+                                
+                                setreport={(e,review)=>setreport(e,review)}
+                                showmedia={(e,item,review)=>showmedia(e,item,review)}
+                                setlikereview={(e,review)=>setlikereview(e,review)}
+                                />
                             )}
                         </div>
                         <div className="page-controller product-ratings__page-controller">

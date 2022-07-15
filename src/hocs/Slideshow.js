@@ -1,6 +1,6 @@
 import React,{useEffect,useState,useRef} from 'react';
 import ReactDOM from 'react-dom';
-
+import {Link} from "react-router-dom"
 import {detailURL,formatter,localhost,rating,rating_choice} from "../constants"
 const SlideshowGallery=({list_image,automatic,timeout})=>{
     const [state,setState]=useState({slideIndex: 0})
@@ -45,11 +45,11 @@ const SlideshowGallery=({list_image,automatic,timeout})=>{
                     {list_image.map(item=>
                     <li className="stardust-carousel__item" style={{width: `${100/list_image.length}%`}}>
                         <div className="stardust-carousel__item-inner-wrapper">
-                            <a className="full-home-banners__banner-image" href="/shopeepayvn">
+                            <Link className="full-home-banners__banner-image" to={item.url_field}>
                                 <div className="_3XtrnR full-home-banners__light-background">
                                     <div className="full-home-banners__main-banner-image nO87xn" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}></div>
                                 </div>
-                            </a>
+                            </Link>
                         </div>
                     </li>
                     )}

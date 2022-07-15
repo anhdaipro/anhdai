@@ -5,6 +5,7 @@ import {formatter,} from "../constants"
 import {ItemRecommend,topsearchURL,imagehomeURL,listitemflashsalelURL,listcategoryURL} from "../urls"
 import { Link } from 'react-router-dom';
 import SlideshowGallery from "../hocs/Slideshow"
+import { headers } from '../actions/auth';
 function partition(array, n) {
     return array.length ? [array.splice(0, n)].concat(partition(array, n)) : [];
 }
@@ -18,10 +19,10 @@ class ImageHome extends React.Component {
     }
   
     componentDidMount() {
-      axios.get(imagehomeURL)
+      axios.get(imagehomeURL,headers)
       .then(res=>{
         const data = res.data;
-        this.setState({items:data.c,loading:true})
+        this.setState({items:data,loading:true})
       })
         
     }
@@ -68,7 +69,7 @@ class Category extends React.Component {
     };
   
     componentDidMount() {
-      axios.get(listcategoryURL)
+      axios.get(listcategoryURL,headers)
       .then(res=>{
         this.setState({loading:true,transform: 'translate(0px, 0px)',categories:partition(res.data, int).map(subarray => subarray)});
       })  
@@ -145,7 +146,7 @@ const Itemflashsale =()=> {
     const [time,setTime]=useState({hours:0,mins:0,seconds:0})
     useEffect(() => {
         const getJournal = async () => {
-        await axios.get(listitemflashsalelURL)
+        await axios.get(listitemflashsalelURL,headers)
         .then(res => {
                 const data = res.data;
                 const time_end=data.list_flashsale.length>0?data.list_flashsale[0].valid_to:'2022-10-10'
@@ -314,7 +315,7 @@ export default class HomePage extends React.Component {
                 if(clientHeight + scrollTop == scrollHeight && this.state.items.length==0){
                     (async () => {
                         try {
-                          const res1 = await axios.get(topsearchURL)
+                          const res1 = await axios.get(topsearchURL,headers)
                           this.setState({list_top_search:res1.data.item_top_search,list_trend_search:res1.data.item_top_search})
                         } catch (error) {
                           console.log(error);
@@ -322,9 +323,9 @@ export default class HomePage extends React.Component {
                       })();
                     (async () => {
                         try {
-                            const res = await axios.get(ItemRecommend)
+                            const res = await axios.get(ItemRecommend,headers)
                             let data=res.data
-                            this.setState({items:data.d});
+                            this.setState({items:data});
                         } catch (error) {
                             console.log(error);
                         }

@@ -32,7 +32,7 @@ const Newshop=()=>{
         if(city.list_city.length==0){
             axios.get(cityListURL)
             .then(res=>{
-                const list_city=res.data.a
+                const list_city=res.data
                 setCity({list_city:list_city})
                 if(address.id!=undefined){
                 const city_choice=list_city.find(item=>item.name==address.city && item.level==1)

@@ -90,7 +90,7 @@ const Itemsearch=({listitem,setsearch,searchitem,search,data,setsearchitem})=>{
                             ''}
                         </div>
                         <div className="_3_FVSo">  
-                            {item.program_valid?
+                            {item.percent_discount>0?
                             <>
                             <div className="home-product-item__price-old zp9xm9">₫{formatter.format((item.max_price+item.min_price)/2)}</div>
                             <div className="home-product-item__price-current">
@@ -122,7 +122,7 @@ const Itemsearch=({listitem,setsearch,searchitem,search,data,setsearchitem})=>{
                         <div className="home-product-item__favourite"> 
                             <span>Yêu thích</span>
                         </div>
-                        {item.percent_discount>0 && item.program_valid?
+                        {item.percent_discount>0?
                         <div className="home-product-item__sale-off">
                             <span className="home-product-item__sale-off-percent">{item.percent_discount}</span>
                             <span className="home-product-item__sale-off-label">GIẢM</span>

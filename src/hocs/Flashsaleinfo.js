@@ -34,6 +34,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
     const [itemshop,setItem]=useState({items:[],page_count_main:0,items_choice:[],savemain:false
     ,page_count_by:0,byproduct:[],byproduct_choice:[],savebyproduct:false})
     const [loading,setLoading]=useState(false)
+    const [showtime,setShowtime]=useState(false)
     useEffect(() => {
         setFlashsale(flashsale_shop)
         setLoading(loading_content)
@@ -199,7 +200,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
     const setdiscount=(e,name,variation,item)=>{
         let discount=parseInt(e.target.value)
         const byproduct=item.list_variation.map(varia=>{
-            if(varia.variation_id==variation.variation_id){
+            if(varia.product_id==variation.product_id){
                 if(name=='discount_price'){
                     if(isNaN(discount)){
                         return({...varia,error:true,discount_price:'',percent_discount:100})
@@ -258,7 +259,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
 
     const setenableby=(e,variation,item)=>{
         const byproduct=item.list_variation.map(varia=>{
-            if(varia.variation_id==variation.variation_id){
+            if(varia.product_id==variation.product_id){
                 if(variation.percent_discount>0&& variation.percent_discount<100){
                     return({...varia,enable:!varia.enable,errow:false})
                 }
@@ -313,15 +314,23 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
         }
     }
     
-    const showtime=(e)=>{
-        setState({...state,show:!state.show})
-        window.onclick=(event)=>{
-            let parent=event.target.closest('.date_pickers')
-            if(!e.target.contains(event.target) && !parent){
-                setState({...state,show:false})
+    const parentref=useRef()
+    useEffect(() => {
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [])
+
+    const handleClick = (event) => {
+        const { target } = event
+        if(parentref.current!=null){
+            if (!parentref.current.contains(target)) {
+                setShowtime(false)
             }
         }
     }
+    
     const setframtime=(item)=>{
         setDate({...date,hour:item.hour,minutes:item.minutes,hour_to:item.hour_to,minutes_to:item.minutes_to})
     }
@@ -342,7 +351,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
         const list_product=itemshop.byproduct_choice.map(item=>{
             if(item.item_id==itemchoice.item_id){
                 return({...item,list_variation:item.list_variation.map(variation=>{
-                    if(variation.variation_id==variationchoice.variation_id){
+                    if(variation.product_id==variationchoice.product_id){
                         return({...variation,check:!variation.check})
                     }
                     return({...variation})
@@ -397,7 +406,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
             form.append('item_id',item.item_id)
             form.append('quantity_limit_flash_sale',item.limit_order!=''?item.limit_order:item.item_inventory)
             item.list_variation.map(variation=>{
-                form.append('variation_id',variation.variation_id)
+                form.append('product_id',variation.product_id)
                 form.append('percent_discount',variation.enable?variation.percent_discount:0)
                 form.append('number_of_promotional_flash_sale_products',variation.limit_order!=''?variation.limit_order:variation.inventory)
             })
@@ -406,7 +415,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
         const list_enable_off=itemshop.byproduct_choice.filter(item=>list_enable_on.every(items=>item.item_id!=items.item_id))
         list_enable_off.map(item=>{
             item.list_variation.map(variation=>{
-                form.append('variation_id_off',variation.variation_id)
+                form.append('product_id_off',variation.product_id)
             })
         })
         const countDown = setInterval(() => {
@@ -447,12 +456,12 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
                                     <div className="info-item-label info-middle-label">Time frame</div>
                                     <div className="flex-col">
                                         <div className="form-flash-sale">
-                                            <div className="rele">
-                                                <div onClick={(e)=>showtime(e)} className="time-slot-btn item-center" style={{width: '240px'}}>
+                                            <div ref={parentref} className="rele">
+                                                <div onClick={(e)=>setShowtime(!showtime)} className="time-slot-btn item-center" style={{width: '240px'}}>
                                                     <div className="selector__prefix"><i className="selector__prefix-icon icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M11.5156954,1 C11.7918378,1 12.0156954,1.22385763 12.0156954,1.5 L12.015,2 L14,2 C14.5522847,2 15,2.44771525 15,3 L15,14 C15,14.5522847 14.5522847,15 14,15 L2,15 C1.44771525,15 1,14.5522847 1,14 L1,3 C1,2.44771525 1.44771525,2 2,2 L3.991,2 L3.99143991,1.5 C3.99143991,1.22385763 4.21529754,1 4.49143991,1 C4.76758229,1 4.99143991,1.22385763 4.99143991,1.5 L4.991,2 L11.015,2 L11.0156954,1.5 C11.0156954,1.22385763 11.239553,1 11.5156954,1 Z M14,6 L2,6 L2,14 L14,14 L14,6 Z M5.5,11 C5.77614237,11 6,11.2238576 6,11.5 C6,11.7761424 5.77614237,12 5.5,12 L4.5,12 C4.22385763,12 4,11.7761424 4,11.5 C4,11.2238576 4.22385763,11 4.5,11 L5.5,11 Z M8.5,11 C8.77614237,11 9,11.2238576 9,11.5 C9,11.7761424 8.77614237,12 8.5,12 L7.5,12 C7.22385763,12 7,11.7761424 7,11.5 C7,11.2238576 7.22385763,11 7.5,11 L8.5,11 Z M11.5,11 C11.7761424,11 12,11.2238576 12,11.5 C12,11.7761424 11.7761424,12 11.5,12 L10.5,12 C10.2238576,12 10,11.7761424 10,11.5 C10,11.2238576 10.2238576,11 10.5,11 L11.5,11 Z M5.5,8 C5.77614237,8 6,8.22385763 6,8.5 C6,8.77614237 5.77614237,9 5.5,9 L4.5,9 C4.22385763,9 4,8.77614237 4,8.5 C4,8.22385763 4.22385763,8 4.5,8 L5.5,8 Z M8.5,8 C8.77614237,8 9,8.22385763 9,8.5 C9,8.77614237 8.77614237,9 8.5,9 L7.5,9 C7.22385763,9 7,8.77614237 7,8.5 C7,8.22385763 7.22385763,8 7.5,8 L8.5,8 Z M11.5,8 C11.7761424,8 12,8.22385763 12,8.5 C12,8.77614237 11.7761424,9 11.5,9 L10.5,9 C10.2238576,9 10,8.77614237 10,8.5 C10,8.22385763 10.2238576,8 10.5,8 L11.5,8 Z M3.991,3 L2,3 L2,5 L14,5 L14,3 L12.015,3 L12.0156954,3.5 C12.0156954,3.77614237 11.7918378,4 11.5156954,4 C11.239553,4 11.0156954,3.77614237 11.0156954,3.5 L11.015,3 L4.991,3 L4.99143991,3.5 C4.99143991,3.77614237 4.76758229,4 4.49143991,4 C4.21529754,4 3.99143991,3.77614237 3.99143991,3.5 L3.991,3 Z"></path></svg></i></div>
                                                     <div>{flashsale.hour!=undefined?`${("0"+flashsale.hour).slice(-2)}:${('0'+flashsale.minutes).slice(-2)} ${flashsale.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ~ ${('0'+flashsale.hour_to).slice(-2)}:${('0'+flashsale.minutes_to).slice(-2)}`:'Choose the time frame'}</div>
                                                 </div>
-                                                {state.show?
+                                                {show?
                                                 <div className="date_pickers popper_content">
                                                     <div className="model-title">Choose the time frame of the Shop's Flash sale</div>
                                                     <div className="item-center title-content">

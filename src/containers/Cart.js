@@ -126,7 +126,7 @@ const Iteminfo=(props)=>{
     const [show,setShow]=useState(false)
     const [showsearch,setShowsearch]=useState(false)
     const [items,setItems]=useState([])
-    const [state,setState]=useState({page_no:1,size_id:null,color_id:null,variation_color:[],variation_size:[],count_variation:0,variation_id:0,size_value:'',color_value:''})
+    const [state,setState]=useState({page_no:1,size_id:null,color_id:null,variation_color:[],variation_size:[],count_variation:0,product_id:0,size_value:'',color_value:''})
     const itemref=useRef()
     const searchref=useRef()
     useEffect(() => {
@@ -174,7 +174,7 @@ const Iteminfo=(props)=>{
         const color=item.colors.find(color=>color.value==item.color_value)
         setState({...state,size_id:size?size.id:null,color_id:color?color.id:null,color_value:item.color_value,
             size_value:item.size_value,
-            variation_color:color?color.variation:[],variation_size:size?size.variation:[],count_variation:item.count_variation,variation_id:item.variation_id})
+            variation_color:color?color.variation:[],variation_size:size?size.variation:[],count_variation:item.count_variation,product_id:item.product_id})
     }
     
     const setcolor=(e,item)=>{ 
@@ -445,7 +445,7 @@ class Cart extends React.Component{
             })
             const list_shop=obj3.data.map(shop=>{
                 let order=obj2.data.orders.find(order=>order.shop_name==shop.name)
-                if(order!=undefined&& order.shop_name==shop.name){
+                if(order&& order.shop_name==shop.name){
                     return({...shop,voucher:order.voucher,discount_voucher_shop:order.discount_voucher_shop,loading_voucher:true,show_voucher:false})
                 }
                 return({...shop,show_voucher:false})
@@ -840,7 +840,7 @@ class Cart extends React.Component{
                                                 <div className="stardust-checkbox__box"></div>
                                             </label>
                                         </div>
-                                        <div className="item-name">Product</div>
+                                        <div className="_27GGo9">Product</div>
                                         <div className="item-price">Price</div>
                                         <div className="item-quantity">Quantity</div>
                                         <div className="item-total-price">Total Item Price</div>
@@ -894,7 +894,7 @@ class Cart extends React.Component{
                                                                     <span class="_319wph">Mua Kèm</span>
                                                                     <span className="discount-title">{cartitem.shock_deal_type=='1'?'Mua kèm deal shock':'Buy to receive gift'}</span>
                                                                         <span className="add-byproduct">
-                                                                            <Link to={cartitem.variation_id}>{cartitem.byproduct.length>0?'Edit':'Add'}
+                                                                            <Link to={cartitem.product_id}>{cartitem.byproduct.length>0?'Edit':'Add'}
                                                                                 <svg viewBox="0 0 12 12" fill="none" width="12" height="12" color="#ee4d2d" className="_1KsfYG"><path fillRule="evenodd" clipRule="evenodd" d="M9.293 6L4.146.854l.708-.708L10 5.293a1 1 0 010 1.414l-5.146 5.147-.708-.707L9.293 6z" fill="currentColor"></path></svg>
                                                                             </Link>
                                                                         </span>

@@ -137,7 +137,10 @@ cursor: pointer;
     transition: opacity .3s ease-in;
 }
 
-
+._27GGo9 {
+    color: rgba(0,0,0,.8);
+    width: 46.27949%;
+}
 
 ._2I6yhs {
     transition: margin-top .3s cubic-bezier(.4,0,.2,1);

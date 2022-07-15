@@ -231,7 +231,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
     const setdiscount=(e,name,variation,item)=>{
         let discount=parseInt(e.target.value)
         const byproduct=item.list_variation.map(varia=>{
-            if(varia.variation_id==variation.variation_id){
+            if(varia.product_id==variation.product_id){
                 if(name=='discount_price'){
                     if(isNaN(discount)){
                         return({...varia,error:true,discount_price:'',percent_discount:100})
@@ -290,7 +290,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
 
     const setenableby=(e,variation,item)=>{
         const byproduct=item.list_variation.map(varia=>{
-            if(varia.variation_id==variation.variation_id){
+            if(varia.product_id==variation.product_id){
                 return({...varia,enable:!varia.enable})
             }
             else{
@@ -320,7 +320,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                 }
                 else{
                     return({...item,[keys]:false,list_variation:item.list_variation.map(variation=>{
-                        if(variation.variation_id==itemchoice.variation_id){
+                        if(variation.product_id==itemchoice.product_id){
                             return({...variation,[keys]:!variation.show})
                         }
                         return({...variation,[keys]:false})
@@ -374,7 +374,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                 }
                 else{
                     return({...item,list_variation:item.list_variation.map(variation=>{
-                        if(variation.variation_id==itemchoice.variation_id){
+                        if(variation.product_id==itemchoice.product_id){
                             if(keys=='limit'){
                                 return({...variation,[keys]:value,show:false})
                             }
@@ -494,7 +494,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
             form.append('item_id',item.item_id)
             form.append('limit_order',item.limit_order!=''?item.limit_order:item.item_inventory)
             item.list_variation.map(variation=>{
-                form.append('variation_id',variation.variation_id)
+                form.append('product_id',variation.product_id)
                 form.append('percent_discount',variation.enable?variation.percent_discount:0)
                 form.append('number_of_promotional_products',variation.limit_order!=''?variation.limit_order:variation.inventory)
             })
@@ -502,7 +502,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
         const list_enable_off=itemshop.byproduct_choice.filter(item=>list_enable_on.every(items=>item.item_id!=items.item_id))
         list_enable_off.map(item=>{
             item.list_variation.map(variation=>{
-                form.append('variation_id_off',variation.variation_id)
+                form.append('product_id_off',variation.product_id)
             })
         })
         const countDown = setInterval(() => {

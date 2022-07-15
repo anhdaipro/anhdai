@@ -10,15 +10,13 @@ const Layout = ({children,checkAuthenticated,user }) => {
     }, []);
 
     console.log(checkAuthenticated)
-   
     return (
         <>  
             {children}
             <div id="modal"></div>
-            <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-                <Message
-                />
-            </div>
+            <Message
+            />
+           
             
         </>  
     );

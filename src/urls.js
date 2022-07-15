@@ -23,7 +23,7 @@ export const savevoucherURL=`${endpoint}/save_voucher`
 export const imagehomeURL=`${endpoint}/imagehome`;
 export const listcategoryURL=`${endpoint}/categories`;
 export const listitemflashsalelURL=`${endpoint}/products`;
-
+export const reviewURL=`${endpoint}/review`;
 export const ItemRecommend=`${endpoint}/product/recommend`;
 export const searchURL=`${endpoint}/search`
 export const updateAddressURL = `${endpoint}/update_address`;

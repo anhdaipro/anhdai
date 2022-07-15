@@ -11,13 +11,14 @@ import {formatter,itemvariation} from "../constants"
 import { headers,expiry ,showchat,showthreads} from "../actions/auth";
 import {purchaselistdURL,listThreadlURL} from "../urls"
 const Purchase =({user,showchat,showthreads})=>{
-    const [state, setState] = useState({count_order:0,orders:[],user:null,list_review:[],list_type_order:[{name:'Tất cả',type:'1'},{name:'Chờ xác nhận',type:'2'},{name:'Chờ lấy hàng',type:'3'}
+    const [state, setState] = useState({count_order:0,orders:[],user:null,list_type_order:[{name:'Tất cả',type:'1'},{name:'Chờ xác nhận',type:'2'},{name:'Chờ lấy hàng',type:'3'}
 ,{name:'Đang giao',type:'4'},{name:'Đã giao',type:'5'},{name:'Đã Hủy',type:'6'}],
 
     review:null,order_choice:null,show_thread:false,show_message:false,threadchoice:null});
     const [show,setShow]=useState(false)
     const [loading,setLoading]=useState(false)
     const [edit,setEdit]=useState(false)
+    const [listreview,setListreview]=useState([])
     const [cancel,setCancel]=useState(false)
     useEffect(() => {
         const getJournal = async () => {
@@ -35,7 +36,7 @@ const Purchase =({user,showchat,showthreads})=>{
 
     const setshowthread=(e,order)=>{
         e.preventDefault()
-        let data={member:[user.id,order.user_id],thread:null,order_id:order.id,send_to:order.user_id}
+        let data={member:[user.id,order.shop.user_id],thread:null,order_id:order.id,send_to:order.user_id}
         showthreads()
         showchat(data) 
     }
@@ -76,7 +77,7 @@ const Purchase =({user,showchat,showthreads})=>{
     }, [state]);
 
     const setlistreview=useCallback((edit) => {
-        const list_reviews=state.list_review.map(review=>{
+        const list_reviews=listreview.map(review=>{
             if(edit.id==review.id){
                 return({...edit})
             }
@@ -84,8 +85,8 @@ const Purchase =({user,showchat,showthreads})=>{
                 return({...review})
             }
         })
-        setState({...state,list_review:list_reviews});
-    }, [state]);
+        setListreview(list_reviews)
+    }, [listreview]);
 
     const setChoice=useCallback((item) => {
         const list_cartitem=state.list_cartitem.map(cartitem=>{
@@ -109,7 +110,8 @@ const Purchase =({user,showchat,showthreads})=>{
         setShow(false)
         axios.get(url_main,headers)
         .then(res=>{
-            setState({...state,list_review:res.data.list_review,order_choice:order})
+            setState({...state,order_choice:order})
+            setListreview(res.data)
             setShow(true)
         })
     }
@@ -120,7 +122,7 @@ const Purchase =({user,showchat,showthreads})=>{
         setShow(true)
         setEdit(true)
         const cartitem_shop=order.cart_item.map((cartitem)=>{
-            return{...cartitem,list_image:[],video:null,review_rating:0,rating_bab_category:[0,0,0],rating_anonymous:false,
+            return{...cartitem,list_image:[],video:null,review_rating:0,rating_bab_category:[0,0,0],anonymous_review:false,
                 info_more:'',list_text:[],review_text:''}
         })
         setState({...state,list_cartitem:cartitem_shop,order_choice:order})
@@ -169,14 +171,14 @@ const Purchase =({user,showchat,showthreads})=>{
                                                         <div className="_127ZmV _3QG1FZ">
                                                             <svg viewBox="0 0 24 11"><g fill="#fff" fillRule="evenodd"><path d="M19.615 7.143V1.805a.805.805 0 0 0-1.611 0v5.377H18c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm3 0V1.805a.805.805 0 0 0-1.611 0v5.377H21c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm-7.491-2.985c.01-.366.37-.726.813-.726.45 0 .814.37.814.742v5.058c0 .37-.364.73-.813.73-.395 0-.725-.278-.798-.598a3.166 3.166 0 0 1-1.964.68c-1.77 0-3.268-1.456-3.268-3.254 0-1.797 1.497-3.328 3.268-3.328a3.1 3.1 0 0 1 1.948.696zm-.146 2.594a1.8 1.8 0 1 0-3.6 0 1.8 1.8 0 1 0 3.6 0z"></path><path d="M.078 1.563A.733.733 0 0 1 .565.89c.423-.15.832.16 1.008.52.512 1.056 1.57 1.88 2.99 1.9s2.158-.85 2.71-1.882c.19-.356.626-.74 1.13-.537.342.138.477.4.472.65a.68.68 0 0 1 .004.08v7.63a.75.75 0 0 1-1.5 0V3.67c-.763.72-1.677 1.18-2.842 1.16a4.856 4.856 0 0 1-2.965-1.096V9.25a.75.75 0 0 1-1.5 0V1.648c0-.03.002-.057.005-.085z" fillRule="nonzero"></path></g></svg>
                                                         </div>
-                                                        <div className="_1CIbL0">{order.shop}</div>
+                                                        <div className="_1CIbL0">{order.shop.name}</div>
                                                         <div onClick={(e)=>setshowthread(e,order)} className="_1q53YG">
                                                             <button className="stardust-button stardust-button--primary">
                                                                 <svg viewBox="0 0 17 17" className="svg-icon icon-btn-chat" style={{fill: 'white'}}><g fillRule="evenodd"><path d="M13.89 0C14.504 0 15 .512 15 1.144l-.003.088-.159 2.117.162.001c.79 0 1.46.558 1.618 1.346l.024.15.008.154v9.932a1.15 1.15 0 01-1.779.963l-.107-.08-1.882-1.567-7.962.002a1.653 1.653 0 01-1.587-1.21l-.036-.148-.021-.155-.071-.836h-.01L.91 13.868a.547.547 0 01-.26.124L.556 14a.56.56 0 01-.546-.47L0 13.429V1.144C0 .512.497 0 1.11 0h12.78zM15 4.65l-.259-.001-.461 6.197c-.045.596-.527 1.057-1.106 1.057L4.509 11.9l.058.69.01.08a.35.35 0 00.273.272l.07.007 8.434-.001 1.995 1.662.002-9.574-.003-.079a.35.35 0 00-.274-.3L15 4.65zM13.688 1.3H1.3v10.516l1.413-1.214h10.281l.694-9.302zM4.234 5.234a.8.8 0 011.042-.077l.187.164c.141.111.327.208.552.286.382.131.795.193 1.185.193s.803-.062 1.185-.193c.225-.078.41-.175.552-.286l.187-.164a.8.8 0 011.042 1.209c-.33.33-.753.579-1.26.753A5.211 5.211 0 017.2 7.4a5.211 5.211 0 01-1.706-.28c-.507-.175-.93-.424-1.26-.754a.8.8 0 010-1.132z" fillRule="nonzero"></path></g></svg>
                                                                 <span>Chat</span>
                                                             </button>
                                                         </div>
-                                                        <Link className="_2L5VLu" to={order.shop_url}>
+                                                        <Link className="_2L5VLu" to={order.shop.url}>
                                                             <button className="stardust-button">
                                                                 <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-btn-shop"><path d="m15 4.8c-.1-1-.8-2-1.6-2.9-.4-.3-.7-.5-1-.8-.1-.1-.7-.5-.7-.5h-8.5s-1.4 1.4-1.6 1.6c-.4.4-.8 1-1.1 1.4-.1.4-.4.8-.4 1.1-.3 1.4 0 2.3.6 3.3l.3.3v3.5c0 1.5 1.1 2.6 2.6 2.6h8c1.5 0 2.5-1.1 2.5-2.6v-3.7c.1-.1.1-.3.3-.3.4-.8.7-1.7.6-3zm-3 7c0 .4-.1.5-.4.5h-8c-.3 0-.5-.1-.5-.5v-3.1c.3 0 .5-.1.8-.4.1 0 .3-.1.3-.1.4.4 1 .7 1.5.7.7 0 1.2-.1 1.6-.5.5.3 1.1.4 1.6.4.7 0 1.2-.3 1.8-.7.1.1.3.3.5.4.3.1.5.3.8.3zm.5-5.2c0 .1-.4.7-.3.5l-.1.1c-.1 0-.3 0-.4-.1s-.3-.3-.5-.5l-.5-1.1-.5 1.1c-.4.4-.8.7-1.4.7-.5 0-.7 0-1-.5l-.6-1.1-.5 1.1c-.3.5-.6.6-1.1.6-.3 0-.6-.2-.9-.8l-.5-1-.7 1c-.1.3-.3.4-.4.6-.1 0-.3.1-.3.1s-.4-.4-.4-.5c-.4-.5-.5-.9-.4-1.5 0-.1.1-.4.3-.5.3-.5.4-.8.8-1.2.7-.8.8-1 1-1h7s .3.1.8.7c.5.5 1.1 1.2 1.1 1.8-.1.7-.2 1.2-.5 1.5z"></path></svg>
                                                                 <span>Xem shop</span>
@@ -211,7 +213,7 @@ const Purchase =({user,showchat,showthreads})=>{
                                                                 </div>
                                                             </div>
                                                         </div>:''}
-                                                        <div className="clakWe">{order.received?order.review>0?'Đã đánh giá':'Đã giao':order.canceled?'Đã hủy':!order.received && order.being_delivered?'Đang giao':'CHỜ XÁC NHẬN'}</div>
+                                                        <div className="clakWe">{order.received?order.review?'Đã đánh giá':'Đã giao':order.canceled?'Đã hủy':!order.received && order.being_delivered?'Đang giao':'CHỜ XÁC NHẬN'}</div>
                                                     </div>
                                                 </div>
                                                 <div className="_39XDzv"></div>
@@ -273,7 +275,7 @@ const Purchase =({user,showchat,showthreads})=>{
                                                 </div>
                                             </div>
                                             <div className="_1Qn42s">
-                                                <div className="_1lM63-">{order.received?order.review>0?'':
+                                                <div className="_1lM63-">{order.received?order.review?'':
                                                     Math.abs(new Date() - new Date(order.received_date))/(1000 * 3600 * 24)<15?<><span className="_2xFj47">Đánh giá sản phẩm trước
                                                     <div className="drawer"><u className="_1_feWc">{`${new Date(new Date(order.received_date).setDate(new Date(order.received_date).getDate() + 15)).toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)}`}</u></div>
                                                 </span>
@@ -295,7 +297,7 @@ const Purchase =({user,showchat,showthreads})=>{
                                                     <div className="_3YxeCv">
                                                         <button className="stardust-button stardust-button--secondary _2x5SvJ">Liên hệ Người bán</button>
                                                     </div>
-                                                    {order.received?order.review>0?
+                                                    {order.received?order.review?
                                                     <div onClick={e=>editreview(e,order)} className="_3YxeCv">
                                                         <button className="stardust-button stardust-button--secondary _2x5SvJ">Xem đánh giá shop</button>
                                                     </div>:Math.abs(new Date() - new Date(order.received_date))/(1000 * 3600 * 24)<15?
@@ -332,7 +334,7 @@ const Purchase =({user,showchat,showthreads})=>{
             show={show}
             edit={edit}
             cancel={cancel}
-            list_review={state.list_review}
+            list_review={listreview}
             list_cartitem={state.list_cartitem}
             list_orders={state.orders}
             order_choice={state.order_choice}
