@@ -421,9 +421,10 @@ class Cart extends React.Component{
             await this.props.isAuthenticated
         try {
             
-            const [obj1, obj2] = await axios.all([
+            const [obj1, obj2,obj3] = await axios.all([
                 axios.get(listorderURL,headers),
-                axios.get(shoporderURL,headers)
+                axios.get(shoporderURL,headers),
+                axios.get(cartURL,headers),
             ])
             
             let count_order=0
@@ -450,17 +451,12 @@ class Cart extends React.Component{
                 return({...shop,show_voucher:false})
             })
 
-            const list_cartitem =obj2.data.reduce((result, value, i) => {
-                let item = value.cart_item.map(cartitem=>{
-                    return(cartitem)
-                })
-                return [...result,...item]
-            }, [])
+            
             
             
             this.setState({
-                count:list_cartitem.length,
-                list_cartitem:list_cartitem,
+                count:obj3.data.length,
+                list_cartitem:obj3.data,
                 count_order:count_order,
                 total:total,
                 count_cartitem:count_cartitem,
