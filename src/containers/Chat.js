@@ -36,12 +36,10 @@ const Shopmember=(props)=>{
         if(shopref.current!=null){
             if (!shopref.current.contains(target)) {
                 setShow(false)
+                if (!btnorder.current.contains(target) && !btnproduct.current.contains(target)) {
+                    setshowshop()
+                }
             }
-            
-            if (!btnorder.current.contains(target) && !btnproduct.current.contains(target)) {
-                setshowshop()
-            }
-            
         }
     }
     const fetchkey=(e)=>{
