@@ -421,10 +421,9 @@ class Cart extends React.Component{
             await this.props.isAuthenticated
         try {
             
-            const [obj1, obj2,obj3] = await axios.all([
-                axios.get(cartURL,headers),
+            const [obj1, obj2] = await axios.all([
                 axios.get(listorderURL,headers),
-                axios.get(shoporderURL,headers),
+                axios.get(shoporderURL,headers)
             ])
             
             let count_order=0
@@ -434,7 +433,7 @@ class Cart extends React.Component{
             let discount_deal=0
             let discount_voucher=0
             let count_cartitem=0
-            obj2.data.orders.map(order=>{
+            obj1.data.orders.map(order=>{
                 total+=order.total
                 total_discount+=order.total_discount
                 discount_promotion+=order.discount_promotion
@@ -443,18 +442,27 @@ class Cart extends React.Component{
                 count_order+=order.count
                 count_cartitem+=order.count_cartitem
             })
-            const list_shop=obj3.data.map(shop=>{
-                let order=obj2.data.orders.find(order=>order.shop_id==shop.id)
+            const list_shop=obj2.data.map(shop=>{
+                let order=obj1.data.orders.find(order=>order.shop_id==shop.id)
                 if(order&& order.shop_id==shop.id){
                     return({...shop,voucher:order.voucher,discount_voucher_shop:order.discount_voucher_shop,loading_voucher:true,show_voucher:false})
                 }
                 return({...shop,show_voucher:false})
             })
 
+            const list_cartitem =obj2.reduce((result, value, i) => {
+                let item = value.cart_item.map(cartitem=>{
+                    return(cartitem)
+                })
+                return [...result,...item]
+            }, [])
             
+            const list_cartitem=obj2.map(cartitem=>{
+                return {...cartitem}
+            })
             this.setState({
-                count:obj1.data.length,
-                list_cartitem:obj1.data,
+                count:list_cartitem.length,
+                list_cartitem:list_cartitem,
                 count_order:count_order,
                 total:total,
                 count_cartitem:count_cartitem,
