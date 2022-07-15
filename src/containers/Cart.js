@@ -457,9 +457,7 @@ class Cart extends React.Component{
                 return [...result,...item]
             }, [])
             
-            const list_cartitem=obj2.map(cartitem=>{
-                return {...cartitem}
-            })
+            
             this.setState({
                 count:list_cartitem.length,
                 list_cartitem:list_cartitem,
