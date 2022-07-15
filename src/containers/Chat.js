@@ -302,10 +302,10 @@ const Threadinfo=(props)=>{
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M11.29 16.243H4.54v-2.872l2.927-1.9V2.444a1 1 0 011-1h7.073a1 1 0 011 1v8.957l3 1.97v2.872h-6.75v6.201h-1.5v-6.201zm6.75-1.5v-.563l-3-1.97V2.944H8.967v9.342l-2.927 1.9v.557h12z"></path></svg>
                             </i>{!thread.gim?'Ghim Trò Chuyện':'Bỏ gim trò chuyện'}
                         </div>
-                        <div onClick={(e)=>setaction(e,thread,'seen',direact_chat(thread).count_message_unseen==0?true:false)} className="conversation-action-option">
+                        <div onClick={(e)=>setaction(e,thread,'seen',direact_user(thread).count_message_unseen==0?true:false)} className="conversation-action-option">
                             <i className="action-options-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M15 4c-.337.448-.6.954-.771 1.5H3.5v13.85l3.085-1.85H19.5v-5.525a4.968 4.968 0 001.5-.391V18a1 1 0 01-1 1H7l-5 3V5a1 1 0 011-1h12zm4 6.75a3.75 3.75 0 110-7.5 3.75 3.75 0 010 7.5zm0-1.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"></path></svg>
-                            </i>{direact_chat(thread).count_message_unseen>0?'Đánh dấu đã đọc':'Đánh dấu chưa đọc'}
+                            </i>{direact_user(thread).count_message_unseen>0?'Đánh dấu đã đọc':'Đánh dấu chưa đọc'}
                         </div>
                         <div onClick={(e)=>setaction(e,thread,'delete',true)} className="conversation-action-option">
                             <i className="action-options-icon">
@@ -753,6 +753,7 @@ const Message=(props)=>{
         form.append('action',name)
         axios.post(`${conversationsURL}/${thread.id}`,form,headers)
         .then(res=>{
+            setMessage_unseen(name=='seen' && value?message_unseen-1:message_unseen+1)
             const list_convesations=name=='delete'?
                 threads.filter(item=>item.id!=thread.id)
                 :name=='seen'?threads.map(item=>{
@@ -775,7 +776,7 @@ const Message=(props)=>{
                 })
             setThreads(list_convesations) 
         })
-    },[threads])
+    },[threads,message_unseen])
 
     ///set tychat
     useEffect(()=>{
