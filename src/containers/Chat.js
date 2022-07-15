@@ -329,6 +329,7 @@ const Message=(props)=>{
     const [list_messages,setListmessages]=useState([]);
     const [message,setMessage]=useState('')
     const [threads,setThreads]=useState([]);
+    const [message_unseen,setMessage_unseen]=useState(0)
     const [thread,setThread]=useState();
     const [showemoji,setShowemoji]=useState(false)
     const [show_type_chat,setShow_type_chat]=useState(false)
@@ -353,6 +354,9 @@ const Message=(props)=>{
     const user_chat=(thread)=>{
         return(thread.members.find(member=>member.user_id==user.id))
     }
+    useEffect(()=>{
+        setMessage_unseen(count_message_unseen)
+    },[count_message_unseen])
     useEffect(() =>  {
         if(showchat){
         setListmember(members)
@@ -818,9 +822,9 @@ const Message=(props)=>{
         <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
         {user!=null?
         !show?
-        <div onClick={()=>showthread()} className={`src-pages-index__root--1G_Ox ${count_message_unseen?'unread':''}`}>
+        <div onClick={()=>showthread()} className={`src-pages-index__root--1G_Ox ${message_unseen?'unread':''}`}>
             <div className="src-pages-index__logo-wrapper--IqLfz">
-                {count_message_unseen>0?<div className="src-pages-index__counts--1f4Va">{count_message_unseen>0?count_message_unseen:''}</div>:''}
+                {message_unseen>0?<div className="src-pages-index__counts--1f4Va">{message_unseen>0?message_unseen:''}</div>:''}
                 <i className="_3kEAcT1Mk5 src-pages-index__chat--3rr3d">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" className="chat-icon"><path d="M18 6.07a1 1 0 01.993.883L19 7.07v10.365a1 1 0 01-1.64.768l-1.6-1.333H6.42a1 1 0 01-.98-.8l-.016-.117-.149-1.783h9.292a1.8 1.8 0 001.776-1.508l.018-.154.494-6.438H18zm-2.78-4.5a1 1 0 011 1l-.003.077-.746 9.7a1 1 0 01-.997.923H4.24l-1.6 1.333a1 1 0 01-.5.222l-.14.01a1 1 0 01-.993-.883L1 13.835V2.57a1 1 0 011-1h13.22zm-4.638 5.082c-.223.222-.53.397-.903.526A4.61 4.61 0 018.2 7.42a4.61 4.61 0 01-1.48-.242c-.372-.129-.68-.304-.902-.526a.45.45 0 00-.636.636c.329.33.753.571 1.246.74A5.448 5.448 0 008.2 8.32c.51 0 1.126-.068 1.772-.291.493-.17.917-.412 1.246-.74a.45.45 0 00-.636-.637z"></path></svg>
                 </i>
@@ -836,11 +840,11 @@ const Message=(props)=>{
                     <i className="_3kEAcT1Mk5 chat-header-logo icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 22" className="chat-icon"><path d="M9.286 6.001c1.161 0 2.276.365 3.164 1.033.092.064.137.107.252.194.09.085.158.064.203 0 .046-.043.182-.194.251-.26.182-.17.433-.43.752-.752a.445.445 0 00.159-.323c0-.172-.092-.3-.227-.365A7.517 7.517 0 009.286 4C5.278 4 2 7.077 2 10.885s3.256 6.885 7.286 6.885a7.49 7.49 0 004.508-1.484l.022-.043a.411.411 0 00.046-.71v-.022a25.083 25.083 0 00-.957-.946.156.156 0 00-.227 0c-.933.796-2.117 1.205-3.392 1.205-2.846 0-5.169-2.196-5.169-4.885C4.117 8.195 6.417 6 9.286 6zm32.27 9.998h-.736c-.69 0-1.247-.54-1.247-1.209v-3.715h1.96a.44.44 0 00.445-.433V9.347h-2.45V7.035c-.021-.043-.066-.065-.111-.043l-1.603.583a.423.423 0 00-.29.41v1.362h-1.781v1.295c0 .238.2.433.445.433h1.337v4.19c0 1.382 1.158 2.505 2.583 2.505H42v-1.339a.44.44 0 00-.445-.432zm-21.901-6.62c-.739 0-1.41.172-2.013.496V4.43a.44.44 0 00-.446-.43h-1.788v13.77h2.234v-4.303c0-1.076.895-1.936 2.013-1.936 1.117 0 2.01.86 2.01 1.936v4.239h2.234v-4.561l-.021-.043c-.202-2.088-2.012-3.723-4.223-3.723zm10.054 6.785c-1.475 0-2.681-1.12-2.681-2.525 0-1.383 1.206-2.524 2.681-2.524 1.476 0 2.682 1.12 2.682 2.524 0 1.405-1.206 2.525-2.682 2.525zm2.884-6.224v.603a4.786 4.786 0 00-2.985-1.035c-2.533 0-4.591 1.897-4.591 4.246 0 2.35 2.058 4.246 4.59 4.246 1.131 0 2.194-.388 2.986-1.035v.604c0 .237.203.431.453.431h1.356V9.508h-1.356c-.25 0-.453.173-.453.432z"></path></svg>
                     </i>
-                    {count_message_unseen>0?
+                    {message_unseen>0?
                     <div className="chat-count-new-message">
                         <i className="_3kEAcT1Mk5 icon chat-close">
                             <svg viewBox="0 0 3 12" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path d="M2.788 12L3 11.383c-.514-.443-.959-1.113-1.335-2.013-.376-.9-.564-2.01-.564-3.333v-.074c0-1.323.189-2.434.567-3.333.378-.9.822-1.553 1.332-1.961L2.788.006 2.754 0C2.102.354 1.48 1.063.888 2.127.296 3.19 0 4.473 0 5.974v.052c0 1.505.296 2.789.888 3.85.592 1.062 1.214 1.77 1.866 2.124h.034z"></path></svg>
-                        </i>{count_message_unseen>0?count_message_unseen:''}
+                        </i>{message_unseen>0?message_unseen:''}
                         <i className="_3kEAcT1Mk5 icon chat-close">
                             <svg viewBox="0 0 3 12" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path d="M.246 12c.648-.354 1.269-1.062 1.863-2.124C2.703 8.815 3 7.531 3 6.026v-.052c0-1.501-.297-2.784-.891-3.847C1.515 1.063.894.354.246 0H.212L0 .617c.48.42.917 1.09 1.31 2.01.393.92.59 2.032.59 3.336v.074c0 1.33-.191 2.454-.573 3.37-.382.917-.824 1.575-1.327 1.976L.212 12h.034z"></path></svg>
                         </i>
