@@ -281,7 +281,7 @@ const Purchase =({user,showchat,showthreads})=>{
                                                 </span>
                                                 <span className="_17rYB5">Đánh giá ngay và nhận 200 Xu</span></>:<span>Không nhận được đánh giá</span>:order.canceled?<span>Bạn đã hủy</span>:''}</div>
                                                 <div className="_23TzMz">
-                                                    {order.received?order.review && Math.abs(new Date() - new Date(order.received_date))/(1000 * 3600 * 24)<15?
+                                                    {order.received?!order.review && Math.abs(new Date() - new Date(order.received_date))/(1000 * 3600 * 24)<15?
                                                     <div onClick={e=>review(e,order)} className="_2BTXui">
                                                         <button className="stardust-button stardust-button--primary _2x5SvJ">Đánh Giá</button>
                                                     </div>:
