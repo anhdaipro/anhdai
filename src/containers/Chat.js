@@ -13,7 +13,7 @@ const listaction=[ {name:'Ghim Trò Chuyện',gim:true},{name:'Bỏ gim cuộc T
 const list_type_chat=[{'name':'Tất cả',value:'1'},{'name':'Unread',value:'2'},{'name':'Đã gim',value:'3'}]
 const Shopmember=(props)=>{
     const {thread,setshop,showdata,sendproduct,sendorder,loadingdata,setloading,shopchoice,user,
-        setshowshop,listmember,showmoreitem,setshopchoice,shop,btnorder,btnproduct}=props
+        listmember,showmoreitem,setshopchoice,shop}=props
     const [show,setShow]=useState(false)
     const [keyword,setKeyword]=useState('')
     const shopref=useRef()
@@ -21,7 +21,9 @@ const Shopmember=(props)=>{
         if(showdata.show_product||showdata.show_order){
             setShow(true)
         }
-       
+        else{
+            setShow(false)
+        }
     },[showdata])
     useEffect(() => {
         document.addEventListener('click', handleClick)
@@ -34,8 +36,7 @@ const Shopmember=(props)=>{
         if(shopref.current!=null){
             if (!shopref.current.contains(target)) {
                 setShow(false)
-                
-            }
+            } 
         }
     }
     const fetchkey=(e)=>{
@@ -1223,8 +1224,7 @@ const Message=(props)=>{
             sendproduct={(e,item)=>sendproduct(e,item)}
             sendorder={(e,order)=>sendorder(e,order)}
             shop={shop}
-            btnorder={btnorder}
-            btnproduct={btnproduct}
+            
             showdata={showshop}
             setshop={data=>setshop(data)}
             thread={thread}
