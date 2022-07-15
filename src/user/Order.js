@@ -35,17 +35,6 @@ const Orderuser=(props)=>{
         showthreads()
     }
 
-    const buyagain=(e,order)=>{
-        (async()=>{
-            let form=new FormData()
-            data.cart_item.map(cartitem=>{
-                form.append('product_id',cartitem.product_id)
-            })
-            form.append('shop_id',data.shop.id)
-            const res=await axios.post(buyagainURL,form,headers)
-            navigate(`/cart`)
-        })()
-    }
   return(
     <>
         <div id="main">
