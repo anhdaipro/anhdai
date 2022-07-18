@@ -284,8 +284,8 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
     }
 
     const setallvariation=()=>{
-        const list_variation=state.list_variation.map(variation=>{
-            return({...variation,price:formData.price,inventory:formData.inventory,sku:formData.sku,list_variation:variation.list_variation.map(item=>{
+        const list_variation=state.variations.map(variation=>{
+            return({...variation,price:formData.price,inventory:formData.inventory,sku:formData.sku,list_variation:variation.variations.map(item=>{
                 return({...item,price:formData.price,inventory:formData.inventory,sku:formData.sku})
             })})
         })
@@ -405,7 +405,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
     const removecolor=(colorchoice)=>{
         const list_color=data.list_color.filter(color=>color!=colorchoice)
         setData({...data,list_color:list_color})
-        const list_variation=state.list_variation.filter(variation=>variation.value==colorchoice.value)
+        const list_variation=state.variations.filter(variation=>variation.value==colorchoice.value)
         
         setState({...state,list_variation:list_variation})
     }
@@ -427,7 +427,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                 }
         })
         setData({...data,list_color:list_color})
-        const list_variation=state.list_variation.map((item,index)=>{
+        const list_variation=state.variations.map((item,index)=>{
             if(i==index){
                 return({...item,value:e.target.value})
             }
@@ -438,7 +438,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
     }
 
     const setvariation=(e,i,keys,name,j)=>{
-        const list_variation=state.list_variation.map((item,index)=>{
+        const list_variation=state.variations.map((item,index)=>{
             if(name==='item'){
                 if(index==i){
                     return({...item,[keys]:e.target.value})
@@ -447,7 +447,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
             }
             else{
                 if(index==j){
-                return({...item,list_variation:item.list_variation.map((variation,index)=>{
+                return({...item,list_variation:item.variations.map((variation,index)=>{
                     if(i===index){
                         return({...variation,[keys]:e.target.value})
                     }
@@ -479,8 +479,8 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
             }
         })
         setData({...data,list_size:list_size})
-        const list_variation=state.list_variation.map(item=>{
-            return({...item,list_variation:item.list_variation.map((variation,index)=>{
+        const list_variation=state.variations.map(item=>{
+            return({...item,list_variation:item.variations.map((variation,index)=>{
                 if(i==index){
                     return({...variation,value:e.target.value})
                 }
@@ -493,7 +493,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
     const addsize=()=>{
         const list_size=[...data.list_size,{value:''}]
         setData({...data,list_size:list_size})
-        const list_variation=state.list_variation.map(variation=>{
+        const list_variation=state.variations.map(variation=>{
             return({...variation,list_variation:[...variation.list_variation,{value:'',price:null,sku:'',inventory:null}]})
         })
         
@@ -501,7 +501,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
     }
 
     const setremove=()=>{
-        let list_variation=state.list_variation.map(item=>{
+        let list_variation=state.variations.map(item=>{
             return({...item,list_variation:[]})
         })
         if(data.list_size.length>0){
@@ -517,8 +517,8 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
     const removesize=(sizechoice)=>{
         const list_size=data.list_size.filter(size=>size!=sizechoice)
         setData({...data,list_size:list_size})
-        const list_variation=state.list_variation.map(variation=>{
-            return({...variation,list_variation:variation.list_variation.filter(item=>item.value!=sizechoice.value)})
+        const list_variation=state.variations.map(variation=>{
+            return({...variation,list_variation:variation.variations.filter(item=>item.value!=sizechoice.value)})
         })
         
         setState({...state,list_variation:list_variation})
@@ -669,14 +669,14 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                 form.append('size_value',size.value)
             })
         }
-        if(state.list_variation.length>0){
-            state.list_variation.map(item=>{
+        if(state.variations.length>0){
+            state.variations.map(item=>{
                 if(data.list_size.length==0){
                     form.append('sku',item.sku)
                     form.append('price',item.price)
                     form.append('inventory',item.inventory)
                 }
-                item.list_variation.map(variation=>{
+                item.variations.map(variation=>{
                     if(data.list_size.length>0){
                     form.append('sku',variation.sku)
                     form.append('price',variation.price)
@@ -1469,7 +1469,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                                     <>
                                                                     <div data-v-4d4bd544=""  className="table-cell first-variation">{item.value.trim()!=''?item.value.trim():'Loại'}</div>
                                                                     <div data-v-4d4bd544="" className="" style={{flex: '1 1 0%'}}>
-                                                                        {item.list_variation.map(variation=>
+                                                                        {item.variations.map(variation=>
                                                                         <div data-v-4d4bd544="" className="flex data-group">
                                                                             <div data-v-4d4bd544="" className="table-cell" style={{minHeight: '41px'}}>{variation.value.trim()!=''?variation.value.trim():'Loại'}</div>
                                                                         </div>
@@ -1502,8 +1502,8 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                                 {list_variation_display.map((item,i)=>
                                                                 <div data-v-4d4bd544="" className="table-cell-wrapper">
                                                                     <div data-v-4d4bd544="" className="" style={{flex: '1 1 0%'}}>
-                                                                        {item.list_variation.length>0?<>
-                                                                        {item.list_variation.map((variation,j)=>
+                                                                        {item.variations.length>0?<>
+                                                                        {item.variations.map((variation,j)=>
                                                                             variationinfo(variation,j,'list_variation',i)
                                                                         )}</>
                                                                         :variationinfo(item,i,'item')}

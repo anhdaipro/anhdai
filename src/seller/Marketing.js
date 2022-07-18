@@ -2,10 +2,8 @@ import axios from 'axios';
 import Navbar from "./Navbar"
 import {Link,useNavigate} from 'react-router-dom'
 import Sidebamenu from "./Sidebar-menu"
-import Message from "../containers/Chat"
 import React, {useState, useEffect,useCallback} from 'react'
-import {formatter,threadlURL} from "../constants"
-     
+  
 const Marketing=()=>{
     const [state,setState]=useState({promotion_activities:[
     {name:'Mã Giảm Giá Của Shop',info:'Công cụ tăng đơn hàng bằng cách tạo mã giảm giá tặng cho người mua',url:'/marketing/vouchers/list',new:false},

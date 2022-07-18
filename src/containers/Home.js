@@ -250,10 +250,10 @@ const Itemflashsale =()=> {
                                                 <a className="flash-sale-item-card-link">
                                                     <div className="flash-sale-item-card__image flash-sale-item-card__image--home-page">
                                                         <div className="_2JCOmq">
-                                                            <div className="flash-sale-item-card__image-overlay flash-sale-item-card__image-overlay--home-page _3LhWWQ" style={{backgroundImage:`url(${item.item_image})`,backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                                                            <div className="flash-sale-item-card__image-overlay flash-sale-item-card__image-overlay--home-page _3LhWWQ" style={{backgroundImage:`url(${item.image})`,backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
                                                         </div>
                                                         <div className="_2JCOmq">
-                                                            <div className="flash-sale-item-card__animated-image _3LhWWQ" style={{backgroundImage: `url(${item.item_image})`,backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                                                            <div className="flash-sale-item-card__animated-image _3LhWWQ" style={{backgroundImage: `url(${item.image})`,backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
                                                         </div>
                                                     </div>
                                                     <div className="flash-sale-item-card__lower-wrapper flash-sale-item-card__lower-wrapper flash-sale-item-card__lower-wrapper--home-page">
@@ -469,12 +469,12 @@ export default class HomePage extends React.Component {
                                             <div className="_2O4FYU">
                                                 {
                                                 items.map(item=>
-                                                    <div className="_2x8AVA" key={item.item_id}>
-                                                        <Link to={item.item_url}>
+                                                    <div className="_2x8AVA" key={item.id}>
+                                                        <Link to={`${item.url}?itemId=${item.id}`}>
                                                             <div className="_1C-0ut _3GgDBN">
                                                                 <div className="_1gZS6z _1rL6dF">
                                                                     <div className="_25_r8I ggJllv">
-                                                                        <img width="invalid-value" height="invalid-value" alt="Apple iPhone 12 Pro 128GB" className="_3-N5L6 _2GchKS" style={{objectFit: 'contain'}} src={item.item_image} />
+                                                                        <img width="invalid-value" height="invalid-value" alt="Apple iPhone 12 Pro 128GB" className="_3-N5L6 _2GchKS" style={{objectFit: 'contain'}} src={item.image} />
                                                                         <div className="_39tdMd">
                                                                             <div className="T_lEwS _3MY8oD" style={{color:'rgb(208, 1, 27)'}}>
                                                                                 <div className="_1JD7ZJ"></div>
@@ -489,7 +489,7 @@ export default class HomePage extends React.Component {
                                                                     <div className="_2x8wqR">
                                                                         <div className="_3GAFiR">
                                                                             <div className="ZG__4J">
-                                                                                <div className="_10Wbs- _3IqNCf">{item.item_name}</div>
+                                                                                <div className="_10Wbs- _3IqNCf">{item.name}</div>
                                                                             </div>
                                                                             <div className="_11xQ9c">
                                                                                 {item.percent_discount>0?

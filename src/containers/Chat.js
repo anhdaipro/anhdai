@@ -124,7 +124,7 @@ const Shopmember=(props)=>{
                                         <div className="_2_gLCkJ8OCG2K6t27pYdD2 ">
                                             <div onClick={(e)=>sendproduct(e,item)} className="_2Al9UPDLsxMEfnJkCa3HQD">Gửi</div>
                                             <div className="_3bQkg0Y5mVCrvuPfuQSEM-">
-                                                <div className="_10VxDOhu-xe6SAa18uZyqh">{item.item_inventory} có sẵn</div>
+                                                <div className="_10VxDOhu-xe6SAa18uZyqh">{item.total_inventory} có sẵn</div>
                                                 <div>{item.number_order} đã bán</div>
                                             </div>
                                         </div>
@@ -356,6 +356,7 @@ const Message=(props)=>{
     const [threads,setThreads]=useState([]);
     const [message_unseen,setMessage_unseen]=useState(0)
     const [thread,setThread]=useState();
+    const [showaction,setShowaction]=useState(false)
     const [showemoji,setShowemoji]=useState(false)
     const [show_type_chat,setShow_type_chat]=useState(false)
     const [receiver,setReceiver]=useState([])
@@ -851,7 +852,7 @@ const Message=(props)=>{
     return(
         <>
         <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
-        {user!=null?
+        {user?
         !show?
         <div onClick={()=>showthread()} className={`src-pages-index__root--1G_Ox ${message_unseen?'unread':''}`}>
             <div className="src-pages-index__logo-wrapper--IqLfz">
@@ -1249,6 +1250,7 @@ const Message=(props)=>{
             setshopchoice={data=>setshopchoice(data)}
             showmoreitem={(e,name)=>showmoreitem(e,name)}
         />
+        {showaction?
             <div data-popper-reference-hidden="false" data-popper-escaped="false" data-popper-placement="bottom-start" class="_2QLhFk_X2O _1BzVU7fHvH" style={{position: 'absolute', inset: '0px auto auto 0px', transform: `translate(215px, 383px)`}}>
                 <div class="_15v99gbQSv">
                     <div class="_3zpMyJKkl2WoOerymVZPuR">
@@ -1282,7 +1284,7 @@ const Message=(props)=>{
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>:''}
         </>
     )
 }

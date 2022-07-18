@@ -33,11 +33,11 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
     function list_productshop(item,product,name,product_choice){
         return(
             <div key={item.id} className="item">
-                <div className={`item-discount ${product_choice.some(ite=>item.item_id==ite.item_id)?"disable":""}`}>
+                <div className={`item-discount ${product_choice.some(ite=>item.id==ite.id)?"disable":""}`}>
                     <div className="item_heading" style={{width:'360px'}}> 
                         <div className="item-center">
                             <label className="checkbox item-selector">
-                                <input onChange={()=>setcheckitem(item,product,name)} type="checkbox" disabled={product_choice.some(ite=>item.item_id==ite.item_id)?true:false} checked={item.check?true:false} className="checkbox__input" value=""/> 
+                                <input onChange={()=>setcheckitem(item,product,name)} type="checkbox" disabled={product_choice.some(ite=>item.id==ite.id)?true:false} checked={item.check?true:false} className="checkbox__input" value=""/> 
                                 <span className="checkbox__indicator">
                                     <i className="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4.03033009,7.46966991 C3.73743687,7.1767767 3.26256313,7.1767767 2.96966991,7.46966991 C2.6767767,7.76256313 2.6767767,8.23743687 2.96966991,8.53033009 L6.32804531,11.8887055 C6.62093853,12.1815987 7.09581226,12.1815987 7.38870548,11.8887055 L13.2506629,6.02674809 C13.5435561,5.73385487 13.5435561,5.25898114 13.2506629,4.96608792 C12.9577697,4.6731947 12.4828959,4.6731947 12.1900027,4.96608792 L6.8583754,10.2977152 L4.03033009,7.46966991 Z"></path></svg>
@@ -46,9 +46,9 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
                             </label>
                         </div>
                         <div className="item-center product-name-image" >
-                            <img src={item.item_image} alt="" width="36px" height="36px"/>
+                            <img src={item.image} alt="" width="36px" height="36px"/>
                             <div className="item_detail">
-                                <div className="ellipsis-content">{item.item_name}</div>
+                                <div className="ellipsis-content">{item.name}</div>
                                 <div className="product-sku">Sku : </div>
                             </div>
                         </div>
@@ -58,7 +58,7 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
                         <div className="item-center">
                             ₫{formatter.format(item.min_price)} {item.min_price!=item.max_price?<>- <br/> ₫{formatter.format(item.max_price)}</>:''}                                          
                         </div>
-                        <div className="item-center">{item.item_inventory}</div>
+                        <div className="item-center">{item.total_inventory}</div>
                     </div> 
                 </div>
             </div>

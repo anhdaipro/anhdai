@@ -2,13 +2,46 @@ import {rating_choice} from "../constants"
 import Itemsearch from "./Listitem"
 import React, {useState, useEffect,useRef} from 'react'
 import SlideshowGallery from "../hocs/Slideshow"
+import axios from "axios"
 import {useNavigate , Link,useLocation, Navigate,useParams,useSearchParams} from 'react-router-dom';
+import { headers } from "../actions/auth";
+import { categoryinfoURL, searchURL } from "../urls";
 let PageSize=30
-const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread}) => {
+const Categorydetail = ({data,category_id}) => {
     const {slug}=useParams();
     const [FormData,setFormData]=useState({minPrice:null,maxPrice:null})
     const [show,setShow]=useState(false)
+    const [categories,setCategory]=useState({category_children:[],category_choice:[]})
+    const [params, setSearchParams] = useSearchParams();
+    const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
     const search=Object.fromEntries([...params])
+    const [listitem,setListitem]=useState()
+    const[type,setType]=useState()
+    const[page_count]=useState(1)
+    useEffect(()=>{
+        (async()=>{
+            if(category_id){
+                const res =await axios.get(`${categoryinfoURL}?category_id=${category_id}`,headers)
+                setCategory(res.data)
+            }
+        })()
+    },[category_id])
+
+    useEffect(()=>{
+        (async()=>{
+            if(category_id){
+            const usesearch=params
+            usesearch.set('category_id',category_id)
+            const res =await axios.get(`${searchURL}?${usesearch}`,headers)
+            setListitem(res.data)
+            }
+        })()
+    },[params,category_id])
+
+    const setsearchitem=(items)=>{
+        setSearchitem(items) 
+        setSearchParams(items)
+    }
     const rating_review_choice=(number,value)=>{
         const rating_score=[]
         for(let i=1;i<number;i++){
@@ -136,7 +169,7 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                     </div>
                 </div>
             </div>*/}
-            {data!=null?
+            {data?
             <div className="d-flex mt-2 containers">
                 <div className="filter-panel">
                     <div className="category-list">
@@ -151,12 +184,12 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                                 <div className="category-list__main-category category-list__main-category--active">
                                     <Link className="category-list__main-category__link" to={`/${slug}`}>
                                         <svg viewBox="0 0 4 7" className="svg-icon category-list__main-category__caret icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon></svg>
-                                        {data.category_info.title}
+                                        {data.title}
                                     </Link>
                                 </div>
                                 
                                 <div className="folding-items category-list__sub-category-list folding-items--folded">
-                                    {data.category_children.map((category,index)=>{
+                                    {categories.category_children.map((category,index)=>{
                                         if(index<3){
                                             return (<Link key={index} className="category-list__sub-category" to={category.url}>
                                                 <svg viewBox="0 0 4 7" className="svg-icon category-list__sub-category__caret icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon>
@@ -165,7 +198,7 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                                             }
                                         })
                                     }
-                                    {data.category_children.length>2?
+                                    {categories.category_children.length>2?
                                     <div className="stardust-dropdown folding-items__toggle">
                                         <div className="stardust-dropdown__item-header">
                                             <div className="category-list__toggle-btn">Thêm
@@ -175,7 +208,7 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
 
                                         <div className="stardust-dropdown__item-body">
                                             <div className="folding-items__folded-items">
-                                                {data.category_children.map((category,index)=>{
+                                                {categories.category_children.map((category,index)=>{
                                                     if(index>=3){
                                                         return (
                                                         <Link key={index} className="category-list__sub-category" to={category.url}>
@@ -199,7 +232,7 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                     <div className="filter-group facet-filter">
                         <div className="filter-group__header">Theo Danh Mục</div>
                         <div className="folding-items filter-group__body folding-items--folded">
-                            {data.category_choice.map((category,index)=>{
+                            {categories.category_choice.map((category,index)=>{
                                 if(index<2){
                                     return(
                                         <div key={index} onClick={()=>setsearch('categoryID',category.id)} className="checkbox-filter">
@@ -218,7 +251,7 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                                     )
                                 }
                             })}
-                            {data.category_choice.length>2?
+                            {categories.category_choice.length>2?
                             <div className="stardust-dropdown folding-items__toggle">
                                 <div className="stardust-dropdown__item-header">
                                     <div className="filter-group__toggle-btn">
@@ -227,7 +260,7 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                                 </div>
                                 <div className="stardust-dropdown__item-body">
                                     <div className="folding-items__folded-items">
-                                    {data.category_choice.map((category,index)=>{
+                                    {categories.category_choice.map((category,index)=>{
                                         if(index>2){
                                             return(
                                                 <div key={index} className="checkbox-filter">
@@ -251,10 +284,11 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                             </div>:''}
                         </div>
                     </div>
+                    {listitem?
                     <div className="filter-group location-filter">
                         <div className="filter-group__header">Nơi Bán</div>
                         <div className="folding-items filter-group__body folding-items--folded">
-                            {data.cities.map(item=>
+                            {listitem.cities.map(item=>
                             <div key={item} onClick={()=>setsearch('locations',item)} className="checkbox-filter filter--active">
                                 <div className={`checkbox ${search.locations!=undefined && search.locations==item?'chekbox--checked':''}`}>
                                     <label className="checkbox__control">
@@ -270,11 +304,12 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                             </div>
                             )}
                         </div>
-                    </div>
+                    </div>:''}
+                    {listitem?
                     <div className="filter-group logistics-filter">
                         <div className="filter-group__header">Đơn Vị Vận Chuyển</div>
                         <div className="folding-items filter-group__body folding-items--folded">
-                            {data.unitdelivery.map(item=>
+                            {listitem.unitdelivery.map(item=>
                             <div key={item} onClick={()=>setsearch('shippingOptions',item)} className="checkbox-filter filter--active">
                                 <div className="checkbox chekbox--checked">
                                     <label className="checkbox__control">
@@ -290,11 +325,12 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                             </div>
                             )}
                         </div>
-                    </div>
+                    </div>:''}
+                    {listitem?
                     <div className="filter-group brands-filter">
                         <div className="filter-group__header">Thương Hiệu</div>
                         <div className="folding-items filter-group__body folding-items--folded">
-                            {data.brands.map(item=>
+                            {listitem.brands.map(item=>
                             <div key={item} onClick={()=>setsearch('brand',item)} className="checkbox-filter filter--active">
                                 <div className="checkbox checkbox--checked">
                                     <label className="checkbox__control">
@@ -310,7 +346,7 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                             </div>
                             )}
                         </div>
-                    </div>
+                    </div>:''}
                     <div className="filter-group price-range-filter price-range-filter--vn">
                         <div className="filter-group__header price-range-filter__header">Khoảng Giá</div>
                         <div className="filter-group__body price-range-filter__edit">
@@ -322,10 +358,11 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                         </div>
                         <button onClick={()=>setrangeprice()} className="button-solid button-solid--primary _1-VOCH" style={{backgroundColor: 'rgb(238, 77, 45)'}}>Áp dụng</button>
                     </div>
+                    {listitem?
                     <div className="filter-group">
                         <div className="filter-group__header">Loại Shop</div>
                         <div className="folding-items filter-group__body folding-items--folded">
-                            {data.shoptype.map(item=>
+                            {listitem.shoptype.map(item=>
                                 <div key={item.value} onClick={()=>setsearch('shoptype',item.value)} className="checkbox-filter filter--active">
                                     <div className="checkbox checkbox--checked">
                                         <label className="checkbox__control">
@@ -341,11 +378,12 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                                 </div>
                             )} 
                         </div>
-                    </div>
+                    </div>:''}
+                    {listitem?
                     <div className="filter-group">
                         <div className="filter-group__header">Tình Trạng</div>
                         <div className="folding-items filter-group__body folding-items--folded">
-                            {data.status.map(item=>
+                            {listitem.status.map(item=>
                             <div key={item.value} onClick={()=>setsearchitem('status',item.value)} className="checkbox-filter">
                                 <div className="checkbox">
                                     <label className="checkbox__control">
@@ -362,7 +400,7 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                             )}
                             
                         </div>
-                    </div>    
+                    </div>:''}   
                     <div className="filter-group">
                         <div className="filter-group__header">Các lựa chọn thanh toán</div>
                         <div className="folding-items filter-group__body folding-items--folded">
@@ -476,14 +514,15 @@ const Categorydetail = ({data,searchitem,listitem,setsearchitem,params,setthread
                 </div>
                 <div className="OQtnd7">
                     <div className="search-item-result">
+                        {listitem?
                         <Itemsearch
                         searchitem={searchitem}
-                        setsearchitem={setsearchitem}
-                        setsearch={setsearch}
-                        listitem={listitem}
+                        setsearchitem={(data)=>setsearchitem(data)}
+                        setsearch={(name,value)=>setsearch(name,value)}
+                        listitem={listitem.list_item_page}
                         search={search}
-                        data={data}
-                        />
+                        data={listitem}
+                        />:''}
                     </div>
                 </div>
             </div>:''}

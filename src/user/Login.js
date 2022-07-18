@@ -32,7 +32,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
                 setState({...state,error_login:0})
                 const search = window.location.search;
                 const params = new URLSearchParams(search);
-                if(params.get('next')!=null){
+                if(params.get('next')){
                     window.location.href=params.get('next')
                 }
                 else{
@@ -88,7 +88,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
                 localStorage.setItem('token',token);
                 const search = window.location.search;
                 const params = new URLSearchParams(search);
-                if(params.get('next')!=null){
+                if(params.get('next')){
                     window.location.href=params.get('next')
                 }
                 else{

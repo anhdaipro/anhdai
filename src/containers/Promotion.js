@@ -4,7 +4,7 @@ import axios from 'axios';
 import Navbar from "./Navbar"
 import React, {useState, useEffect,useCallback} from 'react'
 import Variationitem from '../hocs/Promotion';
-import { useParams } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
 import {promotionURL,addToCartURL} from "../urls"
 import {formatter,} from "../constants"
 import Message from "./Chat"
@@ -49,14 +49,14 @@ const Promotion = () => {
         e.preventDefault()
         e.stopPropagation()
         let count_variation=0
-        if(data.size.length>0){
+        if(data.sizes.length>0){
             count_variation+=1
         }
-        if(data.color.length>0){
+        if(data.colors.length>0){
             count_variation+=1
         }
         setVariation({...variation,count_variation:count_variation,data:data})
-        if(data.color.length==0&&data.size.length==0){
+        if(data.colors.length==0&&data.sizes.length==0){
             let form =new FormData()
             form.append('item_id',data.item_id)
             axios.post(addToCartURL,form,headers)
@@ -91,12 +91,12 @@ const Promotion = () => {
                             <div className="bundle-deal__body">
                                 <div className="bundle-deal__card-list">
                                     {state.items.map(item=>
-                                        <div className='bundle-deal__card'>
-                                            <a data-sqe="link" href={item.item_url}>
+                                        <div key={item.id} className='bundle-deal__card'>
+                                            <Link data-sqe="link" to={`${item.url}?itemId=${item.id}`}>
                                                 <div className="_1C-0ut">
                                                     <div className="_1gZS6z">
                                                         <div className="_25_r8I ggJllv">
-                                                            <img width="invalid-value" height="invalid-value" alt={item.item_name} className="_3-N5L6 _2GchKS" style={{objectFit: 'contain'}} src={item.item_image}/>
+                                                            <img width="invalid-value" height="invalid-value" alt={item.name} className="_3-N5L6 _2GchKS" style={{objectFit: 'contain'}} src={item.image}/>
                                                             <div className="_39tdMd">
                                                                 <div className="T_lEwS _1WH8c-" style={{color: 'rgb(242, 82, 32)'}}>
                                                                     <span className="_1OUheB">Yêu thích</span>
@@ -109,7 +109,7 @@ const Promotion = () => {
                                                         <div className="_2x8wqR">
                                                             <div className="_3GAFiR">
                                                                 <div className="ZG__4J">
-                                                                    <div className="_10Wbs- _2STCsK _3IqNCf">{item.item_name}</div>
+                                                                    <div className="_10Wbs- _2STCsK _3IqNCf">{item.name}</div>
                                                                 </div>
                                                             </div>
                                                             <div className="_13Jarb">
@@ -134,7 +134,7 @@ const Promotion = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </a>
+                                            </Link>
                                         </div>
                                         )}
                                 </div>

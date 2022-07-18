@@ -19,6 +19,7 @@ export const changepassURL=`${endpoint}/change/password/`
 export const registeremailURL=`${endpoint}/register/email`
 export const verifyemailURL=`${endpoint}/verify/email`
 export const buyagainURL=`${endpoint}/buy_again`
+export const itemURL=`${endpoint}/item/get`
 //home
 export const savevoucherURL=`${endpoint}/save_voucher`
 export const imagehomeURL=`${endpoint}/imagehome`;
@@ -30,27 +31,31 @@ export const searchURL=`${endpoint}/search`
 export const updateAddressURL = `${endpoint}/update_address`;
 export const ItemsellerURL=`${endpoint}/item/seller`;
 export const itemcommon=`${endpoint}/item/common`
-export const  cartviewURL=`${endpoint}/cart`;
-export const  cartURL=`${endpoint}/cartview`;
+
 export const paymentURL = `${endpoint}/payment`;
-export const detailURL = `${endpoint}/detail/`;
-export const addToCartURL = `${endpoint}/add-to-cart`;
-export const shoporderURL = `${endpoint}/shop/order`;
-export const addToCartBatchURL = `${endpoint}/add-to-cart-batch`;
-export const checkoutURL = `${endpoint}/checkout`;
+export const categoryURL = `${endpoint}/category`;
+export const  categoryinfoURL=`${endpoint}/categoryinfo`
 export const verifyotpURL=`${endpoint}/verify-sms`;
 export const addressListURL = addressType =>
   `${endpoint}/addresses/?address_type=${addressType}`;
 export const itemrecentlyURL= `${endpoint}/item/recently`
-export const updatecartURL = `${endpoint}/updatecart`;
-
+export const shopURL=`${endpoint}/shop/get`
 export const updatefileURL=`${endpoint}/upload-file`
 export const productinfoURL=`${endpoint}/productinfo`
-export const listorderURL=`${endpoint}/listorder`
-export const orderURL=`${endpoint}/order/`
+export const searchshopURL=`${endpoint}/shop/search`
 export const shopinfoURL=`${endpoint}/shopinfo`
 export const topsearchURL=`${endpoint}/top-search`
 
+//cart
+export const listorderURL=`${endpoint}/listorder`
+export const orderURL=`${endpoint}/order/`
+export const updatecartURL = `${endpoint}/updatecart`;
+export const  cartviewURL=`${endpoint}/cart`;
+export const  cartURL=`${endpoint}/cartview`;
+export const addToCartURL = `${endpoint}/add-to-cart`;
+export const shoporderURL = `${endpoint}/shop/order`;
+export const addToCartBatchURL = `${endpoint}/add-to-cart-batch`;
+export const checkoutURL = `${endpoint}/checkout`;
 //chat
 const apichat=`${localhost}/api/v1`
 export const conversationsURL=`${apichat}/conversations`

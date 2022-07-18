@@ -4,16 +4,50 @@ import React, {useState, useEffect,useRef} from 'react'
 import {useNavigate , Link,useLocation, Navigate,useParams,useSearchParams} from 'react-router-dom';
 import Itemsearch from "./Listitem"
 import {connect} from "react-redux"
-import {listThreadlURL,detailURL,} from "../urls"
+import {shopinfoURL,searchURL,searchshopURL} from "../urls"
 import { expiry, headers,showchat, showthreads } from "../actions/auth";
-const Shopinfo = ({data,showchat,setsearchitem,showthreads,setsearchcategory,user,
-    params,searchitem,listitem}) => {
+const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) => {
     const [state, setState] = useState(null)
     const {slug}=useParams()
     let navigate = useNavigate();
     console.log(data)
+    const [params, setSearchParams] = useSearchParams();
+    const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
+    const [listitem,setListitem]=useState([])
+    const [products,setProducts]=useState([])
+    const [combos,setCombos]=useState([])
+    const [childcategory,setChildcategory]=useState([])
     const search=Object.fromEntries([...params])
-    
+    useEffect(()=>{
+        (async()=>{
+            if(shop_id){
+                const [obj1,obj2,obj3] =await axios.all([
+                    axios.get(`${shopinfoURL}?choice=gettreecategory`,headers),
+                    axios.get(`${shopinfoURL}?choice=deal`,headers),
+                    axios.get(`${shopinfoURL}?choice=combo`,headers),
+                ])
+                setChildcategory(obj1.data)
+                setProducts(obj2.data)
+                setCombos(obj3.data)
+            }
+        })()
+    },[shop_id])
+
+    useEffect(()=>{
+        (async()=>{
+            if(shop_id){
+            const usesearch=params
+            usesearch.set('shop_id',shop_id)
+            const res =await axios.get(`${searchshopURL}?${usesearch}`,headers)
+            setListitem(res.data.list_item_page)
+            }
+        })()
+    },[params,shop_id])
+
+    const setsearchitem=(items)=>{
+        setSearchitem(items) 
+        setSearchParams(items)
+    }
     const setshowthread=(e)=>{
         e.preventDefault()
         let data={member:[user.id,state.data.user_id],thread:null,send_to:state.data.user_id}
@@ -32,7 +66,7 @@ const Shopinfo = ({data,showchat,setsearchitem,showthreads,setsearchcategory,use
         if(localStorage.token!='null' && expiry>0){
             let form=new FormData()
             form.append('shop_name',data.shop_name)
-            axios.post(detailURL+slug,form,headers)
+            axios.post(shopinfoURL,form,headers)
             .then(res=>{
             let data=res.data
             const shop_info={...state,...data}
@@ -208,7 +242,7 @@ const Shopinfo = ({data,showchat,setsearchitem,showthreads,setsearchcategory,use
                             <Link className="navbar-with-more-menu__item" to={`/${slug}#product_list`}>
                                 <span>TẤT CẢ SẢN PHẨM</span>
                             </Link>
-                            {data.list_category_child.map(category=>
+                            {childcategory.map(category=>
                                 <Link onClick={()=>setsearchcategory('categoryID',category.id)} className="navbar-with-more-menu__item" to={`/${slug}?categoryID=${category.id}#productlist`}>
                                     <span>{category.title}</span>
                                 </Link>

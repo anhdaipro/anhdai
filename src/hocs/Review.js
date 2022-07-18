@@ -317,7 +317,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
     function rating_product(item){
         return(
             <div className={`rating-modal-handler__container ${(item==state.review &&state.review) || (item==list_cartitem[list_cartitem.length-1] && list_cartitem)?"rating-modal-handler__container--last":''}`}>
-                <a className="c1C69v _1uii4D" href={item.item_url} target="_blank" rel="noopener noreferrer">
+                <a className="c1C69v _1uii4D" href={`${item.item_url}?itemId=${item.item_id}`} target="_blank" rel="noopener noreferrer">
                     <div className="image__wrapper _2ylgGg">
                         <div className="image__place-holder">
                             <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-loading-image"><g><rect fill="none" height="8" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="10" x="1" y="4.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="6.5" y2="6.5"></line><rect fill="none" height="3" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="3" x="11" y="6.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="14.5" y2="14.5"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="6" x2="6" y1=".5" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="3.5" x2="3.5" y1="1" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="8.5" x2="8.5" y1="1" y2="3"></line></g></svg>
@@ -622,7 +622,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                             {list_review.map(review=>
                             <div>
                                 <div className="_2irnOH">
-                                    <a className="c1C69v _26cI_Y" href={review.item_url} target="_blank" rel="noopener noreferrer">
+                                    <a className="c1C69v _26cI_Y" href={`${review.item_url}?itemId=${review.item_id}`} target="_blank" rel="noopener noreferrer">
                                         <div className="image__wrapper _2ylgGg">
                                             <div className="image__place-holder">
                                                 <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-loading-image"><g><rect fill="none" height="8" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="10" x="1" y="4.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="6.5" y2="6.5"></line><rect fill="none" height="3" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="3" x="11" y="6.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="14.5" y2="14.5"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="6" x2="6" y1=".5" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="3.5" x2="3.5" y1="1" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="8.5" x2="8.5" y1="1" y2="3"></line></g></svg>

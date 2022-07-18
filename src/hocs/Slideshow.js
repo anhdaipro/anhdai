@@ -1,7 +1,6 @@
 import React,{useEffect,useState,useRef} from 'react';
 import ReactDOM from 'react-dom';
 import {Link} from "react-router-dom"
-import {detailURL,formatter,localhost,rating,rating_choice} from "../constants"
 const SlideshowGallery=({list_image,automatic,timeout})=>{
     const [state,setState]=useState({slideIndex: 0})
     const parent=useRef()

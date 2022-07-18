@@ -21,24 +21,22 @@ const DetailProgram=()=>{
            // <-- passed to API URL
             .then(res=>{
                 let data=res.data
-                setProgram(data.program)
-                setDate([{time:new Date(data.program.valid_from),show:false,hours:new Date(data.program.valid_from).getHours(),minutes:new Date(data.program.valid_from).getMinutes()}
-              ,{time:new Date(data.program.valid_to),show:false,hours:new Date(data.program.valid_to).getHours(),minutes:new Date(data.program.valid_to).getMinutes()}])
+                setProgram(data)
+                setDate([{time:new Date(data.valid_from),show:false,hours:new Date(data.valid_from).getHours(),minutes:new Date(data.valid_from).getMinutes()}
+              ,{time:new Date(data.valid_to),show:false,hours:new Date(data.valid_to).getHours(),minutes:new Date(data.valid_to).getMinutes()}])
                 setLoading(true)
-                const list_byproduct=data.list_product.map(byproduct=>{
-                    return({...byproduct,list_variation:byproduct.list_variation.map(variation=>{
-                        if(variation.percent_discount>0){
-                            return({...variation,enable:true})
-                        }
-                        return({...variation,enable:false})
-                    })})
+                
+                const variations=data.variations.map(variation=>{
+                    return {...variation,limit:variation.promotion_stock>0?true:false,
+                        percent_discount:(variation.price-parseInt(variation.promotion_price))*100/variation.price,
+                        promotion_price:parseInt(variation.promotion_price)}
                 })
-                const list_enable_on=list_byproduct.filter(item=>item.list_variation.some(variation=>variation.percent_discount>0))
-                const list_enable_off=list_byproduct.filter(item=>list_enable_on.every(items=>item.item_id!=items.item_id))
-                const byproduct_choice=[...list_enable_on,...list_enable_off]
-                setItem({...itemshop,byproduct_choice:byproduct_choice,savemain:true,savebyproduct:true,
-                page_count_by:Math.ceil(data.list_product.length / Pagesize)})
-                console.log(itemshop.byproduct_choice)
+                const list_products=data.products.map(product=>{
+                    return({...product,check:false,user_item_limit:variations.find(variation=>variation.user_item_limit)?variations.find(variation=>variation.user_item_limit).user_item_limit:'',
+                    limit:variations.some(variation=>variation.user_item_limit)?true:false,variations:variations.filter(variation=>variation.item_id==product.id)})
+                })
+                setItem({...itemshop,byproduct_choice:list_products,
+                page_count_by:Math.ceil(list_products.length / Pagesize)})
           })
         }
         getJournal();

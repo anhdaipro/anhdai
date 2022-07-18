@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Navbar from "../seller/Navbar"
-import {Link} from 'react-router-dom'
+import {Link,useParams} from 'react-router-dom'
 import ReactDOM, { render } from 'react-dom'
 import Timeoffer from "./Timeoffer"
 import Productoffer from "../seller/Productoffer"
@@ -9,13 +9,89 @@ import Pagination from "./Pagination"
 
 import {formatter,itemvariation,limit_choice} from "../constants"
 import { headers } from '../actions/auth';
+import { newprogramURL } from '../urls';
 let Pagesize=5
+
+const Limit=(props)=>{
+    const [show,setShow]=useState(false)
+    const parent=useRef()
+    const {item,name,setlimit,keys}=props
+    useEffect(() => {
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [])
+
+    const handleClick = (event) => {
+        const { target } = event
+        if(parent.current!=null){
+            if (!parent.current.contains(target)) {
+                setShow(false)
+            }
+        }
+    }
+    return(
+        <div ref={parent} className="popover__ref">
+            <div data-v-0d5f8626="" className={`${item.limit?'d-flex':''}`} prepend-width="110">
+                <div data-v-0d5f8626="" className="select" style={{width: '110px',position:'relative'}}>
+                    <div onClick={(e)=>setShow(!show)} tabindex="0" className="selector item-space selector--normal"> 
+                        <div className="selector__inner line-clamp--1">{item.limit?'Giới hạn':"Không giới hạn"}</div> 
+                        <div className="selector__suffix"> 
+                            <i className="selector__suffix-icon icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,9.18933983 L4.03033009,5.21966991 C3.73743687,4.9267767 3.26256313,4.9267767 2.96966991,5.21966991 C2.6767767,5.51256313 2.6767767,5.98743687 2.96966991,6.28033009 L7.46966991,10.7803301 C7.76256313,11.0732233 8.23743687,11.0732233 8.53033009,10.7803301 L13.0303301,6.28033009 C13.3232233,5.98743687 13.3232233,5.51256313 13.0303301,5.21966991 C12.7374369,4.9267767 12.2625631,4.9267767 11.9696699,5.21966991 L8,9.18933983 Z"></path></svg>
+                            </i>
+                        </div>
+                    </div>
+                    <div className="popper" style={{display:show?'block':'none',top:'40px',position:'absolute',width: '100%'}}> 
+                        <div className="select__menu" style={{maxWidth: '440px', maxHeight: '218px'}}>
+                            <div className="scrollbar">
+                                <div className="scrollbar__wrapper">
+                                    <div className="scrollbar__bar vertical">
+                                        <div className="scrollbar__thumb" style={{top: '0px', height: '0px'}}></div>
+                                    </div>  
+                                    <div className="scrollbar__content" style={{position: 'relative'}}>
+                                        <div className="select__options">
+                                            {limit_choice.map(choice=>
+                                            <div value={choice.value} onClick={(e)=>{
+                                                setlimit(e,item,name,'limit',choice.value)
+                                                setShow(false)
+                                            }} data-v-0d5f8626="" className={`option ${item.limit==choice.value?'selected':''}`}>{choice.name}</div>     
+                                            )}
+                                            
+                                        </div>
+                                        <div className="resize-triggers">
+                                            <div className="expand-trigger">
+                                                <div style={{width: '1px', height: '1px'}}></div>
+                                            </div>
+                                            <div className="contract-trigger"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                        <p className="select__filter-empty" style={{display: 'none'}}></p> 
+                    </div>
+                </div> 
+                {item.limit?
+                <span className="input-group__append">
+                    <div data-v-0d5f8626="" className="input" style={{width: '60px'}}>
+                        <div className="input__inner input__inner--normal"> 
+                            <input value={keys=='user_item_limit'?item.user_item_limit:item.promotion_stock} onChange={(e)=>setlimit(e,item,name,keys=='user_item_limit'?'user_item_limit':'promotion_stock',e.target.value)} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
+                        </div>
+                    </div>
+                </span>:''}
+            </div> 
+        </div> 
+    )
+}
+
 const Programinfo=({loading_content,item_program,date_program,program_shop,url_program})=>{
     const [program,setProgram]=useState({name_program:'',valid_from:new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     valid_to:new Date(new Date().setHours(new Date().getHours()+1)).toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16)
     })
-    const [limititem,setLimititem]=useState({show:false,limit:false,limit_order:''})
-    const [limitvariation,setLimitvariation]=useState({show:false,limit:false,limit_order:'',percent_discount:''})
+    const [limititem,setLimititem]=useState({show:false,limit:false,user_item_limit:''})
+    const [limitvariation,setLimitvariation]=useState({show:false,limit:false,promotion_stock:'',percent_discount:''})
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
     const [state,setState]=useState({timeSecond:5,complete:false,page_input:1,percent_discount:''})
     const [date,setDate]=useState([{time:new Date(),show:false,hours:new Date().getHours(),minutes:new Date().getMinutes()}
@@ -24,7 +100,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
     const [itemshop,setItem]=useState({items:[],page_count_main:0,items_choice:[],savemain:false
     ,page_count_by:0,byproduct:[],byproduct_choice:[],savebyproduct:false})
     const [loading,setLoading]=useState(false)
-    
+    const {id}=useParams()
     useEffect(() => {
         setDate(date_program)
         setProgram(program_shop)
@@ -64,15 +140,13 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
     const setindexchoice=(list_date)=>{
         setDate(list_date);
     }
-    const list_enable_on=itemshop.byproduct_choice.filter(item=>item.list_variation.some(variation=>variation.enable))
+    const list_enable_on=itemshop.byproduct_choice.filter(item=>item.variations.some(variation=>variation.enable))
     const setdatevalid=(index)=>{
         if(index==0){
-            program.valid_from=date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)
-            setProgram({...program,valid_from:program.valid_from})
+            setProgram({...program,valid_from:date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)})
         }
         else{
-            setProgram({...program,valid_to:program.valid_to})
-            program.valid_to=date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)
+            setProgram({...program,valid_to:date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)})
         }
     }
 
@@ -81,43 +155,45 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
     }
 
     const addbyproduct=(e)=>{
-        setShow({...show,byproduct:true,items:false})
+        console.log('lllllllllllll')
+        
         if(itemshop.items.length==0){
-            let url= new URL(url_program)
-            let search_params=url.searchParams
-            search_params.set('item','item')
-            url.search = search_params.toString();
-            let new_url = url.toString();
-            axios.get(new_url,headers)
+            setShow({...show,byproduct:true,items:false})
+            const url=id?`${newprogramURL}?item=item&program_id=${id}`:`${newprogramURL}?item=item`
+            axios.get(url,headers)
             .then(res=>{
                 setLoading(true)
-                const list_byproduct=res.data.c.filter(item=>itemshop.items_choice.every(itemchoice=>item.item_id!=itemchoice.item_id))
+                const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
+                console.log('lllllllllllll')
                 const byproduct=list_byproduct.map(item=>{
-                    if(itemshop.byproduct_choice.some(by=>by.item_id==item.item_id)){
+                    if(itemshop.byproduct_choice.some(by=>by.id==item.id)){
                         return({...item,check:true})
                     }
                      return({...item,check:false})
                 })
                 
-                setItem({...itemshop,itemshops:res.data.c,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
+                setItem({...itemshop,itemshops:res.data,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
             })
         }
         else{
+            setShow({...show,byproduct:true,items:false})
             setLoading(true)
-            const list_byproduct=itemshop.itemshops.filter(item=>itemshop.items_choice.every(itemchoice=>item.item_id!=itemchoice.item_id))
+            console.log('ggggg')
+            const list_byproduct=itemshop.itemshops.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
             const byproduct=list_byproduct.map(item=>{
-                if(itemshop.byproduct_choice.some(by=>by.item_id==item.item_id)){
+                if(itemshop.byproduct_choice.some(by=>by.id==item.id)){
                     return({...item,check:true})
                 }
                     return({...item,check:false})
             })
+            
             setItem({...itemshop,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
         }
     }
-
+    console.log(itemshop.items)
     const setcheckitem=useCallback((item,product,keys)=>{
         const list_item=product.map(ite=>{
-            if(item.item_id==ite.item_id){
+            if(item.id==ite.id){
                 return({...ite,check:!ite.check})
             }
             else{
@@ -132,10 +208,10 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
         e.stopPropagation()
         for (let k in value){
             for(let i in list_items){
-                if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.item_id==value[k].item_id)){
+                if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.id==value[k].id)){
                     value[k].check=true
                 }
-                if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.item_id==value[k].item_id)){
+                if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.id==value[k].id)){
                     value[k].check=false
                 }
                 if(e.target.checked==true && list_items[i]==value[k]){
@@ -158,31 +234,30 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
     }
 
     const submitby=()=>{
-        let form=new FormData()
-        const list_itemscheck=itemshop.byproduct.filter(ite=>ite.check && !itemshop.byproduct_choice.some(item=>item.item_id==ite.item_id))
-        list_itemscheck.map(item=>{
-            form.append('item_id',item.item_id)
-            }
-        )
-        axios.post(url_program,form,headers)
+        
+        const list_itemscheck=itemshop.byproduct.filter(ite=>ite.check && !itemshop.byproduct_choice.some(item=>item.id==ite.id))
+        const data={list_items:list_itemscheck.map(item=>{return item.id}),
+        action:'getitem'
+        }
+        axios.post(url_program,JSON.stringify(data),headers)
         .then(res=>{
-            const list_itemschoice=res.data.list_product.map(item=>{
-                return({...item,check:false,show:false,limit:false,limit_order:'',list_variation:item.list_variation.map(variation=>{
-                    return({...variation,enable:true,show:false,limit:false,percent_discount:0,discount_price:variation.price,limit_order:''})
+            const list_itemschoice=res.data.map(item=>{
+                return({...item,check:false,show:false,limit:false,user_item_limit:'',variations:item.variations.map(variation=>{
+                    return({...variation,promotion_stock:'',enable:true,show:false,limit:false,percent_discount:0,promotion_price:variation.price})
                 })})})
             
-            itemshop.byproduct_choice=[...list_itemschoice,...itemshop.byproduct_choice]
-            setItem({...itemshop,byproduct_choice:itemshop.byproduct_choice})
+            const databyproduct=[...list_itemschoice,...itemshop.byproduct_choice]
+            setItem({...itemshop,byproduct_choice:databyproduct})
             setShow({...show,byproduct:false})
-            console.log(itemshop.byproduct_choice)
+            
         })
         
     }
 
     const removeitem=(itemmove,keys,value,keys_choice,value_choice,page_current)=>{
-        const list_itemchoice=value_choice.filter(item=>item.item_id!=itemmove.item_id)
+        const list_itemchoice=value_choice.filter(item=>item.id!=itemmove.id)
         const list_item=value.map(ite=>{
-            if(ite.item_id==itemmove.item_id){
+            if(ite.id==itemmove.id){
                 return({...ite,check:false})
             }
             return({...ite})
@@ -200,7 +275,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
     const setdeletechoice=(keys,value,keys_choice,value_choice,page_current)=>{
         const list_itemchoice=value_choice.filter(item=>!item.check)
         const list_item=value.map(item=>{
-            if(list_itemchoice.every(items=>items.item_id!=item.item_id)){
+            if(list_itemchoice.every(items=>items.id!=item.id)){
                 return({...item,check:false})
             }
             return({...item})
@@ -230,44 +305,44 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
 
     const setdiscount=(e,name,variation,item)=>{
         let discount=parseInt(e.target.value)
-        const byproduct=item.list_variation.map(varia=>{
-            if(varia.product_id==variation.product_id){
-                if(name=='discount_price'){
+        const byproduct=item.variations.map(varia=>{
+            if(varia.variation_id==variation.variation_id){
+                if(name=='promotion_price'){
                     if(isNaN(discount)){
-                        return({...varia,error:true,discount_price:'',percent_discount:100})
+                        return({...varia,error:true,promotion_price:'',percent_discount:100})
                     }
                     else{
                         if(discount==0||discount==variation.price){
-                            return({...varia,error:true,discount_price:discount,percent_discount:Math.round((variation.price-discount)/variation.price*100)})
+                            return({...varia,error:true,promotion_price:discount,percent_discount:Math.round((variation.price-discount)/variation.price*100)})
                         }
-                        return({...varia,error:false,discount_price:discount,percent_discount:Math.round((variation.price-discount)/variation.price*100)})
+                        return({...varia,error:false,promotion_price:discount,percent_discount:Math.round((variation.price-discount)/variation.price*100)})
                     }
                 }
                 else{
                     if(isNaN(discount)){
-                        return({...varia,error:true,discount_price:variation.price,percent_discount:''})
+                        return({...varia,error:true,promotion_price:variation.price,percent_discount:''})
                     }
                     if(discount<1||discount>100){
-                        return({...varia,error:true,discount_price:variation.price*(1-discount/100),percent_discount:discount,percent_discount:0})
+                        return({...varia,error:true,promotion_price:variation.price*(1-discount/100),percent_discount:discount,percent_discount:0})
                     }
-                    return({...varia,error:false,discount_price:variation.price*(1-discount/100),percent_discount:discount})
+                    return({...varia,error:false,promotion_price:variation.price*(1-discount/100),percent_discount:discount})
                 }
             }
             else{
                 return({...varia})
             }
         })
-        item.list_variation=byproduct
+        item.variations=byproduct
         updatebyproduct(item)
     }
     
     const updateall=(e)=>{
         e.stopPropagation()
         const list_byproduct=itemshop.byproduct_choice.map(byproduct=>{
-            return({...byproduct,show:limititem.show,limit:limititem.limit,limit_order:limititem.limit_order?limititem.limit_order!='':byproduct.limit_order,list_variation:byproduct.list_variation.map(variation=>{
-                return({...variation,show:limitvariation.show,limit:limitvariation.limit,limit_order:limitvariation.limit_order!=''?limitvariation.limit_order:variation.limit_order
+            return({...byproduct,show:limititem.show,limit:limititem.limit,user_item_limit:limititem.user_item_limit!=''?limititem.user_item_limit:byproduct.user_item_limit,variations:byproduct.variations.map(variation=>{
+                return({...variation,show:limitvariation.show,limit:limitvariation.limit,promotion_stock:limitvariation.promotion_stock!=''?limitvariation.promotion_stock:''
                 ,percent_discount:limitvariation.percent_discount!=''?limitvariation.percent_discount:variation.percent_discount,
-                discount_price:variation.price*(1-(limitvariation.percent_discount/100))})
+                promotion_price:variation.price*(1-(limitvariation.percent_discount/100))})
             })})
         })
         setItem({...itemshop,byproduct_choice:list_byproduct})
@@ -277,10 +352,10 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
         e.stopPropagation()
         const list_byproduct=itemshop.byproduct_choice.map(byproduct=>{
             if(byproduct.check){
-                return({...byproduct,show:limititem.show,limit:limititem.limit,limit_order:limititem.limit_order?limititem.limit_order!='':byproduct.limit_order,list_variation:byproduct.list_variation.map(variation=>{
-                return({...variation,show:limitvariation.show,limit:limitvariation.limit,limit_order:limitvariation.limit_order!=''?limitvariation.limit_order:variation.limit_order
-                    ,percent_discount:limitvariation.percent_discount!=''?limitvariation.percent_discount:variation.percent_discount,
-                    discount_price:variation.price*(1-(limitvariation.percent_discount/100))})
+                return({...byproduct,show:limititem.show,limit:limititem.limit,user_item_limit:limititem.user_item_limit?limititem.user_item_limit!='':byproduct.user_item_limit,variations:byproduct.variations.map(variation=>{
+                return({...variation,show:limitvariation.show,limit:limitvariation.limit,
+                    percent_discount:limitvariation.percent_discount!=''?limitvariation.percent_discount:variation.percent_discount,
+                    promotion_price:variation.price*(1-(limitvariation.percent_discount/100))})
             })})
             }
             return({...byproduct})
@@ -289,70 +364,22 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
     }
 
     const setenableby=(e,variation,item)=>{
-        const byproduct=item.list_variation.map(varia=>{
-            if(varia.product_id==variation.product_id){
+        const byproduct=item.variations.map(varia=>{
+            if(varia.variation_id==variation.variation_id){
                 return({...varia,enable:!varia.enable})
             }
             else{
                 return({...varia})
             }
         })
-        item.list_variation=byproduct
+        item.variations=byproduct
         updatebyproduct(item)
     }
 
-    const setshowlimit=(e,itemchoice,name,keys)=>{
-        if(name=='item' || name=='variation'){
-            setLimititem({...limititem,[keys]:false})
-            setLimitvariation({...limitvariation,[keys]:false})
-            const byproduct=itemshop.byproduct_choice.map(item=>{
-                if(name=='item'){
-                    if(item.item_id==itemchoice.item_id){
-                        return({...item,[keys]:!item.show,list_variation:item.list_variation.map(variation=>{
-                            return({...variation,[keys]:false})
-                        })})
-                    }
-                    else{
-                        return({...item,[keys]:false,list_variation:item.list_variation.map(variation=>{
-                            return({...variation,[keys]:false})
-                        })})
-                    }
-                }
-                else{
-                    return({...item,[keys]:false,list_variation:item.list_variation.map(variation=>{
-                        if(variation.product_id==itemchoice.product_id){
-                            return({...variation,[keys]:!variation.show})
-                        }
-                        return({...variation,[keys]:false})
-                    })})
-                }
-            })
-            setItem({...itemshop,byproduct_choice:byproduct})
-        }
-        else{
-            setshowfalseproduct(keys)
-            if(name=='allitem'){
-                setLimititem({...limititem,[keys]:true})
-                setLimitvariation({...limitvariation,[keys]:false})
-                }
-            else{
-                setLimititem({...limititem,[keys]:false})
-                setLimitvariation({...limitvariation,[keys]:true})
-                }
-            }
-            window.onclick=(event)=>{
-                let parent=event.target.closest('.popper')
-                if(!e.target.contains(event.target) && !parent) {
-                    setLimititem({...limititem,[keys]:false})
-                    setLimitvariation({...limitvariation,[keys]:false})
-                    setshowfalseproduct(keys)
-                }
-            }
-        }
-        
+  
     function setshowfalseproduct(keys){
         const byproduct=itemshop.byproduct_choice.map(item=>{
-            return({...item,[keys]:false,list_variation:item.list_variation.map(variation=>{
+            return({...item,[keys]:false,variations:item.variations.map(variation=>{
                 return({...variation,[keys]:false})
             })})
         })
@@ -360,11 +387,10 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
     }
 
     const setlimit=(e,itemchoice,name,keys,value)=>{
-        
         if(name=='item' || name=='variation'){
                 const byproduct=itemshop.byproduct_choice.map(item=>{
                 if(name=='item'){
-                    if(item.item_id==itemchoice.item_id){
+                    if(item.id==itemchoice.id){
                         if(keys=='limit'){
                             return({...item,[keys]:value,show:false})
                         }
@@ -373,8 +399,8 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                     return({...item})
                 }
                 else{
-                    return({...item,list_variation:item.list_variation.map(variation=>{
-                        if(variation.product_id==itemchoice.product_id){
+                    return({...item,variations:item.variations.map(variation=>{
+                        if(variation.variation_id==itemchoice.variation_id){
                             if(keys=='limit'){
                                 return({...variation,[keys]:value,show:false})
                             }
@@ -416,62 +442,11 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
             setLimitvariation({...limitvariation,[keys]:''})
         }
     }
-    const limit=(item,name)=>{
-        return(
-            <div className="popover__ref">
-                <div data-v-0d5f8626="" className={`${item.limit?'d-flex':''}`} prepend-width="110">
-                    <div data-v-0d5f8626="" className="select" style={{width: '110px',position:'relative'}}>
-                        <div onClick={(e)=>{setshowlimit(e,item,name,'show')}} tabindex="0" className="selector item-space selector--normal"> 
-                            <div className="selector__inner line-clamp--1">{item.limit?'Giới hạn':"Không giới hạn"}</div> 
-                            <div className="selector__suffix"> 
-                                <i className="selector__suffix-icon icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,9.18933983 L4.03033009,5.21966991 C3.73743687,4.9267767 3.26256313,4.9267767 2.96966991,5.21966991 C2.6767767,5.51256313 2.6767767,5.98743687 2.96966991,6.28033009 L7.46966991,10.7803301 C7.76256313,11.0732233 8.23743687,11.0732233 8.53033009,10.7803301 L13.0303301,6.28033009 C13.3232233,5.98743687 13.3232233,5.51256313 13.0303301,5.21966991 C12.7374369,4.9267767 12.2625631,4.9267767 11.9696699,5.21966991 L8,9.18933983 Z"></path></svg>
-                                </i>
-                            </div>
-                        </div>
-                        <div className="popper" style={{display:item.show?'block':'none',top:'40px',position:'absolute',width: '100%'}}> 
-                            <div className="select__menu" style={{maxWidth: '440px', maxHeight: '218px'}}>
-                                <div className="scrollbar">
-                                    <div className="scrollbar__wrapper">
-                                        <div className="scrollbar__bar vertical">
-                                            <div className="scrollbar__thumb" style={{top: '0px', height: '0px'}}></div>
-                                        </div>  
-                                        <div className="scrollbar__content" style={{position: 'relative'}}>
-                                            <div className="select__options">
-                                                {limit_choice.map(choice=>
-                                                <div onClick={(e)=>{setlimit(e,item,name,'limit',choice.value)}} data-v-0d5f8626="" className={`option ${item.limit==choice.value?'selected':''}`}>{choice.name}</div>     
-                                                )}
-                                                
-                                            </div>
-                                            <div className="resize-triggers">
-                                                <div className="expand-trigger">
-                                                    <div style={{width: '1px', height: '1px'}}></div>
-                                                </div>
-                                                <div className="contract-trigger"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> 
-                            <p className="select__filter-empty" style={{display: 'none'}}></p> 
-                        </div>
-                    </div> 
-                    {item.limit?
-                    <span className="input-group__append">
-                        <div data-v-0d5f8626="" className="input" style={{width: '60px'}}>
-                            <div className="input__inner input__inner--normal"> 
-                                <input onChange={(e)=>setlimit(e,item,name,'limit_order',e.target.value)} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
-                            </div>
-                        </div>
-                    </span>:''}
-                </div> 
-            </div> 
-        )
-    }
+    
     
     function updatebyproduct(item){
         const list_item=itemshop.byproduct_choice.map(items=>{
-            if(item.item_id==items.item_id){
+            if(item.id==items.id){
                 return({...item})
             }
             else{
@@ -481,30 +456,25 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
         setItem({...itemshop,byproduct_choice:list_item})
         
     }
-
+    console.log(itemshop.items)
     const complete=()=>{
-        let form=new FormData()
-        Object.keys(program).map(item=>{
-            
-            form.append(item,program[item])
-            
+        const list_product=list_enable_on.map(item=>{
+            return(item.id)
         })
         
-        list_enable_on.map(item=>{
-            form.append('item_id',item.item_id)
-            form.append('limit_order',item.limit_order!=''?item.limit_order:item.item_inventory)
-            item.list_variation.map(variation=>{
-                form.append('product_id',variation.product_id)
-                form.append('percent_discount',variation.enable?variation.percent_discount:0)
-                form.append('number_of_promotional_products',variation.limit_order!=''?variation.limit_order:variation.inventory)
+        const discount_model_list=list_enable_on.reduce((arr,obj,i)=>{
+            const datavariation= obj.variations.map(variation=>{
+                return({promotion_price:variation.promotion_price,id:variation.id,
+                    enable:variation.enable,promotion_price_after_tax:variation.promotion_price,
+                    variation_id:variation.variation_id,item_id:variation.item_id,
+                    promotion_stock:variation.promotion_stock?variation.promotion_stock:0,
+                    user_item_limit:obj.user_item_limit?obj.user_item_limit:0})
             })
-        })
-        const list_enable_off=itemshop.byproduct_choice.filter(item=>list_enable_on.every(items=>item.item_id!=items.item_id))
-        list_enable_off.map(item=>{
-            item.list_variation.map(variation=>{
-                form.append('product_id_off',variation.product_id)
-            })
-        })
+            return [...arr,...datavariation]
+        },[])
+        const dataprogram={valid_from:program.valid_from,valid_to:program.valid_to,name_program:program.name_program}
+        const data={...dataprogram,action:'submit',list_items:list_product,discount_model_list:discount_model_list}
+        
         const countDown = setInterval(() => {
             state.timeSecond--;
             setState({...state,complete:true})
@@ -513,7 +483,8 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                 setState({...state,complete:false})
             }
         }, 1000);
-        axios.post(url_program,form,headers)
+
+        axios.post(url_program,JSON.stringify(data),headers)
         .then(res=>{
         })
     }
@@ -536,7 +507,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                                         </label>
                                         <div className="item-col">
                                             <div className="input-inner" style={{width: '450px'}}> 
-                                                <input type="text" onChange={(e)=>setform(e)} className="form-select" name="name_program" placeholder="Enter" style={{width: '450px'}} required/>
+                                                <input type="text" value={program.name_program} onChange={(e)=>setform(e)} className="form-select" name="name_program" placeholder="Enter" style={{width: '450px'}} required/>
                                                 <div className="input__suffix">
                                                 </div>
                                             </div>
@@ -567,7 +538,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                         <h2 className="card-title">Products of program Promotion</h2>
                         <div className="tips">Please add products to the Promotion program.</div>
                         <div className="add-item">
-                            <button onClick={()=>addbyproduct()} className="button--primary btn-m add-product item-center">
+                            <button onClick={(e)=>addbyproduct(e)} className="button--primary btn-m add-product item-center">
                                 <i className="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M8.48176704,1.5 C8.75790942,1.5 8.98176704,1.72385763 8.98176704,2 L8.981,7.997 L15,7.99797574 C15.2761424,7.99797574 15.5,8.22183336 15.5,8.49797574 C15.5,8.77411811 15.2761424,8.99797574 15,8.99797574 L8.981,8.997 L8.98176704,15 C8.98176704,15.2761424 8.75790942,15.5 8.48176704,15.5 C8.20562467,15.5 7.98176704,15.2761424 7.98176704,15 L7.981,8.997 L2,8.99797574 C1.72385763,8.99797574 1.5,8.77411811 1.5,8.49797574 C1.5,8.22183336 1.72385763,7.99797574 2,7.99797574 L7.981,7.997 L7.98176704,2 C7.98176704,1.72385763 8.20562467,1.5 8.48176704,1.5 Z"></path></svg></i>
                                 <span className="ml-1_2">Add product</span>  
                             </button>
@@ -577,7 +548,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                                 <h3 className="mb-3">Promotional products</h3>
                             </div>
                             <div className="item-center  mb-4">
-                                <button className="button--primary btn-m add-product item-center">
+                                <button onClick={(e)=>addbyproduct(e)} className="button--primary btn-m add-product item-center">
                                     <i className="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M8.48176704,1.5 C8.75790942,1.5 8.98176704,1.72385763 8.98176704,2 L8.981,7.997 L15,7.99797574 C15.2761424,7.99797574 15.5,8.22183336 15.5,8.49797574 C15.5,8.77411811 15.2761424,8.99797574 15,8.99797574 L8.981,8.997 L8.98176704,15 C8.98176704,15.2761424 8.75790942,15.5 8.48176704,15.5 C8.20562467,15.5 7.98176704,15.2761424 7.98176704,15 L7.981,8.997 L2,8.99797574 C1.72385763,8.99797574 1.5,8.77411811 1.5,8.49797574 C1.5,8.22183336 1.72385763,7.99797574 2,7.99797574 L7.981,7.997 L7.98176704,2 C7.98176704,1.72385763 8.20562467,1.5 8.48176704,1.5 Z"></path></svg></i>
                                     <span className="ml-1_2">Add product</span>  
                                 </button>
@@ -608,13 +579,23 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                             <div className="promotion-box">
                                 <div className="mb-1">Number of promotional products</div>
                                 <div className="item-promotion-stock d-flex discount-group-input">
-                                    {limit(limitvariation,'allvariation')}
+                                    <Limit
+                                        item={limitvariation}
+                                        name="allvariation"
+                                        keys={'promotion_stock'}
+                                        setlimit={(e,itemchoice,name,keys,value)=>setlimit(e,itemchoice,name,keys,value)}
+                                    />
                                 </div>
                             </div>
                             <div className="limit-box-purchase">
                                 <div className="mb-1">Maximum purchase limit per customer</div>
                                 <div className="item-promotion-stock d-flex discount-group-input">
-                                    {limit(limititem,'allitem')}
+                                    <Limit
+                                        item={limititem}
+                                        name="allitem"
+                                        keys={'user_item_limit'}
+                                        setlimit={(e,itemchoice,name,keys,value)=>setlimit(e,itemchoice,name,keys,value)}
+                                    />
                                 </div>
                             </div>
                             <div className="item-center">
@@ -683,7 +664,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                             </div>
                             <div className="table-body">
                                 {byproductPage.map(item=>
-                                    <div className="discount-item-component edit-mode">
+                                    <div key={item.id} className="discount-item-component edit-mode">
                                         <div className="discount-item-header">
                                             <div className="left">
                                                 <div className="d-flex">
@@ -698,9 +679,9 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                                                         </label>
                                                     
                                                     <div className="item-centers">                               
-                                                        <img src={item.item_image} alt="" width="36px" height="36px"/>                                
+                                                        <img src={item.image} alt="" width="36px" height="36px"/>                                
                                                         <div className="item_detail">
-                                                            <div className="ellipsis-content">{item.item_name}</div>
+                                                            <div className="ellipsis-content">{item.name}</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -708,7 +689,12 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                                             <div className="right">
                                                 <div className="d-flex">
                                                     <div className="item-purchase-limit plus-disable-enable d-flex ">
-                                                        {limit(item,'item')}
+                                                        <Limit
+                                                            item={item}
+                                                            name="item"
+                                                            keys={'user_item_limit'}
+                                                            setlimit={(e,itemchoice,name,keys,value)=>setlimit(e,itemchoice,name,keys,value)}
+                                                        />
                                                     </div>    
                                                     <div className="item-action">
                                                         
@@ -724,8 +710,8 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                                             
                                         </div>
                                         <div className="discount-edit-item-model-list">
-                                            {item.list_variation.map(variation=>
-                                            <div className="discount-edit-item-model-component">
+                                            {item.variations.map(variation=>
+                                            <div key={variation.variation_id} className="discount-edit-item-model-component">
                                                 <div className="item-variation" >{itemvariation(variation)}</div>
                                                 <div className="item-price">₫{formatter.format(variation.price)}</div>
                                                 <form autocomplete="off" className="form--inline form--label-right header-column_edit">
@@ -738,7 +724,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                                                                     <div className={`input currency-input ${variation.enable?'':'disable'}`} size="normal" prefix-label="₫" error-message="Giá không hợp lệ" placeholder=" " error="true">
                                                                         <div className={`input__inner ${variation.error?'error':''} input__inner--normal`}>
                                                                         <div className="input__prefix">₫<span className="input__prefix-split"></span></div> 
-                                                                            <input onChange={(e)=>setdiscount(e,'discount_price',variation,item)} value={variation.discount_price} type="text" placeholder=" " size="normal" resize="vertical" rows="2" minrows="2" maxLength="13" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                            <input onChange={(e)=>setdiscount(e,'promotion_price',variation,item)} value={variation.promotion_price} type="text" placeholder=" " size="normal" resize="vertical" rows="2" minrows="2" maxLength="13" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                         </div>
                                                                         {variation.error?
                                                                         <p className="input__error-msg">Giá không hợp lệ</p>:''}
@@ -768,7 +754,12 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                                                 </div>
                                                 <div data-v-4bd6b952="" className={`item-content item-promotion-stock ${variation.enable?'':'disable'}`}>
                                                     <div  data-v-0d5f8626="" data-v-4bd6b952="" className="popover popover--light limit-group-comp">
-                                                        {limit(variation,'variation')}
+                                                        <Limit
+                                                            item={variation}
+                                                            name="variation"
+                                                            keys={'promotion_stock'}
+                                                            setlimit={(e,itemchoice,name,keys,value)=>setlimit(e,itemchoice,name,keys,value)}
+                                                        />
                                                         <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
                                                             <div className="popover__content">Số lượng sản phẩm khuyến mãi không thể điều chỉnh sau khi cài đặt chương trình. Nếu muốn điều chỉnh, vui lòng xóa sản phẩm khỏi chương trình và thêm vào lại.</div>
                                                         </div>

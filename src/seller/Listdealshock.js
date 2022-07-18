@@ -16,7 +16,7 @@ const Listdealshop=()=>{
     },[])
 
     const setdetail=(item)=>{
-        navite(`/vendor/bundle/${item.id}`)
+        navite(`/marketing/add-on-deal/${item.id}`)
     }
     return(
         <>
@@ -280,7 +280,7 @@ const Listdealshop=()=>{
                                                                             <td className="">
                                                                                 <div className="table__cell">
                                                                                     <div data-v-771d39f6="" className="product-gallery-comp _25_tDRNHeHUHTHoVBXqqAZ">
-                                                                                        {deal.list_mainproduct.map((item,index)=>{
+                                                                                        {deal.main_products.map((item,index)=>{
                                                                                             if(index<5){
                                                                                                 return(
                                                                                                 <span className="avatar avatar--small product-gallery-item">
@@ -288,14 +288,14 @@ const Listdealshop=()=>{
                                                                                                 </span>)
                                                                                             }
                                                                                         })}
-                                                                                        {deal.list_mainproduct.length>5?<div className="product-gallery-mask gallery-mask__small">+{deal.list_product.length-5}</div>:''}
+                                                                                        {deal.main_products.length>5?<div className="product-gallery-mask gallery-mask__small">+{deal.products.length-5}</div>:''}
                                                                                     </div>
                                                                                 </div>
                                                                             </td>
                                                                             <td className="">
                                                                                 <div className="table__cell">
                                                                                     <div data-v-771d39f6="" className="product-gallery-comp _25_tDRNHeHUHTHoVBXqqAZ">
-                                                                                        {deal.list_byproduct.map((item,index)=>{
+                                                                                        {deal.byproducts.map((item,index)=>{
                                                                                             if(index<5){
                                                                                                 return(
                                                                                                 <span className="avatar avatar--small product-gallery-item">
@@ -303,7 +303,7 @@ const Listdealshop=()=>{
                                                                                                 </span>)
                                                                                             }
                                                                                         })}
-                                                                                        {deal.list_byproduct.length>5?<div className="product-gallery-mask gallery-mask__small">+{deal.list_byproduct.length-5}</div>:''}
+                                                                                        {deal.byproducts.length>5?<div className="product-gallery-mask gallery-mask__small">+{deal.byproducts.length-5}</div>:''}
                                                                                     </div>
                                                                                 </div>
                                                                             </td>

@@ -69,11 +69,11 @@ const Itemsearch=({listitem,setsearch,searchitem,search,data,setsearchitem})=>{
             <div className="home-product">
             {
                 listitem.map(item=>
-                <div key={item.item_id} className="grid__column-2-4">
-                    <Link className="home-product-item" to={item.item_url}>
-                    <div className="home-product-item__image" style={{backgroundImage: `url(${item.item_image})`}}></div>
+                <div key={item.id} className="grid__column-2-4">
+                    <Link className="home-product-item" to={`${item.url}?itemId=${item.id}`}>
+                    <div className="home-product-item__image" style={{backgroundImage: `url(${item.image})`}}></div>
                     <div className="home-product-item-info">
-                        <div className="home-product-item__name">{item.item_name}</div>
+                        <div className="home-product-item__name">{item.name}</div>
                         <div className="home-product-item__discount">
                         {item.voucher?
                         <div className="home-product-item__discount-voucher">
@@ -86,7 +86,7 @@ const Itemsearch=({listitem,setsearch,searchitem,search,data,setsearchitem})=>{
                             </svg>
                             </div>:''}
                             {item.shock_deal_type!=null?<div className="home-product-item__discount-deal-shock">{item.shock_deal_type=='1'?'Buy with shock deal':"Buy to receive gift"}</div>:
-                            item.combo?<div className="home-product-item__discount-deal-shock">combo khuyen mai</div>:
+                            item.promotion?<div className="home-product-item__discount-deal-shock">combo khuyen mai</div>:
                             ''}
                         </div>
                         <div className="_3_FVSo">  
@@ -113,7 +113,7 @@ const Itemsearch=({listitem,setsearch,searchitem,search,data,setsearchitem})=>{
                                     </div>
                                 </div>
                             </div>
-                            <div className="home-product-item__sold item-center">Đã bán {item.num_order}</div>
+                            <div className="home-product-item__sold item-center">Đã bán {item.number_order}</div>
                         </div>
                         <div className="home-product-item__origin">
                             <span className="home-product-item__brand">{item.item_brand}</span>

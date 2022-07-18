@@ -16,7 +16,7 @@ const Listcomboshop=()=>{
     },[])
 
     const setdetail=(item)=>{
-        navite(`/vendor/bundle/${item.id}`)
+        navite(`/marketing/bundle/${item.id}`)
     }
     return(
         <>
@@ -277,7 +277,7 @@ const Listcomboshop=()=>{
                                                                             <td className="">
                                                                                 <div className="table__cell">
                                                                                     <div data-v-771d39f6="" className="product-gallery-comp _25_tDRNHeHUHTHoVBXqqAZ">
-                                                                                        {combo.list_product.map((item,index)=>{
+                                                                                        {combo.products.map((item,index)=>{
                                                                                             if(index<5){
                                                                                                 return(
                                                                                                 <span className="avatar avatar--small product-gallery-item">
@@ -285,7 +285,7 @@ const Listcomboshop=()=>{
                                                                                                 </span>)
                                                                                             }
                                                                                         })}
-                                                                                        {combo.list_product.length>5?<div className="product-gallery-mask gallery-mask__small">+{combo.list_product.length-5}</div>:''}
+                                                                                        {combo.products.length>5?<div className="product-gallery-mask gallery-mask__small">+{combo.products.length-5}</div>:''}
                                                                                         
                                                                                     </div>
                                                                                 </div>

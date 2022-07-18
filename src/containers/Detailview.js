@@ -1,5 +1,5 @@
 
-import {detailURL,productinfoURL} from "../urls"
+import {categoryURL,itemURL,productinfoURL,shopURL} from "../urls"
 import axios from 'axios';
 import Navbar from "./Navbar"
 import Message from "./Chat"
@@ -21,25 +21,43 @@ const Detailview = () => {
   {name:'Đánh giá không chính xác / gây hiểu lầm (ví dụ như: đánh giá và sản phẩm không khớp, ...)',
   value:6},{name:'Vi phạm khác',value:7}])
   const [state, setState] = useState({report_complete:false,report_reson:null,text_report:'',show_report:false,show_thread:false,show_message:false,show_media:false});
-  const [threadchoice,setThreadchoice]=useState(null)
-  const[threads,setlistThreads]=useState([])
   const [reviewchoice,setReviewchoice]=useState(null)
-  const [listMessages,setListmessage]=useState([])
   const [show,setShow]=useState(false)
+  const [choice,setChoice]=useState()
   const [cartitem,setCartitem]=useState([])
+  const [shop_id,setShop_id]=useState()
+  const [category_id,setCategory_id]=useState()
+  const [product_id,setProduct_id]=useState()
   const [params, setSearchParams] = useSearchParams();
   const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
+  const choices=params.get('itemId') && params.get('categoryId')?'shop':params.get('itemId')?'product':'category'
   useEffect(() => {
     (async () => {
-      try {
-        const res = await axios.get(detailURL+slug+'?'+params,headers)
-          setData(res.data)
-          
-        } catch (error) {
-          console.log(error);
+        const searchparama=params
+        console.log(searchparama)
+        const url=params.get('itemId') && params.get('categoryId')?axios.get(`${shopURL}?${params}`):params.get('itemId')?axios.get(`${itemURL}?${params}`):axios.get(`${categoryURL}/${slug}`,headers)
+        setChoice(choices)
+        const res = await url
+        setData(res.data)
+        if(choices=='shop'){
+          setShop_id(res.data.id)
+          setCategory_id()
+          setProduct_id()
+        }
+        else if (choices=='product'){
+          setProduct_id(res.data.id)
+          setCategory_id()
+          setShop_id()
+        }
+        else{
+          setCategory_id(res.data.id)
+          setProduct_id()
+          setShop_id()
         }
     })();
   },[slug,params])
+  console.log(product_id)
+  console.log(category_id)
   const setshow=(e)=>{
     setShow(e)
   }
@@ -48,16 +66,8 @@ const Detailview = () => {
     const indexchoice=listmedia.indexOf(listmedia.find(item=>file.file===item.file))
     setState({...state,show_media:true,filechoice:file,listmedia:listmedia,indexchoice:indexchoice})
   }
-  const setsearchitem=(items)=>{
-    setSearchitem(items) 
-    setSearchParams(items)
-  }
   
-  const setthread=(data)=>{
-    setlistThreads(data.threads)
-    setListmessage(data.messages)
-    setState({...state,show_thread:true,show_message:true})
-  }
+  
   const setsearchcategory=(name,value)=>{
     setSearchitem({...searchitem,[name]:value})
   }
@@ -70,9 +80,6 @@ const Detailview = () => {
     console.log(cartitem)
   },[cartitem])
   
-  const setthreadchoice=(data)=>{
-    setThreadchoice(data)
-  }
   const setreport=(e,review)=>{
     setState({...state,show_report:true})
     setReviewchoice(review)
@@ -106,52 +113,41 @@ const Detailview = () => {
   const setopenreport=(value)=>{
     setState({...state,show_report:value})
   }
-  console.log(show)
+  console.log(data)
   return(
     <>
       <div id="main">
         <div className="item-col top container-wrapper">
-        {data!=null? 
+        {data? 
           <Navbar 
             data={data}
+            category_id={category_id}
+            shop_id={shop_id}
             cartitem={cartitem}
           />:""}
         </div>
-        {data!=null && data.category_info!==undefined?
+        {choice=='category' && category_id?
           <Categorydetail
-          setsearchitem={items=>setsearchitem(items)}
-          params={params}
-          searchitem={searchitem}
           data={data}
+          category_id={category_id}
           listitem={data.list_item_page}
           setsearchcategory={(name,value)=>setsearchcategory(name,value)}
           />
         :''}
-        {data!==null && data.item_name!==undefined?
+        {choice=='product' && product_id?
           <ProductDetail
             data_product={data}
-            list_threads={list_threads}
+            id={product_id}
             report_complete={state.report_complete}
-            setthreadchoice={data=>setthreadchoice(data)}
-            thread_choice={threadchoice}
             setshow={e=>setshow(e)}
-            setthread={e=>setthread(e)}
             showmediaitem={(item,listitems)=>showmediaitem(item,listitems)}
             addcartitem={data=>addcartitem(data)}
             setreport={(e,review)=>setreport(e,review)}
             show_report={state.show_report}
           />
         :''}
-        {data!==null && data.shop!==undefined?
+        {choice=='shop'&&shop_id?
           <Shopinfo
-            list_threads={list_threads}
-            thread_choice={threadchoice}
-            setthread={e=>setthread(e)}
-            setsearchitem={items=>setsearchitem(items)}
-            setthreadchoice={data=>setthreadchoice(data)}
-            params={params}
-            searchitem={searchitem}
-            listitem={data.list_item_page}
             data={data}
             setshow={(e)=>setshow(e)}
             setsearchcategory={(name,value)=>setsearchcategory(name,value)}
@@ -178,7 +174,7 @@ const Detailview = () => {
                 </>:''}
               </div>
               <div className="_2ynsA6">
-                <div className="WhoL2w">{data.item_name}</div>
+                <div className="WhoL2w">{data.name}</div>
                 <div className="_1jTFGt">
                   {state.listmedia.map((item,index)=>
                   <div key={index} onClick={()=>setindexchoice(index)} className="_4yF4f1 _1s7RSK">

@@ -105,7 +105,7 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
                     <div className="popup-form__main">
                         <div className="mlJd9h popup-form__main-container">
                             <div className="_3WGoff">
-                                <h2 className="_1zFCl4">{data.item_name}</h2>
+                                <h2 className="_1zFCl4">{data.name}</h2>
                                 <div className="_1KT0Ub _15STwc">
                                     <div className="_2cH9zc" style={{display: 'none'}}>
                                         <div className="image-placeholder _2E6Dva">
@@ -116,7 +116,7 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
                                         </div>
                                     </div>
                                     <div className="_25_r8I">
-                                        <div className="_3Q7kBy _2GchKS" style={{backgroundImage: `url(${data.item_image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                                        <div className="_3Q7kBy _2GchKS" style={{backgroundImage: `url(${data.image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
                                     </div>
                                 </div>
                             </div>
@@ -125,11 +125,11 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
                                 <div className="_1jDr2X">Giá</div>
                                 <div className="_1qtz9c _3AQURl">{state.price!=null?
                                 state.discount_percent!=0?`₫${formatter.format(state.price-state.price*state.percent_discount/100)}`:`₫${formatter.format(state.price)}`:data.min_price!=data.max_price?`₫${formatter.format(data.min_price)}-₫${formatter.format(data.max_price)}`:`₫${formatter.format(data.min_price)}`}</div>
-                                {data.color.length>0?
+                                {data.colors.length>0?
                                 <>
-                                <div className="zmmo4P">{data.color[0].name}:</div>
+                                <div className="zmmo4P">{data.colors[0].name}:</div>
                                 <div className="_1qtz9c EXuKem">
-                                    {data.color.map(item=>
+                                    {data.colors.map(item=>
                                         <button onClick={(e)=>setcolor(e,item)} className={`product-variation ${variation.variation_size.length>0?`${item.variation.some(r=> variation.variation_size.includes(r))?'':'disable'}`:''} ${item.id==variation.color_id?'product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                             {variation.color_id==item.id?
                                             <div className="product-variation__tick">
@@ -141,11 +141,11 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
                                 </div>
                                 <div className="D4ynUb"></div></>
                                 :''}
-                                {data.size.length>0?
+                                {data.sizes.length>0?
                                 <>
-                                <div className="zmmo4P">{data.size[0].name}:</div>
+                                <div className="zmmo4P">{data.sizes[0].name}:</div>
                                 <div className="_1qtz9c EXuKem">
-                                    {data.size.map(item=>
+                                    {data.sizes.map(item=>
                                         <button onClick={(e)=>setsize(e,item)} className={`product-variation ${variation.variation_color.length>0?`${item.variation.some(r=> variation.variation_color.includes(r))?'':'disable'}`:''} ${item.id==variation.size_id?'product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                         {variation.size_id==item.id?
                                             <div className="product-variation__tick">

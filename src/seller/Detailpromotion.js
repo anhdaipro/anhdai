@@ -24,11 +24,11 @@ const Detailpromotion=()=>{
             await axios(detailcomboURL+id,headers)
             .then(res=>{
                 let data=res.data
-                setCombo(data.promotion_combo)
-                setDate([{time:new Date(data.promotion_combo.valid_from),show:false,hours:new Date(data.promotion_combo.valid_from).getHours(),minutes:new Date(data.promotion_combo.valid_from).getMinutes()}
-              ,{time:new Date(data.promotion_combo.valid_to),show:false,hours:new Date(data.promotion_combo.valid_to).getHours(),minutes:new Date(data.promotion_combo.valid_to).getMinutes()}])
+                setCombo(data)
+                setDate([{time:new Date(data.valid_from),show:false,hours:new Date(data.valid_from).getHours(),minutes:new Date(data.valid_from).getMinutes()}
+              ,{time:new Date(data.valid_to),show:false,hours:new Date(data.valid_to).getHours(),minutes:new Date(data.valid_to).getMinutes()}])
                 setLoading(true)
-                setItem({...itemshop,items_choice:data.items_choice,page_count_main:Math.ceil(data.items_choice.length / Pagesize)})
+                setItem({...itemshop,items_choice:data.products,page_count_main:Math.ceil(data.products.length / Pagesize)})
           })
         }
         getJournal();

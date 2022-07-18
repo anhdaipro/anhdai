@@ -16,7 +16,7 @@ const Listflashseleshop=()=>{
     },[])
 
     const setdetail=(item)=>{
-        navite(`/vendor/bundle/${item.id}`)
+        navite(`/marketing/flash-sale/${item.id}`)
     }
     return(
         <>
@@ -268,7 +268,7 @@ const Listflashseleshop=()=>{
                                                                                         <div data-v-198e0541="">Bật Flash Sale
                                                                                             <span data-v-198e0541="" className="added-number">0</span>
                                                                                         </div> 
-                                                                                        <div data-v-198e0541="" className="available">Số sản phẩm tham gia {flashsale.list_product.length}</div>
+                                                                                        <div data-v-198e0541="" className="available">Số sản phẩm tham gia {flashsale.products.length}</div>
                                                                                     </div>
                                                                                 </div>
                                                                             </td>
@@ -298,7 +298,7 @@ const Listflashseleshop=()=>{
                                                                                             <div className="popover__ref">
                                                                                                 <div data-v-198e0541="" className="switch switch--open switch--normal switch--disabled"></div>
                                                                                             </div> 
-                                                                                            <div className="popper popover__popper popover__popper--light with-arrow" style="display: none; max-width: 320px;">
+                                                                                            <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
                                                                                                 <div className="popover__content">Shop bạn chưa đủ điều kiện để tạo chương trình Flash Sale riêng của Shop.</div>
                                                                                             </div>
                                                                                         </div>

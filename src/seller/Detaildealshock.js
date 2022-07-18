@@ -7,13 +7,13 @@ import ReactDOM, { render } from 'react-dom'
 import {formatter,itemvariation} from "../constants"
 import Pagination from "../hocs/Pagination"
 import Dealshockinfo from "../hocs/Dealshockinfo"
-import {dealDetailshopURL,itemdealURL,} from "../urls"
+import {dealDetailshopURL,itemdealURL, newdealURL,} from "../urls"
 import { headers } from '../actions/auth';
 let Pagesize=5
 const Detaildealshock=()=>{
     const { id } = useParams(); 
     const [state,setState]=useState({timeSecond:5,edit:false,
-    item_remove:0,save:true,page_input:1,limit_order:'',index_choice:2,complete:false,
+    item_remove:0,save:true,page_input:1,user_item_limit:'',index_choice:2,complete:false,
     percent_discount:'',show:false,total_price:0,total_discount:0,minutes:10,hours:0,hours_to:0,minutes_to:0})
     const [deal,setDeal]=useState(null)
     const [itemshop,setItem]=useState({itemshops:[],items:[],page_count_main:0,items_choice:[],savemain:false
@@ -37,34 +37,27 @@ const Detaildealshock=()=>{
            // <-- passed to API URL
             .then(res=>{
                 let data=res.data
-                setDeal(data.deal_shock)
+                setDeal(data)
                 setState({...state,loading:true})
-                setDate([{time:new Date(data.deal_shock.valid_from),show:false,hours:new Date(data.deal_shock.valid_from).getHours(),minutes:new Date(data.deal_shock.valid_from).getMinutes()}
-              ,{time:new Date(data.deal_shock.valid_to),show:false,hours:new Date(data.deal_shock.valid_to).getHours(),minutes:new Date(data.deal_shock.valid_to).getMinutes()}])
+                setDate([{time:new Date(data.valid_from),show:false,hours:new Date(data.valid_from).getHours(),minutes:new Date(data.valid_from).getMinutes()}
+              ,{time:new Date(data.valid_to),show:false,hours:new Date(data.valid_to).getHours(),minutes:new Date(data.valid_to).getMinutes()}])
                 setLoading(true)
-                const list_byproduct=data.byproduct_choice.map(byproduct=>{
-                    return({...byproduct,list_variation:byproduct.list_variation.map(variation=>{
-                        if(variation.percent_discount>0){
-                            return({...variation,enable:true})
-                        }
-                        return({...variation,enable:false})
-                    })})
-                })
-                let savemain=false
-                if(data.items_choice.length>0){
-                    savemain=true
-                }
-                let savebyproduct=false
-                if(data.byproduct_choice.length>0){
-                    savebyproduct=true
-                }
                 
-                const list_enable_on=list_byproduct.filter(item=>item.list_variation.some(variation=>variation.percent_discount>0))
-                const list_enable_off=list_byproduct.filter(item=>list_enable_on.every(items=>item.item_id!=items.item_id))
-                const byproduct_choice=[...list_enable_on,...list_enable_off]
-                console.log(list_byproduct)
-                setItem({...itemshop,items_choice:data.items_choice,byproduct_choice:byproduct_choice,savemain:savemain,savebyproduct:savebyproduct,
-                page_count_main:Math.ceil(data.items_choice.length / Pagesize),page_count_by:Math.ceil(data.byproduct_choice.length / Pagesize)})
+                const savemain=data.main_products.length>0?true:false
+                const savebyproduct=data.byproducts.length>0?true:false
+                const main_products=data.main_products.map(item=>{
+                    return({...item,enable:true})
+                })
+                const variations=data.variations.map(variation=>{
+                    return {...variation,
+                        percent_discount:(variation.price-parseInt(variation.promotion_price))*100/variation.price,
+                        promotion_price:parseInt(variation.promotion_price)}
+                })
+                const list_byproducts=data.byproducts.map(byproduct=>{
+                    return({...byproduct,variations:variations.filter(variation=>variation.item_id==byproduct.id)})
+                })
+                setItem({...itemshop,items_choice:main_products,byproduct_choice:list_byproducts,savemain:savemain,savebyproduct:savebyproduct,
+                page_count_main:Math.ceil(data.main_products.length / Pagesize),page_count_by:Math.ceil(list_byproducts.length / Pagesize)})
           })
         }
         getJournal();
@@ -89,28 +82,22 @@ const Detaildealshock=()=>{
         setLoading(true)
         setShow({...show,items:true,byproduct:false})
         if(itemshop.items.length==0){
-            let url=new URL(dealDetailshopURL+id)
-            let search_params=url.searchParams
-            search_params.append('item','ok')
-           
-            url.search = search_params.toString();
-            let new_url = url.toString();
-            axios.get(new_url,headers)
+            axios.get(`${newdealURL}?item=item&deal_id=${id}`,headers)
             .then(res=>{
-                const items=res.data.c.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.item_id!=itemchoice.item_id))
+                const items=res.data.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
                 const list_items=items.map(item=>{
-                if(itemshop.items_choice.some(product=>product.item_id==item.item_id)){
+                if(itemshop.items_choice.some(product=>product.id==item.id)){
                     return({...item,check:true})
                 }
                 return({...item,check:false})
                 })
-                setItem({...itemshop,itemshops:res.data.c,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize)})  
+                setItem({...itemshop,itemshops:res.data,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize)})  
             })
         }
         else{
-            const items=itemshop.itemshops.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.item_id!=itemchoice.item_id))
+            const items=itemshop.itemshops.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
             const list_items=items.map(item=>{
-                if(itemshop.items_choice.some(product=>product.item_id==item.item_id)){
+                if(itemshop.items_choice.some(product=>product.id==item.id)){
                     return({...item,check:true})
                 }
                 return({...item,check:false})
@@ -122,23 +109,23 @@ const Detaildealshock=()=>{
     const addbyproduct=(e)=>{
         setShow({...show,byproduct:true,items:false})
         if(itemshop.items.length==0){
-            axios.get(itemdealURL,headers)
+            axios.get(`${newdealURL}?item=item&deal_id=${id}`,headers)
             .then(res=>{
-                const list_byproduct=res.data.c.filter(item=>itemshop.items_choice.every(itemchoice=>item.item_id!=itemchoice.item_id))
+                const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
                 const byproduct=list_byproduct.map(item=>{
-                    if(itemshop.byproduct_choice.some(by=>by.item_id==item.item_id)){
+                    if(itemshop.byproduct_choice.some(by=>by.id==item.id)){
                         return({...item,check:true})
                     }
                      return({...item,check:false})
                 })
                 
-                setItem({...itemshop,itemshops:res.data.c,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
+                setItem({...itemshop,itemshops:res.data,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
             })
         }
         else{
-            const list_byproduct=itemshop.itemshops.filter(item=>itemshop.items_choice.every(itemchoice=>item.item_id!=itemchoice.item_id))
+            const list_byproduct=itemshop.itemshops.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
             const byproduct=list_byproduct.map(item=>{
-                if(itemshop.byproduct_choice.some(by=>by.item_id==item.item_id)){
+                if(itemshop.byproduct_choice.some(by=>by.id==item.id)){
                     return({...item,check:true})
                 }
                     return({...item,check:false})
@@ -149,7 +136,7 @@ const Detaildealshock=()=>{
 
     const setcheckitem=useCallback((item,product,keys)=>{
         const list_item=product.map(ite=>{
-            if(item.item_id==ite.item_id){
+            if(item.id==ite.id){
                 return({...ite,check:!ite.check})
             }
             else{
@@ -163,10 +150,10 @@ const Detaildealshock=()=>{
     const setcheckall=(e,list_items,keys,value,value_choice)=>{
         for (let k in value){
             for(let i in list_items){
-                if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !value_choice.some(ite=>ite.item_id==value[k].item_id)){
+                if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !value_choice.some(ite=>ite.id==value[k].id)){
                     value[k].check=true
                 }
-                if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !value_choice.some(ite=>ite.item_id==value[k].item_id)){
+                if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !value_choice.some(ite=>ite.id==value[k].id)){
                     value[k].check=false
                 }
                 if(e.target.checked==true && list_items[i]==value[k]){
@@ -190,7 +177,7 @@ const Detaildealshock=()=>{
 
     const submit=useCallback(()=>{
         
-        const list_itemscheck=itemshop.items.filter(ite=>ite.check && !itemshop.items_choice.some(item=>item.item_id==ite.item_id))
+        const list_itemscheck=itemshop.items.filter(ite=>ite.check && !itemshop.items_choice.some(item=>item.id==ite.id))
         const list_itemschoice=list_itemscheck.map(item=>{
             return({...item,check:false,enable:true})
         })
@@ -201,17 +188,15 @@ const Detaildealshock=()=>{
     },[itemshop,show])
 
     const submitby=()=>{
-        let form=new FormData()
-        const list_itemscheck=itemshop.byproduct.filter(ite=>ite.check && !itemshop.byproduct_choice.some(item=>item.item_id==ite.item_id))
-        list_itemscheck.map(item=>{
-            form.append('byproduct_id',item.item_id)
-            }
-        )
-        axios.post(dealDetailshopURL+id,form,headers)
+        const list_itemscheck=itemshop.byproduct.filter(ite=>ite.check && !itemshop.byproduct_choice.some(item=>item.id==ite.id))
+        const data={byproducts:list_itemscheck.map(item=>{return item.id}),
+            action:'addbyproduct'
+        }
+        axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
         .then(res=>{
-            const list_itemschoice=res.data.list_byproduct.map(item=>{
-                return({...item,list_variation:item.list_variation.map(variation=>{
-                    return({...variation,enable:false,percent_discount:0,discount_price:variation.price,limit_order:''})
+            const list_itemschoice=res.data.map(item=>{
+                return({...item,variations:item.variations.map(variation=>{
+                    return({...variation,enable:false,percent_discount:0,promotion_price:variation.price,user_item_limit:''})
                 })})})
             
             itemshop.byproduct_choice=[...list_itemschoice,...itemshop.byproduct_choice]
@@ -224,7 +209,7 @@ const Detaildealshock=()=>{
 
     const setenableitem=(e,product,value,key)=>{
         const list_item=value.map(ite=>{
-            if(product.item_id==ite.item_id){
+            if(product.id==ite.id){
                 return({...ite,enable:!ite.enable})
             }
             else{
@@ -235,9 +220,9 @@ const Detaildealshock=()=>{
     }
 
     const removeitem=(itemmove,keys,value,keys_choice,value_choice,page_current)=>{
-        const list_itemchoice=value_choice.filter(item=>item.item_id!=itemmove.item_id)
+        const list_itemchoice=value_choice.filter(item=>item.id!=itemmove.id)
         const list_item=value.map(ite=>{
-            if(ite.item_id==itemmove.item_id){
+            if(ite.id==itemmove.id){
                 return({...ite,check:false})
             }
             return({...ite})
@@ -252,24 +237,48 @@ const Detaildealshock=()=>{
         setCurrentPage({...currentPage,[keys]:page})
         handlePageChange(page,keys)
     }
-
+    const list_enable_on=itemshop.byproduct_choice.filter(item=>item.variations.some(variation=>variation.enable))
     const save=(keys,value,keys_choice,value_choice)=>{
         if(keys_choice=='items_choice'){
-        const list_enable_on=value_choice.filter(item=>item.enable)
-        const list_enable_off=value_choice.filter(item=>!item.enable)
-        const list_item=[...list_enable_on,...list_enable_off]
-        setItem({...itemshop,[keys]:value,[keys_choice]:list_item})
+            const list_enable_off=value_choice.filter(item=>!item.enable)
+            const list_item=[...value_choice.filter(item=>item.enable),...list_enable_off]
+            setItem({...itemshop,[keys]:value,[keys_choice]:list_item})
+            const data={list_items:value_choice.filter(item=>item.enable).map(item=>{
+                return item.id}),action:'savemain'
+            }
+            if(value){
+                axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
+                .then(res=>{
+
+                })
+            }
         }
         else{
-            const valid=value_choice.every(item=>item.list_variation.every(variation=>variation.percent_discount>0 && variation.percent_discount<100))
-            const list_enable_off=value_choice.filter(item=>list_enable_on.every(items=>item.item_id!=items.item_id))
+            const valid=value_choice.every(item=>item.variations.every(variation=>variation.percent_discount>0 && variation.percent_discount<100))
+            const list_enable_off=value_choice.filter(item=>list_enable_on.every(items=>item.id!=items.id))
             const list_item=[...list_enable_on,...list_enable_off]
             if(valid || !value || deal.shock_deal_type=='2'){
                 setItem({...itemshop,[keys]:value,[keys_choice]:list_item})
+                const discount_model_list=list_enable_on.reduce((arr,obj,i)=>{
+                    const datavariation= obj.variations.map(variation=>{
+                        return({promotion_price:variation.promotion_price,id:variation.id,
+                        variation_id:variation.variation_id,item_id:variation.item_id,
+                        promotion_stock:variation.promotion_stock?variation.promotion_stock:0,
+                        user_item_limit:obj.user_item_limit?obj.user_item_limit:0,enable:variation.enable})
+                    })
+                    return [...arr,...datavariation]
+                },[])
+                const data={action:'savebyproduct',byproducts:list_enable_on.map(item=>{return item.id}),discount_model_list:discount_model_list}
+                if(value){
+                    axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
+                    .then(res=>{
+                        
+                    })
+                }
             }
             else{
                 const list_byproduct=value_choice.map(byproduct=>{
-                    return({...byproduct,list_variation:byproduct.list_variation.map(variation=>{
+                    return({...byproduct,variations:byproduct.variations.map(variation=>{
                         if(variation.percent_discount>0){
                             return({...variation,error:false})
                         }
@@ -296,7 +305,7 @@ const Detaildealshock=()=>{
     const setdeletechoice=(keys,value,keys_choice,value_choice,page_current)=>{
         const list_itemchoice=value_choice.filter(item=>!item.check)
         const list_item=value.map(item=>{
-            if(list_itemchoice.every(items=>items.item_id!=item.item_id)){
+            if(list_itemchoice.every(items=>items.id!=item.id)){
                 return({...item,check:false})
             }
             return({...item})
@@ -328,42 +337,42 @@ const Detaildealshock=()=>{
 
     const setdiscount=(e,name,variation,item)=>{
         let discount=parseInt(e.target.value)
-        const byproduct=item.list_variation.map(varia=>{
-            if(varia.product_id==variation.product_id){
-                if(name=='discount_price'){
+        const byproduct=item.variations.map(varia=>{
+            if(varia.variation_id==variation.variation_id){
+                if(name=='promotion_price'){
                     if(isNaN(discount)){
-                        return({...varia,error:true,discount_price:'',percent_discount:100})
+                        return({...varia,error:true,promotion_price:'',percent_discount:100})
                     }
                     else{
                         if(discount==0||discount==variation.price){
-                            return({...varia,error:true,discount_price:discount,percent_discount:Math.round((variation.price-discount)/variation.price*100)})
+                            return({...varia,error:true,promotion_price:discount,percent_discount:Math.round((variation.price-discount)/variation.price*100)})
                         }
-                        return({...varia,error:false,discount_price:discount,percent_discount:Math.round((variation.price-discount)/variation.price*100)})
+                        return({...varia,error:false,promotion_price:discount,percent_discount:Math.round((variation.price-discount)/variation.price*100)})
                     }
                 }
                 else{
                     if(isNaN(discount)){
-                        return({...varia,error:true,discount_price:variation.price,percent_discount:''})
+                        return({...varia,error:true,promotion_price:variation.price,percent_discount:''})
                     }
                     if(discount<1||discount>100){
-                        return({...varia,error:true,discount_price:variation.price*(1-discount/100),percent_discount:discount,percent_discount:0})
+                        return({...varia,error:true,promotion_price:variation.price*(1-discount/100),percent_discount:discount,percent_discount:0})
                     }
-                    return({...varia,error:false,discount_price:variation.price*(1-discount/100),percent_discount:discount})
+                    return({...varia,error:false,promotion_price:variation.price*(1-discount/100),percent_discount:discount})
                 }
             }
             else{
                 return({...varia})
             }
         })
-        item.list_variation=byproduct
+        item.variations=byproduct
         updatebyproduct(item)
     }
     
     const updateall=(e)=>{
         itemshop.byproduct_choice.map(item=>{
-            item.list_variation.map(variation=>{
+            item.variations.map(variation=>{
                 variation.percent_discount=state.percent_discount
-                variation.discount_price=variation.price*(1-state.percent_discount/100)
+                variation.promotion_price=variation.price*(1-state.percent_discount/100)
                 variation.error=false
             })
         })
@@ -372,13 +381,13 @@ const Detaildealshock=()=>{
 
     const updatechoice=(e)=>{
         const list_byproduct=itemshop.byproduct_choice.map(byproduct=>{
-            return({...byproduct,list_variation:byproduct.list_variation.map(variation=>{
+            return({...byproduct,variations:byproduct.variations.map(variation=>{
                 if(byproduct.check){
                     if(state.percent_discount!==''){
-                        return({...variation,percent_discount:state.percent_discount,discount_price:variation.price*(1-state.percent_discount/100)})
+                        return({...variation,percent_discount:state.percent_discount,promotion_price:variation.price*(1-state.percent_discount/100)})
                     }
-                    if(state.limit_order!=''){
-                        return({...variation,limit_order:state.limit_order})
+                    if(state.user_item_limit!=''){
+                        return({...variation,user_item_limit:state.user_item_limit})
                     } 
                     return({...variation})
                 }
@@ -390,8 +399,8 @@ const Detaildealshock=()=>{
     }
 
     const setenableby=(e,variation,item)=>{
-        const byproduct=item.list_variation.map(varia=>{
-            if(varia.product_id==variation.product_id){
+        const byproduct=item.variations.map(varia=>{
+            if(varia.variation_id==variation.variation_id){
                 if(variation.percent_discount>0&& variation.percent_discount<100){
                     return({...varia,enable:!varia.enable,errow:false})
                 }
@@ -401,14 +410,14 @@ const Detaildealshock=()=>{
                 return({...varia})
             }
         })
-        item.list_variation=byproduct
+        item.variations=byproduct
         updatebyproduct(item)
         
     }
 
     const setenabledbychoice=(e,value,keys_choice,value_choice)=>{
         const list_byproduct=value_choice.map(byproduct=>{
-            return({...byproduct,list_variation:byproduct.list_variation.map(variation=>{
+            return({...byproduct,variations:byproduct.variations.map(variation=>{
                 if(byproduct.check){
                     if(variation.percent_discount>0){
                         return({...variation,enable:value,error:false})
@@ -427,7 +436,7 @@ const Detaildealshock=()=>{
 
     function updatebyproduct(item){
         const list_item=itemshop.byproduct_choice.map(items=>{
-            if(item.item_id==items.item_id){
+            if(item.id==items.id){
                 return({...item})
             }
             else{
@@ -439,12 +448,10 @@ const Detaildealshock=()=>{
     }
 
     function get_percent_discount(item){
-        const list_variation_enable=item.list_variation.filter(variation=>variation.enable)
+        const list_variation_enable=item.variations.filter(variation=>variation.enable)
         let item_chocie=list_variation_enable.find(c => c.percent_discount==Math.max.apply(Math, list_variation_enable.map(function(o) { return o.percent_discount })));
         return item_chocie
     }
-    
-    const list_enable_on=itemshop.byproduct_choice.filter(item=>item.list_variation.some(variation=>variation.enable))
     
     const settimechoice=(value,index,name)=>{
         const list_date=date.map((item,i)=>{
@@ -462,7 +469,7 @@ const Detaildealshock=()=>{
         list_enable_on.map((item,index)=>{
             if(index<2){
                 price_box.total_price+=get_percent_discount(item).price
-                price_box.total_discount+=get_percent_discount(item).discount_price
+                price_box.total_discount+=get_percent_discount(item).promotion_price
             }
         })
         return price_box
@@ -518,39 +525,24 @@ const Detaildealshock=()=>{
     }
 
     const complete=()=>{
-        let form=new FormData()
-        itemshop.items_choice.map(item=>{
-            if(item.enable){
-            form.append('item_id',item.item_id)
-            }
-        })
-        list_enable_on.map(item=>{
-            form.append('byproduct_id',item.item_id)
-            item.list_variation.map(variation=>{
-                form.append('product_id',variation.product_id)
-                form.append('percent_discount',variation.enable?variation.percent_discount:0)
-                form.append('limit_order',variation.limit_order!=''?variation.limit_order:variation.inventory)
-            })
-        })
-        const list_enable_off=itemshop.byproduct_choice.filter(item=>list_enable_on.every(items=>item.item_id!=items.item_id))
-        list_enable_off.map(item=>{
-            item.list_variation.map(variation=>{
-                form.append('product_id_off',variation.product_id)
-            })
-        })
+        if(list_enable_on.length>0){
+            const data={action:'submit'}
+            const countDown = setInterval(() => {
+                state.timeSecond--;
+                setState({...state,complete:true})
+                if (state.timeSecond <= 0) {
+                    clearInterval(countDown)
+                    setState({...state,complete:false})
+                }
+            }, 1000);
 
-        const countDown = setInterval(() => {
-            state.timeSecond--;
-            setState({...state,complete:true})
-            if (state.timeSecond <= 0) {
-                clearInterval(countDown)
-                setState({...state,complete:false})
-            }
-        }, 1000);
-
-        axios.post(dealDetailshopURL+id,form,headers)
-        .then(res=>{
-        })
+            axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
+            .then(res=>{
+            })
+        }
+        else{
+            alert('vui lòng bật 1 sản phẩm')
+        }
     }
 
    
@@ -748,9 +740,9 @@ const Detaildealshock=()=>{
                                                             </label>
                                                         </div>}
                                                         <div className="item-center" >
-                                                            <img src={item.item_image} alt="" width="52px" height="52px"/>
+                                                            <img src={item.image} alt="" width="52px" height="52px"/>
                                                             <div className="item_detail">
-                                                                <div className="ellipsis-content">{item.item_name}</div>
+                                                                <div className="ellipsis-content">{item.name}</div>
                                                                 <div className="product-sku"><span>SKU :</span> </div>
                                                             </div>
                                                         </div>
@@ -759,7 +751,7 @@ const Detaildealshock=()=>{
                                                         <div className="main-price">
                                                             ₫{formatter.format(item.min_price)} {item.min_price!=item.max_price?`- ${formatter.format(item.max_price)}`:''}
                                                         </div>
-                                                        <div>{item.item_inventory}</div>
+                                                        <div>{item.total_inventory}</div>
                                                         <div className="column_edit-shipping">{item.item_shipping}</div>
                                                         <div className="item-center status">
                                                             {itemshop.savemain?<span  className="status-desc">{item.enable?'On':"Off"}</span>:
@@ -896,7 +888,7 @@ const Detaildealshock=()=>{
                                 </div>
                                 <div className="section-header-tips">
                                     <p className="enabled">
-                                    <span>{itemshop.byproduct_choice.filter(item=>item.list_variation.some(variation=>variation.enable)).length}</span> sản phẩm được bật, trên tổng <span>{itemshop.byproduct_choice.length}</span> sản phẩm</p>
+                                    <span>{itemshop.byproduct_choice.filter(item=>item.variations.some(variation=>variation.enable)).length}</span> sản phẩm được bật, trên tổng <span>{itemshop.byproduct_choice.length}</span> sản phẩm</p>
                                 </div>
                                 {itemshop.savebyproduct?"":
                                 <div className="item-spaces setting-item">
@@ -922,7 +914,7 @@ const Detaildealshock=()=>{
                                     <div className="limit-box">
                                         <div className="mb-1">Limit order</div>
                                         <div className="input-inner">
-                                            <input onChange={(e)=>setvariation(e,'limit_order')} value={state.limit_order==''?'':state.limit_order} type="text" className="form-select" placeholder={state.limit_order==''?`Không giới hạn`:""} style={{height:'30px'}}/>
+                                            <input onChange={(e)=>setvariation(e,'user_item_limit')} value={state.user_item_limit==''?'':state.user_item_limit} type="text" className="form-select" placeholder={state.user_item_limit==''?`Không giới hạn`:""} style={{height:'30px'}}/>
                                         </div>
                                     </div>
                                     <div className="actions ml-2">
@@ -987,7 +979,7 @@ const Detaildealshock=()=>{
                                     </div>
                                     <div className={`table-body ${deal.shock_deal_type=='1'?'':'gift_table'}`}>
                                         {byproductPage.map(item=>
-                                        <div className="sub-edit-item">
+                                        <div key={item.id} className="sub-edit-item">
                                             <div className="outer-rows">
                                                 <div className="product item header-column_edit">
                                                     {itemshop.savebyproduct?'':
@@ -999,15 +991,15 @@ const Detaildealshock=()=>{
                                                             </i> 
                                                         </span> 
                                                     </label> }
-                                                    <img src={item.item_image} alt="" className="product-preview"/> 
+                                                    <img src={item.image} alt="" className="product-preview"/> 
                                                     <div className="product-info">
                                                         <div className="name-wrapper">
                                                             <div className="tooltip popover popover--dark">
                                                                 <div className="popover__ref">
-                                                                    <span className="name">{item.item_name}</span>
+                                                                    <span className="name">{item.name}</span>
                                                                 </div> 
                                                                 <div className="popper popover__popper popover__popper--dark tooltip__popper" style={{display: 'none', maxWidth: '320px'}}>
-                                                                    <div className="popover__content">{item.item_name}</div>
+                                                                    <div className="popover__content">{item.name}</div>
                                                                 </div>
                                                             </div>
                                                         </div> 
@@ -1025,7 +1017,7 @@ const Detaildealshock=()=>{
                                                 </div>}
                                             </div>
                                             <div className="inner-rows">
-                                                {item.list_variation.map(variation=>
+                                                {item.variations.map(variation=>
                                                 <ul className="sub-edit-model inner-row">
                                                     <li className={`variation header-column_edit ${itemshop.savebyproduct?'save':''}`}>
                                                         <div className="tooltip popover popover--dark">
@@ -1039,7 +1031,7 @@ const Detaildealshock=()=>{
                                                     </li> 
                                                     {deal.shock_deal_type=='1'?
                                                     itemshop.savebyproduct?<>
-                                                    <li data-v-42a890c0="" className="input-price header-column_edit">₫{formatter.format(variation.discount_price)}</li>
+                                                    <li data-v-42a890c0="" className="input-price header-column_edit">₫{formatter.format(variation.promotion_price)}</li>
                                                     <li data-v-42a890c0="" className="addon-discount header-column_edit">
                                                         <div data-v-42a890c0="" className="tag tag__promotion tag--normal default">{variation.percent_discount}%GIẢM</div> 
                                                     </li></>:
@@ -1053,7 +1045,7 @@ const Detaildealshock=()=>{
                                                                         <div className="input currency-input" size="normal" prefix-label="₫" error-message="Giá không hợp lệ" placeholder=" " error="true">
                                                                             <div className={`input__inner ${variation.error?'error':''} input__inner--normal`}>
                                                                                 <div className="input__prefix">₫<span className="input__prefix-split"></span></div> 
-                                                                                <input onChange={(e)=>setdiscount(e,'discount_price',variation,item)} value={variation.discount_price} type="text" placeholder=" " size="normal" resize="vertical" rows="2" minrows="2" maxLength="13" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                                <input onChange={(e)=>setdiscount(e,'promotion_price',variation,item)} value={variation.promotion_price} type="text" placeholder=" " size="normal" resize="vertical" rows="2" minrows="2" maxLength="13" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                             </div>
                                                                             {variation.error?
                                                                             <p className="input__error-msg">Giá không hợp lệ</p>:''}
@@ -1090,9 +1082,9 @@ const Detaildealshock=()=>{
                                                     {deal.shock_deal_type=='1'?
                                                     <li  className="purchase-limit header-column_edit">
                                                         <div data-v-3a502cb8=""  className="input purchase-limit-input">
-                                                            {itemshop.savebyproduct?variation.limit_order==''?"Unlimit":variation.limit_order:
+                                                            {itemshop.savebyproduct?variation.user_item_limit==''?"Unlimit":variation.user_item_limit:
                                                             <div className="input__inner input__inner--normal">
-                                                                <input value={variation.limit_order} type="text" placeholder={variation.limit_order==''?'Không giới hạn':variation.limit_order} resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                <input value={variation.user_item_limit} type="text" placeholder={variation.user_item_limit==''?'Không giới hạn':variation.user_item_limit} resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                                                             </div>}
                                                         </div>
                                                     </li> :''}
@@ -1175,11 +1167,11 @@ const Detaildealshock=()=>{
                                                         <div className="display-order-row">
                                                             <div className="display-order-inner-row">
                                                                 <div className="display-item-name">
-                                                                    <img className="display-item-img" src={item.item_image} alt="" width="36px" height="36px"/>
-                                                                    <div className="product-name">{item.item_name}</div>
+                                                                    <img className="display-item-img" src={item.image} alt="" width="36px" height="36px"/>
+                                                                    <div className="product-name">{item.name}</div>
                                                                 </div>
                                                                 <div className="display-item-price">
-                                                                    <div className="display-item-price-discount">₫{formatter.format(get_percent_discount(item).discount_price)}</div>
+                                                                    <div className="display-item-price-discount">₫{formatter.format(get_percent_discount(item).promotion_price)}</div>
                                                                     <div className="display-item-price-origin">₫{formatter.format(get_percent_discount(item).price)}</div>
                                                                 </div>
                                                                 <div className="display-item-sales">{item.num_order}</div>
@@ -1228,7 +1220,7 @@ const Detaildealshock=()=>{
                                                     <div className="products">
                                                         <div className="product">
                                                             <div className="product-img">
-                                                                <img src={itemshop.items_choice[0].item_image} alt="" className="product-preview"/>
+                                                                <img src={itemshop.items_choice[0].image} alt="" className="product-preview"/>
                                                             </div> 
                                                             <p className="price-box">
                                                                 <span className="price">₫{formatter.format(itemshop.items_choice[0].min_price)} {itemshop.items_choice[0].max_price!=itemshop.items_choice[0].min_price?`- ₫${formatter.format(itemshop.items_choice[0].max_price)}`:''}</span>
@@ -1242,9 +1234,9 @@ const Detaildealshock=()=>{
                                                                         <div className="plus-split">+</div> 
                                                                         <div className="product">
                                                                             <div className="product-img">
-                                                                                <img src={item.item_image} alt="" className="product-preview"/>
+                                                                                <img src={item.image} alt="" className="product-preview"/>
                                                                             </div>
-                                                                            <p className="price-box"><span className="price">₫{formatter.format(get_percent_discount(item).discount_price)}</span></p>
+                                                                            <p className="price-box"><span className="price">₫{formatter.format(get_percent_discount(item).promotion_price)}</span></p>
                                                                             <p className="price-origin-box"><span className="price-origin">₫{formatter.format(get_percent_discount(item).price)}</span></p>
                                                                         </div></>
                                                                     )
@@ -1258,9 +1250,9 @@ const Detaildealshock=()=>{
                                                             <div className="plus-split">+</div> 
                                                             <div className="product">
                                                                 <div className="product-img">
-                                                                    <img src={item.item_image} alt="" className="product-preview"/>
+                                                                    <img src={item.image} alt="" className="product-preview"/>
                                                                 </div>
-                                                                <p className="price-box"><span className="price">₫{formatter.format(get_percent_discount(item).discount_price)}</span></p>
+                                                                <p className="price-box"><span className="price">₫{formatter.format(get_percent_discount(item).promotion_price)}</span></p>
                                                                 <p className="price-origin-box"><span className="price-origin">₫{formatter.format(get_percent_discount(item).price)}</span></p>
                                                             </div></>
                                                         )}

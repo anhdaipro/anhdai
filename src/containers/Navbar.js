@@ -17,7 +17,9 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     let navigate=useNavigate();
     console.log(location)
     useEffect(() =>  {
-        setSearchchoice(data!=undefined?data:null)
+        if(data){
+        setSearchchoice(data)
+        }
     },[data])
     
     useEffect(() =>  {
@@ -91,8 +93,8 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     
 
     const searchitem=()=>{
-        if(searchchoice!=null){
-        navigate(`/search?keyword=${keyword}&${searchchoice.shop!=undefined?`shop=${data.shop.name}`:`category=${data.category_info.id}`}`)
+        if(searchchoice){
+        navigate(`/search?keyword=${keyword}&${searchchoice.user_id?`shop=${data.name}`:`category=${data.id}`}`)
         }
         else{
             navigate(`/search?keyword=${keyword}`)
@@ -165,22 +167,22 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                             <div className="searchbar ">
                                 <div className="searchbar__main" style={{position: 'relative'}}>
                                     <form role="search" className="searchbar-input" autoComplete="off">
-                                        <input onChange={(e)=>setKeyword(e.target.value)} aria-label="Hoàn xu Xtra đơn từ 0Đ" className="searchbar-input__input" style={{width:'500px'}} value={(params.get('keyword')!=keyword && params.has('keyword') && keyword!=null)||(!params.has('keyword'))?keyword:params.get('keyword')} maxLength="128" placeholder={`${searchchoice!=null?data.shop!=undefined?'Tìm trong shop':data.category_info!=undefined?`Tìm trong ${data.category_info.title}`:'Tìm trong shoppe':'Hoàn xu Xtra đơn từ 0Đ'}`} autoComplete="off" />
+                                        <input onChange={(e)=>setKeyword(e.target.value)} aria-label="Hoàn xu Xtra đơn từ 0Đ" className="searchbar-input__input" style={{width:'500px'}} value={(params.get('keyword')!=keyword && params.has('keyword') && keyword!=null)||(!params.has('keyword'))?keyword:params.get('keyword')} maxLength="128" placeholder={`${searchchoice!=null?data.user_id?'Tìm trong shop':data.title?`Tìm trong ${data.title}`:'Tìm trong shoppe':'Hoàn xu Xtra đơn từ 0Đ'}`} autoComplete="off" />
                                     </form>
-                                    {(data!=undefined && data.category_info!=undefined) || (data!=undefined&& data.shop!=undefined) ?
+                                    {data?
                                     
                                     <div onMouseLeave={()=>setState({...state,show_choice:false})} onMouseEnter={()=>setState({...state,show_choice:true})} className="searchbar-selector">
                                         <div className="drawer " id="pc-drawer-id-11" tabindex="0">
                                             <div className="searchbar-selector__selected">
-                                                <div className="searchbar-selector__selected-label">{searchchoice!=null?searchchoice.shop!=undefined?'Trong Shop này':data.category_info.title:'Trong Shopee'}</div> 
+                                                <div className="searchbar-selector__selected-label">{searchchoice?searchchoice.name?'Trong Shop này':data.title:'Trong Shopee'}</div> 
                                                 <svg enable-background="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-down"><g><path d="m11 2.5c0 .1 0 .2-.1.3l-5 6c-.1.1-.3.2-.4.2s-.3-.1-.4-.2l-5-6c-.2-.2-.1-.5.1-.7s.5-.1.7.1l4.6 5.5 4.6-5.5c.2-.2.5-.2.7-.1.1.1.2.3.2.4z"></path></g></svg>
                                             </div>
                                             {state.show_choice?
                                             <div className="drawer__contents" aria-describedby="pc-drawer-id-11" aria-hidden="false" style={{transitionDelay: '0.2s', right: '0px'}}>
                                                 <div className="searchbar-selector__options">
                                                     <div onClick={()=>setSearchchoice('ok')} className="searchbar-selector__option">
-                                                        <div className="searchbar-selector__option-label">{data.shop!=undefined?'Trong Shop này':data.category_info.title}</div> 
-                                                        {searchchoice!=null?
+                                                        <div className="searchbar-selector__option-label">{data.user_id?'Trong Shop này':data.title}</div> 
+                                                        {searchchoice?
                                                         <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon searchbar-selector__option-tick icon-tick"><g><path d="m6.5 13.6c-.2 0-.5-.1-.7-.2l-5.5-4.8c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l4.7 4 6.8-9.4c.3-.4.9-.5 1.4-.2.4.3.5 1 .2 1.4l-7.4 10.3c-.2.2-.4.4-.7.4 0 0 0 0-.1 0z"></path></g></svg>
                                                         :''}
                                                     </div>
@@ -228,7 +230,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                                     items.map((item,index)=>{
                                         if(index<5){
                                             return(
-                                            <div key={item.id} onClick={()=>navigate(`${item.item_url}`)} className='item-start cart-item'>
+                                            <div key={item.id} onClick={()=>navigate(`${item.item_url}?itemId=${item.item_id}`)} className='item-start cart-item'>
                                                 <div className="n0eaQq" style={{backgroundImage: `url(${item.item_image})`}}></div>
                                                 <div className="cart-item-name_price">
                                                     <div className="item-center">

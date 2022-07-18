@@ -19,7 +19,7 @@ const Listproduct=()=>{
             .then(res=>{
                 let data=res.data
                 const pageitem=data.pageitem.map(product=>{
-                    return({...product,check:false,show:false,list_variation:product.list_variation.map(variation=>{
+                    return({...product,check:false,show:false,list_variation:product.variations.map(variation=>{
                         if(variation.percent_discount>0){
                             return({...variation,enable:true})
                         }
@@ -36,15 +36,15 @@ const Listproduct=()=>{
     const showallvariation=(itemchoice)=>{
         let url= new URL(productshopURL)
         let search_params=url.searchParams
-        search_params.set('item_id',itemchoice.item_id)
+        search_params.set('item_id',itemchoice.id)
         url.search = search_params.toString();
         let new_url=url.toString();
-        if(itemchoice.list_variation.length==3){
+        if(itemchoice.variations.length==3){
             axios.get(new_url,headers)
             .then(res=>{ 
                 let data=res.data
                 const pageitem=itemshop.pageitem.map(item=>{
-                    if(item.item_id==itemchoice.item_id){
+                    if(item.id==itemchoice.id){
                         return({...item,show:!item.show,list_variation:[...item.list_variation,...data.list_variation]})
                     }
                     return({...item})
@@ -54,7 +54,7 @@ const Listproduct=()=>{
         }
         else{
             const pageitem=itemshop.pageitem.map(item=>{
-                if(item.item_id==itemchoice.item_id){
+                if(item.id==itemchoice.id){
                     return({...item,show:!item.show})
                 }
                 return({...item})
@@ -65,7 +65,7 @@ const Listproduct=()=>{
 
     const checkitem=(e,itemchoice)=>{
         const pageitem=itemshop.pageitem.map(item=>{
-            if(item.item_id==itemchoice.item_id){
+            if(item.id==itemchoice.id){
                 return({...item,check:!item.check})
             }
             return({...item})
@@ -84,7 +84,7 @@ const Listproduct=()=>{
         let form=new FormData()
         itemshop.pageitem.map(item=>{
             if(item.check){
-                form.append('item_id',item.item_id)
+                form.append('item_id',item.id)
             }
         })
         const pageitem=itemshop.pageitem.filter(item=>!item.check)
@@ -361,7 +361,7 @@ const Listproduct=()=>{
                                         {itemshop.count_product>0?
                                         <>
                                         {itemshop.pageitem.map(item=>
-                                        <div className="product-list-card product-list-item">
+                                        <div key={item.id} className="product-list-card product-list-item">
                                             <div className="item_heading">
                                                 <div className="item-center">
                                                     <div className="submit_form pr-1_2">
@@ -374,11 +374,11 @@ const Listproduct=()=>{
                                                     </div>
                                                 </div>
                                                 <div className="item-center" >
-                                                    <Link to={`vendor/product/${item.item_id}`}>
-                                                        <img src={item.item_image} alt="" width="52px" height="52px"/> 
+                                                    <Link to={`vendor/product/${item.id}`}>
+                                                        <img src={item.image} alt="" width="52px" height="52px"/> 
                                                     </Link>
                                                     <div className="item_detail">
-                                                        <div className="product-name-wrap">{item.item_name}</div>
+                                                        <div className="product-name-wrap">{item.name}</div>
                                                         <div className="product-sku">  
                                                             <span>Sku product : {item.sku!=null?item.sku:'-'}</span>
                                                         </div>
@@ -400,7 +400,7 @@ const Listproduct=()=>{
                                                 </div>
                                             </div>
                                             <div className="">
-                                                {item.list_variation.map((variation,i)=>{
+                                                {item.variations.map((variation,i)=>{
                                                     if(i<3){
                                                         return(
                                                         <div className='item-center -item'>

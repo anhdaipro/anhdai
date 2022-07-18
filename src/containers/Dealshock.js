@@ -6,6 +6,8 @@ import Message from "./Chat"
 import { headers} from '../actions/auth';
 import {localhost,threadlURL,dealURL,addToCartBatchURL,updatecartURL,} from "../urls"
 import {formatter,itemvariation} from "../constants"
+
+
 const Dealshock = () => {
     let navigate = useNavigate();
     const { id } = useParams(); // <-- access id match param here
@@ -151,10 +153,10 @@ const Dealshock = () => {
         let count_color=0
         let variation_color=[]
         let variation_size=[]
-        if(data.size.length>0){
+        if(data.sizes.length>0){
             count_variation+=1
         }
-        if(data.color.length>0){
+        if(data.colors.length>0){
             count_variation+=1
         }
         if(data.size_value!=''){
@@ -164,8 +166,8 @@ const Dealshock = () => {
             count_color=1
         }
 
-        for(let i in data.color){
-            if(data.color_value==data.color[i].value){
+        for(let i in data.colors){
+            if(data.color_value==data.colors[i].value){
                 color_id=data.color[i].id
                 variation_color=data.color[i].variation
             }
@@ -185,14 +187,14 @@ const Dealshock = () => {
         form.append('cartitem_id',state.cartitem_id)
         form.append('deal_id',state.deal_id)
         state.items.map(item=>{
-            if(item.main==true){
+            if(item.main){
                 form.append('item_id',item.item_id)
                 form.append('product_id_chocie',item.product_id)
                 form.append('quantity_product',item.quantity)
             }
             else{
-                if(item.byproduct_id!=undefined){
-                    if(item.check==true){
+                if(item.byproduct_id){
+                    if(item.check){
                         form.append('byproduct_id',item.byproduct_id)
                         form.append('quantity_byproduct',item.quantity)
                     }
@@ -201,7 +203,7 @@ const Dealshock = () => {
                     }
                 }
                 else{
-                    if(item.product_id!=undefined && item.check==true){
+                    if(item.product_id && item.check){
                         form.append('product_id',item.product_id)
                         form.append('quantity',item.quantity)
                     }
@@ -225,14 +227,14 @@ const Dealshock = () => {
                         <div className="stardust-checkbox__box"></div>
                     </label>
                     
-                    <Link className="_2WnPtj" to={data.item_url}>
+                    <Link className="_2WnPtj" to={`${data.item_url}?itemId=${data.item_id}`}>
                         <img className="_2QpYlF" src={`${data.item_image}`}/>
                     </Link >
                     <div className="q7k-yX">
                         <p className="_2eCTrn">{data.item_name}</p>
                     </div>
                     <div className="stardust-popover _348Lnr" id="stardust-popover5">
-                        {data.color.length==0&&data.size.length==0?
+                        {data.colors.length==0&&data.sizes.length==0?
                         '':
                         <div onClick={(e)=>variationitem(e,data)} className="stardust-popover__target">
                             <section className="_1ZJFg-">
@@ -252,10 +254,10 @@ const Dealshock = () => {
                                 <div className="_3RMcd-">
                                     <div className="_2AlHh9">
                                         <div className="_22Wxvt">
-                                            {data.color.length>0?
+                                            {data.colors.length>0?
                                             <div className="NwiGnj">
-                                                <div className="_3qC1Fg">{data.color[0].name}:</div>
-                                                {data.color.map(item=>
+                                                <div className="_3qC1Fg">{data.colors[0].name}:</div>
+                                                {data.colors.map(item=>
                                                     <button key={item.id} onClick={(e)=>setcolor(e,item)} className={`product-variation ${variation.variation_size.length>0?`${item.variation.some(r=> variation.variation_size.includes(r))?'':'disable'}`:''} ${item.id==variation.color_id?'product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                                         {variation.color_id==item.id?
                                                         <div className="product-variation__tick">
@@ -265,10 +267,10 @@ const Dealshock = () => {
                                                     </button>
                                                 )}
                                             </div>:''}
-                                            {data.size.length>0?
+                                            {data.sizes.length>0?
                                             <div className="NwiGnj">
-                                                <div className="_3qC1Fg">{data.size[0].name}:</div>
-                                                {data.size.map(item=>
+                                                <div className="_3qC1Fg">{data.sizes[0].name}:</div>
+                                                {data.sizes.map(item=>
                                                     <button key={item.value} onClick={(e)=>setsize(e,item)} className={`product-variation ${variation.variation_color.length>0?`${item.variation.some(r=> variation.variation_color.includes(r))?'':' disable'}`:''}${item.id==variation.size_id?'product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                                         {variation.size_id==item.id?
                                                         <div className="product-variation__tick">

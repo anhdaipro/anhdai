@@ -105,7 +105,7 @@ return(
                                         <Route exact path='/marketing/bundle/new' element={<Newpromotion/>} /> 
                                         <Route exact path='/marketing/bundle/:id' element={<Detailpromotion/>} /> 
                                         <Route exact path='/marketing/bundle/list' element={<Listcomboshop/>} /> 
-                                        <Route exact path='/marketing/discount/new' element={<Newprogram/>} /> 
+                                        <Route exact path='/marketing/discount/create' element={<Newprogram/>} /> 
                                         <Route exact path='/marketing/discount/:id' element={<Detailprogram/>} />
                                         <Route exact path='/marketing/discount/list' element={<Listdiscountshop/>} />  
                                         <Route exact path='/marketing/flash-sale/new' element={<Newflashsale/>} /> 

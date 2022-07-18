@@ -51,7 +51,7 @@ const Detailproduct=()=>{
             
             const list_medias=[...list_image_item,...list_image_remainder,video]
             setLoading(true)
-            setformData({...formData,id:res.data.item_id,name:res.data.item_name})
+            setformData({...formData,id:res.data.id,name:res.data.name})
             setState({...state,list_category:res.data.list_category,list_choice:list_category_choice,
             list_media:res.data.media_upload,list_color:res.data.list_color,
             list_size:res.data.list_size,shipping_item:res.data.shipping_item,max_level:max_level+1,list_media:list_medias,shipping_item:[...shipping_item,...shipping_item_remainder]})

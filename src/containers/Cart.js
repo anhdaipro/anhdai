@@ -207,7 +207,7 @@ const Iteminfo=(props)=>{
                 :''}
             </div>
             <div className="shop-item-info item-center">
-                <Link to={item.item_url}>
+                <Link to={`${item.item_url}?itemId=${item.item_id}`}>
                     <div className="shop-item-image" style={{backgroundImage: `url(${item.item_image})`}}></div>
                 </Link>
                 <div className="shop-item-name">{item.item_name}</div>
@@ -308,7 +308,7 @@ const Iteminfo=(props)=>{
                         <div className="_1bmRDE">
                         {items.map(item=>
                             <div className="grid__column-2-4" key={item.item_id}>
-                                <Link className="home-product-item" to={item.item_url}>
+                                <Link className="home-product-item" to={`${item.item_url}?itemID=${item.item_id}`}>
                                     <div className="home-product-item__image" style={{backgroundImage: `url(${item.item_image})`}}></div>
                                     <div className="home-product-item-info">
                                         <div className="home-product-item__name">{item.item_name}</div>
@@ -891,7 +891,7 @@ class Cart extends React.Component{
                                                     :''}
                                                     {list_cartitem.filter(cartitem=>!cartitem.promotion &&shop.id==cartitem.shop_id).map((cartitem,i)=>
                                                         <div className="shop-item-order">
-                                                            {cartitem.shock_deal_type!==null?
+                                                            {cartitem.shock_deal_type?
                                                                 <div className="shop-discount">
                                                                     <span class="_319wph">Mua Kèm</span>
                                                                     <span className="discount-title">{cartitem.shock_deal_type=='1'?'Mua kèm deal shock':'Buy to receive gift'}</span>

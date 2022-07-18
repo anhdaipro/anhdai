@@ -16,7 +16,7 @@ const Listdiscountshop=()=>{
     },[])
 
     const setdetail=(item)=>{
-        navite(`/vendor/discount/${item.id}`)
+        navite(`/marketing/discount/${item.id}`)
     }
     return(
         <>
@@ -265,7 +265,7 @@ const Listdiscountshop=()=>{
                                                                             <td className="">
                                                                                 <div className="table__cell">
                                                                                     <div data-v-771d39f6="" className="product-gallery-comp _25_tDRNHeHUHTHoVBXqqAZ">
-                                                                                        {discount.list_product.map((item,index)=>{
+                                                                                        {discount.products.map((item,index)=>{
                                                                                             if(index<5){
                                                                                                 return(
                                                                                                 <span className="avatar avatar--small product-gallery-item">
@@ -273,7 +273,7 @@ const Listdiscountshop=()=>{
                                                                                                 </span>)
                                                                                             }
                                                                                         })}
-                                                                                        {discount.list_product.length>5?<div className="product-gallery-mask gallery-mask__small">+{discount.list_product.length-5}</div>:''}
+                                                                                        {discount.products.length>5?<div className="product-gallery-mask gallery-mask__small">+{discount.products.length-5}</div>:''}
                                                                                         
                                                                                     </div>
                                                                                 </div>

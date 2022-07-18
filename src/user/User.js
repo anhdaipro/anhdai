@@ -13,11 +13,11 @@ const User =({user,image}) =>{
                             <div className="avatar__placeholder">
                                 <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-headshot"><g><circle cx="7.5" cy="4.5" fill="none" r="3.8" stroke-miterlimit="10"></circle><path d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" strokeLinecap="round" stroke-miterlimit="10"></path></g></svg>
                             </div>
-                            <img className="avatar__img" src={`${image!=null?image:user!=null?user.avatar:''}`} />
+                            <img className="avatar__img" src={`${image?image:user?user.avatar:''}`} />
                         </div>
                     </Link>
                     <div className="_2uLDqN">
-                        <div className="_2lG70n">{user!=null?user.username:''}</div>
+                        <div className="_2lG70n">{user?user.username:''}</div>
                         <div>
                             <Link className="_27BCO5" to="/user/account/profile">
                                 <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" style={{marginRight: '4px'}}><path d="M8.54 0L6.987 1.56l3.46 3.48L12 3.48M0 8.52l.073 3.428L3.46 12l6.21-6.18-3.46-3.48" fill="#9B9B9B" fillRule="evenodd"></path></svg>Sửa hồ sơ

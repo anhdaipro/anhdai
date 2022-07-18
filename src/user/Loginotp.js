@@ -62,7 +62,7 @@ const Loginotp = ({ loginotp, isAuthenticated}) => {
     if(isAuthenticated) {
         const search = window.location.search;
         const params = new URLSearchParams(search);
-        if(params.get('next')!=null){
+        if(params.get('next')){
             window.location.href=params.get('next')
         }
         else{

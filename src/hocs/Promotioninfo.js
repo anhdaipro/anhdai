@@ -111,20 +111,20 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
             let new_url = url.toString();
             axios.get(new_url,headers)
             .then(res=>{
-                const items=res.data.c.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.item_id!=itemchoice.item_id))
+                const items=res.data.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
                 const list_items=items.map(item=>{
-                if(itemshop.items_choice.some(product=>product.item_id==item.item_id)){
+                if(itemshop.items_choice.some(product=>product.id==item.id)){
                     return({...item,check:true})
                 }
                 return({...item,check:false})
                 })
-                setItem({...itemshop,itemshops:res.data.c,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize)})  
+                setItem({...itemshop,itemshops:res.data,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize)})  
             })
         }  
         else{
-            const items=itemshop.itemshops.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.item_id!=itemchoice.item_id))
+            const items=itemshop.itemshops.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
             const list_items=items.map(item=>{
-                if(itemshop.items_choice.some(product=>product.item_id==item.item_id)){
+                if(itemshop.items_choice.some(product=>product.id==item.id)){
                     return({...item,check:true})
                 }
                 return({...item,check:false})
@@ -139,7 +139,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
 
     const setcheckitem=useCallback((item,product,keys)=>{
         const list_item=product.map(ite=>{
-            if(item.item_id==ite.item_id){
+            if(item.id==ite.id){
                 return({...ite,check:!ite.check})
             }
             else{
@@ -153,10 +153,10 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
     const setcheckall=(e,list_items,keys,value)=>{
         for (let k in value){
             for(let i in list_items){
-                    if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.item_id==value[k].item_id)){
+                    if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.id==value[k].id)){
                         value[k].check=true
                     }
-                    if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.item_id==value[k].item_id)){
+                    if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.id==value[k].id)){
                         value[k].check=false
                     }
                     if(e.target.checked==true && list_items[i]==value[k]){
@@ -180,7 +180,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
 
     const setenableitem=(e,product,value,key)=>{
         const list_item=value.map(ite=>{
-            if(product.item_id==ite.item_id){
+            if(product.id==ite.id){
                 return({...ite,enable:!ite.enable})
             }
             else{
@@ -191,9 +191,9 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
     }
 
     const removeitem=(itemmove,keys,value,keys_choice,value_choice,page_current)=>{
-        const list_itemchoice=value_choice.filter(item=>item.item_id!=itemmove.item_id)
+        const list_itemchoice=value_choice.filter(item=>item.id!=itemmove.id)
         const list_item=value.map(ite=>{
-            if(ite.item_id==itemmove.item_id){
+            if(ite.id==itemmove.id){
                 return({...ite,check:false})
             }
             else{
@@ -225,7 +225,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
     const setdeletechoice=(keys,value,keys_choice,value_choice,page_current)=>{
         const list_itemchoice=value_choice.filter(item=>!item.check)
         const list_item=value.map(item=>{
-            if(list_itemchoice.every(items=>items.item_id!=item.item_id)){
+            if(list_itemchoice.every(items=>items.id!=item.id)){
                 return({...item,check:false})
             }
             return({...item})
@@ -254,7 +254,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
         handlePageChange(page,name)
     }
     const submit=useCallback(()=>{
-        const list_itemscheck=itemshop.items.filter(ite=>ite.check && !itemshop.items_choice.some(item=>item.item_id==ite.item_id))
+        const list_itemscheck=itemshop.items.filter(ite=>ite.check && !itemshop.items_choice.some(item=>item.id==ite.id))
         const list_itemschoice=list_itemscheck.map(item=>{
             return({...item,check:false,enable:true})
         })
@@ -272,8 +272,12 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
         })
         const item_choice=itemshop.items_choice.filter(item=>item.enable)
         item_choice.map(item=>{
-            form.append('item_id',item.item_id)
+            form.append('item_id',item.id)
         })
+        const dataitems=itemshop.items_choice.map(item=>{
+            return({...item,check:false})
+        })
+        form.append('items',JSON.stringify(dataitems))
         axios.post(url_combo,form,headers)
         .then(res=>{
             const countDown = setInterval(() => {
@@ -497,9 +501,9 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                                                         </label>
                                                     </div>
                                                     <div className="item-center" >
-                                                        <img src={item.item_image} alt="" width="52px" height="52px"/>
+                                                        <img src={item.image} alt="" width="52px" height="52px"/>
                                                         <div className="item_detail">
-                                                            <div className="ellipsis-content">{item.item_name}</div>
+                                                            <div className="ellipsis-content">{item.name}</div>
                                                             <div className="product-sku"><span>SKU :</span></div>
                                                         </div>
                                                     </div>
@@ -508,7 +512,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                                                     <div>
                                                         ₫{formatter.format(item.min_price)} {item.min_price!=item.max_price?`- ${formatter.format(item.max_price)}`:''}
                                                     </div>
-                                                    <div>{item.item_inventory}</div>
+                                                    <div>{item.total_inventory}</div>
                                                     <div className="column_edit-shipping">{item.item_shipping}</div>
                                                     <div className="item-center status">
                                                         <input type="checkbox" onChange={(e)=>setenableitem(e,item,itemshop.items_choice,'items_choice')} checked={item.enable?true:false}  className="switch_1 " name="check"/>

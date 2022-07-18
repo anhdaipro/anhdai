@@ -26,7 +26,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
         setting_display:'Show many'})
     const [itemshop,setItem]=useState({items:[],page_count_main:0,items_choice:[],savemain:false
         ,page_count_by:0,byproduct:[],byproduct_choice:[],savebyproduct:false})
-    
+    const [open,setOpen]=useState(false)
     const [show,setShow]=useState({items:false,byproduct:false})
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
     const [loading,setLoading]=useState(false)
@@ -45,6 +45,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
         setShow({...show,[name]:sho})
     }
 
+    
     const opendiscount=(e)=>{
         setState({...state,open_discount:!state.open_discount})
         window.onclick=(event)=>{
@@ -70,7 +71,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
         else{
             let form=new FormData()
             itemshop.items_choice.map(item=>{
-                form.append('item_id',item.item_id)
+                form.append('item_id',item.id)
             })
             Object.keys(voucher).map(keys=>{
                 if(voucher[keys] !=null){
@@ -95,7 +96,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
 
     const setcheckitem=useCallback((item,product,keys)=>{
         const list_item=product.map(ite=>{
-            if(item.item_id==ite.item_id){
+            if(item.id==ite.id){
                 return({...ite,check:!ite.check})
             }
             else{
@@ -109,10 +110,10 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
     const setcheckall=(e,list_items,keys,value,value_choice)=>{
         for (let k in value){
             for(let i in list_items){
-                if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !value_choice.some(ite=>ite.item_id==value[k].item_id)){
+                if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !value_choice.some(ite=>ite.id==value[k].id)){
                     value[k].check=true
                 }
-                if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !value_choice.some(ite=>ite.item_id==value[k].item_id)){
+                if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !value_choice.some(ite=>ite.id==value[k].id)){
                     value[k].check=false
                 }
                 if(e.target.checked==true && list_items[i]==value[k]){
@@ -131,7 +132,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
     }
 
     const submit=useCallback(()=>{
-        const list_itemscheck=itemshop.items.filter(ite=>ite.check && !itemshop.items_choice.some(item=>item.item_id==ite.item_id))
+        const list_itemscheck=itemshop.items.filter(ite=>ite.check && !itemshop.items_choice.some(item=>item.id==ite.id))
         const list_itemschoice=list_itemscheck.map(item=>{
             return({...item,check:false,enable:true})
         })
@@ -142,9 +143,9 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
 
     
     const removeitem=(itemmove,keys,value,keys_choice,value_choice,page_current)=>{
-        const list_itemchoice=value_choice.filter(item=>item.item_id!=itemmove.item_id)
+        const list_itemchoice=value_choice.filter(item=>item.id!=itemmove.id)
         const list_item=value.map(ite=>{
-            if(ite.item_id==itemmove.item_id){
+            if(ite.id==itemmove.id){
                 return({...ite,check:false})
             }
             else{
@@ -209,20 +210,20 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
             let new_url = url.toString();
             axios.get(new_url,headers)
             .then(res=>{
-                const items=res.data.c.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.item_id!=itemchoice.item_id))
+                const items=res.data.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
                 const list_items=items.map(item=>{
-                if(itemshop.items_choice.some(product=>product.item_id==item.item_id)){
+                if(itemshop.items_choice.some(product=>product.id==item.id)){
                     return({...item,check:true})
                 }
                 return({...item,check:false})
                 })
-                setItem({...itemshop,itemshops:res.data.c,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize)})  
+                setItem({...itemshop,itemshops:res.data,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize)})  
             })
         }  
         else{
-            const items=itemshop.itemshops.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.item_id!=itemchoice.item_id))
+            const items=itemshop.itemshops.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
             const list_items=items.map(item=>{
-                if(itemshop.items_choice.some(product=>product.item_id==item.item_id)){
+                if(itemshop.items_choice.some(product=>product.id==item.id)){
                     return({...item,check:true})
                 }
                 return({...item,check:false})
@@ -502,14 +503,14 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
                                                 <div className="table__body-container" style={{width: '760px'}}>
                                                     <div className="item-shop">
                                                         {currentitemPage.map(item=>
-                                                        <div className="item">
+                                                        <div key={item.id} className="item">
                                                             <div className="item-discount">
                                                                 <div className="item_heading" style={{width:'320px'}}> 
                                                                     <div className="item-center" >
-                                                                        <img src={item.item_image} alt="" width="40px" height="40px"/>
+                                                                        <img src={item.image} alt="" width="40px" height="40px"/>
                                                                         <div className="item_detail">
                                                                             <div className="ellipsis-content">
-                                                                                {item.item_name}
+                                                                                {item.name}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -518,7 +519,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
                                                                     <div class='item-prices'>
                                                                         ₫{formatter.format(item.min_price)} {item.min_price!=item.max_price?`- ${formatter.format(item.max_price)}`:''}
                                                                     </div>
-                                                                    <div className="item-stocks">{item.item_inventory}</div>
+                                                                    <div className="item-stocks">{item.total_inventory}</div>
                                                                     <div className="item-action">
                                                                         <i onClick={()=>removeitem(item,'items',itemshop.items,'items_choice',itemshop.items_choice,currentPage.items)} className="trash-icon icon">
                                                                             <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fillRule="nonzero"><path d="M14.516 3.016h-4v-1a.998.998 0 0 0-.703-.955.99.99 0 0 0-.297-.045h-3a.998.998 0 0 0-.955.703.99.99 0 0 0-.045.297v1h-4a.5.5 0 1 0 0 1h1v10a.998.998 0 0 0 .703.955.99.99 0 0 0 .297.045h9a.998.998 0 0 0 .955-.703.99.99 0 0 0 .045-.297v-10h1a.5.5 0 1 0 0-1zm-8-1h3v1h-3v-1zm6 12h-9v-10h9v10z"></path><path d="M5.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5zM8.016 12.016a.5.5 0 0 0 .5-.5v-5a.5.5 0 1 0-1 0v5a.5.5 0 0 0 .5.5zM10.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5z"></path></g></svg>
