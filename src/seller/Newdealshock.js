@@ -58,7 +58,7 @@ const Newdealshock=()=>{
     const editdeal=useCallback(()=>{
         const datadeal= Object.keys(deal).map(item=>{
             if(deal[item]!=null){
-                return({item:deal[item]})
+                return({[item]:deal[item]})
             }
         })
         const data={...datadeal,action:'change'}
