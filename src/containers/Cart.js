@@ -489,23 +489,24 @@ class Cart extends React.Component{
 
    
     checkall(e){
-        let form=new FormData()
-        this.state.list_shop.map(shop=>{
-            form.append('shop_id',shop.id)
+        const list_shop=this.state.list_shop.map(shop=>{
+            return(shop.id)
         })
-
         this.state.list_cartitem.map(item=>{
             if(e.target.checked){
                 item.check=true
-                form.append('id_checked',item.id)
             }
             else{
                 item.check=false
-                form.append('id_check',item.id)
             }
         })
 
-        axios.post(cartURL,form,headers)
+        const list_checked=this.state.list_cartitem.map(item=>{
+            return(item.id)
+        })
+        const data_check=e.target.checked?{id_checked:list_checked}:{id_check:list_checked}
+        const data={...data_check,shop_id:list_shop}
+        axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let data=rep.data
             this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
@@ -517,22 +518,22 @@ class Cart extends React.Component{
     }
     
     checkshop(e,shop){
-        let form=new FormData()
-        form.append('shop_id',shop.id)
         this.state.list_cartitem.map(item=>{
-            if(item.shop_id===shop.id){
+            if(item.shop_id==shop.id){
                 if(e.target.checked){
                     item.check=true
-                    form.append('id_checked',item.id)
                 }
                 else{
                     item.check=false
-                    form.append('id_check',item.id)
                 }
             }
         })
-
-        axios.post(cartURL,form,headers)
+        const list_checked=this.state.list_cartitem.filter(item=>item.shop_id==shop.id).map(item=>{
+            return(item.id)
+        })
+        const data_check=e.target.checked?{id_checked:list_checked}:{id_check:list_checked}
+        const data={...data_check,shop_id:[shop.id]}
+        axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let data=rep.data
             this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
@@ -544,16 +545,8 @@ class Cart extends React.Component{
     }
 
 
-    checked(e,item){
-        
-        let form=new FormData()
-        if(item.check){
-            form.append('id_check',item.id)
-        }
-        else{
-            form.append('id_checked',item.id)
-        }
-        form.append('shop_id',item.shop_id)
+    checked(e,item){ 
+        const data_check=item.check?{id_check:[item.id]}:{id_checked:[item.id]}
         const list_cartitem=this.state.list_cartitem.map(cartitem=>{
             if(item.id==cartitem.id){
                 return({...cartitem,check:!cartitem.check})
@@ -561,7 +554,8 @@ class Cart extends React.Component{
             return({...cartitem})
         })
         this.setState({list_cartitem:list_cartitem})
-        axios.post(cartURL,form,headers)
+        const data={...data_check,shop_id:[item.shop_id]}
+        axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let data=rep.data
             this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
@@ -634,15 +628,9 @@ class Cart extends React.Component{
     }
     
     fetchdata(e,item,product,value){
-        let form=new FormData()
-        if(product=='byproduct'){
-            form.append('byproduct_id',item.id)
-        }
-        else{
-            form.append('cartitem_id',item.id)
-        }
-        form.append('quantity',value)
-        axios.post(cartURL,form,headers)
+        const dataitem=product=='byproduct'?{byproduct_id:item.id}:{cartitem_id:item.id}
+        const data={...dataitem,quantity:value}
+        axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let data=rep.data
             this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
@@ -653,14 +641,8 @@ class Cart extends React.Component{
     }
 
     removeitem(e,itemchoice,product){
-        let form=new FormData()
-        if(product=='byproduct'){
-            form.append('byproduct_id_delete',itemchoice.id)
-        }
-        else{
-        form.append('cartitem_id_delete',itemchoice.id)
-        }
-        axios.post(cartURL,form,headers)
+        const data=product=='byproduct'?{byproduct_id_delete:itemchoice.id}:{cartitem_id_delete:itemchoice.id}
+        axios.post(cartURL,JSON.stringify(data),headers)
         .then(resp => {
         let data=resp.data
         const list_cartitem=this.state.list_cartitem.filter(item=>item.id!=itemchoice.id)
@@ -671,11 +653,8 @@ class Cart extends React.Component{
     }
 
     apply_voucher(voucher){
-        let form=new FormData()
-        console.log(this.shopchoice())
-        form.append('voucher_id',voucher.id)
-        form.append('shop_id',this.shopchoice().id)
-        axios.post(cartURL,form,headers)
+        const data={voucher_id:voucher.id,shop_id:[this.shopchoice().id]}
+        axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let data=rep.data
             const list_shop=this.state.list_shop.map(shop=>{
@@ -689,10 +668,8 @@ class Cart extends React.Component{
     }
 
     remove_voucher(voucher){
-        let form=new FormData()
-        form.append('shop_id',this.shopchoice().id)
-        form.append('voucher_id_remove',voucher.id)
-        axios.post(cartURL,form,headers)
+        const data={voucher_id_remove:voucher.id,shop_id:[this.shopchoice().id]}
+        axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let data=rep.data
             const list_shop=this.state.list_shop.map(shop=>{

@@ -56,18 +56,16 @@ const Newdealshock=()=>{
     },[deal])
 
     const editdeal=useCallback(()=>{
-        let form=new FormData()
-        form.append('edit',true)
-        Object.keys(deal).map(item=>{
+        const datadeal= Object.keys(deal).map(item=>{
             if(deal[item]!=null){
-                form.append(item,deal[item])
+                return({item:deal[item]})
             }
         })
-
-        axios.post(newdealURL,form,headers)
+        const data={...datadeal,action:'change'}
+        axios.post(newdealURL,JSON.stringify(data),headers)
         .then(res=>{
             let id=res.data.id
-            window.location.href='/marketing/add-on-deal/'+id
+           
         })
     },[])
 

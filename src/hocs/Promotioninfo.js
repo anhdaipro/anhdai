@@ -270,15 +270,13 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
             form.append(item,combo[item])
             }
         })
+        const datacombo=combo
+        delete datacombo.products
         const item_choice=itemshop.items_choice.filter(item=>item.enable)
-        item_choice.map(item=>{
-            form.append('item_id',item.id)
-        })
-        const dataitems=itemshop.items_choice.map(item=>{
-            return({...item,check:false})
-        })
-        form.append('items',JSON.stringify(dataitems))
-        axios.post(url_combo,form,headers)
+    
+        const data={list_items:item_choice.map(item=>{
+            return(item.id)}),...datacombo}
+        axios.post(url_combo,JSON.stringify(data),headers)
         .then(res=>{
             const countDown = setInterval(() => {
                 state.timeSecond--;

@@ -69,15 +69,11 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
             console.log('lỗi')
         }
         else{
-            let form=new FormData()
-            itemshop.items_choice.map(item=>{
-                form.append('item_id',item.id)
-            })
-            Object.keys(voucher).map(keys=>{
-                if(voucher[keys] !=null){
-                    form.append(keys,voucher[keys])
-                }
-            })
+            const datavoucher=voucher
+            delete datavoucher.products
+            const data={list_items:itemshop.items_choice.map(item=>{
+                return(item.id)
+            }),...datavoucher}
             const countDown = setInterval(() => {
                 state.timeSecond--;
                 setState({...state,complete:true})
@@ -87,7 +83,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
                     navite('/marketing/vouchers/list')
                 }
             }, 1000);
-            axios.post(vouchershopURL,form,headers)
+            axios.post(vouchershopURL,JSON.stringify(data),headers)
             .then(res=>{
                 
             })

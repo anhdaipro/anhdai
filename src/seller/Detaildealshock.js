@@ -497,13 +497,13 @@ const Detaildealshock=()=>{
     },[deal])
 
     const editdeal=useCallback(()=>{
-        let form=new FormData()
-        form.append('edit',true)
-        Object.keys(deal).map(item=>{
-            form.append(item,deal[item])
+        const datadeal= Object.keys(deal).map(item=>{
+            if(deal[item]!=null){
+                return({item:deal[item]})
             }
-        )
-        axios.post(dealDetailshopURL+id,form,headers)
+        })
+        const data={...datadeal,action:'change'}
+        axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
         .then(res=>{
             setDeal(res.data)
             setState({...state,edit:false})

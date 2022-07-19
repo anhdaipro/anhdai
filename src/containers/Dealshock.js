@@ -183,35 +183,16 @@ const Dealshock = () => {
 
     const addtocartbatch=(e)=>{
         e.stopPropagation()
-        let form=new FormData()
-        form.append('cartitem_id',state.cartitem_id)
-        form.append('deal_id',state.deal_id)
-        state.items.map(item=>{
-            if(item.main){
-                form.append('item_id',item.item_id)
-                form.append('product_id_chocie',item.product_id)
-                form.append('quantity_product',item.quantity)
-            }
-            else{
-                if(item.byproduct_id){
-                    if(item.check){
-                        form.append('byproduct_id',item.byproduct_id)
-                        form.append('quantity_byproduct',item.quantity)
-                    }
-                    else{
-                        form.append('byproduct_id_delete',item.byproduct_id)
-                    }
-                }
-                else{
-                    if(item.product_id && item.check){
-                        form.append('product_id',item.product_id)
-                        form.append('quantity',item.quantity)
-                    }
-                }
-            }
+        const main_product=state.items.find(item=>item.main)
+        const byproducts=state.items.filter(item=>!item.main).map(item=>{
+            return({byproduct_id:item.byproduct_id,quantity:main_product.quantity,check:item.check,
+            product_id:item.product_id})
         })
+        const data={cartitem_id:state.cartitem_id,deal_id:state.deal_id,
+        product_id:main_product.product_id,quantity:main_product.quantity,
+        byproducts:byproducts,item_id:main_product.item_id}
         
-        axios.post(addToCartBatchURL,form,headers)
+        axios.post(addToCartBatchURL,JSON.stringify(data),headers)
         .then(resp => {
             
         })

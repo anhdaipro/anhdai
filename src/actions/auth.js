@@ -297,12 +297,11 @@ export const showthreads=()=> async dispatch=>{
 }
 export const  buyagain=(data)=>async dispatch =>{
     try{
-        let form=new FormData()
-        data.cart_item.map(cartitem=>{
-            form.append('product_id',cartitem.product_id)
+        const datacart=data.cart_item.map(cartitem=>{
+            return(cartitem.product_id)
         })
-        form.append('shop_id',data.shop.id)
-        const res=await axios.post(buyagainURL,form,headers)
+        const form={product_id:datacart,shop_id:data.shop.id}
+        const res=await axios.post(buyagainURL,JSON.stringify(form),headers)
         dispatch({
             type: BUYAGAIN,
             payload: res.data
