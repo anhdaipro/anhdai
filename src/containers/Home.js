@@ -2,7 +2,7 @@ import React,{useState,useEffect,createRef} from 'react';
 import axios from 'axios';
 import Navbar from "./Navbar"
 import {formatter,} from "../constants"
-import {ItemRecommend,topsearchURL,imagehomeURL,listitemflashsalelURL,listcategoryURL} from "../urls"
+import {ItemRecommend,topsearchURL,imagehomeURL,dashboardpromotionURL,listitemflashsalelURL,listcategoryURL} from "../urls"
 import { Link } from 'react-router-dom';
 import SlideshowGallery from "../hocs/Slideshow"
 import { headers } from '../actions/auth';
@@ -72,7 +72,8 @@ class Category extends React.Component {
       axios.get(listcategoryURL,headers)
       .then(res=>{
         this.setState({loading:true,transform: 'translate(0px, 0px)',categories:partition(res.data, int).map(subarray => subarray)});
-      })  
+      
+    })  
       .catch(err => {
         this.setState({ error: err});
       });
@@ -144,13 +145,14 @@ class Category extends React.Component {
 const Itemflashsale =()=> {
     const [state,setState]=useState({items:[],time_end:new Date(),transform:'translate(0px, 0px)',loading:false })
     const [time,setTime]=useState({hours:0,mins:0,seconds:0})
+    const[dx,setDx]=useState(0)
     useEffect(() => {
         const getJournal = async () => {
         await axios.get(listitemflashsalelURL,headers)
         .then(res => {
                 const data = res.data;
-                const time_end=data.list_flashsale.length>0?data.list_flashsale[0].valid_to:'2022-10-10'
-                setState({ ...state,loading:true,items:data.a,time_end:time_end,transform:'translate(0px, 0px)' });
+                const time_end=data.valid_to
+                setState({ ...state,id:res.data.id,loading:true,items:data.items_flash_sale,time_end:time_end,transform:'translate(0px, 0px)' });
                 const countDown= setInterval(() => timer(), 1000);
                 const  timer=()=> {
                     const FalshsaleDate = new Date(time_end);
@@ -164,36 +166,24 @@ const Itemflashsale =()=> {
                         clearInterval(countDown);
                     }
                 }
-                let hour_hexa=document.querySelector('.hour')
+                
             })
         }
         getJournal()
     },[])
 
     
-    
-    const prevSlide =(e)=>{
-        e.currentTarget.nextElementSibling.style.visibility='visible'
-        e.currentTarget.style.visibility='hidden'
-        this.setState({transform: 'translate(0px, 0px)'});
+    const setSlide = (value) =>{
+        setDx(value)
     }
-    const nextSlide = (e) =>{
-        e.currentTarget.previousElementSibling.style.visibility='visible'
-        e.currentTarget.style.visibility='hidden'
-        this.setState({transform: 'translate(-1000px, 0px)'});
-        
-    }
-    const number=(num,value)=>{
-        const list_number=[]
-        for(let i=0;i<num;i++){
-            list_number.push(
-            <div style={{color:'#fff'}} className="countdown-timer__number__item">
+    const number=(number,value)=>{
+        return Array(number).fill().map((_,i)=>
+            <div key={i} style={{color:'#fff'}} className="countdown-timer__number__item">
                 <span>{i}</span>
-            </div>)
-        }
-        return list_number
+            </div>
+        )
     }
-    const { items,transform} = state;
+    const { items,transform,id} = state;
         return (
             <>
             {state.loading && items.length>0?
@@ -242,12 +232,12 @@ const Itemflashsale =()=> {
                     <div className="header-section__content">
                         <div className="image-carousel">
                             <div className="image-carousel__item-list-wrapper">                      
-                                <ul style={{width: "266.667%",transform: transform,transition: "all 500ms ease 0s"}}>
+                                <ul style={{width: "266.667%",transform:`translate(${-dx}px, 0px)`,transition: "all 500ms ease 0s"}}>
                                     {
                                     items.map(item =>
-                                        <li key={item.item_id} className="image-carousel__item" style={{width: "200px"}}>
+                                        <li key={item.id} className="image-carousel__item" style={{width: "200px"}}>
                                             <div className="flash-sale-item-card flash-sale-item-card--home-page">
-                                                <a className="flash-sale-item-card-link">
+                                                <Link className="flash-sale-item-card-link" to={`/flash_sale?fromItem=${item.id}&promotionId=${id}`}>
                                                     <div className="flash-sale-item-card__image flash-sale-item-card__image--home-page">
                                                         <div className="_2JCOmq">
                                                             <div className="flash-sale-item-card__image-overlay flash-sale-item-card__image-overlay--home-page _3LhWWQ" style={{backgroundImage:`url(${item.image})`,backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
@@ -260,42 +250,51 @@ const Itemflashsale =()=> {
                                                         <div className="flash-sale-item-card__lower-left">
                                                             <div className="flash-sale-item-card__current-price flash-sale-item-card__current-price--home-page">
                                                                 <span className="item-price-dollar-sign">₫ </span>
-                                                                <span className="item-price-number">{formatter.format(((item.max_price+item.min_price)/2)*(100-item.percent_discount)/100)}</span> 
+                                                                <span className="item-price-number">{formatter.format(item.discount_price)}</span> 
                                                             </div>
+                                                            
                                                             <div className="flash-sale-progress-bar__wrapper flash-sale-progress-bar__wrapper--home-page">
-                                                                <div className="flash-sale-progress-bar flash-sale-progress-bar--home-page">
-                                                                    <div className="flash-sale-progress-bar__text">Đã bán {item.number_order}</div>
-                                                                    <div className="flash-sale-progress-bar__complement-wrapper flash-sale-progress-bar__complement-wrapper--home-page">
-                                                                        <div className="flash-sale-progress-bar__complement-sizer flash-sale-progress-bar__complement-sizer--home-page" style={{width: `${(1-(item.number_order/item.quantity_limit_flash_sale))*100}%`}}>
-                                                                            <div className="flash-sale-progress-bar__complement-color"></div>
+                                                                <div class="HIIASx">
+                                                                    <div class="Ygavkn">{item.number_order/item.promotion_stock>0.8?'Sắp cháy hàng':`Đã bán ${item.number_order}`}</div>
+                                                                    <div class="NiQ2DI">
+                                                                        <div class="NwnNg9" style={{width: `${(1-(item.number_order/item.promotion_stock))*100}%`}}>
+                                                                            
+                                                                            <div class="zYeAeX"></div>
+                                                                            
+
                                                                         </div>
+                                                                       
                                                                     </div>
+                                                                    {item.number_order/item.promotion_stock>0.5?
+                                                                        <div class="Xm0-Ex"></div>:''}
+                                                                    
+                                                                    
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div className="flash-sale-item-card__lower-right">
                                                         </div>
-                                                        {item.percent_discount>0?
+                                                        
                                                         <div className="item-card__badge-wrapper fs-item-card__badge-wrapper fs-item-card__badge-wrapper--home-page">
-                                                            <div className="_3e3Ul9 _63yEXc XzXrC5 badge" >
+                                                            <div className="_3e3Ul9 _63yEXc XzXrC5" >
                                                                 <div className="_1l5jbc">
-                                                                    <span className="percent">{item.percent_discount}%</span>
+                                                                    <span className="percent-flash">{item.percent_discount}%</span>
                                                                     <span className="_1GDo5V">giảm</span>
                                                                 </div>
                                                             </div>
-                                                        </div>:''}
+                                                        </div>
                                                     </div>
-                                                </a>
+                                                </Link>
                                             </div>
                                         </li>
                                         )
                                         }
                                     </ul>
                                 </div>
-                                <div onClick={()=>prevSlide()} className="carousel-arrow carousel-arrow--hint carousel-arrow--prev  carousel-arrow--hidden" role="button" tabIndex={0} style={{opacity: '1', visibility: 'hidden', transform: 'translateX(calc(-50% + 0px))'}}>
+                                <div onClick={()=>setSlide(dx-1000)} className="carousel-arrow carousel-arrow--hint carousel-arrow--prev  carousel-arrow--hidden" role="button" tabIndex={0} style={{opacity: '1', visibility: `${dx==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
                                     <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
                                 </div>
-                                <div onClick={()=>nextSlide()} className="carousel-arrow carousel-arrow--hint carousel-arrow--next" role="button" tabIndex={0} style={{opacity: '1',visibility: 'visible', transform: 'translateX(calc(50% - 0px))'}}>
+                                <div onClick={()=>setSlide(dx+1000)} className="carousel-arrow carousel-arrow--hint carousel-arrow--next" role="button" tabIndex={0} style={{opacity: '1',visibility: `${dx==2000?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
                                     <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
                                 </div>
                             </div>
@@ -309,7 +308,11 @@ const Itemflashsale =()=> {
 
 export default class HomePage extends React.Component {
     state={items:[],item_common:[],list_trend_search:[],list_top_search:[],showimage:true,from_index:0}
-    componentDidMount() {
+    componentDidMount() {  
+        axios.get(`${dashboardpromotionURL}?time=yesterday`,headers)
+        .then(res=>{
+
+        })
         document.body.onscroll=()=>{
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
                 if(clientHeight + scrollTop == scrollHeight && this.state.items.length==0){

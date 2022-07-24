@@ -4,10 +4,10 @@ import {Link,useParams} from 'react-router-dom'
 import ReactDOM, { render } from 'react-dom'
 import Timeoffer from "./Timeoffer"
 import Productoffer from "../seller/Productoffer"
-import React, {useState,useEffect,useCallback,useRef} from 'react'
+import React, {useState,useEffect,useCallback,useRef,useMemo} from 'react'
 import Pagination from "./Pagination"
 
-import {formatter,itemvariation,limit_choice} from "../constants"
+import {formatter,itemvariation,limit_choice,timesubmit,valid_from,valid_to} from "../constants"
 import { headers } from '../actions/auth';
 import { newprogramURL } from '../urls';
 let Pagesize=5
@@ -86,112 +86,99 @@ const Limit=(props)=>{
     )
 }
 
-const Programinfo=({loading_content,item_program,date_program,program_shop,url_program})=>{
-    const [program,setProgram]=useState({name_program:'',valid_from:new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
-    valid_to:new Date(new Date().setHours(new Date().getHours()+1)).toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16)
+const Programinfo=({loading_content,item_program,edit,program_shop,url_program})=>{
+    const [program,setProgram]=useState({name_program:'',valid_from:valid_from.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
+    valid_to:valid_to.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     })
     const [limititem,setLimititem]=useState({show:false,limit:false,user_item_limit:''})
     const [limitvariation,setLimitvariation]=useState({show:false,limit:false,promotion_stock:'',percent_discount:''})
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
     const [state,setState]=useState({timeSecond:5,complete:false,page_input:1,percent_discount:''})
-    const [date,setDate]=useState([{time:new Date(),show:false,hours:new Date().getHours(),minutes:new Date().getMinutes()}
-    ,{time:new Date(),show:false,hours:new Date().getHours()+1,minutes:new Date().getMinutes()}])
     const [show,setShow]=useState({items:false,byproduct:false})
     const [itemshop,setItem]=useState({items:[],page_count_main:0,items_choice:[],savemain:false
     ,page_count_by:0,byproduct:[],byproduct_choice:[],savebyproduct:false})
     const [loading,setLoading]=useState(false)
+    const [sameitem,setSameitem]=useState([])
+    const [duplicate,setDuplicate]=useState(false)
     const {id}=useParams()
+    
     useEffect(() => {
-        setDate(date_program)
+        if(program_shop){
         setProgram(program_shop)
         setLoading(loading_content)
         setItem(item_program)
-      }, [date_program,loading_content,item_program,program_shop]);
+        }
+      }, [loading_content,item_program,program_shop]);
    
-    const firstpagebyproductIndex=(currentPage.byproduct - 1) * Pagesize;
-    const lastPagebyproductIndex = firstpagebyproductIndex + Pagesize;
-    const byproductPage=itemshop.byproduct_choice.slice(firstpagebyproductIndex, lastPagebyproductIndex);
-    const onChange = (datechoice) => {
-        const list_date=date.map(item=>{
-            if(item.show){
-                return({...item,time:datechoice})
-            }
-            return({...item})
-        })
-
-        setDate(list_date);
-    };
+    const byproductPage=useMemo(()=>{
+        const firstpagebyproductIndex=(currentPage.byproduct - 1) * Pagesize;
+        const lastPagebyproductIndex = firstpagebyproductIndex + Pagesize;
+        return itemshop.byproduct_choice.slice(firstpagebyproductIndex, lastPagebyproductIndex);
+    },[currentPage.byproduct,itemshop.byproduct_choice])
 
     const handlePageChange=useCallback((page,name)=>{
         setCurrentPage({...currentPage,[name]:page})
     },[currentPage])
 
-    const settimechoice=(value,index,name)=>{
-        const list_date=date.map((item,i)=>{
-            if(i==index){
-                console.log(name)
-                return({...item,[name]:value})
-            }
-            return({...item})
-        })
-        setDate(list_date); 
+    const list_enable_on=itemshop.byproduct_choice.filter(item=>item.variations.some(variation=>variation.enable) )
+    const item_unvalid=list_enable_on.some(item=>sameitem.some(product=>product==item.id))
+    const setdatevalid=(index,date)=>{
+        const dateprogram=date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date.hours).slice(-2)+':'+("0"+date.minutes).slice(-2)
+        const datadate=index==0?{valid_from:dateprogram,valid_to:program.valid_to}:{valid_to:dateprogram,valid_from:program.valid_from}
+        setProgram({...program,...datadate})
+        if(list_enable_on.length>0){
+            const data={action:'checkitem',...datadate,list_items:list_enable_on.map(item=>{
+                return(item.id)
+            })}
+            axios.post(url_program,JSON.stringify(data),headers)
+            .then(res=>{
+                const data=res.data.sameitem
+                if(res.data.error){
+                    seteterror(data)
+                    setSameitem(data)
+                }
+                else{
+                    setSameitem([])
+                }
+            })
+        }
     }
 
-    const setindexchoice=(list_date)=>{
-        setDate(list_date);
+    const seteterror=(data)=>{
+        setDuplicate(true)
+        const list_byproducts=itemshop.byproduct_choice.map(item=>{
+            return({...item,variations:sameitem.some(product=>product==item.id)?item.variations.map(variation=>{
+                return({...variation,enable:false})
+            }):item.variations})
+        })
+        setItem({...itemshop,byproduct_choice:list_byproducts})
     }
-    const list_enable_on=itemshop.byproduct_choice.filter(item=>item.variations.some(variation=>variation.enable))
-    const setdatevalid=(index)=>{
-        if(index==0){
-            setProgram({...program,valid_from:date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)})
-        }
-        else{
-            setProgram({...program,valid_to:date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)})
-        }
-    }
+
 
     const setform=(e)=>{
         setProgram({...program,[e.target.name]:e.target.value})
     }
 
     const addbyproduct=(e)=>{
-        console.log('lllllllllllll')
-        
-        if(itemshop.items.length==0){
-            setShow({...show,byproduct:true,items:false})
-            const url=id?`${newprogramURL}?item=item&program_id=${id}`:`${newprogramURL}?item=item`
-            axios.get(url,headers)
-            .then(res=>{
-                setLoading(true)
-                const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
-                console.log('lllllllllllll')
-                const byproduct=list_byproduct.map(item=>{
+        setShow({...show,byproduct:true,items:false})
+        const url=id?`${newprogramURL}?valid_from=${timesubmit(program.valid_from)}&valid_to=${timesubmit(program.valid_to)}&program_id=${id}`:`${newprogramURL}?valid_from=${timesubmit(program.valid_from)}&valid_to=${timesubmit(program.valid_to)}`
+        axios.get(url,headers)
+        .then(res=>{
+            setLoading(true)
+            const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
+           console.log('lllllllllllll')
+            const byproduct=list_byproduct.map(item=>{
                     if(itemshop.byproduct_choice.some(by=>by.id==item.id)){
-                        return({...item,check:true})
+                        return({...item,check:true,disable:true})
                     }
                      return({...item,check:false})
                 })
                 
-                setItem({...itemshop,itemshops:res.data,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
-            })
-        }
-        else{
-            setShow({...show,byproduct:true,items:false})
-            setLoading(true)
-            console.log('ggggg')
-            const list_byproduct=itemshop.itemshops.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
-            const byproduct=list_byproduct.map(item=>{
-                if(itemshop.byproduct_choice.some(by=>by.id==item.id)){
-                    return({...item,check:true})
-                }
-                    return({...item,check:false})
-            })
-            
-            setItem({...itemshop,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
-        }
+            setItem({...itemshop,itemshops:res.data,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
+        })
     }
-    console.log(itemshop.items)
-    const setcheckitem=useCallback((item,product,keys)=>{
+    
+    const setcheckitem=(item,product,keys)=>{
         const list_item=product.map(ite=>{
             if(item.id==ite.id){
                 return({...ite,check:!ite.check})
@@ -200,44 +187,28 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                 return({...ite})
             }
         })
-        setItem({...itemshop,[keys]:list_item})
-        console.log({[keys]:list_item})
-    },[itemshop])
+        setItem(current=>{return{...current,[keys]:list_item}})
+    }
 
     const setcheckall=(e,list_items,keys,value)=>{
-        e.stopPropagation()
-        for (let k in value){
-            for(let i in list_items){
-                if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.id==value[k].id)){
-                    value[k].check=true
-                }
-                if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.id==value[k].id)){
-                    value[k].check=false
-                }
-                if(e.target.checked==true && list_items[i]==value[k]){
-                    if(keys=='byproduct_choice' || keys=='items_choice'){
-                        value[k].check=true
-                    }
-                }
-                if(e.target.checked==false && list_items[i]==value[k]){
-                    if(keys=='byproduct_choice' || keys=='items_choice'){
-                        value[k].check=false
-                    }
-                }
+        const listitems=value.map(item=>{
+            if(e.target.checked){
+                return({...item,check:list_items.some(product=>product.id==item.id)?true:item.check})
             }
-        }
-        setItem({...itemshop,[keys]:value})
+            return({...item,check:list_items.some(product=>product.id==item.id) && !item.disable?false:item.check})
+        })
+       
+        setItem({...itemshop,[keys]:listitems})
     }
 
     const setshow=(sho,name)=>{
         setShow({...show,[name]:sho})
     }
 
-    const submitby=()=>{
-        
+    const submitby=useCallback(()=>{
         const list_itemscheck=itemshop.byproduct.filter(ite=>ite.check && !itemshop.byproduct_choice.some(item=>item.id==ite.id))
         const data={list_items:list_itemscheck.map(item=>{return item.id}),
-        action:'getitem'
+        action:'addproduct'
         }
         axios.post(url_program,JSON.stringify(data),headers)
         .then(res=>{
@@ -252,7 +223,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
             
         })
         
-    }
+    },[itemshop,show])
 
     const removeitem=(itemmove,keys,value,keys_choice,value_choice,page_current)=>{
         const list_itemchoice=value_choice.filter(item=>item.id!=itemmove.id)
@@ -263,13 +234,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
             return({...ite})
         })
         setItem({...itemshop,[keys]:list_item,[keys_choice]:list_itemchoice})
-        let page=page_current
-        if(page>=Math.ceil(list_itemchoice.length / Pagesize)){
-            page=Math.ceil(list_itemchoice.length / Pagesize)
-            console.log(list_itemchoice.length)
-        }
-        setCurrentPage({...currentPage,[keys]:page})
-        handlePageChange(page,keys)
+        setpageitem(keys,list_itemchoice,page_current)
     }
 
     const setdeletechoice=(keys,value,keys_choice,value_choice,page_current)=>{
@@ -281,11 +246,11 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
             return({...item})
         })
         setItem({...itemshop,[keys_choice]:list_itemchoice,[keys]:list_item})
-        let page=page_current
-        if(page>=Math.ceil(list_itemchoice.length / Pagesize)){
-            page=Math.ceil(list_itemchoice.length / Pagesize)
-            console.log(list_itemchoice.length)
-        }
+        setpageitem(keys,list_itemchoice,page_current)
+    }
+
+    const setpageitem=(keys,list_itemchoice,page_current)=>{
+        const page=list_itemchoice.length==0?1:page_current>=Math.ceil(list_itemchoice.length / Pagesize)?Math.ceil(list_itemchoice.length / Pagesize):page_current
         setCurrentPage({...currentPage,[keys]:page})
         handlePageChange(page,keys)
     }
@@ -456,37 +421,46 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
         setItem({...itemshop,byproduct_choice:list_item})
         
     }
-    console.log(itemshop.items)
+   
     const complete=()=>{
-        const list_product=list_enable_on.map(item=>{
-            return(item.id)
-        })
-        
-        const discount_model_list=list_enable_on.reduce((arr,obj,i)=>{
-            const datavariation= obj.variations.map(variation=>{
-                return({promotion_price:variation.promotion_price,id:variation.id,
+        if(item_unvalid){
+            seteterror(sameitem)
+        }
+        else{
+            const list_product=list_enable_on.map(item=>{
+                return(item.id)
+            })
+            const discount_model_list=list_enable_on.reduce((arr,obj,i)=>{
+                const datavariation= obj.variations.map(variation=>{
+                    return({promotion_price:variation.promotion_price,id:variation.id,
                     enable:variation.enable,promotion_price_after_tax:variation.promotion_price,
                     variation_id:variation.variation_id,item_id:variation.item_id,
-                    promotion_stock:variation.promotion_stock?variation.promotion_stock:0,
+                    promotion_stock:variation.promotion_stock?variation.promotion_stock:variation.inventory,
                     user_item_limit:obj.user_item_limit?obj.user_item_limit:0})
+                })
+                return [...arr,...datavariation]
+            },[])
+            const dataprogram={valid_from:program.valid_from,valid_to:program.valid_to,name_program:program.name_program}
+            const data={...dataprogram,action:'submit',list_items:list_product,discount_model_list:discount_model_list}
+            axios.post(url_program,JSON.stringify(data),headers)
+            .then(res=>{
+                if(!res.data.error){
+                    const countDown = setInterval(() => {
+                        state.timeSecond--;
+                        setState({...state,complete:true})
+                        if (state.timeSecond <= 0) {
+                            clearInterval(countDown)
+                            setState({...state,complete:false})
+                        }
+                    }, 1000);
+                }
+                else{
+                    
+                    setSameitem(res.data.sameitem)
+                    seteterror(res.data.sameitem)
+                }
             })
-            return [...arr,...datavariation]
-        },[])
-        const dataprogram={valid_from:program.valid_from,valid_to:program.valid_to,name_program:program.name_program}
-        const data={...dataprogram,action:'submit',list_items:list_product,discount_model_list:discount_model_list}
-        
-        const countDown = setInterval(() => {
-            state.timeSecond--;
-            setState({...state,complete:true})
-            if (state.timeSecond <= 0) {
-                clearInterval(countDown)
-                setState({...state,complete:false})
-            }
-        }, 1000);
-
-        axios.post(url_program,JSON.stringify(data),headers)
-        .then(res=>{
-        })
+        }
     }
 
     return(
@@ -518,11 +492,9 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                                         <label for="" className="form-item__label">Time to save discount code</label>
                                         <div className="flex-col">
                                             <Timeoffer
-                                            date={date}
-                                            onChange={(page)=>onChange(page)}
-                                            setdatevalid={(index)=>setdatevalid(index)}
-                                            settimechoice={(value,index,name)=>settimechoice(value,index,name)}
-                                            setindexchoice={list_date=>setindexchoice(list_date)}
+                                            data={program}
+                                            setdatevalid={(index,date)=>setdatevalid(index,date)}
+                                            edit={edit}
                                             />
                                             <div className="info_more">
                                                 <p>The time of the program is too 180 days</p>
@@ -768,6 +740,16 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                                                 <div  className="item-content item-purchase-limit"></div>
                                                 <div className="item-enable-disable">
                                                     <input onChange={(e)=>setenableby(e,variation,item)} checked={variation.enable?true:false} type="checkbox" className="switch_1"/>
+                                                    {sameitem.some(product=>product==item.id)?
+                                                        <div data-v-6ec5aca5="" class="item-update-error popover popover--light">
+                                                            <div class="popover__ref">
+                                                                <span data-v-6ec5aca5="">
+                                                                    <i data-v-6ec5aca5="" class="icon">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-.875a6.125 6.125 0 1 0 0-12.25 6.125 6.125 0 0 0 0 12.25zm1.35-3.313c.22 0 .4.154.4.344 0 .19-.18.344-.4.344h-2.7c-.22 0-.4-.154-.4-.344 0-.19.18-.344.4-.344h.95V6.938H6.93c-.221 0-.4-.154-.4-.344 0-.19.179-.344.4-.344H8c.222 0 .4.154.4.344v4.218h.95zM8 4.875A.437.437 0 1 1 8 4a.437.437 0 0 1 0 .875z"></path></svg>
+                                                                    </i>
+                                                                </span> 
+                                                            </div> 
+                                                    </div>:''}
                                                 </div>
                                                 <div className="item-content item-action"></div>   
                                             </div>
@@ -785,7 +767,7 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                                         currentPage={currentPage.byproduct}
                                         totalCount={Math.ceil(itemshop.byproduct_choice.length / Pagesize)}
                                         Pagesize={Pagesize}
-                                        onPageChange={(page,name)=>handlePageChange(page,'byproduct')}
+                                        onPageChange={(page)=>handlePageChange(page,'byproduct')}
                                     />
                                 </div>
                                 <div className="pagination-jumperpagination__part">
@@ -819,6 +801,8 @@ const Programinfo=({loading_content,item_program,date_program,program_shop,url_p
                     loading={loading}
                     items={itemshop.items}
                     sec={state.timeSecond}
+                    duplicate={duplicate}
+                    setDuplicate={data=>setDuplicate(data)}
                     text={program}
                     complete={state.complete}
                     items_choice={itemshop.items_choice}

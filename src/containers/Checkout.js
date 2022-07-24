@@ -7,6 +7,25 @@ import React, {useState, useEffect,useCallback} from 'react'
 import { connect } from 'react-redux';
 import {formatter,itemvariation,arraymove} from "../constants"
 import {localhost,checkoutURL,threadlURL,savevoucherURL,updateAddressURL,cityListURL,listThreadlURL, addressListURL} from "../urls"
+const Infoitem=(props)=>{
+    const {item}=props
+    return(
+        <div key={item.id} className="_3HkBPE _Fqc2-">
+            <div className="_1ASQkt _2rJzUE">
+                <img className="_1Qtf1H" src={item.image} width="40" height="40"/>
+                <span className="_11r44J">
+                <span className="_3F5vLQ">[Mã LTDEC giảm 50K đơn 150K] {item.name}</span>
+                </span>
+            </div>
+            <div className="_1ASQkt Aw_HtH">
+            {itemvariation(item)!=''?<span className="_3y8KEH">Loại: {itemvariation(item)}</span>:""}
+            </div>
+            <div className="_1ASQkt">₫{formatter.format(item.price)}</div>
+            <div className="_1ASQkt">{item.quantity}</div>
+            <div className="_1ASQkt _2z5WqO">₫{formatter.format(item.total_price)}</div>
+        </div>
+    )
+}
 const Checkout =({user,showchat})=>{
     const [state,setState] = useState({show_message:false,show_thread:false,loading:false,orders:[],address:null,method_payment:['Ví Điện tử','Thẻ Tín dụng/Ghi nợ',
     'Paypal','Số dư TK Shopee','Payment on delivery'],
@@ -108,35 +127,33 @@ const Checkout =({user,showchat})=>{
             district_choice:{'name':null,'matp':null,level:2,'maqh':null},
             town_choice:{'name':null,'maqh':null,level:3},showcity:false})   
         }
-    }, [show,addresschoice]);
+    }, [show]);
 
     const setcitychoice=useCallback((city)=>{
         setAddressChoice({...addresschoice,city_choice:{'name':city.name,'matp':city.matp,level:1},district_choice:{'name':null,'matp':null,level:2,'maqh':null},
         town_choice:{'name':null,'maqh':null,level:3}})
     }, [addresschoice]);
 
-    const setdistrictchoice=useCallback((district)=>{
+    const setdistrictchoice=(district)=>{
         setAddressChoice({...addresschoice,district_choice:{'name':district.name,'matp':district.matp,level:2,'maqh':district.maqh},town_choice:{'name':null,'maqh':null,level:3}})
-    }, [addresschoice]);
-
-    const settownchoice=useCallback((town)=>{
+    }
+    const settownchoice=(town)=>{
         setAddressChoice({...addresschoice,town_choice:{'name':town.name,'maqh':town.maqh,level:3}})
-    }, [addresschoice]);
+    }
 
-    const setformdata=useCallback((e)=>{
+    const setformdata=(e)=>{
         setAddress({...address,[e.target.name]:e.target.value})
-    }, [address]);
+    }
 
-    const clearaddress=useCallback(()=>{
+    const clearaddress=()=>{
         setAddressChoice({city_choice:{'name':null,'matp':null,level:1},
         district_choice:{'name':null,'matp':null,level:2,'maqh':null},
         town_choice:{'name':null,'maqh':null,level:3},showcity:false})
-    }, [addresschoice]);
+    }
 
-    const addressChoice=useCallback((item)=>{
-        
+    const addressChoice=(item)=>{
         setAddress({...address,address_choice:item})
-    }, [address]);
+    }
 
     const setlistaddress=useCallback((data) => {
         console.log(data)
@@ -214,7 +231,7 @@ const Checkout =({user,showchat})=>{
                                 {state.show?<>
                                     <div className="stardust-radio-group">
                                         {state.list_addresses.map(address=>
-                                        <div onChange={(e)=>setaddressOrder(e,address)} className="stardust-radio">
+                                        <div key={address.id} onChange={(e)=>setaddressOrder(e,address)} className="stardust-radio">
                                             <div className="custom-radio">
                                                 <label className="check_input">
                                                     <div className="stardust-radio__content">
@@ -289,21 +306,17 @@ const Checkout =({user,showchat})=>{
                                                     </div>
                                                 </div>
                                             </div>
-                                            {order.cart_item.map(cartitem=>
-                                                <div key={cartitem} className="_3HkBPE _Fqc2-">
-                                                    <div className="_1ASQkt _2rJzUE">
-                                                        <img className="_1Qtf1H" src={cartitem.item_image} width="40" height="40"/>
-                                                        <span className="_11r44J">
-                                                        <span className="_3F5vLQ">[Mã LTDEC giảm 50K đơn 150K] {cartitem.item_name}</span>
-                                                        </span>
-                                                    </div>
-                                                    <div className="_1ASQkt Aw_HtH">
-                                                    {itemvariation(cartitem)!=''?<span className="_3y8KEH">Loại: {itemvariation(cartitem)}</span>:""}
-                                                    </div>
-                                                    <div className="_1ASQkt">₫{formatter.format(cartitem.price)}</div>
-                                                    <div className="_1ASQkt">{cartitem.quantity}</div>
-                                                    <div className="_1ASQkt _2z5WqO">₫{formatter.format(cartitem.total_price)}</div>
-                                                </div>
+                                            {order.cart_item.map(cartitem=><>
+                                                
+                                                <Infoitem
+                                                    item={cartitem}
+                                                />
+                                                {cartitem.byproducts.map(byproduct=>
+                                                    <Infoitem
+                                                        item={byproduct}
+                                                    />
+                                                )}
+                                                </>
                                             )}
                                         </div>
                                         <div className="_1CMLls">

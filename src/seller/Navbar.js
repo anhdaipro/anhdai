@@ -11,6 +11,9 @@ const Navbar = ({ logout, isAuthenticated }) => {
     let navigate = useNavigate();
     useEffect(() => {
         const info= async () =>{
+            if(expiry<=0 || localStorage.token=='null'){
+                window.location.href="/vendor/login"
+            }
             await axios.get(infosellerURL,headers)
             .then(res=>{
                 setState({...state,username:res.data.name,avatar:res.data.avatar})
@@ -24,13 +27,11 @@ const Navbar = ({ logout, isAuthenticated }) => {
         info();
     }, [])
     
-    if(expiry<=0 || localStorage.token=='null'){
-        window.location.href="/vendor/login"
-    }
+    
     const logout_user=(e)=> {
         logout();  
     };
-    console.log(expiry)
+   
     const viewaccount=()=>{
         setState({...state,view_account:true})
     };
@@ -38,8 +39,7 @@ const Navbar = ({ logout, isAuthenticated }) => {
         setState({...state,view_account:false})
     };
    
-    
-    console.log(isAuthenticated)
+
     return(
         <div data-v-294196ab="" className="header-bar">
             <div data-v-294196ab="" className="header-content">

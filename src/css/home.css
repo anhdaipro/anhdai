@@ -15,6 +15,97 @@ display: flex;
 align-items: center;
 justify-content:center
 }
+._2fQT1K, ._3OrWGt {
+    line-height: 16px;
+    overflow: hidden;
+}
+._3OrWGt {
+    display: flex;
+    flex-direction: column;
+    padding: 5px 20px 0 10px;
+    font-size: 14px;
+    width: 243.5px;
+}
+._2fQT1K {
+    text-decoration: none;
+    color: rgba(0,0,0,.87);
+    display: block;
+    margin-bottom: 5px;
+    max-height: 32px;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+._2fQT1K, ._3OrWGt {
+    line-height: 16px;
+    overflow: hidden;
+}
+.Uow98x {
+    line-height: 16px;
+    padding: 0 1px;
+    margin-right: 0.5em;
+    color: #ee4d2d;
+    border-radius: 2px;
+    font-size: 10px;
+    border: 1px solid;
+}
+.TyE46o {
+    padding: 15px 0;
+    top: 0;
+    z-index: 3;
+    opacity: .95;
+    background: #fff;
+    display: flex;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 5%);
+}
+.flash_sale-header {
+    height: 30px;
+    line-height: 1.875rem;
+    margin: 0 auto;
+    position: relative;
+    display: inline-flex;
+    pointer-events: all;
+}
+.SwrRMG {
+    display: flex;
+    align-items: center;
+    margin-top: 0.625rem;
+    height: 36px;
+    padding: 0 20px;
+    background-image: url(https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/pdp/4323ad4dc2b3c72d0474d51f20fb83e8.jpg),linear-gradient(-90deg,#f0451e 9%,#f32424 96%);
+}
+.flash-sale-logo--white, .SwrRMG {
+    color: #fff;
+}
+.Xm0-Ex {
+    background: url(https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/flashsale/f5233259f90b05efbf3867f564628853.png) 0 no-repeat;
+    width: 18px;
+    height: 21px;
+    background-size: contain;
+    left: 3px;
+    top: -6px;
+}
+.MF\+pPM:before {
+    right: 100%;
+    margin-right: 14px;
+}
+.MF\+pPM:after, .MF\+pPM:before {
+    content: "";
+    position: absolute;
+    border-bottom: 1px solid rgba(0,0,0,.6);
+    top: 40%;
+    width: 20px;
+}
+.uqKrnc {
+    margin: 0 auto;
+    pointer-events: none;
+}
+._1ocTND {
+    background-color: rgba(255,243,237,.4);
+    border-radius: 2px;
+}
 ._319wph {
     padding: 1px 4px;
     margin-right: 8px;

@@ -13,6 +13,25 @@
 .chatwindow-index__blank--2pLm1 {
     width: 285px;
 }
+.src-components-Common-ScrollList-style__root--31xcV{
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  overscroll-behavior: contain;
+}
+.src-components-Common-ScrollList-style__root--31xcV::-webkit-scrollbar-thumb {
+  background: #b30000;
+  border-radius: 12px;
+  }
+  .src-components-Common-ScrollList-style__root--31xcV::-webkit-scrollbar {
+  width: 4px;
+  }
+  .src-components-Common-ScrollList-style__root--31xcV::-webkit-scrollbar-track {
+  background-color: #fff;
+  }
+  
 .chatwindow-index__plate--2ADRp {
     height: 144px;
 }

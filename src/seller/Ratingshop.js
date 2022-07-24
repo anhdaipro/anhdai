@@ -264,7 +264,7 @@ const Ratingshop=()=>{
                                                 <div className="body-review">
                                                     <div className="list-review">
                                                         {list_review.map(review=>
-                                                        <div className="review-item">
+                                                        <div key={review.id} className="review-item">
                                                             <div className="review-info">
                                                                 <div className="item-space">
                                                                     <div className="item-center">
@@ -280,11 +280,11 @@ const Ratingshop=()=>{
                                                                 <div className="review-detail-item">
                                                                     <div className="item-center">
                                                                         <div className="review-detail-item-image">
-                                                                            <img src={review.item_image} />
+                                                                            <img src={review.image} />
                                                                         </div>
                                                                         <div className="review-detail-item-info">
                                                                             <div className="review-detail-item-info-name">
-                                                                                {review.item_name}
+                                                                                {review.name}
                                                                             </div>
                                                                             <div className="review-detail-item-info-variation">
                                                                                 {itemvariation(review)}
@@ -344,7 +344,7 @@ const Ratingshop=()=>{
                                             <span className="pagination-jumper__label">Go to page</span>
                                             <div className="pagination-jumper__input">
                                                 <div className="number-input  number-input--no-suffix">
-                                                    <input onChange={(e)=>setState({...state,page_input:parseInt(e.target.value)})} type="text" value={state.page_input}  className="input_input"/>
+                                                    <input onChange={(e)=>setState({...state,page_input:isNaN(e.target.value)?state.page_input:e.target.value})} type="text" value={state.page_input}  className="input_input"/>
                                                 </div>
                                                 <button onClick={()=>setpagechoice(state.page_input,'page',currentPage.page)} type="button" className="button btn-m btn-light "><span>Go</span></button>
                                             </div>

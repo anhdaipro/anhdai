@@ -10,8 +10,6 @@ const DetailProgram=()=>{
     const [program,setProgram]=useState({naem_program:'',valid_from:new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     valid_to:new Date(new Date().setHours(new Date().getHours()+1)).toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16)
     })
-    const [date,setDate]=useState([{time:new Date(),show:false,hours:new Date().getHours(),minutes:new Date().getMinutes()}
-    ,{time:new Date(),show:false,hours:new Date().getHours()+1,minutes:new Date().getMinutes()}])
     const [itemshop,setItem]=useState({items:[],page_count_main:0,items_choice:[],savemain:false
     ,page_count_by:0,byproduct:[],byproduct_choice:[],savebyproduct:false})
     const [loading,setLoading]=useState(false)
@@ -22,10 +20,7 @@ const DetailProgram=()=>{
             .then(res=>{
                 let data=res.data
                 setProgram(data)
-                setDate([{time:new Date(data.valid_from),show:false,hours:new Date(data.valid_from).getHours(),minutes:new Date(data.valid_from).getMinutes()}
-              ,{time:new Date(data.valid_to),show:false,hours:new Date(data.valid_to).getHours(),minutes:new Date(data.valid_to).getMinutes()}])
                 setLoading(true)
-                
                 const variations=data.variations.map(variation=>{
                     return {...variation,limit:variation.promotion_stock>0?true:false,
                         percent_discount:(variation.price-parseInt(variation.promotion_price))*100/variation.price,
@@ -47,7 +42,7 @@ const DetailProgram=()=>{
             <Programinfo
             loading_content={loading}
             item_program={itemshop}
-            date_program={date}
+            edit={true}
             program_shop={program}
             url_program={detailprogramURL+id}
             />

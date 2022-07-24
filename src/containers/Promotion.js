@@ -11,26 +11,21 @@ import Message from "./Chat"
 import { headers } from '../actions/auth';
 const Promotion = () => {
     const { id } = useParams(); // <-- access id match param here
-    const [state, setState] = useState({loading:false,items:[],combo_type:'1'});
+    const [state, setState] = useState({loading:false,products:[],combo_type:'1'});
     const [show,setShow]=useState(true)
+    const [loading,setLoading]=useState(false)
     const [errow, setErrow] = useState(false);
     const [warring, setWarring] = useState(false);
     const [variation, setVariation] = useState({data:null,
         count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],
         count_variation:0,quantity:1})
     useEffect(() => {
-      const getJournal = async () => {
-        await axios(promotionURL+id,headers)
-         // <-- passed to API URL
-        .then(res=>{
-          let data=res.data
-            setState({...state,items:data.list_items,loading:true,combo_type:data.combo_type,
-                discount_price:data.discount_price,discount_percent:data.discount_percent,
-                price_special_sale:data.price_special_sale,
-                quantity_to_reduced:data.quantity_to_reduced})
-        })
-      }
-      getJournal();
+      (async () => {
+            const res=await axios(promotionURL+id,headers)
+            let data=res.data
+            setLoading(true)
+            setState(data)
+        })();
     }, [id]);
 
     const setshow = useCallback((es) => {
@@ -58,7 +53,8 @@ const Promotion = () => {
         setVariation({...variation,count_variation:count_variation,data:data})
         if(data.colors.length==0&&data.sizes.length==0){
             let form =new FormData()
-            form.append('item_id',data.item_id)
+            form.append('item_id',data.id)
+            form.append('quantity',1)
             axios.post(addToCartURL,form,headers)
             .then(res=>{
             })
@@ -76,6 +72,7 @@ const Promotion = () => {
                         <Navbar/>
                     </div>
                     <div className="bundle-deal__wrapper">
+                        {loading?
                         <div className="bundle-deal">
                             <div className="bundle-deal__head">
                                 <div className="bundle-deal__head-icon">
@@ -90,7 +87,7 @@ const Promotion = () => {
                             </div>
                             <div className="bundle-deal__body">
                                 <div className="bundle-deal__card-list">
-                                    {state.items.map(item=>
+                                    {state.products.map(item=>
                                         <div key={item.id} className='bundle-deal__card'>
                                             <Link data-sqe="link" to={`${item.url}?itemId=${item.id}`}>
                                                 <div className="_1C-0ut">
@@ -139,7 +136,7 @@ const Promotion = () => {
                                         )}
                                 </div>
                             </div>
-                        </div>
+                        </div>:''}
                     </div>
                 </div>
                 <div>

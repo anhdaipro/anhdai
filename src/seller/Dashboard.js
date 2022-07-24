@@ -2,7 +2,7 @@ import axios from 'axios';
 import Navbar from "./Navbar"
 import { useParams,Link } from "react-router-dom";
 import React, {useState,useEffect,useCallback,useRef} from 'react'
-import {timeformat,timevalue} from "../constants"
+import {timeformat,timevalue,formatter} from "../constants"
 import Calendar from 'react-calendar/dist/umd/Calendar';
 import {dashboardURL,} from "../urls"
 import {
@@ -43,26 +43,33 @@ const Dashboard=()=>{
     const [typeorder,setTypeorder]=useState({ordered:true,name:'all',name_ordertype:"Tất cả đơn"})
     const calendar=useRef();
     const chartRef = useRef();
+    const [data,setData]=useState({sum:0,count:0})
     const [date,setDate]=useState(new Date())
-    const [chart,setChart]=useState({
-        labels:[],
+    const [labels,setLabels]=useState([])
+    const [sum,setSum]=useState(0)
+    const [count,setCount]=useState(0)
+    const [listsum,setListsum]=useState([])
+    const [listcount,setListcount]=useState([])
+    
+    const chart={
+            labels:labels,
             datasets: [
             {
                 label: 'Doanh thu',
-                data: [],
+                data: listsum,
                 fill:true,
                 borderColor: 'rgb(38, 115, 221)',
                 backgroundColor: 'rgb(38, 115, 221)',
             },
             {
                 label: 'Luot truy cap',
-                data: [],
+                data: listcount,
                 fill:true,
                 borderColor: 'rgb(88, 183, 241)',
                 backgroundColor: 'rgb(88, 183, 241)',
             },
-            ],
-        })
+        ],
+    }
     const [loading,setLoading]=useState(false)
    
     const [option,setOption]=useState({options:{
@@ -89,32 +96,17 @@ const Dashboard=()=>{
                 const arr=Array(25).fill().map((_,i)=>{
                     return ('0'+i).slice(-2)+':00'
                 })
-                const sums=res.data.sum.reduce((total,item)=>{
+                const sum=res.data.sum.reduce((total,item)=>{
                     return(total+item)
                 },0)
-                const counts=res.data.count.reduce((count,item)=>{
+                const count=res.data.count.reduce((count,item)=>{
                     return(count+item)
                 },0)
-                const data_chart={
-                    labels:arr,
-                    datasets: [
-                    {
-                        label: 'Doanh thu',
-                        data: res.data.sum,
-                        fill:true,
-                        borderColor: 'rgb(38, 115, 221)',
-                        backgroundColor: 'rgb(38, 115, 221)',
-                    },
-                    {
-                        label: 'Luot truy cap',
-                        data: res.data.count,
-                        fill:true,
-                        borderColor: 'rgb(88, 183, 241)',
-                        backgroundColor: 'rgb(88, 183, 241)',
-                    },
-                    ],
-                }
-                setChart(data_chart)
+                setSum(sum)
+                setLabels(arr)
+                setCount(count)
+                setListsum(res.data.sum)
+                setListcount(res.data.count)
                 setLoading(true)
           })
         }
@@ -184,7 +176,6 @@ const Dashboard=()=>{
             });
             
             bodyLines.map((body, i) => {
-                console.log(body)
               const colors = tooltip.labelColors[i];
               const y = document.createElement('div');
               tableRoot.appendChild(y);
@@ -259,13 +250,19 @@ const Dashboard=()=>{
         setDashboard({...dashboard,time_choice:item.time_display,name:item.name})
         axios.get(new_url,headers)
         .then(res=>{
-            chart.labels=res.data.time
-                chart.datasets[0].data=res.data.sum
-                chart.datasets[1].data=res.data.count
-                setChart(chart)
-                setLoading(true)
+            const sum=res.data.sum.reduce((total,item)=>{
+                return(total+item)
+            },0)
+            const count=res.data.count.reduce((count,item)=>{
+                return(count+item)
+            },0)
+            setSum(sum)
+            setCount(count)
+            setListsum(res.data.sum)
+            setListcount(res.data.count)
+            setLoading(true)
+            setLabels(res.data.time)
             setState({...state,show:false})
-            console.log(chart)
         })
     }
     const setdaychoice=(value)=>{
@@ -284,11 +281,18 @@ const Dashboard=()=>{
         let new_url = url.toString();
         axios.get(new_url,headers)
         .then(res=>{
-            chart.labels=res.data.time
-                chart.datasets[0].data=res.data.sum
-                chart.datasets[1].data=res.data.count
-                setChart(chart)
-                setLoading(true)
+            const sum=res.data.sum.reduce((total,item)=>{
+                return(total+item)
+            },0)
+            const count=res.data.count.reduce((count,item)=>{
+                return(count+item)
+            },0)
+            setSum(sum)
+            setCount(count)
+            setListsum(res.data.sum)
+            setListcount(res.data.count)
+            setLabels(res.data.time)
+            setLoading(true)
             setState({...state,show:false})
         })
     }
@@ -301,7 +305,7 @@ const Dashboard=()=>{
             }
         }
     }
-    console.log(chart)
+   
     const setshoworder=(e)=>{
         setState({...state,show_order:!state.show_order,show:false})
         window.onclick=(event)=>{
@@ -323,12 +327,19 @@ const Dashboard=()=>{
         let new_url = url.toString();
         axios.get(new_url,headers)
         .then(res=>{
-            chart.labels=res.data.time
-            chart.datasets[0].data=res.data.sum
-            chart.datasets[1].data=res.data.count
-            setChart(chart)
+            const sum=res.data.sum.reduce((total,item)=>{
+                return(total+item)
+            },0)
+            const count=res.data.count.reduce((count,item)=>{
+                return(count+item)
+            },0)
+            setSum(sum)
+            setCount(count)
+            setListsum(res.data.sum)
+            setListcount(res.data.count)
+            setLabels(res.data.time)
             setLoading(true)
-            
+            setState({...state,show:false})
         })
     }
     const setyearchoice=(value)=>{
@@ -346,11 +357,18 @@ const Dashboard=()=>{
         let new_url = url.toString();
         axios.get(new_url,headers)
         .then(res=>{
-            chart.labels=res.data.time
-                chart.datasets[0].data=res.data.sum
-                chart.datasets[1].data=res.data.count
-                setChart(chart)
-                setLoading(true)
+            const sum=res.data.sum.reduce((total,item)=>{
+                return(total+item)
+            },0)
+            const count=res.data.count.reduce((count,item)=>{
+                return(count+item)
+            },0)
+            setSum(sum)
+            setCount(count)
+            setListsum(res.data.sum)
+            setLabels(res.data.time)
+            setListcount(res.data.count)
+            setLoading(true)
             setState({...state,show:false})
         })
     }
@@ -370,11 +388,18 @@ const Dashboard=()=>{
         let new_url = url.toString();
         axios.get(new_url,headers)
         .then(res=>{
-            chart.labels=res.data.time
-                chart.datasets[0].data=res.data.sum
-                chart.datasets[1].data=res.data.count
-                setChart(chart)
-                setLoading(true)
+            const sum=res.data.sum.reduce((total,item)=>{
+                return(total+item)
+            },0)
+            const count=res.data.count.reduce((count,item)=>{
+                return(count+item)
+            },0)
+            setSum(sum)
+            setCount(count)
+            setListsum(res.data.sum)
+            setLabels(res.data.time)
+            setListcount(res.data.count)
+            setLoading(true)
             setState({...state,show:false})
         })
     }
@@ -394,11 +419,18 @@ const Dashboard=()=>{
         let new_url = url.toString();
         axios.get(new_url,headers)
         .then(res=>{
-            chart.labels=res.data.time
-                chart.datasets[0].data=res.data.sum
-                chart.datasets[1].data=res.data.count
-                setChart(chart)
-                setLoading(true)
+            const sum=res.data.sum.reduce((total,item)=>{
+                return(total+item)
+            },0)
+            const count=res.data.count.reduce((count,item)=>{
+                return(count+item)
+            },0)
+            setSum(sum)
+            setCount(count)
+            setListsum(res.data.sum)
+            setLabels(res.data.time)
+            setListcount(res.data.count)
+            setLoading(true)
             setState({...state,show:false})
         })
     }
@@ -599,7 +631,7 @@ const Dashboard=()=>{
                                                     <label data-v-14d16c20="" className="">
                                                         <span className="currency">
                                                             <span className="currency-symbol">₫</span>
-                                                            <span className="currency-value">0</span>
+                                                            <span className="currency-value">{formatter.format(sum)}</span>
                                                         </span>
                                                     </label>
                                                 </div> 
@@ -636,7 +668,7 @@ const Dashboard=()=>{
                                                 <div data-v-14d16c20="" className="value">
                                                     <label data-v-14d16c20="" className="number">
                                                         <span className="number">
-                                                            <span className="currency-value">0</span>
+                                                            <span className="currency-value">{count}</span>
                                                         </span>
                                                     </label>
                                                 </div> 

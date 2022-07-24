@@ -24,40 +24,43 @@ const Detailview = () => {
   const [reviewchoice,setReviewchoice]=useState(null)
   const [show,setShow]=useState(false)
   const [choice,setChoice]=useState()
-  const [cartitem,setCartitem]=useState([])
+  const [cartitem,setCartitem]=useState()
   const [shop_id,setShop_id]=useState()
   const [category_id,setCategory_id]=useState()
   const [product_id,setProduct_id]=useState()
   const [params, setSearchParams] = useSearchParams();
   const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
-  const choices=params.get('itemId') && params.get('categoryId')?'shop':params.get('itemId')?'product':'category'
+  const choices=params.get('itemId') && !params.get('categoryId')?'product':''
   useEffect(() => {
     (async () => {
         const searchparama=params
         console.log(searchparama)
-        const url=params.get('itemId') && params.get('categoryId')?axios.get(`${shopURL}?${params}`):params.get('itemId')?axios.get(`${itemURL}?${params}`):axios.get(`${categoryURL}/${slug}`,headers)
+        const url=params.get('itemId') && !params.get('categoryId')?axios.get(`${itemURL}?${params}`):axios.get(`${categoryURL}/${slug}`,headers)
         setChoice(choices)
         const res = await url
         setData(res.data)
-        if(choices=='shop'){
-          setShop_id(res.data.id)
-          setCategory_id()
-          setProduct_id()
-        }
-        else if (choices=='product'){
+        
+        if (choices=='product'){
           setProduct_id(res.data.id)
           setCategory_id()
           setShop_id()
         }
         else{
+          if(res.data.name){
+            setShop_id(res.data.id)
+            setCategory_id()
+            setProduct_id()
+          }
+          else{
           setCategory_id(res.data.id)
           setProduct_id()
           setShop_id()
+          }
         }
     })();
   },[slug,params])
-  console.log(product_id)
-  console.log(category_id)
+
+
   const setshow=(e)=>{
     setShow(e)
   }
@@ -72,14 +75,9 @@ const Detailview = () => {
     setSearchitem({...searchitem,[name]:value})
   }
   const addcartitem=useCallback((data)=>{
-    let cartitemadd=cartitem
-    if(cartitemadd.every(item=>item.id!==data.id)){
-      cartitemadd.push(data)
-    }
-    setCartitem(cartitemadd)
-    console.log(cartitem)
+      setCartitem(data)
   },[cartitem])
-  
+
   const setreport=(e,review)=>{
     setState({...state,show_report:true})
     setReviewchoice(review)
@@ -126,7 +124,7 @@ const Detailview = () => {
             cartitem={cartitem}
           />:""}
         </div>
-        {choice=='category' && category_id?
+        {choice=='' && category_id?
           <Categorydetail
           data={data}
           category_id={category_id}
@@ -146,9 +144,10 @@ const Detailview = () => {
             show_report={state.show_report}
           />
         :''}
-        {choice=='shop'&&shop_id?
+        {choice==''&&shop_id?
           <Shopinfo
             data={data}
+            shop_id={shop_id}
             setshow={(e)=>setshow(e)}
             setsearchcategory={(name,value)=>setsearchcategory(name,value)}
         />

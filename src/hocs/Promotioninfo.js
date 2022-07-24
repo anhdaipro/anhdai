@@ -1,100 +1,86 @@
 import axios from 'axios';
 import Navbar from "../seller/Navbar"
-import {Link,useNavigate} from 'react-router-dom'
+import {Link,useNavigate,useParams} from 'react-router-dom'
 import ReactDOM, { render } from 'react-dom'
 import Timeoffer from "./Timeoffer"
 import Productoffer from "../seller/Productoffer"
-import React, {useState,useEffect,useCallback,useRef,memo} from 'react'
+import React, {useState,useEffect,useCallback,useRef,memo,useMemo} from 'react'
 import Pagination from "./Pagination"
 import {newcomboURL,} from "../urls"
-import {formatter,itemvariation,combo_type} from "../constants"
+import {formatter,timesubmit,combo_type,valid_from,valid_to} from "../constants"
 import { headers } from '../actions/auth';
+import {debounce} from 'lodash'
 let Pagesize=5
-const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,url_combo})=>{
+const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_combo})=>{
     const navite=useNavigate()
-    const [combo,setCombo]=useState({valid_from:new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
-        quantity_to_reduced:null,discount_price:null,price_special_sale:null,
-        discount_percent:0,limit_order:null,promotion_combo_name:'',combo_type:'1',
-        valid_to:new Date(new Date().setHours(new Date().getHours()+1)).toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16)
-        })
+    const {id}=useParams()
+    const [combo,setCombo]=useState(()=>{return{
+        quantity_to_reduced:'',discount_price:'',price_special_sale:'',
+        discount_percent:0,limit_order:'',promotion_combo_name:'',combo_type:'1',
+        valid_from:valid_from.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
+        valid_to:valid_to.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
+    }})
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
     const [state,setState]=useState({timeSecond:5,complete:false,page_input:1,combo_type:[{name:'Giảm giá theo %',value:'1'},
         {name:'Giảm giá theo số tiền',value:'2'},{name:'Giảm giá đặc biệt',value:'3'}]})
-    const [date,setDate]=useState([{time:new Date(),show:false,hours:new Date().getHours(),minutes:new Date().getMinutes()}
-            ,{time:new Date(),show:false,hours:new Date().getHours()+1,minutes:new Date().getMinutes()}])
     const [show,setShow]=useState({items:false,byproduct:false})
     const [itemshop,setItem]=useState({items:[],page_count_main:0,items_choice:[],savemain:false
         ,page_count_by:0,byproduct:[],byproduct_choice:[],savebyproduct:false})
     const [loading,setLoading]=useState(false)
+    const [sameitem,setSameitem]=useState([])
+    const [duplicate,setDuplicate]=useState(false)
+    const list_enable_on=itemshop.items_choice.filter(item=>item.enable)
+    const item_unvalid=list_enable_on.some(item=>sameitem.some(product=>product==item.id))
+    
     useEffect(() => {
-        setDate(date_combo)
+        if(combo_shop){
         setLoading(loading_content)
         setCombo(combo_shop)
         setItem(item_combo)
-      }, [date_combo,loading_content,item_combo,combo_shop]);
+        }
+      }, [loading_content,item_combo,combo_shop]);
     
-      const firstPageIndex = (currentPage.items - 1) * Pagesize;
-      const lastPageIndex = firstPageIndex + Pagesize;
-      const currentitemPage=itemshop.items_choice.slice(firstPageIndex, lastPageIndex);
-      
-    const onChange = (datechoice) => {
-        const list_date=date.map(item=>{
-            if(item.show){
-                return({...item,time:datechoice})
-            }
-            return({...item})
-        })
+    
+    const currentitemPage=useMemo(()=>{
+        const firstPageIndex = (currentPage.items - 1) * Pagesize;
+        const lastPageIndex = firstPageIndex + Pagesize;
+        return itemshop.items_choice.slice(firstPageIndex, lastPageIndex);
+    },[currentPage,itemshop.items_choice])
 
-        setDate(list_date);
-    };
-
-    const settimechoice=(value,index,name)=>{
-        const list_date=date.map((item,i)=>{
-            if(i==index){
-                console.log(name)
-                return({...item,[name]:value})
-            }
-            return({...item})
-        })
-        setDate(list_date); 
-    }
-
-    const setindexchoice=(list_date)=>{
-        console.log(list_date)
-        setDate(list_date);
-    }
-
-    const setdatevalid=(index)=>{
-        if(index==0){
-            combo.valid_from=date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)
-            setCombo({...combo,valid_from:combo.valid_from})
-
-        }
-        else{
-            setCombo({...combo,valid_to:combo.valid_to})
-            combo.valid_to=date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)
+    const setdatevalid=(index,date)=>{
+        const datecombo=date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date.hours).slice(-2)+':'+("0"+date.minutes).slice(-2)
+        const datadate=index==0?{valid_from:datecombo,valid_to:combo.valid_to}:{valid_to:datecombo,valid_from:combo.valid_from}
+        setCombo({...combo,...datadate})
+        if(list_enable_on.length>0){
+            const data={action:'checkitem',...datadate,list_items:list_enable_on.map(item=>{
+                return(item.id)
+            })}
+            axios.post(url_combo,JSON.stringify(data),headers)
+            .then(res=>{
+                const data=res.data.sameitem
+                if(res.data.error){
+                    seteterror(data)
+                    setSameitem(data)
+                }
+                else{
+                    setSameitem([])
+                }
+            })
         }
     }
 
-    const setform=(e)=>{
-        setCombo({...combo,[e.target.name]:e.target.value})
+    const seteterror=(data)=>{
+        setDuplicate(true)
+        const itemchoice=itemshop.items_choice.map(item=>{
+            return({...item,enable:data.some(product=>product==item.id)?false:true})
+        })
+        setItem({...itemshop,items_choice:itemchoice})
+    }
+    
+    const setform=(name,value)=>{
+        setCombo({...combo,[name]:value})
     }
 
-    const editcombo=()=>{
-        let form=new FormData()
-        form.append('edit',true)
-        Object.keys(combo).map(item=>{
-            if(combo[item]!=null){
-                form.append(item,combo[item])
-            }
-        })
-
-        axios.post(newcomboURL,form,headers)
-        .then(res=>{
-            let id=res.data.id
-            window.location.href='/marketing/add-on-combo/'+id
-        })
-    }
 
     const setcombotype=(item)=>{
         setCombo({...combo,combo_type:item.value})
@@ -103,41 +89,25 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
     const additem=(e)=>{
         setLoading(true)
         setShow({...show,items:true,byproduct:false})
-        if(itemshop.items.length==0){
-            let url= new URL(url_combo)
-            let search_params=url.searchParams
-            search_params.set('item','item')
-            url.search = search_params.toString();
-            let new_url = url.toString();
-            axios.get(new_url,headers)
+            const url = id?`${newcomboURL}?combo_id=${id}&valid_from=${timesubmit(combo.valid_from)}&valid_to=${timesubmit(combo.valid_to)}`:`${newcomboURL}?&valid_from=${timesubmit(combo.valid_from)}&valid_to=${timesubmit(combo.valid_to)}`
+            axios.get(url,headers)
             .then(res=>{
                 const items=res.data.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
                 const list_items=items.map(item=>{
                 if(itemshop.items_choice.some(product=>product.id==item.id)){
-                    return({...item,check:true})
+                    return({...item,check:true,disable:true})
                 }
                 return({...item,check:false})
                 })
                 setItem({...itemshop,itemshops:res.data,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize)})  
             })
-        }  
-        else{
-            const items=itemshop.itemshops.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
-            const list_items=items.map(item=>{
-                if(itemshop.items_choice.some(product=>product.id==item.id)){
-                    return({...item,check:true})
-                }
-                return({...item,check:false})
-                })
-            setItem({...itemshop,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize)})  
-        }
     }
     
     const handlePageChange=useCallback((page,name)=>{
         setCurrentPage({...currentPage,[name]:page})
     },[currentPage])
 
-    const setcheckitem=useCallback((item,product,keys)=>{
+    const setcheckitem=(item,product,keys)=>{
         const list_item=product.map(ite=>{
             if(item.id==ite.id){
                 return({...ite,check:!ite.check})
@@ -146,37 +116,24 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                 return({...ite})
             }
         })
-        setItem({...itemshop,[keys]:list_item})
-        console.log({[keys]:list_item})
-    },[itemshop])
+        setItem(current=>{return {...current,[keys]:list_item}})
+        
+    }
 
     const setcheckall=(e,list_items,keys,value)=>{
-        for (let k in value){
-            for(let i in list_items){
-                    if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.id==value[k].id)){
-                        value[k].check=true
-                    }
-                    if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.id==value[k].id)){
-                        value[k].check=false
-                    }
-                    if(e.target.checked==true && list_items[i]==value[k]){
-                        if(keys=='byproduct_choice' || keys=='items_choice'){
-                            value[k].check=true
-                        }
-                    }
-                    if(e.target.checked==false && list_items[i]==value[k]){
-                        if(keys=='byproduct_choice' || keys=='items_choice'){
-                            value[k].check=false
-                        }
-                    }
-                }
+        const listitems=value.map(item=>{
+            if(e.target.checked){
+                return({...item,check:list_items.some(product=>product.id==item.id)?true:item.check})
             }
-        setItem({...itemshop,[keys]:value})
+            return({...item,check:list_items.some(product=>product.id==item.id) && !item.disable?false:item.check})
+        })
+       
+        setItem({...itemshop,[keys]:listitems})
     }
 
-    const setshow=(sho,name)=>{
+    const setshow=useCallback((sho,name)=>{
         setShow({...show,[name]:sho})
-    }
+    },[show])
 
     const setenableitem=(e,product,value,key)=>{
         const list_item=value.map(ite=>{
@@ -201,13 +158,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
             }
         })
         setItem({...itemshop,[keys]:list_item,[keys_choice]:list_itemchoice})
-        let page=page_current
-        if(page>=Math.ceil(list_itemchoice.length / Pagesize)){
-            page=Math.ceil(list_itemchoice.length / Pagesize)
-            console.log(list_itemchoice.length)
-        }
-        setCurrentPage({...currentPage,[keys]:page})
-        handlePageChange(page,keys)
+        setpageitem(keys,list_itemchoice,page_current)
     }
 
     const setenabledchoice=(e,value)=>{
@@ -231,12 +182,11 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
             return({...item})
         })
         setItem({...itemshop,[keys_choice]:list_itemchoice,[keys]:list_item})
-        let page=page_current
-        if(page>=Math.ceil(list_itemchoice.length / Pagesize)){
-            page=Math.ceil(list_itemchoice.length / Pagesize)
-            console.log(list_itemchoice.length)
-        }
-        
+        setpageitem(keys,list_itemchoice,page_current)
+    }
+
+    const setpageitem=(keys,list_itemchoice,page_current)=>{
+        const page=list_itemchoice.length==0?1:page_current>=Math.ceil(list_itemchoice.length / Pagesize)?Math.ceil(list_itemchoice.length / Pagesize):page_current
         setCurrentPage({...currentPage,[keys]:page})
         handlePageChange(page,keys)
     }
@@ -261,33 +211,37 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
         itemshop.items_choice=[...list_itemschoice,...itemshop.items_choice]
         setItem({...itemshop,items_choice:itemshop.items_choice})
         setShow({...show,items:false})
-    },[itemshop,show])
+    },[itemshop])
 
     const complete=()=>{
-        let form=new FormData()
-        Object.keys(combo).map(item=>{
-            if(combo[item]!=null){
-            form.append(item,combo[item])
+        if(!item_unvalid){
+            const datacombo=combo
+            delete datacombo.products
+            const data={list_items:list_enable_on.map(item=>{
+            return(item.id)}),...datacombo}
+            axios.post(url_combo,JSON.stringify(data),headers)
+            .then(res=>{
+                const data=res.data.sameitem
+                if(!res.data.error){
+                    const countDown = setInterval(() => {
+                    state.timeSecond--;
+                    setState({...state,complete:true})
+                    if (state.timeSecond <= 0) {
+                        clearInterval(countDown)
+                        setState({...state,complete:false})
+                        navite('/marketing/bundle/list')
+                    }
+                }, 1000);
+            }
+            else{
+                setSameitem(data)
+                seteterror(data)
             }
         })
-        const datacombo=combo
-        delete datacombo.products
-        const item_choice=itemshop.items_choice.filter(item=>item.enable)
-    
-        const data={list_items:item_choice.map(item=>{
-            return(item.id)}),...datacombo}
-        axios.post(url_combo,JSON.stringify(data),headers)
-        .then(res=>{
-            const countDown = setInterval(() => {
-                state.timeSecond--;
-                setState({...state,complete:true})
-                if (state.timeSecond <= 0) {
-                    clearInterval(countDown)
-                    setState({...state,complete:false})
-                    navite('/marketing/bundle/list')
-                }
-            }, 1000);
-        })
+        }
+        else{
+            seteterror(sameitem)
+        }
     }
 
     return(
@@ -307,7 +261,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                                         </label>
                                         <div className="item-col">
                                             <div className="input-inner" style={{width: '450px'}}> 
-                                                <input onChange={(e)=>setform(e)} type="text"  className="form-select" value={combo.promotion_combo_name} name="promotion_combo_name" placeholder="Enter" style={{width: '450px'}} required/>
+                                                <input onChange={(e)=>setform(e.target.name,e.target.value)} type="text"  className="form-select" value={combo.promotion_combo_name} name="promotion_combo_name" placeholder="Enter" style={{width: '450px'}} required/>
                                                 <div className="input__suffix">
                                                 </div>
                                             </div>
@@ -318,11 +272,9 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                                         <label for="" className="form-item__label">Time to save discount code</label>
                                         <div className="flex-col">
                                             <Timeoffer
-                                            date={date}
-                                            onChange={(page)=>onChange(page)}
-                                            setdatevalid={(index)=>setdatevalid(index)}
-                                            settimechoice={(value,index,name)=>settimechoice(value,index,name)}
-                                            setindexchoice={list_date=>setindexchoice(list_date)}
+                                            edit={edit}
+                                            data={combo}
+                                            setdatevalid={(index,date)=>setdatevalid(index,date)}
                                             />
                                             <div className="info_more">
                                                 <p>The end time of the program must be at least 1 hour after the start time</p>
@@ -335,10 +287,10 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                                         <div className="item-col option-combo">
                                             <div className="custom-radio bundle-info-form item-col mb-1">
                                                 <div data-v-539aa17b="" className="radio-group radio-group--normal radio-group--solid">
-                                                    {combo_type.map(combos=>{
+                                                    {combo_type.map((combos,index)=>{
                                                         return(
                                                             <>
-                                                            <label onClick={()=>setcombotype(combos)} className="check_input mb-1">{combos.name}
+                                                            <label key={index} onClick={()=>setcombotype(combos)} className="check_input mb-1">{combos.name}
                                                                 <input type="radio" name="combo_type" checked={combos.value==combo.combo_type?true:false} className="custom-input" />
                                                                 <span className="checkmark"></span>
                                                             </label>
@@ -353,7 +305,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                                                                             <div className="form-item__content">
                                                                                 <div data-v-539aa17b="" className="input">
                                                                                     <div className="input__inner input__inner--normal">
-                                                                                        <input onChange={(e)=>setform(e)} name='quantity_to_reduced' value={combo.quantity_to_reduced} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" maxLength="9" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/>
+                                                                                        <input onChange={(e)=>setform('quantity_to_reduced',isNaN(e.target.value)?combo.quantity_to_reduced:e.target.value)}  value={combo.quantity_to_reduced} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" maxLength="9" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/>
                                                                                     </div>
                                                                                 </div>
                                                                                 sản phẩm {combos.value=='3'?'chỉ với giá':'để được giảm'} 
@@ -366,14 +318,14 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                                                                                 <div data-v-539aa17b="" className="input discount-input" placeholder=" ">
                                                                                     <div className="input__inner input__inner--normal">
                                                                                         {combos.value=='1'?<>
-                                                                                        <input name='discount_percent' value={combo.discount_percent} onChange={(e)=>setform(e)} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                                        <input name='discount_percent' value={combo.discount_percent} onChange={(e)=>setform('discount_percent',isNaN(e.target.value)?combo.discount_percent:e.target.value)} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                                         <div className="input__suffix">
                                                                                             <span className="input__suffix-split"></span>%GIẢM
                                                                                         </div></>:<>
                                                                                         <div className="input__prefix">₫
                                                                                             <span className="input__prefix-split"></span>
                                                                                         </div> 
-                                                                                        <input onChange={(e)=>setform(e)} name={combos.value=='2'?'discount_price':'price_special_sale'} value={combo.combo_type=='1'?'':combo.combo_type=='2'?combo.discount_price:combo.price_special_sale} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" maxLength="13" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/>
+                                                                                        <input onChange={(e)=>setform(e.target.name,isNaN(e.target.value)?combos.value=='2'?combo.discount_price:combo.price_special_sale:e.target.value)} name={combos.value=='2'?'discount_price':'price_special_sale'} value={combo.combo_type=='1'?'':combo.combo_type=='2'?combo.discount_price:combo.price_special_sale} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" maxLength="13" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/>
                                                                                         </>} 
                                                                                     </div> 
                                                                                 </div>
@@ -393,7 +345,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                                         <label className="form-item__label" for="price" >Limit order</label>
                                         <div className="item-col my-1">
                                             <div className="input-inner" style={{width: '400px'}}> 
-                                                <input onChange={e=>setform(e)} type="text" className="form-select" name="limit_order" placeholder="Enter" style={{width: '400px'}} required/>
+                                                <input onChange={e=>setform('limit_order',isNaN(e.target.value)?combo.limit_order:e.target.value)} type="text" value={combo.limit_order} className="form-select" name="limit_order" placeholder="Enter" style={{width: '400px'}} required/>
                                                 <div className="input__suffix"></div>
                                             </div>
                                             <div className="info_more">
@@ -432,7 +384,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                         <div className="item_main-content">
                             <div className="item-spaces my-1">
                                 <p className="enabled">
-                                    <span>{itemshop.items_choice.filter(item=>item.enable).length}</span> product is enabled on a total of <span>{itemshop.items_choice.length}</span> products
+                                    <span>{list_enable_on.length}</span> product is enabled on a total of <span>{itemshop.items_choice.length}</span> products
                                 </p>
                             </div>
                             <div className="item-spaces batch-setting-panel">
@@ -487,7 +439,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                                 <div className="table__body-container">
                                     <div className="item-shop">
                                     {currentitemPage.map(item=>
-                                        <div className="item">
+                                        <div key={item.id} className="item">
                                             <div className="item-discount">
                                                 <div className="item_heading" style={{width:'440px'}}>
                                                     <div className="item-center form-check-item">
@@ -511,14 +463,27 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                                                         ₫{formatter.format(item.min_price)} {item.min_price!=item.max_price?`- ${formatter.format(item.max_price)}`:''}
                                                     </div>
                                                     <div>{item.total_inventory}</div>
-                                                    <div className="column_edit-shipping">{item.item_shipping}</div>
+                                                    <div className="column_edit-shipping">{item.shipping}</div>
                                                     <div className="item-center status">
                                                         <input type="checkbox" onChange={(e)=>setenableitem(e,item,itemshop.items_choice,'items_choice')} checked={item.enable?true:false}  className="switch_1 " name="check"/>
+                                                        {sameitem.some(product=>product==item.id)?
+                                                        <div data-v-6ec5aca5="" class="item-update-error popover popover--light">
+                                                            <div class="popover__ref">
+                                                                <span data-v-6ec5aca5="">
+                                                                    <i data-v-6ec5aca5="" class="icon">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-.875a6.125 6.125 0 1 0 0-12.25 6.125 6.125 0 0 0 0 12.25zm1.35-3.313c.22 0 .4.154.4.344 0 .19-.18.344-.4.344h-2.7c-.22 0-.4-.154-.4-.344 0-.19.18-.344.4-.344h.95V6.938H6.93c-.221 0-.4-.154-.4-.344 0-.19.179-.344.4-.344H8c.222 0 .4.154.4.344v4.218h.95zM8 4.875A.437.437 0 1 1 8 4a.437.437 0 0 1 0 .875z"></path></svg>
+                                                                    </i>
+                                                                </span> 
+                                                            </div> 
+                                                        </div>:''}
                                                     </div>
                                                     <div className="table-edit">
-                                                        <i onClick={()=>removeitem(item,'items',itemshop.items,'items_choice',itemshop.items_choice,currentPage.items)} className="trash-icon icon">
-                                                            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fillRule="nonzero"><path d="M14.516 3.016h-4v-1a.998.998 0 0 0-.703-.955.99.99 0 0 0-.297-.045h-3a.998.998 0 0 0-.955.703.99.99 0 0 0-.045.297v1h-4a.5.5 0 1 0 0 1h1v10a.998.998 0 0 0 .703.955.99.99 0 0 0 .297.045h9a.998.998 0 0 0 .955-.703.99.99 0 0 0 .045-.297v-10h1a.5.5 0 1 0 0-1zm-8-1h3v1h-3v-1zm6 12h-9v-10h9v10z"></path><path d="M5.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5zM8.016 12.016a.5.5 0 0 0 .5-.5v-5a.5.5 0 1 0-1 0v5a.5.5 0 0 0 .5.5zM10.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5z"></path></g></svg>
-                                                        </i>
+                                                        <button onClick={()=>removeitem(item,'items',itemshop.items,'items_choice',itemshop.items_choice,currentPage.items)} data-v-625f739d="" type="button" class="action button button--normal button--circle">
+                                                            <i class="icon">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2,4 C1.72385763,4 1.5,3.77614237 1.5,3.5 C1.5,3.22385763 1.72385763,3 2,3 L6,2.999 L6,2 C6,1.44771525 6.44771525,1 7,1 L10,1 C10.5522847,1 11,1.44771525 11,2 L11,2.999 L15,3 C15.2761424,3 15.5,3.22385763 15.5,3.5 C15.5,3.77614237 15.2761424,4 15,4 L14,4 L14,14 C14,14.5522847 13.5522847,15 13,15 L4,15 C3.44771525,15 3,14.5522847 3,14 L3,4 L2,4 Z M13,4 L4,4 L4,14 L13,14 L13,4 Z M6.5,7 C6.77614237,7 7,7.22385763 7,7.5 L7,11.5 C7,11.7761424 6.77614237,12 6.5,12 C6.22385763,12 6,11.7761424 6,11.5 L6,7.5 C6,7.22385763 6.22385763,7 6.5,7 Z M8.5,6 C8.77614237,6 9,6.22385763 9,6.5 L9,11.5 C9,11.7761424 8.77614237,12 8.5,12 C8.22385763,12 8,11.7761424 8,11.5 L8,6.5 C8,6.22385763 8.22385763,6 8.5,6 Z M10.5,7 C10.7761424,7 11,7.22385763 11,7.5 L11,11.5 C11,11.7761424 10.7761424,12 10.5,12 C10.2238576,12 10,11.7761424 10,11.5 L10,7.5 C10,7.22385763 10.2238576,7 10.5,7 Z M10,2 L7,2 L7,2.999 L10,2.999 L10,2 Z"></path></svg>
+                                                            </i>
+                                                        </button>
+                                                       
                                                     </div>
                                                 </div> 
                                             </div> 
@@ -534,14 +499,14 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                                                 currentPage={currentPage.items}
                                                 totalCount={Math.ceil(itemshop.items_choice.length / Pagesize)}
                                                 Pagesize={Pagesize}
-                                                onPageChange={(page,name) => handlePageChange(page,'items')}
+                                                onPageChange={(page) => handlePageChange(page,'items')}
                                             />
                                         </div>
                                         <div className="pagination-jumperpagination__part">
                                             <span className="pagination-jumper__label">Go to page</span>
                                             <div className="pagination-jumper__input">
                                             <div className="number-input  number-input--no-suffix">
-                                                <input onChange={(e)=>setState({...state,page_input:parseInt(e.target.value)})} type="text" value={state.page_input}  className="input_input"/>
+                                                <input onChange={(e)=>setState({...state,page_input:isNaN(e.target.value)?state.page_input:e.target.value})} type="text" value={state.page_input}  className="input_input"/>
                                             </div>
                                             <button onClick={()=>setpage(itemshop.items_choice,'items')} type="button" className="button btn-m btn-light "><span>Go</span></button>
                                             </div>
@@ -563,6 +528,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
             </div>
             </div>
             <div id="modal">
+                {show.items || show.byproduct || state.complete||duplicate?
                 <Productoffer
                     showmain={show.items}
                     showbyproduct={show.byproduct}
@@ -570,6 +536,9 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                     items={itemshop.items}
                     sec={state.timeSecond}
                     text={combo}
+                    duplicate={duplicate}
+                    texterror={`Combo Khuyến Mãi`}
+                    setDuplicate={data=>setDuplicate(data)}
                     complete={state.complete}
                     items_choice={itemshop.items_choice}
                     byproduct={itemshop.byproduct}
@@ -578,7 +547,7 @@ const Promotioninfo=({combo_shop,date_combo,item_combo,loading_content,disable,u
                     setcheckall={(e,items,keys,value)=>setcheckall(e,items,keys,value)}
                     submit={()=>submit()}
                     setshow={(sho,name)=>setshow(sho,name)}
-                />
+                />:''}
             </div>
                
         </>

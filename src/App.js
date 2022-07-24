@@ -61,6 +61,7 @@ import Phoneuser from './user/Phone'
 import  Ratingshop from './seller/Ratingshop'
 import Profileshop from './seller/Profileshop'
 import Shippingmanagement from "./seller/Shippingmanagement"
+import Flashsale from "./containers/Flashsale"
 const Appstore=()=>{
 return(
         <Provider store={store}>
@@ -84,9 +85,10 @@ return(
                                         <Route  path='/user/account/profile' element={<Profile/>} />
                                         <Route  path='/user/purchase' element={<Purchase/>} />
                                         <Route exact path=':slug' element={<Detailview/>} /> 
-                                        <Route exact path='/addon-deal-cart-selection/:id' element={<Dealshock/>} /> 
+                                        <Route exact path='/addon-deal-selection/:deal_id/:id' element={<Dealshock/>} /> 
                                         <Route exact path='/bundle-deal/:id' element={<Promotion/>} /> 
                                         <Route exact path='/cart' element={<Cart/>} /> 
+                                        <Route exact path='/flash_sale' element={<Flashsale/>} /> 
                                         <Route exact path='/checkout' element={<Checkout/>} /> 
                                         <Route exact path='/payment' element={<Payment/>} /> 
                                         <Route exact path='/vendor/login' element={<Loginvendor/>} />

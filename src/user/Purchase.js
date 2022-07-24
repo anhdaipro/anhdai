@@ -10,6 +10,48 @@ import {Link, useNavigate} from 'react-router-dom'
 import {formatter,itemvariation} from "../constants"
 import { headers,expiry ,showchat,showthreads,buyagain} from "../actions/auth";
 import {purchaselistdURL,listThreadlURL,buyagainURL} from "../urls"
+
+const Infoitem=(props)=>{
+    const {item}=props
+    return (
+        <div key={item.id} className="_1limL3">
+        <div>
+            <span className="_1BJEKe">
+                <div className="_3huAcN">
+                    <div className="_3btL3m">
+                        <div className="image__wrapper">
+                            <div className="image__place-holder">
+                                <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-loading-image"><g><rect fill="none" height="8" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="10" x="1" y="4.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="6.5" y2="6.5"></line><rect fill="none" height="3" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="3" x="11" y="6.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="14.5" y2="14.5"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="6" x2="6" y1=".5" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="3.5" x2="3.5" y1="1" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="8.5" x2="8.5" y1="1" y2="3"></line></g></svg>
+                            </div>
+                            <div className="image__content" style={{backgroundImage: `url(${item.image})`}}>
+                                <div className="image__content--blur"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="_1cxKtp">
+                        <div>
+                            <div className="_1xHDVY">
+                                <span className="_30COVM">{item.name}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div className="y8ewrc">Phân loại hàng:{itemvariation(item)!=''?`Phân loại hàng: ${itemvariation(item)}`:''}</div>
+                            <div className="_2H6lAy">x{item.quantity}</div>
+                            <span className="_1RV20z">7 ngày trả hàng</span>
+                        </div>
+                    </div>
+                </div>
+                <div className="_1kvNGb">
+                    <span className={`${item.discount_price==0?'mBERmM':'_34DOjq'}`}>₫{formatter.format(item.price)}</span>
+                    {item.discount_price>0?<span className="mBERmM _2mEJ4q">₫{item.price-item.discount_price}</span>:''}
+                </div>
+            </span>
+        </div>
+        <div className="_3tEHtP"></div>
+        </div>
+
+    )
+}
 const Purchase =({user,showchat,showthreads,buyagain})=>{
     const [state, setState] = useState({count_order:0,orders:[],user:null,list_type_order:[{name:'Tất cả',type:'1'},{name:'Chờ xác nhận',type:'2'},{name:'Chờ lấy hàng',type:'3'}
 ,{name:'Đang giao',type:'4'},{name:'Đã giao',type:'5'},{name:'Đã Hủy',type:'6'}],
@@ -42,7 +84,14 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
         showchat(data) 
     }
     
-    window.onscroll=()=>{
+    useEffect(()=>{
+        document.addEventListener('scroll',addOrder)
+        return () => {
+            document.removeEventListener('scroll', addOrder)
+        }
+    },[loading,state])
+    
+    const addOrder=()=>{
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
         if(clientHeight + scrollTop >= scrollHeight-300 && loading && state.orders.length<state.count_order){
             let url=new URL(purchaselistdURL)
@@ -60,6 +109,7 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
             })
         }
     }
+    
     
     const setshow = useCallback((es) => {
         setShow(es);
@@ -98,8 +148,8 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
                 return({...cartitem})
             }
         })
-        setState({...state,cartitem:list_cartitem});
-    }, [state]);
+        setState(current=>({...current,cartitem:list_cartitem}));
+    }, [state.list_cartitem]);
 
     const editreview=(e,order)=>{
         let url = new URL(purchaselistdURL);
@@ -157,7 +207,7 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
                             <div className="_2mSi0S">
                                 <div className="ZS1kj6">
                                     {state.list_type_order.map(item=>
-                                    <Link className="_2sowby _23VQQX" to={`/user/purchase/?type=${item.type}`}>
+                                    <Link key={item.type} className="_2sowby _23VQQX" to={`/user/purchase/?type=${item.type}`}>
                                         <span className="_2pSH8O">{item.name}</span>
                                     </Link>
                                     )}
@@ -169,7 +219,7 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
                                 <div>
                                     {
                                     state.orders.map(order=>
-                                        <div className="_2n4gHk">
+                                        <div key={order.id} className="_2n4gHk">
                                             <div className="GuWdvd">
                                                 <div className="item-center item-space">
                                                     <div className="item-center item-center">
@@ -183,7 +233,7 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
                                                                 <span>Chat</span>
                                                             </button>
                                                         </div>
-                                                        <Link className="_2L5VLu" to={order.shop.url}>
+                                                        <Link className="_2L5VLu" to={`${order.shop_url}`}>
                                                             <button className="stardust-button">
                                                                 <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-btn-shop"><path d="m15 4.8c-.1-1-.8-2-1.6-2.9-.4-.3-.7-.5-1-.8-.1-.1-.7-.5-.7-.5h-8.5s-1.4 1.4-1.6 1.6c-.4.4-.8 1-1.1 1.4-.1.4-.4.8-.4 1.1-.3 1.4 0 2.3.6 3.3l.3.3v3.5c0 1.5 1.1 2.6 2.6 2.6h8c1.5 0 2.5-1.1 2.5-2.6v-3.7c.1-.1.1-.3.3-.3.4-.8.7-1.7.6-3zm-3 7c0 .4-.1.5-.4.5h-8c-.3 0-.5-.1-.5-.5v-3.1c.3 0 .5-.1.8-.4.1 0 .3-.1.3-.1.4.4 1 .7 1.5.7.7 0 1.2-.1 1.6-.5.5.3 1.1.4 1.6.4.7 0 1.2-.3 1.8-.7.1.1.3.3.5.4.3.1.5.3.8.3zm.5-5.2c0 .1-.4.7-.3.5l-.1.1c-.1 0-.3 0-.4-.1s-.3-.3-.5-.5l-.5-1.1-.5 1.1c-.4.4-.8.7-1.4.7-.5 0-.7 0-1-.5l-.6-1.1-.5 1.1c-.3.5-.6.6-1.1.6-.3 0-.6-.2-.9-.8l-.5-1-.7 1c-.1.3-.3.4-.4.6-.1 0-.3.1-.3.1s-.4-.4-.4-.5c-.4-.5-.5-.9-.4-1.5 0-.1.1-.4.3-.5.3-.5.4-.8.8-1.2.7-.8.8-1 1-1h7s .3.1.8.7c.5.5 1.1 1.2 1.1 1.8-.1.7-.2 1.2-.5 1.5z"></path></svg>
                                                                 <span>Xem shop</span>
@@ -224,42 +274,16 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
                                                 <div className="_39XDzv"></div>
                                                 <Link to={`/user/purchase/order/${order.id}`}>
                                                     <div className="_2lVoQ1">
-                                                        {order.cart_item.map(cartitem=>
-                                                            <div className="_1limL3">
-                                                                <div>
-                                                                    <span className="_1BJEKe">
-                                                                        <div className="_3huAcN">
-                                                                            <div className="_3btL3m">
-                                                                                <div className="image__wrapper">
-                                                                                    <div className="image__place-holder">
-                                                                                        <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-loading-image"><g><rect fill="none" height="8" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="10" x="1" y="4.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="6.5" y2="6.5"></line><rect fill="none" height="3" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="3" x="11" y="6.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="14.5" y2="14.5"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="6" x2="6" y1=".5" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="3.5" x2="3.5" y1="1" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="8.5" x2="8.5" y1="1" y2="3"></line></g></svg>
-                                                                                    </div>
-                                                                                    <div className="image__content" style={{backgroundImage: `url(${cartitem.item_image})`}}>
-                                                                                        <div className="image__content--blur"></div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className="_1cxKtp">
-                                                                                <div>
-                                                                                    <div className="_1xHDVY">
-                                                                                        <span className="_30COVM">{cartitem.item_name}</span>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <div className="y8ewrc">Phân loại hàng:{itemvariation(cartitem)!=''?`Phân loại hàng: ${itemvariation(cartitem)}`:''}</div>
-                                                                                    <div className="_2H6lAy">x{cartitem.quantity}</div>
-                                                                                    <span className="_1RV20z">7 ngày trả hàng</span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className="_1kvNGb">
-                                                                            <span className={`${cartitem.discount_price==0?'mBERmM':'_34DOjq'}`}>₫{formatter.format(cartitem.price)}</span>
-                                                                            {cartitem.discount_price>0?<span className="mBERmM _2mEJ4q">₫{cartitem.price-cartitem.discount_price}</span>:''}
-                                                                        </div>
-                                                                    </span>
-                                                                </div>
-                                                                <div className="_3tEHtP"></div>
-                                                            </div>
+                                                        {order.cart_item.map(cartitem=><>
+                                                            <Infoitem
+                                                            item={cartitem}
+                                                            />
+                                                            {cartitem.byproducts.map(byproduct=>
+                                                                <Infoitem
+                                                                item={byproduct}
+                                                                />
+                                                            )}
+                                                            </>
                                                         )}
                                                     </div>
                                                 </Link>

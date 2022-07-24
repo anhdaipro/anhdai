@@ -47,6 +47,36 @@
     line-height: 16px;
     box-sizing: border-box;
 }
+.buttom {
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  min-width: 72px;
+  padding: 0 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 4px;
+  outline: none;
+  box-sizing: border-box;
+  transition: all .2s ease-in-out;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
   .input-item {
     margin-top: 2%;
   }

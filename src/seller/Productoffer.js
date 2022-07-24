@@ -4,40 +4,51 @@ import React, {useState, useEffect,memo,useMemo,useCallback} from 'react'
 import {formatter,} from "../constants"
 let PageSize = 10;
 const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,submitby,
-    setshow,page_count_main,page_count_by,sec,text,complete,
+    setshow,duplicate,sec,text,complete,setDuplicate,
     showmain,showbyproduct,byproduct,byproduct_choice})=>{
-    let list_items=items
-    let page_count=Math.ceil(items.length / PageSize)
-    let name='items'
-    let choice_product=items_choice
+   
     const [currentPage, setCurrentPage] = useState(1);
     const [state,setState]=useState({list_items:[]})
-    console.log(state)
-    console.log(list_items)
-    const [check, setCheck] = useState(false);
+    const [name,setName]=useState('items')
+    const [show,setShow]=useState(false)
+    const [choice_product,setChoiceproduct]=useState([])
+
     const handlePageChange=useCallback((page)=>{
         setCurrentPage(page)
     },[currentPage])
+    useEffect(()=>{
+        if(showmain || showbyproduct ||duplicate){
+            setShow(true)
+            if(showmain){
+                setChoiceproduct(items_choice)
+                setName('items')
+            }
+            if(showbyproduct){
+                setChoiceproduct(byproduct_choice)
+                setName('byproduct')
+            }
+        }
+        else{
+            setShow(false)
+        }
+    },[showmain,showbyproduct,duplicate])
+    const list_items=showbyproduct?byproduct:items
+    const page_count=showbyproduct?Math.ceil(byproduct.length / PageSize):Math.ceil(items.length / PageSize)
     
-    const firstPageIndex = (currentPage - 1) * PageSize;
-    const lastPageIndex = firstPageIndex + PageSize;
+    const currentitemPage=useMemo(()=>{
+        const firstPageIndex = (currentPage - 1) * PageSize;
+        const lastPageIndex = firstPageIndex + PageSize;
+        return list_items.slice(firstPageIndex, lastPageIndex);
+    },[currentPage,list_items])
     
-    if(showbyproduct){
-        list_items=byproduct
-        choice_product=byproduct_choice
-        name='byproduct'
-        page_count=Math.ceil(byproduct.length / PageSize)
-    }
-    const currentitemPage=list_items.slice(firstPageIndex, lastPageIndex);
-    console.log(currentitemPage)
     function list_productshop(item,product,name,product_choice){
         return(
             <div key={item.id} className="item">
-                <div className={`item-discount ${product_choice.some(ite=>item.id==ite.id)?"disable":""}`}>
+                <div className={`item-discount ${item.disable?"disable":""}`}>
                     <div className="item_heading" style={{width:'360px'}}> 
                         <div className="item-center">
                             <label className="checkbox item-selector">
-                                <input onChange={()=>setcheckitem(item,product,name)} type="checkbox" disabled={product_choice.some(ite=>item.id==ite.id)?true:false} checked={item.check?true:false} className="checkbox__input" value=""/> 
+                                <input onChange={()=>setcheckitem(item,product,name)} type="checkbox" disabled={item.disable?true:false} checked={item.check?true:false} className="checkbox__input" value=""/> 
                                 <span className="checkbox__indicator">
                                     <i className="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4.03033009,7.46966991 C3.73743687,7.1767767 3.26256313,7.1767767 2.96966991,7.46966991 C2.6767767,7.76256313 2.6767767,8.23743687 2.96966991,8.53033009 L6.32804531,11.8887055 C6.62093853,12.1815987 7.09581226,12.1815987 7.38870548,11.8887055 L13.2506629,6.02674809 C13.5435561,5.73385487 13.5435561,5.25898114 13.2506629,4.96608792 C12.9577697,4.6731947 12.4828959,4.6731947 12.1900027,4.96608792 L6.8583754,10.2977152 L4.03033009,7.46966991 Z"></path></svg>
@@ -66,10 +77,26 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
     }
     return(
         <>
-        {showmain || showbyproduct?
+        {show?
         <div className="content-box-item">
             <div className="modal__container">
                 <div className="modal__box">
+                    {duplicate?
+                        <div class="modal__content modal__content--normal">
+                            <div class="modal__header">
+                                <div class="modal__header-inner"> 
+                                <div class="modal__title">Chú ý</div> 
+                                </div></div> 
+                                <div class="modal__body">
+                                    <div data-v-6ec5aca5="">Sản phẩm đang chạy Combo Khuyến Mãi sẽ không thể chạy chung với chương trình khác trong cùng thời điểm. Vui lòng xóa những sản phẩm này để tạo Combo Khuyến Mãi thành công.</div>
+                                    </div> 
+                                    <div class="modal__footer"> 
+                                <div class="modal__footer-buttons"> 
+                                <button onClick={e=>setDuplicate(false)} type="button" class="button button--primary button--normal"><span>Bỏ kích hoạt sản phẩm</span></button>
+                            </div>
+                        </div>
+                    </div> 
+                    :
                     <div className="product-modal modal__content">
                         <div className="modal__header">
                             <div className="product-modal-header">
@@ -275,10 +302,11 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
                                 <button onClick={()=>{showmain?submit():submitby()}} className={`comfirm ${list_items.some(item=>item.check) || choice_product.length>0?'':'disable'} btn-orange btn-m`}>Comfirm</button>
                             </div>
                         </div>
-                    </div>
+                    </div>}
                 </div>
             </div>
         </div>:""}
+    
         {complete?
         <div className="sucess-box">
         <div className="create-sucess" style={{width: '360px'}}>

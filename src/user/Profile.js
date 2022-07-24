@@ -171,7 +171,7 @@ const Profile =()=>{
                                                     <div className="_2_JugQ"> 
                                                         <div className="stardust-radio-group item-center">{
                                                             state.list_gender.map(gender=>
-                                                                <div onClick={()=>setformData({...formData,gender:gender})} className="stardust-radio">
+                                                                <div key={gender} onClick={()=>setformData({...formData,gender:gender})} className="stardust-radio">
                                                                     <label className="check_input">
                                                                         <input type="radio" name="gender" checked={gender==formData.gender?true:false} className="radio-input" value={gender}/>
                                                                         <div className="stardust-radio__content">{gender}</div>
@@ -200,7 +200,7 @@ const Profile =()=>{
                                                                 <div className="popover popover--default">
                                                                     <ul  className='dropdown__options'>
                                                                         {Array(31).fill().map((_, i)=>
-                                                                            <li onClick={(e)=>setdate(e,'date',i+1)} className="dropdown__entry dropdown__entry--optional">{i+1}</li>
+                                                                            <li key={i} onClick={(e)=>setdate(e,'date',i+1)} className="dropdown__entry dropdown__entry--optional">{i+1}</li>
                                                                         )}
                                                                     </ul>
                                                                 </div>:''}
@@ -213,7 +213,7 @@ const Profile =()=>{
                                                                 {show.month?<div className="popover popover--default">
                                                                     <ul  className='dropdown__options'>
                                                                         {Array(12).fill().map((_, i)=>
-                                                                            <li onClick={(e)=>setdate(e,'month',i+1)} className="dropdown__entry dropdown__entry--optional">{i+1}</li>
+                                                                            <li key={i} onClick={(e)=>setdate(e,'month',i+1)} className="dropdown__entry dropdown__entry--optional">{i+1}</li>
                                                                         )}
                                                                     </ul>
                                                                 </div>:''}
@@ -226,7 +226,7 @@ const Profile =()=>{
                                                                 {show.year?<div className="popover popover--default">
                                                                     <ul  className='dropdown__options'>
                                                                         {list_year.reverse().map(i=>
-                                                                            <li onClick={(e)=>setdate(e,'year',i)} className="dropdown__entry dropdown__entry--optional">{i}</li>
+                                                                            <li key={i} onClick={(e)=>setdate(e,'year',i)} className="dropdown__entry dropdown__entry--optional">{i}</li>
                                                                         )}
                                                                     </ul>
                                                                 </div>:''}

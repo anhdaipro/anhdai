@@ -35,7 +35,7 @@ const Sidebarmenu=()=>{
         <div className="sidebar-container">
             <div className="siderbar">
                 {state.map(item=>
-                    <div className={`seller sidebar-menu ${item.show?'':'sidebar-menu-collapse'}`}>
+                    <div key={item.id} className={`seller sidebar-menu ${item.show?'':'sidebar-menu-collapse'}`}>
                     <div className="item-center sidebar-menu-item ">
                         <img className="sidebar-menu-icon" src={item.src} alt=""/>
                         <span className="sidebar-menu-item-text">{item.name}</span>
@@ -45,8 +45,8 @@ const Sidebarmenu=()=>{
                         </i>
                     </div>
                     <div className="item-col sidebar-submenu">
-                        {item.info.map(product=>
-                            <Link className={`sidebar-submenu-item ${originweb+product.url==window.location?'active':''}`} to={product.url}>{product.name}</Link>
+                        {item.info.map((product,index)=>
+                            <Link key={index} className={`sidebar-submenu-item ${originweb+product.url==window.location?'active':''}`} to={product.url}>{product.name}</Link>
                         )}
                     </div>
                 </div>

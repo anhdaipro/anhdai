@@ -288,7 +288,7 @@ const Listdealshop=()=>{
                                                                                                 </span>)
                                                                                             }
                                                                                         })}
-                                                                                        {deal.main_products.length>5?<div className="product-gallery-mask gallery-mask__small">+{deal.products.length-5}</div>:''}
+                                                                                        {deal.main_products.length>5?<div className="product-gallery-mask gallery-mask__small">+{deal.main_products.length-5}</div>:''}
                                                                                     </div>
                                                                                 </div>
                                                                             </td>

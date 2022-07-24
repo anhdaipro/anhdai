@@ -52,7 +52,7 @@ const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
             setFormData({...formData,id:res.data.id})
             const countDown = setInterval(() => {
                 time--
-                console.log(state)
+               
                 setState({...state,time:time})
                 if (time <= 0) {
                     clearInterval(countDown)

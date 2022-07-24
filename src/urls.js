@@ -10,7 +10,8 @@ export const updateuseronlineURL=`${endpoint}/update/pnline`
 export const resetpassdURL=`${endpoint}/user/account/password-reset`;
 export const cityListURL = `${endpoint}/get_city`;
 export const passwordURL=`${endpoint}/user/account/password`;
-export const dealURL=`${endpoint}/addon-deal-cart-selection`
+export const dealURL=`${endpoint}/addon-deal-selection`
+export const byproductdealURL=`${endpoint}/deal/byproduct`
 export const promotionURL=`${endpoint}/bundle-deal/`
 export const otpURL=`${endpoint}/resend-sms`
 export const updateURL=`${endpoint}/update/image`
@@ -45,7 +46,8 @@ export const productinfoURL=`${endpoint}/productinfo`
 export const searchshopURL=`${endpoint}/shop/search`
 export const shopinfoURL=`${endpoint}/shopinfo`
 export const topsearchURL=`${endpoint}/top-search`
-
+export const  flashsaleURL=`${endpoint}/flash_sale`
+export const listflashsaleURL=`${endpoint}/flash_sale/list`
 //cart
 export const listorderURL=`${endpoint}/listorder`
 export const orderURL=`${endpoint}/order/`
@@ -66,6 +68,7 @@ export const createthreadURL=`${apichat}/thread/new`
 export const originweb =window.location.origin
 
 const apivendorURL = "/api/v3";
+export const dashboardpromotionURL=`${localhost}${apivendorURL}/dashboard/promotion`
 export const shopratingURL=`${localhost}${apivendorURL}/shop/rating`;
 export const productshopURL=`${localhost}${apivendorURL}/product/list`;
 export const vouchershopURL=`${localhost}${apivendorURL}/voucher/new`;

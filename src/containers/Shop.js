@@ -10,10 +10,10 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
     const [state, setState] = useState(null)
     const {slug}=useParams()
     let navigate = useNavigate();
-    console.log(data)
+    
     const [params, setSearchParams] = useSearchParams();
     const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
-    const [listitem,setListitem]=useState([])
+    const [listitem,setListitem]=useState()
     const [products,setProducts]=useState([])
     const [combos,setCombos]=useState([])
     const [childcategory,setChildcategory]=useState([])
@@ -22,9 +22,9 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
         (async()=>{
             if(shop_id){
                 const [obj1,obj2,obj3] =await axios.all([
-                    axios.get(`${shopinfoURL}?choice=gettreecategory`,headers),
-                    axios.get(`${shopinfoURL}?choice=deal`,headers),
-                    axios.get(`${shopinfoURL}?choice=combo`,headers),
+                    axios.get(`${shopinfoURL}?choice=gettreecategory&shop_id=${shop_id}`,headers),
+                    axios.get(`${shopinfoURL}?choice=deal&shop_id=${shop_id}`,headers),
+                    axios.get(`${shopinfoURL}?choice=combo&shop_id=${shop_id}`,headers),
                 ])
                 setChildcategory(obj1.data)
                 setProducts(obj2.data)
@@ -39,7 +39,7 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
             const usesearch=params
             usesearch.set('shop_id',shop_id)
             const res =await axios.get(`${searchshopURL}?${usesearch}`,headers)
-            setListitem(res.data.list_item_page)
+            setListitem(res.data)
             }
         })()
     },[params,shop_id])
@@ -328,7 +328,7 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
                                 <svg viewBox="0 0 4 7" className="svg-icon _1VXHVI icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon></svg>
                                 Sản Phẩm
                             </div>
-                            {data.list_category_child.map(category=>
+                            {childcategory.map(category=>
                             <div className="_1_yYlR">
                                 <svg viewBox="0 0 4 7" className="svg-icon _1VXHVI icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon></svg>
                                 {category.title}
@@ -337,15 +337,18 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
                         </div>
                     </div>
                     <div className="shop-page_product-list">
-                        <div className="shop-all-product-view">
-                        <Itemsearch
-                            searchitem={searchitem}
-                            setsearch={setsearch}
-                            listitem={listitem}
-                            search={search}
-                            data={data}
-                            />
-                        </div>
+                        {listitem?
+                            <div className="shop-all-product-view">
+                        
+                            <Itemsearch
+                                searchitem={searchitem}
+                                setsearchitem={(data)=>setsearchitem(data)}
+                                setsearch={(name,value)=>setsearch(name,value)}
+                                listitem={listitem.list_item_page}
+                                search={search}
+                                data={listitem}
+                                />
+                            </div>:''}
                     </div>
                 </div>
             </div>

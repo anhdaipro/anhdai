@@ -56,7 +56,7 @@ const Shippingmanagement=()=>{
                                         <div className="tabs__nav-warp">
                                             <div className="tabs__nav-tabs">
                                                 {state.list_order_type.map((item,index)=>
-                                                <div onClick={(e)=>setordertype(e,item)} className={`order-type ${item.type==search.type?'active':''}`}>{item.name}</div>
+                                                <div key={index} onClick={(e)=>setordertype(e,item)} className={`order-type ${item.type==search.type?'active':''}`}>{item.name}</div>
                                                 )}
                                                 <div className="order-type">Trả hàng/Hoàn tiền</div>
                                             </div>
@@ -210,7 +210,7 @@ const Shippingmanagement=()=>{
                                                     <div className="drop-down">
                                                         <div className="list-select"> 
                                                         {state.listoptionsearch.map(item=>
-                                                            <div className="select-option">{item.name}</div>
+                                                            <div key={item.name} className="select-option">{item.name}</div>
                                                             )} 
                                                         </div>
                                                     </div>:''}
@@ -308,13 +308,13 @@ const Shippingmanagement=()=>{
                                             </div>
                                             <div className="order-detail">
                                                 {order.cart_item.map(cartitem=>
-                                                <div className="order-cartitem">
+                                                <div key={cartitem.id} className="order-cartitem">
                                                     <div className="item-product d-flex">
                                                         <div className="item-product-image">
-                                                            <div className="image__content" style={{backgroundImage: `url(${cartitem.item_image})`}}></div>
+                                                            <div className="image__content" style={{backgroundImage: `url(${cartitem.image})`}}></div>
                                                         </div>
                                                         <div className="order-item-info">
-                                                            <div className="order-item-name">{cartitem.item_name}</div>
+                                                            <div className="order-item-name">{cartitem.name}</div>
                                                             <div>{itemvariation(cartitem)}</div>
                                                         </div>
                                                         <div>{cartitem.quantity}</div>

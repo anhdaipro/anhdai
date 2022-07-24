@@ -3,7 +3,7 @@ import React, {useState,useEffect,useCallback,useRef, memo} from 'react'
 import {code_type} from "../constants"
 import 'react-calendar/dist/Calendar.css';
 import Timeoffer from "./Timeoffer"
-const Dealshockinfo=({date,deal,setform,editdeal,disable,setdealtype,state,onChange,setdatevalid,setindexchoice,settimechoice})=>{
+const Dealshockinfo=({deal,setform,editdeal,disable,setdealtype,edit,state,setdatevalid})=>{
     return(
         <div className="voucher-basic-info">
             <h4>info basic</h4>
@@ -41,12 +41,10 @@ const Dealshockinfo=({date,deal,setform,editdeal,disable,setdealtype,state,onCha
                             <label for="" className="form-item__label">Time to save discount code</label>
                             <Timeoffer
                             state={state}
-                            date={date}
-                            onChange={(page)=>onChange(page)}
+                            data={deal}
                             selectRange={true}
-                            setdatevalid={(index)=>setdatevalid(index)}
-                            settimechoice={(value,index,name)=>settimechoice(value,index,name)}
-                            setindexchoice={list_date=>setindexchoice(list_date)}
+                            setdatevalid={(index,date)=>setdatevalid(index,date)}
+                            edit={edit}
                             />
                         </div>
                         <div className="item-base-line mb-1">

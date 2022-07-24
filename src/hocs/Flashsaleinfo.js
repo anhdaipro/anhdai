@@ -7,6 +7,8 @@ import React, {useState,useEffect,useCallback,useRef} from 'react'
 import {localhost,formatter,itemvariation} from "../constants"
 
 import { headers } from '../actions/auth';
+import { newflashsaleURL } from '../urls';
+import { useParams } from 'react-router';
 const Pagesize=10
 const time_choice=[ {name:'00:00:00 - 00:30:00',hour:0,minutes:0,hour_to:0,minutes_to:30},
 {name:'00:30:00 - 01:00:00',hour:0,minutes:30,hour_to:1,minutes_to:0},
@@ -34,20 +36,32 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
     ,page_count_by:0,byproduct:[],byproduct_choice:[],savebyproduct:false})
     const [loading,setLoading]=useState(false)
     const [showtime,setShowtime]=useState(false)
+    const [sameitem,setSameitem]=useState(false)
+    const [duplicate,setDuplicate]=useState(false)
+    const {id}=useParams()
     useEffect(() => {
         setFlashsale(flashsale_shop)
         setLoading(loading_content)
         setItem(item_flashsale)
       }, [loading_content,item_flashsale,flashsale_shop]);
+    const valid_from=`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour).slice(-2)}:${('0'+date.minutes).slice(-2)}`
+    const valid_to=`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour_to).slice(-2)}:${('0'+date.minutes_to).slice(-2)}`
 
     const firstpagebyproductIndex=(currentPage.byproduct - 1) * Pagesize;
     const lastPagebyproductIndex = firstpagebyproductIndex + Pagesize;
     const byproductPage=itemshop.byproduct_choice.slice(firstpagebyproductIndex, lastPagebyproductIndex);
+    const [newFruitItem,setNewFruitItem]=useState('')
     const dragItem=useRef()
     const dragOverItem=useRef()
-    const handleSort=()=>{
-
-    }
+    useEffect(()=>{
+        if(sameitem){
+            const listitems=itemshop.byproduct_choice.map(item=>{
+            return ({...item,variations:item.variations.map(variation=>{
+                return({...variation,
+                enable:false})})})})
+            setItem(current=>{return {...current,byproduct_choice:listitems}})
+        }
+    },[sameitem])
     const handlePageChange=useCallback((page,name)=>{
         setCurrentPage({...currentPage,[name]:page})
     },[currentPage])
@@ -63,12 +77,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
             }
         })
         setItem({...itemshop,[keys]:list_item,[keys_choice]:list_itemchoice})
-        let page=page_current
-        if(page>=Math.ceil(list_itemchoice.length / Pagesize)){
-            page=Math.ceil(list_itemchoice.length / Pagesize)
-        }
-        setCurrentPage({...currentPage,[keys]:page})
-        handlePageChange(page,keys)
+        setpageitem(keys,list_itemchoice,page_current)
     }
 
     const setdeletechoice=(keys,value,keys_choice,value_choice,page_current)=>{
@@ -80,51 +89,38 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
             return({...item})
         })
         setItem({...itemshop,[keys_choice]:list_itemchoice,[keys]:list_item})
-        let page=page_current
-        if(page>=Math.ceil(list_itemchoice.length / Pagesize)){
-            page=Math.ceil(list_itemchoice.length / Pagesize)
-            
-        }
-        
+        setpageitem(keys,list_itemchoice,page_current)
+    }
+    
+    const setpageitem=(keys,list_itemchoice,page_current)=>{
+        const page=list_itemchoice.length==0?1:page_current>=Math.ceil(list_itemchoice.length / Pagesize)?Math.ceil(list_itemchoice.length / Pagesize):page_current
         setCurrentPage({...currentPage,[keys]:page})
         handlePageChange(page,keys)
     }
-    
-     const addbyproduct=(e)=>{
-        if(itemshop.items.length==0){
-            let url= new URL(url_flashsale)
-            let search_params=url.searchParams
-            search_params.set('item','item')
-            url.search = search_params.toString();
-            let new_url = url.toString();
-            axios.get(new_url,headers)
-            .then(res=>{
-                const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id)).map(item=>{
-                    if(itemshop.byproduct_choice.some(product=>product.id==item.id)){
-                        return({...item,check:true})
-                    }
-                    return({...item})
-                })
-                
-                const list_items=res.data.map(item=>{
-                    if(itemshop.items_choice.some(product=>product.id==item.id)){
-                        return({...item,check:true})
-                    }
-                    return({...item})
-                })
 
-                setShow({...show,byproduct:true,items:false})
-                setItem({...itemshop,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize),byproduct:list_byproduct,page_count_by:Math.ceil(list_byproduct.length / Pagesize)})  
+    const addbyproduct=(e)=>{
+        const url=id?`${newflashsaleURL}?flash_sale_id=${id}&valid_to=${valid_to}&valid_from=${valid_from}`:`${newflashsaleURL}?valid_to=${valid_to}&valid_from=${valid_from}`
+        axios.get(url,headers)
+        .then(res=>{
+            const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id)).map(item=>{
+            if(itemshop.byproduct_choice.some(product=>product.id==item.id)){
+                    return({...item,check:true,disable:true})
+                }
+                return({...item})
+            }) 
+            const list_items=res.data.map(item=>{
+                if(itemshop.items_choice.some(product=>product.id==item.id)){
+                    return({...item,check:true})
+                }
+                return({...item})
             })
-        }
-        else{
-        setShow({...show,byproduct:true,items:false})
-        const byproduct=itemshop.items.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
-        setItem({...itemshop,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
-        }
+
+            setShow({...show,byproduct:true,items:false})
+            setItem({...itemshop,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize),byproduct:list_byproduct,page_count_by:Math.ceil(list_byproduct.length / Pagesize)})  
+        })
     }
 
-    const setcheckitem=useCallback((item,product,keys)=>{
+    const setcheckitem=(item,product,keys)=>{
         const list_item=product.map(ite=>{
             if(item.id==ite.id){
                 return({...ite,check:!ite.check})
@@ -133,42 +129,29 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
                 return({...ite})
             }
         })
-        setItem({...itemshop,[keys]:list_item})
+        setItem(current=>{return {...current,[keys]:list_item}})
 
-    },[itemshop])
+    }
 
     const setcheckall=(e,list_items,keys,value)=>{
-        for (let k in value){
-            for(let i in list_items){
-                    if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.id==value[k].id)){
-                        value[k].check=true
-                    }
-                    if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !itemshop.items_choice.some(ite=>ite.id==value[k].id)){
-                        value[k].check=false
-                    }
-                    if(e.target.checked==true && list_items[i]==value[k]){
-                        if(keys=='byproduct_choice' || keys=='items_choice'){
-                            value[k].check=true
-                        }
-                    }
-                    if(e.target.checked==false && list_items[i]==value[k]){
-                        if(keys=='byproduct_choice' || keys=='items_choice'){
-                            value[k].check=false
-                        }
-                    }
-                }
+        const listitems=value.map(item=>{
+            if(e.target.checked){
+                return({...item,check:list_items.some(product=>product.id==item.id)?true:item.check})
             }
-        setItem({...itemshop,[keys]:value})
+            return({...item,check:list_items.some(product=>product.id==item.id) && !item.disable?false:item.check})
+        })
+       
+        setItem({...itemshop,[keys]:listitems})
     }
 
     const setshow=(sho,name)=>{
         setShow({...show,[name]:sho})
     }
 
-    const submitby=()=>{
+    const submitby=useCallback(()=>{
         const list_itemscheck=itemshop.byproduct.filter(ite=>ite.check && !itemshop.byproduct_choice.some(item=>item.id==ite.id))
         const data={list_items:list_itemscheck.map(item=>{return item.id}),
-        action:'getitem'
+        action:'addproduct'
         }
         axios.post(url_flashsale,JSON.stringify(data),headers)
         .then(res=>{
@@ -183,7 +166,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
             setShow({...show,byproduct:false})
         })
         
-    }
+    },[itemshop,show])
 
     const setdiscount=(e,name,variation,item)=>{
         let discount=parseInt(e.target.value)
@@ -333,6 +316,30 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
         }
     }
     
+  
+	//const handle drag sorting
+	const handleSort = () => {
+	//duplicate items
+        let _fruitItems = itemshop.byproduct_choice.map(item=>{
+            return({...item,choice:false})
+        })
+            //remove and save the dragged item content
+        const draggedItemContent = _fruitItems.splice(dragItem.current, 1)[0]
+        console.log(draggedItemContent)
+		//switch the position
+		_fruitItems.splice(dragOverItem.current, 0, draggedItemContent)
+		//reset the position ref
+		dragItem.current = null
+		dragOverItem.current = null
+        
+		//update the actual array
+		setItem({...itemshop,byproduct_choice:_fruitItems})
+	}
+
+	//handle name change
+	
+
+	//handle new item addition
     const setframtime=(item)=>{
         setDate({...date,hour:item.hour,minutes:item.minutes,hour_to:item.hour_to,minutes_to:item.minutes_to})
     }
@@ -372,9 +379,22 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
         setItem({...itemshop,byproduct_choice:list_product})
     }
     const settime=()=>{
-       
         setFlashsale({...flashsale,time:date.time,hour:date.hour,minutes:date.minutes,hour_to:date.hour_to,minutes_to:date.minutes_to})
         setShowtime(false)
+        if(itemshop.byproduct_choice.length>0){
+            const data={action:'checkitem',valid_from:valid_from,valid_to:valid_to}
+            axios.post(url_flashsale,JSON.stringify(data),headers)
+            .then(res=>{
+                if(res.data.error){
+                    setDuplicate(true)
+                    setSameitem(true)
+                }
+                else{
+                    setDuplicate(false)
+                    setSameitem(false)
+                }
+            })
+        }
     }
 
     const selectchoice=()=>{
@@ -400,39 +420,48 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
         setItem({...itemshop,byproduct_choice:list_item})
     }
     const list_enable_on=itemshop.byproduct_choice.filter(item=>item.variations.some(variation=>variation.enable))
+
     const complete=()=>{
-        const list_product=list_enable_on.map(item=>{
-            return(item.id)
-        })
-        const discount_model_list=itemshop.byproduct_choice.reduce((arr,obj,i)=>{
-            const datavariation= obj.variations.map(variation=>{
-                return({promotion_price:variation.promotion_price,id:variation.id,
-                    enable:variation.enable,
-                    variation_id:variation.variation_id,item_id:variation.item_id,
-                    promotion_stock:variation.promotion_stock?variation.promotion_stock:0,
-                    user_item_limit:obj.user_item_limit?obj.user_item_limit:0})
+        if(sameitem){
+            alert('vui lòng chọn khoảng thời gian khác')
+        }
+        else{
+            const list_product=list_enable_on.map(item=>{
+                return(item.id)
             })
-            return [...arr,...datavariation]
-        },[])
-        const dataflash_sale={valid_from:`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour).slice(-2)}:${('0'+date.minutes).slice(-2)}`,
-        valid_to:`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour_to).slice(-2)}:${('0'+date.minutes_to).slice(-2)}`}
-        const data={...dataflash_sale,action:'submit',list_items:list_product,discount_model_list:discount_model_list}
-        
-        const countDown = setInterval(() => {
-            state.timeSecond--;
-            setState({...state,complete:true})
-            if (state.timeSecond <= 0) {
-                clearInterval(countDown)
-                setState({...state,complete:false})
-            }
-        }, 1000);
-        axios.post(url_flashsale,JSON.stringify(data),headers)
-        .then(res=>{
-        })
+            const discount_model_list=itemshop.byproduct_choice.reduce((arr,obj,i)=>{
+                const datavariation= obj.variations.map(variation=>{
+                    return({promotion_price:variation.promotion_price,id:variation.id,
+                        enable:variation.enable,
+                        variation_id:variation.variation_id,item_id:variation.item_id,
+                        promotion_stock:variation.promotion_stock?variation.promotion_stock:variation.inventory,
+                        user_item_limit:obj.user_item_limit?obj.user_item_limit:0})
+                })
+                return [...arr,...datavariation]
+            },[])
+            const dataflash_sale={valid_from:`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour).slice(-2)}:${('0'+date.minutes).slice(-2)}`,
+            valid_to:`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour_to).slice(-2)}:${('0'+date.minutes_to).slice(-2)}`}
+            const data={...dataflash_sale,action:'submit',list_items:list_product,discount_model_list:discount_model_list}
+            
+            axios.post(url_flashsale,JSON.stringify(data),headers)
+            .then(res=>{
+                if(!res.data.error){
+                    const countDown = setInterval(() => {
+                        state.timeSecond--;
+                        setState({...state,complete:true})
+                        if (state.timeSecond <= 0) {
+                            clearInterval(countDown)
+                            setState({...state,complete:false})
+                        }
+                    }, 1000);
+                }
+                else{
+                    setDuplicate(true)
+                    setSameitem(true)
+                }
+            })
+        }
     }
-    function swap(arr, from, to) {
-        arr.splice(from, 1, arr.splice(to, 1, arr[from])[0]);
-      }
     
     return(
         <>
@@ -790,6 +819,16 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
                                                 <div className="purchase-limit"></div>
                                                 <div className="enable-disable">
                                                     <input type="checkbox" onChange={(e)=>setenableby(e,variation,item)} checked={variation.enable?true:false}  className="switch_1 " name="check"/>
+                                                    {sameitem?
+                                                        <div data-v-6ec5aca5="" class="item-update-error popover popover--light">
+                                                            <div class="popover__ref">
+                                                                <span data-v-6ec5aca5="">
+                                                                    <i data-v-6ec5aca5="" class="icon">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-.875a6.125 6.125 0 1 0 0-12.25 6.125 6.125 0 0 0 0 12.25zm1.35-3.313c.22 0 .4.154.4.344 0 .19-.18.344-.4.344h-2.7c-.22 0-.4-.154-.4-.344 0-.19.18-.344.4-.344h.95V6.938H6.93c-.221 0-.4-.154-.4-.344 0-.19.179-.344.4-.344H8c.222 0 .4.154.4.344v4.218h.95zM8 4.875A.437.437 0 1 1 8 4a.437.437 0 0 1 0 .875z"></path></svg>
+                                                                    </i>
+                                                                </span> 
+                                                            </div> 
+                                                    </div>:''}
                                                 </div>
                                                 <div className="item-content item-action"></div>   
                                             </div>
@@ -820,6 +859,8 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
                     loading={loading}
                     items={itemshop.items}
                     sec={state.timeSecond}
+                    setDuplicate={data=>setDuplicate(data)}
+                    duplicate={duplicate}
                     text={flashsale}
                     complete={state.complete}
                     items_choice={itemshop.items_choice}

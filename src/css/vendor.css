@@ -13,6 +13,14 @@
   position: relative;
     overflow: hidden;
 }
+.item-update-error[data-v-6ec5aca5] {
+    vertical-align: middle;
+    margin-left: 5px;
+}
+.item-update-error[data-v-6ec5aca5] .icon {
+  width: 16px;
+  color: #bbb;
+}
 .contain-image-wrapper .contain-image {
   position: absolute;
   top: 0;
@@ -4093,7 +4101,9 @@ display:none
 .adjust-chosen .discount-item-header{
 background-color: #fff2ff;
 }
-
+.adjust-chosen{
+  background-color: #fff2ff;
+}
 .image-manager__tools{
   display: flex;
   -webkit-box-pack: space-evenly;
@@ -8047,6 +8057,14 @@ margin-right:12px
   width: 678px;
   margin-top: 16px;
   margin-left: 17px;
+}
+.picker-item .error-message[data-v-f6241660] {
+    margin: 4px 0;
+    font-size: 12px;
+    line-height: 1em;
+    color: #ff4742;
+    word-break: normal;
+    word-wrap: break-word;
 }
 .edit-main .hasWholesale{
   margin-left:17px;

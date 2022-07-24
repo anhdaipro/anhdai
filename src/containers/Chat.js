@@ -52,14 +52,15 @@ const Shopmember=(props)=>{
         (async()=>{
             setloading(false)
             const res= await axios.get(`${conversationsURL}/${thread.id}?user_id=${shop.user_id}&action=showitem&keyword=${value}`,headers)
-            setshop({list_items:res.data.list_items})
+            setshop(current=>{
+                return {...current,list_items:res.data.list_items}
+            })
             setloading(true)
         })()
         
-    },1000),[thread,shop])
+    },1000),[thread])
 
     const setshowallcart=(e,orderchoice)=>{
-        console.log(orderchoice)
         const listorder=shop.list_orders.map(order=>{
             if(orderchoice.id==order.id){
                 return({...order,showall:!order.showall})
@@ -179,9 +180,9 @@ const Shopmember=(props)=>{
                                             {i<2 || (i>=2 && order.showall)?
                                             <div className="src-modules-orderCard-index__product--KTy0W" key={cartitem.id}>
                                                 <div className="src-modules-orderCard-index__left--1P7zN src-modules-orderCard-index__center--3wE9z">
-                                                    <img alt="" className="src-modules-orderCard-index__picture--2xI6-" src={cartitem.item_image}/>
+                                                    <img alt="" className="src-modules-orderCard-index__picture--2xI6-" src={cartitem.image}/>
                                                     <div>
-                                                        <div className="src-modules-orderCard-index__name--hZc60">{cartitem.item_name}</div>
+                                                        <div className="src-modules-orderCard-index__name--hZc60">{cartitem.name}</div>
                                                         <div className="src-modules-orderCard-index__details--3V7Qm">Phân loại: {itemvariation(cartitem)}</div>
                                                     </div>
                                                 </div>
@@ -380,7 +381,9 @@ const Message=(props)=>{
     const btnproduct=useRef()
     const btnorder=useRef()
     useEffect(()=>{
+        if(count_message_unseen){
         setMessage_unseen(count_message_unseen)
+        }
     },[count_message_unseen])
     useEffect(() =>  {
         if(showchat){
@@ -392,11 +395,11 @@ const Message=(props)=>{
         }
     }, [threadstate,members,messages,showchat]);
     useEffect(()=>{
-        if(list_threads){
+        if(list_threads.length>0){
             setThreads(list_threads)
         }
     },[list_threads])
-    console.log(show)
+   
     useEffect(() => {
         document.addEventListener('click', handleClick)
         return () => {
@@ -429,13 +432,13 @@ const Message=(props)=>{
                 }
             }
             else{
-                const listmessages=[...list_messages,...data.message]
                 setTyping({typing:false})
                 if(thread.id==data.thread_id){
-                    setListmessages(listmessages)
+                    setListmessages(current=>[...current,...data.message])
                 }
                 setTyping({typing:false,send_to:data.send_to})
-                const convesations=threads.map(thread=>{
+                
+                setThreads(current=>current.map(thread=>{
                     if(data.thread_id==thread.id){
                     return({...thread,message_last:data.message[data.message.length-1],members:thread.members.map(member=>{
                         if(member.user_id!=data.send_by){
@@ -445,8 +448,7 @@ const Message=(props)=>{
                     })})
                     }
                     return({...thread})
-                })
-                setThreads(convesations)
+                }))
                 if(scrollRef.current){
                     scrollRef.current.scrollTop = scrollRef.current.scrollHeight
                 }
@@ -456,7 +458,7 @@ const Message=(props)=>{
         return () => {
             socket.current.disconnect();
         };
-    },[list_messages,scrollRef,threads]);
+    },[scrollRef,thread?thread.id:thread,user?user.id:user]);
     
     const showthread=()=>{
         setShow(true)
@@ -472,7 +474,7 @@ const Message=(props)=>{
     }
 
     const showmessage=useCallback((e,threadchoice)=>{
-        const list_thread=threads.map(thread=>{
+        setThreads(current=>current.map(thread=>{
             if(thread.id==threadchoice.id){
                 return({...thread,members:thread.members.map(member=>{
                     if(member.user_id==user.id){
@@ -482,26 +484,23 @@ const Message=(props)=>{
                 })})
             }
             return({...thread})
-        })
-        setThreads(list_thread)
+        }))
         setThread(threadchoice)
         setListmember(threadchoice.members)
-        
         if(!thread || threadchoice.members.some(member=>member.count_message_unseen>0 && member.user_id==user.id) ||  (threadchoice && threadchoice.id!=thread.id)){
             setState({...state,loading:false})
             axios.get(`${conversationsURL}/${threadchoice.id}?action=showmessage`,headers)
             .then(res=>{
-                setState({...state,loading:true})
+                setState(current=>({...current,loading:true}))
                 const datamesssage=res.data.reverse()
-                setListmessages(datamesssage)
+                setListmessages([...datamesssage])
                 if(scrollRef.current){
                     scrollRef.current.scrollTop = scrollRef.current.scrollHeight
                 }
             })
         }
-    },[list_messages,listmember,threads,thread,state])
+    },[thread,members,user?user.id:user])
 
-    console.log(list_messages)
     const sendproduct=(e,item)=>{
         (async ()=>{
             try{
@@ -564,7 +563,7 @@ const Message=(props)=>{
         receiver:listmember.filter(member=>user.id!=member.user_id),
         }
         socket.current.emit('sendData',data)
-    },1000),[user,listmember])
+    },1000),[user?user.id:user,listmember])
     
     const senmessage=(e)=>{
         if(listfile.filter(file=>file.filetype=='image').length>0 || message.trim()!=''){ 
@@ -578,7 +577,7 @@ const Message=(props)=>{
             listfile.filter(file=>file.filetype=='image').map(file=>{
                 form.append('image',file.file)
             }) 
-            setListfile(listfile.filter(file=>file.filetype!='image')) 
+            setListfile(current=>current.filter(file=>file.filetype!='image')) 
             axios.post(`${conversationsURL}/${thread.id}`,form,headers)
             .then(res=>{ 
                 setShowemoji(false)
@@ -595,7 +594,6 @@ const Message=(props)=>{
         } 
 
         if(listfile.find(file=>file.filetype!=='image')){  
-            setTimeout(()=>{
                 let formfile=new FormData()
                 formfile.append('action','create-message')
                 formfile.append('send_by',user.id)
@@ -627,7 +625,7 @@ const Message=(props)=>{
                         alert(res.data.error)
                     }  
                 }) 
-            },200)
+            
         }
     }
     
@@ -641,7 +639,9 @@ const Message=(props)=>{
                 setState({...state,loading:true})
                 const datamesssage=res.data.reverse()
                 e.target.scrollTop = 60
-                setListmessages([...datamesssage,...list_messages])
+                setListmessages(current=>{
+                   return [...datamesssage,...current]
+                })
             })
         }
         else{
@@ -651,7 +651,6 @@ const Message=(props)=>{
 
     //input click
     const onBtnClick=(e)=>{
-        console.log(e.currentTarget)
         e.currentTarget.querySelector('input').click()
     }
 
@@ -776,7 +775,7 @@ const Message=(props)=>{
                 })
             }
         }
-    },[shop,state])
+    },[shop,state.loading])
     
     const setactionconversations=useCallback((e,thread,name,value)=>{
         e.stopPropagation()
@@ -785,29 +784,28 @@ const Message=(props)=>{
         axios.post(`${conversationsURL}/${thread.id}`,form,headers)
         .then(res=>{
             setMessage_unseen(name=='seen' && value?message_unseen-1:message_unseen+1)
-            const list_convesations=name=='delete'?
-                threads.filter(item=>item.id!=thread.id)
-                :name=='seen'?threads.map(item=>{
-                    if(item.id==thread.id){
-                        return({...item,members:item.members.map(member=>{
-                            if(member.user_id==user.id){
-                                return({...member,count_message_unseen:value?0:1})
-                            }
-                            return({...member})
-                        })})
-                    }
-                    return({...item})
-                })
-                
-                :threads.map(item=>{
-                    if(item.id==thread.id){
-                        return({...item,[name]:value}) 
-                    }
-                    return({...item})
-                })
-            setThreads(list_convesations) 
+            setThreads(current=>name=='delete'?
+            current.filter(item=>item.id!=thread.id)
+            :name=='seen'?current.map(item=>{
+                if(item.id==thread.id){
+                    return({...item,members:item.members.map(member=>{
+                        if(member.user_id==user.id){
+                            return({...member,count_message_unseen:value?0:1})
+                        }
+                        return({...member})
+                    })})
+                }
+                return({...item})
+            })
+            
+            :current.map(item=>{
+                if(item.id==thread.id){
+                    return({...item,[name]:value}) 
+                }
+                return({...item})
+            })) 
         })
-    },[threads,message_unseen])
+    },[message_unseen,user?user.id:user])
 
     ///set tychat
     useEffect(()=>{
@@ -847,8 +845,9 @@ const Message=(props)=>{
     },[shopchoice])
 
     const setshop=useCallback((data)=>{
-        setShop({...shop,...data})
-    },[shop])
+        setShop(current=>({...current,...data}))
+    },[])
+
     return(
         <>
         <div id="mini-chat-embedded" style={{position: 'fixed', right: '8px', bottom: '0px', zIndex: 99999}}>
@@ -1027,7 +1026,7 @@ const Message=(props)=>{
                                                 <div className="_2rOpog8D_jhF1evUqNokLy">ĐƠN HÀNG</div>
                                                 <div className="_2CAkb_LMf57hsgDBtSNYew">
                                                     <div className="_2obfFH3oH2jVsvdvjYZoPK">
-                                                        <img alt="" src={message.message_order.item_image}/>
+                                                        <img alt="" src={message.message_order.image}/>
                                                         <div></div>
                                                     </div>
                                                     <div className="_2E0sI6wm9acOLm_2ioVqAs">

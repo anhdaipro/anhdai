@@ -9,7 +9,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
     const [state, setState] = useState({loading:false,review:null,submit:false,
     reason_choice:null});
     const [submit,setSubmit]=useState(false)
-    console.log(user)
+  
     const [showinfo,setShowinfo]=useState(false)
     const [showdata,setShowdata]=useState(false)
     const inforef=useRef()
@@ -20,31 +20,26 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
     },[show])
 
     function rating_score_main(number,item){
-        let rating=[]
-        for(let k=1;k<number;k++){
+        return Array(number).fill().map((_,k)=>{
             if(item.review_rating){
-                let score=item.review_rating 
-                rating.push(<div onClick={(e)=>rating_choice(e,k,item)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '36px', height: '36px'}}>{k<=score?star_solid:star_empty}</div>)
+                <div onClick={(e)=>rating_choice(e,k,item)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '36px', height: '36px'}}>{k<=item.review_rating ?star_solid:star_empty}</div>
             }
             else{
-                rating.push(<div onClick={(e)=>rating_choice(e,k,item)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '36px', height: '36px'}}>{star_empty}</div>)
+                <div onClick={(e)=>rating_choice(e,k,item)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '36px', height: '36px'}}>{star_empty}</div>
             }
-        }
-        return rating
+        })
     }
 
     function rating_score_bad(number,item,i){
-        let rating=[]
-        for(let k=1;k<number;k++){
+        return Array(number).fill().map((_,k)=>{
             if(item.review_rating!=undefined){
-                let score=item.rating_bab_category[i]
-                rating.push(<div onClick={(e)=>rating_choice_bad(e,k,item,i)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '26px', height: '26px'}}>{k<=score?star_solid:star_empty}</div>)
+                return(<div onClick={(e)=>rating_choice_bad(e,k,item,i)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '26px', height: '26px'}}>{k<=item.rating_bab_category[i]?star_solid:star_empty}</div>)
             }
             else{
-                rating.push(<div onClick={(e)=>rating_choice_bad(e,k,item,i)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '26px', height: '26px'}}>{star_empty}</div>)
+                return(<div onClick={(e)=>rating_choice_bad(e,k,item,i)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '26px', height: '26px'}}>{star_empty}</div>)
             }
-        }
-        return rating
+        })
+        
     }
     
     useEffect(() => {
@@ -66,23 +61,10 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
     const editreview=(e,review)=>{
         e.stopPropagation()
         setedit(true)
-        let video=null
-        const list_image=[]
-        for(let i in review.list_file){
-            if (review.list_file[i].filetype=='video'){
-                video=review.list_file[i]
-            }
-            else{
-                list_image.push(review.list_file[i])
-            }
-        }
-        review.video=video
+        const video=review.list_file.find(file=>file.filetype=='video')?review.list_file.find(file=>file.filetype=='video'):null
+        const list_image=review.list_file.filter(file=>file.filetype!='video')
         const list_text=review.review_text.split(',').filter(it=>it!='')
-        review.list_text=list_text
-        review.list_image=list_image
-        
-        state.review=review
-        setState({...state,review:state.review})
+        setState({...state,review:{list_text:list_text,list_image:list_image,video:video}})
     }
 
     
@@ -236,7 +218,6 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
         }
     }
 
-    console.log(state.review)
     const submitreview=(e)=>{
         e.stopPropagation()
         let form=new FormData()
@@ -317,17 +298,17 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
     function rating_product(item){
         return(
             <div className={`rating-modal-handler__container ${(item==state.review &&state.review) || (item==list_cartitem[list_cartitem.length-1] && list_cartitem)?"rating-modal-handler__container--last":''}`}>
-                <a className="c1C69v _1uii4D" href={`${item.item_url}?itemId=${item.item_id}`} target="_blank" rel="noopener noreferrer">
+                <a className="c1C69v _1uii4D" href={`${item.url}?itemId=${item.item_id}`} target="_blank" rel="noopener noreferrer">
                     <div className="image__wrapper _2ylgGg">
                         <div className="image__place-holder">
                             <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-loading-image"><g><rect fill="none" height="8" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="10" x="1" y="4.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="6.5" y2="6.5"></line><rect fill="none" height="3" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="3" x="11" y="6.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="14.5" y2="14.5"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="6" x2="6" y1=".5" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="3.5" x2="3.5" y1="1" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="8.5" x2="8.5" y1="1" y2="3"></line></g></svg>
                         </div>
-                        <div className="image__content" style={{backgroundImage: `url(${item.item_image})`}}>
+                        <div className="image__content" style={{backgroundImage: `url(${item.image})`}}>
                             <div className="image__content--blur"> </div>
                         </div>
                     </div>
                     <div className="_32UJVi">
-                        <div className="_2e-TQb">{item.item_name}</div>
+                        <div className="_2e-TQb">{item.name}</div>
                         {itemvariation(item)!=''?<div className="_1WE6N8">Phân loại hàng: {itemvariation(item)}</div>:""}
                     </div>
                 </a>
@@ -622,17 +603,17 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                             {list_review.map(review=>
                             <div>
                                 <div className="_2irnOH">
-                                    <a className="c1C69v _26cI_Y" href={`${review.item_url}?itemId=${review.item_id}`} target="_blank" rel="noopener noreferrer">
+                                    <a className="c1C69v _26cI_Y" href={`${review.url}?itemId=${review.item_id}`} target="_blank" rel="noopener noreferrer">
                                         <div className="image__wrapper _2ylgGg">
                                             <div className="image__place-holder">
                                                 <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-loading-image"><g><rect fill="none" height="8" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="10" x="1" y="4.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="6.5" y2="6.5"></line><rect fill="none" height="3" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="3" x="11" y="6.5"></rect><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="1" x2="11" y1="14.5" y2="14.5"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="6" x2="6" y1=".5" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="3.5" x2="3.5" y1="1" y2="3"></line><line fill="none" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" x1="8.5" x2="8.5" y1="1" y2="3"></line></g></svg>
                                             </div>
-                                            <div className="image__content" style={{backgroundImage: `url(${review.item_image})`}}>
+                                            <div className="image__content" style={{backgroundImage: `url(${review.image})`}}>
                                                 <div className="image__content--blur"> </div>
                                             </div>
                                         </div>
                                         <div className="_32UJVi">
-                                            <div className="_2e-TQb">{review.item_name}</div>
+                                            <div className="_2e-TQb">{review.name}</div>
                                             <div className="_1WE6N8">{itemvariation(review)}</div>
                                         </div>
                                     </a>

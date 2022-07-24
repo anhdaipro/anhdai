@@ -12,6 +12,8 @@ export const list_rating_category_bab=['Product quality','Seller service','Shipp
 export const formatter = new Intl.NumberFormat('vi-VN', {
   minimumFractionDigits: 0
 })
+export const listaction=[{value:1,action:"Chỉnh sửa"},{value:2,action:"Chi tiết"},
+{value:3,action:"Đơn hàng"},{value:4,action:"Sao chép"},{value:5,action:"Xóa"}]
 export const list_review_text_star=[
   [
       'Chất lượng sản phẩm rất kém',
@@ -49,6 +51,13 @@ export const list_review_text_star=[
       'Thời gian giao hàng rất nhanh'
       ]
   ]
+
+export const valid_from=new Date()
+valid_from.setHours(new Date().getHours()+1)
+valid_from.setMinutes(0)
+export const valid_to=new Date()
+valid_to.setHours(new Date().getHours()+2)
+valid_to.setMinutes(0)
 export function rating_score(number,review){
   let rating=[]
   for(let k=1;k<number;k++){
@@ -137,6 +146,10 @@ export const timeformat=(data)=>{
 }
 export const timevalue=(data)=>{
   return new Date(data).getFullYear() + "-" + ("0"+(new Date(data).getMonth()+1)).slice(-2) + "-" + ("0" + new Date(data).getDate()).slice(-2)
+}
+
+export const timesubmit=(data)=>{
+  return new Date(data).getFullYear() + "-" + ("0"+(new Date(data).getMonth()+1)).slice(-2) + "-" + ("0" + new Date(data).getDate()).slice(-2)+ " " + ("0" + new Date(data).getHours()).slice(-2) + ":" + ("0" + new Date(data).getMinutes()).slice(-2)
 }
 export const timecreate=(data)=>{
   return ("0" + new Date(data).getDate()).slice(-2) + "-" + ("0"+(new Date(data).getMonth()+1)).slice(-2) + "-" +

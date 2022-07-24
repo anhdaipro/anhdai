@@ -5,7 +5,7 @@ const SlideshowGallery=({list_image,automatic,timeout})=>{
     const [state,setState]=useState({slideIndex: 0})
     const parent=useRef()
     useEffect(() => {
-        if (automatic) {
+        if (automatic && list_image.length>0) {
             const timer = setTimeout(function() {
                 setState({slideIndex:getNewSlideIndex(state.slideIndex+1)})
             }, parseInt(timeout));
@@ -15,11 +15,6 @@ const SlideshowGallery=({list_image,automatic,timeout})=>{
     },[state])
     
     
-    
-    const start = Date.now();
-    const elapsed = Date.now();
-    const remaining =  (parseInt(timeout)-elapsed)/1000;
-    console.log(remaining)
     const getNewSlideIndex=(value)=> {
         const numberSlide = list_image.length;
         let newSlideIndex=value

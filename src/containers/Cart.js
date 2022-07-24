@@ -122,7 +122,7 @@ const Divbox=(props)=>{
 }
 
 const Iteminfo=(props)=>{
-    const {item,list_cartitem,cartitem,product,checked,adjustitem,removeitem,updatevariation}=props
+    const {item,cartitem,product,checked,adjustitem,removeitem,updatevariation}=props
     const [show,setShow]=useState(false)
     const [showsearch,setShowsearch]=useState(false)
     const [items,setItems]=useState([])
@@ -168,7 +168,7 @@ const Iteminfo=(props)=>{
             setState({...state,loading_item:true,page_no:page})
         })
     }
-    console.log(state)
+   
     const  variation=(e)=>{
         const size=item.sizes.find(size=>size.value==item.size_value)
         const color=item.colors.find(color=>color.value==item.color_value)
@@ -197,7 +197,7 @@ const Iteminfo=(props)=>{
         }
     }
     return(
-        <div key={item.id} className="d-flex p-1">
+        <div key={item.id} className={`d-flex p-1 ${product=='mainproduct'?'':'_1ocTN'}`}>
             <div className="item-check item-center">
                 {product=='mainproduct'?
                 <label className={`stardust-checkbox ${item.check?'stardust-checkbox--checked':''}`}>
@@ -207,10 +207,19 @@ const Iteminfo=(props)=>{
                 :''}
             </div>
             <div className="shop-item-info item-center">
-                <Link to={`${item.item_url}?itemId=${item.item_id}`}>
-                    <div className="shop-item-image" style={{backgroundImage: `url(${item.item_image})`}}></div>
+                <Link to={`${item.url}?itemId=${item.item_id}`}>
+                    <div className="shop-item-image" style={{backgroundImage: `url(${item.image})`}}></div>
                 </Link>
-                <div className="shop-item-name">{item.item_name}</div>
+                <div class="_3OrWGt">
+                    <Link class="_2fQT1K" title={`${item.name}`} to={`${item.url}?itemId=${item.item_id}`}>
+                        {product=='byproduct'?<span class="Uow98x">Deal Sốc</span>:''}
+                       {item.name}
+                    </Link>
+                        <div class="_2o95Vf" style={{backgroundImage: `url(https://cf.shopee.vn/file/bce88a398239da749aa0cb149eafe579)`}}></div>
+                            <div class="_931iK8"><span></span>
+                        </div>
+                </div>
+                
             </div>
             <div className="shop-item-variation">
                 <div ref={itemref} className="aUj6f2">
@@ -282,8 +291,8 @@ const Iteminfo=(props)=>{
             </div>
             <div className="shop-item-price-origin item-center">
                 <span className={`_1CXksa ${item.discount_price>0?'_1k1Vcm':''}`}>₫{formatter.format(item.price)}</span>
-                {item.discount_price>0?
-                <span className="_1CXksa">₫{formatter.format(item.price-item.discount_price)}</span>
+                {item.discount_price<item.price?
+                <span className="_1CXksa">₫{formatter.format(item.discount_price)}</span>
                 :''}
             </div>
             <div className="shop-item-quantity">
@@ -299,7 +308,7 @@ const Iteminfo=(props)=>{
             </div>
             <div className="shop-item-price item-centers">₫{formatter.format(item.total_price)}</div>
             <div className='_2y8iJi _2qPRqW' >
-                <button onClick={e=>removeitem(e,item,product)} className="item-delete button-no-outline">Xóa</button>
+                <button onClick={e=>removeitem(e,item,product,cartitem)} className="item-delete button-no-outline">Xóa</button>
                 <div ref={searchref} className={`_1-rOD0 ${item.show?'_1EMX1h':''}`}>
                     {items.length>0 && showsearch?
                     <div className="_2Nuk_- _2kB0Ra">
@@ -307,11 +316,11 @@ const Iteminfo=(props)=>{
                         <>
                         <div className="_1bmRDE">
                         {items.map(item=>
-                            <div className="grid__column-2-4" key={item.item_id}>
-                                <Link className="home-product-item" to={`${item.item_url}?itemID=${item.item_id}`}>
-                                    <div className="home-product-item__image" style={{backgroundImage: `url(${item.item_image})`}}></div>
+                            <div className="grid__column-2-4" key={item.id}>
+                                <Link className="home-product-item" to={`${item.url}?itemID=${item.id}`}>
+                                    <div className="home-product-item__image" style={{backgroundImage: `url(${item.image})`}}></div>
                                     <div className="home-product-item-info">
-                                        <div className="home-product-item__name">{item.item_name}</div>
+                                        <div className="home-product-item__name">{item.name}</div>
                                         <div className="home-product-item__discount">
                                             {<div className="home-product-item__discount-voucher">
                                                 <svg className="clipath-left" viewBox="-0.5 -0.5 4 16">
@@ -323,11 +332,11 @@ const Iteminfo=(props)=>{
                                                 </svg>
                                             </div>}
                                         
-                                            <div className="home-product-item__discount-deal-shock">mua kèm deal soc</div>
+                                            <div className="home-product-item__discount-deal-shock">Deal soc</div>
                                         </div>
                                         <div className="_3_FVSo">  
                                             <div className={`${item.percent_discount>0?'home-product-item__price-old zp9xm9':'home-product-item__price _3c5u7X'}`}>₫{formatter.format((item.max_price+item.min_price)/2)}</div>
-                                            {item.percent_discount>0?
+                                            {item.percent_discount?
                                             <div className="home-product-item__price-current">
                                                 <span className="_1y2DMk">₫</span><span className="_3c5u7X">{formatter.format((item.max_price+item.min_price)/2*(100-item.percent_discount)/100)}</span>
                                             </div>
@@ -432,14 +441,14 @@ class Cart extends React.Component{
             let total_discount=0
             let discount_promotion=0
             let discount_deal=0
-            let discount_voucher=0
+            let discount_voucher_shop=0
             let count_cartitem=0
             obj1.data.orders.map(order=>{
                 total+=order.total
                 total_discount+=order.total_discount
                 discount_promotion+=order.discount_promotion
                 discount_deal+=order.discount_deal
-                discount_voucher+=order.discount_voucher
+                discount_voucher_shop+=order.discount_voucher_shop
                 count_order+=order.count
                 count_cartitem+=order.count_cartitem
             })
@@ -450,10 +459,6 @@ class Cart extends React.Component{
                 }
                 return({...shop,show_voucher:false})
             })
-
-            
-            
-            
             this.setState({
                 count:obj3.data.length,
                 list_cartitem:obj3.data,
@@ -464,15 +469,21 @@ class Cart extends React.Component{
                 discount_promotion:discount_promotion,
                 discount_deal:discount_deal,
                 list_shop:list_shop,
-                discount_voucher:discount_voucher,loading:true})
+                discount_voucher_shop:discount_voucher_shop,loading:true})
             }
             catch (error) {
             console.log(error);
             }
         })()
         
-        document.body.onscroll=()=>{
-            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        document.addEventListener('scroll',this.addItem)
+        return () => {
+            document.removeEventListener('scroll', this.addItem)
+        }      
+    }
+
+    addItem=()=>{
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
             if(clientHeight + scrollTop == scrollHeight && this.state.list_item_recommend.length==0){
                 (async () => {
                     try {
@@ -485,9 +496,7 @@ class Cart extends React.Component{
                 })()
             }
         } 
-    }
-
-   
+    
     checkall(e){
         const list_shop=this.state.list_shop.map(shop=>{
             return(shop.id)
@@ -511,7 +520,7 @@ class Cart extends React.Component{
             let data=rep.data
             this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
                 discount_deal:data.discount_deal,count_order:data.count,
-                discount_voucher:data.discount_voucher,count_cartitem:data.count_cartitem,
+                discount_voucher_shop:data.discount_voucher_shop,count_cartitem:data.count_cartitem,
                 list_cartitem:this.state.list_cartitem
             })
         }) 
@@ -538,7 +547,7 @@ class Cart extends React.Component{
             let data=rep.data
             this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
                 discount_deal:data.discount_deal,count_order:data.count,
-                discount_voucher:data.discount_voucher,count_cartitem:data.count_cartitem,
+                discount_voucher_shop:data.discount_voucher_shop,count_cartitem:data.count_cartitem,
                 list_cartitem:this.state.list_cartitem
             })
         }) 
@@ -560,7 +569,7 @@ class Cart extends React.Component{
             let data=rep.data
             this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
                 discount_deal:data.discount_deal,count_order:data.count,
-                discount_voucher:data.discount_voucher
+                discount_voucher_shop:data.discount_voucher_shop
             })
         }) 
     }
@@ -592,12 +601,12 @@ class Cart extends React.Component{
             }):
             this.state.list_cartitem.map(cartitem=>{
                 if(cartitemchoice.id==cartitem.id){
-                    cartitem.byproduct.map(byproduct=>{
+                    return({...cartitem,byproducts:cartitem.byproducts.map(byproduct=>{
                     if(byproduct.id==item.id){
                         return({...byproduct,...result.item})
                     }
                     return({...byproduct})
-                    })
+                    })})
                 }
                 return({...cartitem})
             })
@@ -607,48 +616,52 @@ class Cart extends React.Component{
 
    
     adjustitem(e,item,product,cartitemchoice,value){
-        const list_cartitem=product=='mainproduct'?this.state.list_cartitem.map(cartitem=>{
-            if(item.id==cartitem.id){
-                return({...cartitem,quantity:value})
-            }
-            return({...cartitem})
-        }):this.state.list_cartitem.map(cartitem=>{
-            if(cartitemchoice.id==cartitem.id){
-                cartitem.byproduct.map(byproduct=>{
-                if(byproduct.id==item.id){
-                    return({...byproduct,quantity:value})
-                }
-                return({...byproduct})
-                })
-            }
-            return({...cartitem})
-        })
-        this.setState({list_cartitem:list_cartitem})
-        this.fetchdata(e,item,product,value)
-    }
-    
-    fetchdata(e,item,product,value){
         const dataitem=product=='byproduct'?{byproduct_id:item.id}:{cartitem_id:item.id}
         const data={...dataitem,quantity:value}
+        console.log(cartitemchoice)
         axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let data=rep.data
+            const list_cartitem=product=='mainproduct'?this.state.list_cartitem.map(cartitem=>{
+                if(item.id==cartitem.id){
+                    return({...cartitem,quantity:value})
+                }
+                return({...cartitem})
+            }):this.state.list_cartitem.map(cartitem=>{
+                if(cartitemchoice.id==cartitem.id){
+                    return({...cartitem,byproducts:cartitem.byproducts.map(by=>{
+                    if(by.id==item.id){
+                        return({...by,quantity:value})
+                    }
+                    return({...by})
+                    })})
+                }
+                return({...cartitem})
+            })
             this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
                 discount_deal:data.discount_deal,count_order:data.count,
-                discount_voucher:data.discount_voucher
+                discount_voucher_shop:data.discount_voucher_shop,list_cartitem:list_cartitem
             })
         }) 
+        
     }
+    
+    
 
-    removeitem(e,itemchoice,product){
+    removeitem(e,itemchoice,product,cartitemchoice){
         const data=product=='byproduct'?{byproduct_id_delete:itemchoice.id}:{cartitem_id_delete:itemchoice.id}
         axios.post(cartURL,JSON.stringify(data),headers)
         .then(resp => {
         let data=resp.data
-        const list_cartitem=this.state.list_cartitem.filter(item=>item.id!=itemchoice.id)
+        const list_cartitem=product=='byproduct'?this.state.list_cartitem.map(cartitem=>{
+            if(cartitem.id==cartitemchoice.id){
+                return({...cartitem,byproducts:cartitem.byproducts.filter(byproduct=>itemchoice.id!=byproduct.id)})
+            }
+            return ({...cartitem})
+        }):this.state.list_cartitem.filter(item=>item.id!=itemchoice.id)
         this.setState({list_cartitem:list_cartitem,total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
             discount_deal:data.discount_deal,count_order:data.count,
-            discount_voucher:data.discount_voucher})
+            discount_voucher_shop:data.discount_voucher_shop})
         })
     }
 
@@ -747,6 +760,7 @@ class Cart extends React.Component{
         }
     }
 
+    
     create_thread=(order)=>{
         let form=new FormData()
         form.append('participants',this.state.user.user_id)
@@ -763,13 +777,20 @@ class Cart extends React.Component{
     render(){
         const {showchat,user,showthreads}=this.props
         const setshowthread=(e,shop)=>{
-            e.preventDefault()
             let data={member:[user.id,shop.user_id],thread:null,send_to:shop.user_id}
             showchat(data)
             showthreads()
         }
+        const addealshock=(e,cartitem)=>{
+            if(cartitem.deal){
+                const data={dealold:cartitem.deal,dealcurrent:cartitem.shock_deal.id}
+                axios.post(updatecartURL,JSON.stringify(data),headers)
+                .then(res=>{
+                })
+            }
+        }
         let {count,count_order,total,discount_promotion,loading,count_cartitem,
-        discount_deal,total_discount,discount_voucher,list_shop,
+        discount_deal,total_discount,discount_voucher_shop,list_shop,
         warring,list_cartitem}=this.state
         return(
             <>
@@ -828,7 +849,7 @@ class Cart extends React.Component{
                                     {
                                         this.state.list_shop.map((shop,index)=><>
                                             {list_cartitem.some(cartitem=>cartitem.shop_id==shop.id)?
-                                            <div className="order-total-shop" key={shop.name}>
+                                            <div className="order-total-shop" key={shop.id}>
                                                 <div className="item-center shop-info _3ApheT">
                                                     <div className="item-check">
                                                         <label className={`stardust-checkbox ${list_cartitem.some(item => !item.check && item.shop_id==shop.id)?'':'stardust-checkbox--checked'}`}>
@@ -856,10 +877,10 @@ class Cart extends React.Component{
                                                                 {list_cartitem.filter(cartitem=>cartitem.promotion && cartitem.shop_id==shop.id).map((item,i)=>
                                                                 <Iteminfo
                                                                     item={item}
-                                                                    adjustitem={(e,item,product,cartitemchoice,value)=>this.adjustitem(e,item,product,cartitemchoice,value)}
-                                                                    removeitem={(e,item,product)=>this.removeitem(e,item,product)}
+                                                                    adjustitem={(e,item,product,cartitem,value)=>this.adjustitem(e,item,product,cartitem,value)}
+                                                                    removeitem={(e,item,product,cartitem)=>this.removeitem(e,item,product,cartitem)}
                                                                     checked={(e,item)=>this.checked(e,item)}
-                                                                    product='mainproduct'
+                                                                    product={'mainproduct'}
                                                                     list_cartitem={list_cartitem}
                                                                     updatevariation={(e,item,color_id,size_id,product,cartitemchoice)=>this.updatevariation(e,item,color_id,size_id,product,cartitemchoice)}
                                                                 />  
@@ -867,13 +888,13 @@ class Cart extends React.Component{
                                                         </div>
                                                     :''}
                                                     {list_cartitem.filter(cartitem=>!cartitem.promotion &&shop.id==cartitem.shop_id).map((cartitem,i)=>
-                                                        <div className="shop-item-order">
-                                                            {cartitem.shock_deal_type?
+                                                        <div key={cartitem.id} className="shop-item-order">
+                                                            {cartitem.shock_deal?
                                                                 <div className="shop-discount">
-                                                                    <span class="_319wph">Mua Kèm</span>
-                                                                    <span className="discount-title">{cartitem.shock_deal_type=='1'?'Mua kèm deal shock':'Buy to receive gift'}</span>
+                                                                    <span class="_319wph">{cartitem.shock_deal.shock_deal_type=='1'?'Deal sốc':'Mua kèm'}</span>
+                                                                    <span className="discount-title">{cartitem.shock_deal.shock_deal_type=='1'?'Mua kèm deal độc quyền':'Mua nhiều hơn ₫99.000 và nhận được 1 quà tặng'}</span>
                                                                         <span className="add-byproduct">
-                                                                            <Link to={`/addon-deal-cart-selection/${cartitem.product_id}`}>{cartitem.byproduct.length>0?'Edit':'Add'}
+                                                                            <Link onClick={(e)=>addealshock(e,cartitem)} to={`/addon-deal-selection/${cartitem.shock_deal.id}/${cartitem.product_id}`}>{cartitem.deal_shock_id?'Edit':'Add'}
                                                                                 <svg viewBox="0 0 12 12" fill="none" width="12" height="12" color="#ee4d2d" className="_1KsfYG"><path fillRule="evenodd" clipRule="evenodd" d="M9.293 6L4.146.854l.708-.708L10 5.293a1 1 0 010 1.414l-5.146 5.147-.708-.707L9.293 6z" fill="currentColor"></path></svg>
                                                                             </Link>
                                                                         </span>
@@ -881,28 +902,27 @@ class Cart extends React.Component{
                                                             :''}
                                                             <Iteminfo
                                                                 item={cartitem}
-                                                                i={i}
-                                                                product='mainproduct'
+                                                                product={'mainproduct'}
                                                                 list_cartitem={list_cartitem}
-                                                                adjustitem={(e,item,product,cartitemchoice,value)=>this.adjustitem(e,item,product,cartitemchoice,value)}
+                                                                adjustitem={(e,item,product,cartitem,value)=>this.adjustitem(e,item,product,cartitem,value)}
                                                                 removeitem={(e,item,product)=>this.removeitem(e,item,product)}
                                                                 checked={(e,item)=>this.checked(e,item)}
                                                                 updatevariation={(e,item,color_id,size_id,product,cartitemchoice)=>this.updatevariation(e,item,color_id,size_id,product,cartitemchoice)}
                                                             />
-                                                            {cartitem.byproduct.length>0?<div className="_1fU7BV"></div>:""}
-                                                                {cartitem.byproduct.map((item,j)=>{     
+                                                            {cartitem.byproducts.length>0?<div className="_1fU7BV"></div>:""}
+                                                                {cartitem.byproducts.map((item,j)=> 
                                                                     <Iteminfo
                                                                     item={item}
-                                                                    i={j}
                                                                     shop={shop}
-                                                                    product='byproduct'
+                                                                    cartitem={cartitem}
+                                                                    product={'byproduct'}
                                                                     list_cartitem={list_cartitem}
-                                                                    adjustitem={(e,item,product,cartitemchoice,value)=>this.adjustitem(e,item,product,cartitemchoice,value)}
-                                                                    removeitem={(e,item,product)=>this.removeitem(e,item,product)}
+                                                                    adjustitem={(e,item,product,cartitem,value)=>this.adjustitem(e,item,product,cartitem,value)}
+                                                                    removeitem={(e,item,product,cartitem)=>this.removeitem(e,item,product,cartitem)}
                                                                     checked={(e,item)=>this.checked(e,item)}
                                                                     updatevariation={(e,item,color_id,size_id,product,cartitemchoice)=>this.updatevariation(e,item,color_id,size_id,product,cartitemchoice)}
                                                                     />
-                                                                }   
+                                                                 
                                                             )}
                                                         </div>
                                                     )}
@@ -971,20 +991,20 @@ class Cart extends React.Component{
                                         <div className=""><button className="clear-btn-style">Bỏ sản phẩm không hoạt động</button></div>
                                         <button className="clear-btn-style _2mPWt7">Lưu vào mục Đã thích</button>
                                         <div className="_2ntEgZ"></div>
-                                        {total_discount>0||discount_deal>0||discount_promotion>0||discount_voucher>0 && this.state.show_order?
+                                        {total_discount>0||discount_deal>0||discount_promotion>0||discount_voucher_shop>0 && this.state.show_order?
                                         <div className="stardust-popover" onMouseEnter={()=>this.setState({show_order:true})} onMouseLeave={()=>this.setState({show_order:false})}>
                                             <div className="stardust-popover__target">
                                                 <div className="_2BT_es">
                                                     <div className="item-center">
                                                         <div className="flex-end _2LMWss">
                                                             <div className="_10A7e2">Total payment ({count_order} {count_order>1?'products':'product'}):</div>
-                                                            <div className="nBHs8H">₫{formatter.format(total-total_discount-discount_voucher-discount_promotion-discount_deal)}</div>
+                                                            <div className="nBHs8H">₫{formatter.format(total-total_discount-discount_voucher_shop-discount_promotion-discount_deal)}</div>
                                                         </div>
                                                         <div className="M2OhX6">
                                                             <svg viewBox="0 0 12 12" fill="none" width="12" height="12" color="rgba(0, 0, 0, 0.54)"><path fillRule="evenodd" clipRule="evenodd" d="M6 4L.854 9.146.146 8.44l5.147-5.146a1 1 0 011.414 0l5.147 5.146-.707.707L6 4z" fill="currentColor"></path></svg>
                                                         </div>
                                                     </div>
-                                                    <div className="_1TwgPm">Tiết kiệm<span className="_2e4fz5">₫{formatter.format(total_discount+discount_voucher+discount_promotion+discount_deal)}k</span></div>
+                                                    <div className="_1TwgPm">Tiết kiệm<span className="_2e4fz5">₫{formatter.format(total_discount+discount_voucher_shop+discount_promotion+discount_deal)}k</span></div>
                                                 </div>
                                             </div>
                                             {this.state.show_order?
@@ -1006,10 +1026,10 @@ class Cart extends React.Component{
                                                                 <span className="_1QnjKN">Giảm giá sản phẩm</span>
                                                                 <span className="">-₫{formatter.format(this.state.total_discount)}</span>
                                                             </div>:''}
-                                                            {this.state.discount_voucher>0?
+                                                            {this.state.discount_voucher_shop>0?
                                                                 <div className="_1219oq">
                                                                     <span className="_1QnjKN">Voucher giảm giá</span>
-                                                                    <span className="">-₫{formatter.format(this.state.discount_voucher)}</span>
+                                                                    <span className="">-₫{formatter.format(this.state.discount_voucher_shop)}</span>
                                                                 </div>:''}
                                                             {this.state.discount_deal>0?                                                
                                                             <div className="_1219oq">
@@ -1025,11 +1045,11 @@ class Cart extends React.Component{
                                                         <div className="_2gELoZ">
                                                             <div className="_1219oq">
                                                                 <span className="_1QnjKN uDWyka">Tiết kiệm</span>
-                                                                <span className="imvFus">-₫{formatter.format(this.state.total_discount+this.state.discount_voucher+this.state.discount_promotion+this.state.discount_deal)}</span>
+                                                                <span className="imvFus">-₫{formatter.format(this.state.total_discount+this.state.discount_voucher_shop+this.state.discount_promotion+this.state.discount_deal)}</span>
                                                             </div>
                                                             <div className="_1219oq">
                                                                 <span className="_1QnjKN uDWyka">Tổng số tiền</span>
-                                                                <span className="_3pc_Bt">₫{formatter.format(this.state.total-this.state.total_discount-discount_voucher-this.state.discount_promotion-this.state.discount_deal)}</span>
+                                                                <span className="_3pc_Bt">₫{formatter.format(this.state.total-this.state.total_discount-discount_voucher_shop-this.state.discount_promotion-this.state.discount_deal)}</span>
                                                             </div>
                                                             <div className="K9ylvZ">Số tiền cuối cùng thanh toán</div>
                                                         </div>

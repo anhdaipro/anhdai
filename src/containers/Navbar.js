@@ -14,8 +14,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     const [category,setCategory]=useState([]);
     const [searchchoice,setSearchchoice]=useState(null);
     const [params, setSearchParams] = useSearchParams();
-    let navigate=useNavigate();
-    console.log(location)
+    let navigate=useNavigate()
     useEffect(() =>  {
         if(data){
         setSearchchoice(data)
@@ -63,8 +62,12 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
    
     useEffect(()=>{
         if(cartitem){
-            setState({...state,count:state.count+cartitem.length})
-            setItems([...cartitem,items])
+            const listitems=[...items]
+            if(items.every(item=>item.id!=cartitem.id)){
+                listitems.unshift(cartitem)
+            }
+            setState({...state,count:items.every(item=>item.id!=cartitem.id)?state.count+1:state.count})
+            setItems(current=>[...listitems])
         }
     },[cartitem])
 
@@ -73,7 +76,6 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
         window.location.href=`/buyer/login?next=${window.location}`
     };
     
-    console.log(localStorage.getItem('access'))
     const viewcart=()=>{
         setState({...state,view:true})
         
@@ -88,10 +90,6 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
         setState({...state,view_account:false})
     };
     
-    console.log(params)
-
-    
-
     const searchitem=()=>{
         if(searchchoice){
         navigate(`/search?keyword=${keyword}&${searchchoice.user_id?`shop=${data.name}`:`category=${data.id}`}`)
@@ -230,13 +228,13 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                                     items.map((item,index)=>{
                                         if(index<5){
                                             return(
-                                            <div key={item.id} onClick={()=>navigate(`${item.item_url}?itemId=${item.item_id}`)} className='item-start cart-item'>
-                                                <div className="n0eaQq" style={{backgroundImage: `url(${item.item_image})`}}></div>
+                                            <div key={item.id} onClick={()=>navigate(`${item.url}?itemId=${item.item_id}`)} className='item-start cart-item'>
+                                                <div className="n0eaQq" style={{backgroundImage: `url(${item.image})`}}></div>
                                                 <div className="cart-item-name_price">
                                                     <div className="item-center">
                                                         <div className="cart-item-name">
-                                                            {item.promotion?<span className="_2-s53F">Combo khuyến mãi</span>:item.shock_deal_type!=null?<span className="_2-s53F">{item.shock_deal_type=='1'?'Buy to receive gift':'Buy with shock deal'}</span>:''}
-                                                            {item.item_name}
+                                                            {item.promotion?<span className="_2-s53F">Combo khuyến mãi</span>:item.shock_deal_type!=null?<span className="_2-s53F">{item.shock_deal_type=='2'?'Buy to receive gift':'Buy with shock deal'}</span>:''}
+                                                            {item.name}
                                                         </div>
                                                         <div className="cart-item-price">₫{formatter.format(item.price)}</div>
                                                     </div>

@@ -3,13 +3,13 @@ import Navbar from "../seller/Navbar"
 import Timeoffer from "./Timeoffer"
 import {Link,useNavigate} from 'react-router-dom'
 import Productoffer from "../seller/Productoffer"
-import React, {useState,useEffect,useCallback,memo} from 'react'
+import React, {useState,useEffect,useCallback,memo,useMemo} from 'react'
 import Pagination from "./Pagination"
 import {vouchershopURL} from "../urls"
-import {formatter} from "../constants"
+import {formatter,valid_from,valid_to} from "../constants"
 import {headers} from "../actions/auth"
 let Pagesize=5
-const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_content})=>{
+const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=>{
     const navite=useNavigate();
     const [state,setState]=useState({timeSecond:5,code_type:[{image:'http://localhost:8000/media/my_web/shop.png',value:'All',name:"All product"},
         {image:'http://localhost:8000/media/my_web/product.png',value:'Product',name:"Product"}],
@@ -18,11 +18,11 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
         {value:'Show many',name:'Show many places'},{value:'Not public',name:'not public'},
         {value:'Share',name:'Share througth code vourcher'}],
         limit:[{value:'L',name:'Limited'},{value:'U',name:'Unlimited'}],open_discount:false,open_time:false})
-    const [date,setDate]=useState([{time:new Date(),show:false,hours:new Date().getHours(),minutes:new Date().getMinutes()}
-            ,{time:new Date(),show:false,hours:new Date().getHours()+1,minutes:new Date().getMinutes()}])
     const [voucher,setVoucher]=useState({name_of_the_discount_program:'',code_type:'All',code:'',
-        valid_from:null,valid_to:null,discount_type:'1',amount:null,percent:null,
+        discount_type:'1',amount:null,percent:null,
         maximum_usage:null,voucher_type:"Offer",maximum_discount:'U',minimum_order_value:null,
+        valid_from:valid_from.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
+        valid_to:valid_to.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
         setting_display:'Show many'})
     const [itemshop,setItem]=useState({items:[],page_count_main:0,items_choice:[],savemain:false
         ,page_count_by:0,byproduct:[],byproduct_choice:[],savebyproduct:false})
@@ -31,16 +31,18 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
     const [loading,setLoading]=useState(false)
     useEffect(() => {
-        setDate(date_voucher)
+        if(voucher_shop){
         setItem(itemvoucher)
         setVoucher(voucher_shop)
         setLoading(loading_content)
-      }, [date_voucher,voucher_shop,itemvoucher]);
+        }
+      }, [voucher_shop,itemvoucher]);
     
-      const firstPageIndex = (currentPage.items - 1) * Pagesize;
-      const lastPageIndex = firstPageIndex + Pagesize;
-      const currentitemPage=itemshop.items_choice.slice(firstPageIndex, lastPageIndex);
-    
+    const currentitemPage=useMemo(()=>{
+        const firstPageIndex = (currentPage.items - 1) * Pagesize;
+        const lastPageIndex = firstPageIndex + Pagesize;
+        return itemshop.items_choice.slice(firstPageIndex, lastPageIndex);
+    },[currentPage,itemshop.items_choice])
     const setshow=(sho,name)=>{
         setShow({...show,[name]:sho})
     }
@@ -90,7 +92,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
         }
     }
 
-    const setcheckitem=useCallback((item,product,keys)=>{
+    const setcheckitem=(item,product,keys)=>{
         const list_item=product.map(ite=>{
             if(item.id==ite.id){
                 return({...ite,check:!ite.check})
@@ -101,33 +103,20 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
         })
         setItem({...itemshop,[keys]:list_item})
         console.log({[keys]:list_item})
-    },[itemshop])
-
-    const setcheckall=(e,list_items,keys,value,value_choice)=>{
-        for (let k in value){
-            for(let i in list_items){
-                if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !value_choice.some(ite=>ite.id==value[k].id)){
-                    value[k].check=true
-                }
-                if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !value_choice.some(ite=>ite.id==value[k].id)){
-                    value[k].check=false
-                }
-                if(e.target.checked==true && list_items[i]==value[k]){
-                    if(keys=='byproduct_choice' || keys=='items_choice'){
-                        value[k].check=true
-                    }
-                }
-                if(e.target.checked==false && list_items[i]==value[k]){
-                    if(keys=='byproduct_choice' || keys=='items_choice'){
-                        value[k].check=false
-                    }
-                }
-            }
-        }
-        setItem({...itemshop,[keys]:value})
     }
 
-    const submit=useCallback(()=>{
+    const setcheckall=(e,list_items,keys,value,value_choice)=>{
+        const listitems=value.map(item=>{
+            if(e.target.checked){
+                return({...item,check:list_items.some(product=>product.id==item.id)?true:item.check})
+            }
+            return({...item,check:list_items.some(product=>product.id==item.id) && !item.disable?false:item.check})
+        })
+       
+        setItem({...itemshop,[keys]:listitems})
+    }
+
+    const submit=()=>{
         const list_itemscheck=itemshop.items.filter(ite=>ite.check && !itemshop.items_choice.some(item=>item.id==ite.id))
         const list_itemschoice=list_itemscheck.map(item=>{
             return({...item,check:false,enable:true})
@@ -135,7 +124,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
         itemshop.items_choice=[...list_itemschoice,...itemshop.items_choice]
         setItem({...itemshop,items_choice:itemshop.items_choice})
         setShow({...show,items:false})
-    },[itemshop,show])
+    }
 
     
     const removeitem=(itemmove,keys,value,keys_choice,value_choice,page_current)=>{
@@ -149,49 +138,21 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
             }
         })
         setItem({...itemshop,[keys]:list_item,[keys_choice]:list_itemchoice})
-        let page=page_current
-        if(page>=Math.ceil(list_itemchoice.length / Pagesize)){
-            page=Math.ceil(list_itemchoice.length / Pagesize)
-            console.log(list_itemchoice.length)
-        }
+        setpageitem(keys,list_itemchoice,page_current)
+    }
+
+    const setpageitem=(keys,list_itemchoice,page_current)=>{
+        const page=list_itemchoice.length==0?1:page_current>=Math.ceil(list_itemchoice.length / Pagesize)?Math.ceil(list_itemchoice.length / Pagesize):page_current
         setCurrentPage({...currentPage,[keys]:page})
         handlePageChange(page,keys)
     }
-
-    const onChange = (datechoice) => {
-        const list_date=date.map(item=>{
-            if(item.show){
-                return({...item,time:datechoice})
-            }
-            return({...item})
-        })
-
-        setDate(list_date);
-    };
-
-    const settimechoice=(value,index,name)=>{
-        const list_date=date.map((item,i)=>{
-            if(i==index){
-                console.log(name)
-                return({...item,[name]:value})
-            }
-            return({...item})
-        })
-        setDate(list_date); 
-    }
-
-    const setindexchoice=(list_date)=>{
-        setDate(list_date);
-    }
-
-    const setdatevalid=(index)=>{
+    
+    const setdatevalid=(index,date)=>{
         if(index==0){
-            voucher.valid_from=date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)
-            setVoucher({...voucher,valid_from:voucher.valid_from})
+            setVoucher({...voucher,valid_from:date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date.hours).slice(-2)+':'+("0"+date.minutes).slice(-2)})
         }
         else{
-            voucher.valid_to=date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)
-            setVoucher({...voucher,valid_to:voucher.valid_to})
+            setVoucher({...voucher,valid_to:date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date.hours).slice(-2)+':'+("0"+date.minutes).slice(-2)})
         }
     }
 
@@ -209,7 +170,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
                 const items=res.data.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
                 const list_items=items.map(item=>{
                 if(itemshop.items_choice.some(product=>product.id==item.id)){
-                    return({...item,check:true})
+                    return({...item,check:true,disable:true})
                 }
                 return({...item,check:false})
                 })
@@ -220,7 +181,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
             const items=itemshop.itemshops.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
             const list_items=items.map(item=>{
                 if(itemshop.items_choice.some(product=>product.id==item.id)){
-                    return({...item,check:true})
+                    return({...item,check:true,disable:true})
                 }
                 return({...item,check:false})
                 })
@@ -292,11 +253,10 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
                                             <div className="item-base-lines ">
                                                 <label for="" className="form-item__label">Time to save discount code</label>
                                                 <Timeoffer
-                                                    date={date}
-                                                    onChange={(page)=>onChange(page)}
-                                                    setdatevalid={(index)=>setdatevalid(index)}
-                                                    settimechoice={(value,index,name)=>settimechoice(value,index,name)}
-                                                    setindexchoice={list_date=>setindexchoice(list_date)}
+                                                   edit={edit}
+                                                    data={voucher}
+                                                    setdatevalid={(index,date)=>setdatevalid(index,date)}
+                                                 
                                                 />
                                             </div>
                                         </div>
@@ -517,9 +477,9 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
                                                                     </div>
                                                                     <div className="item-stocks">{item.total_inventory}</div>
                                                                     <div className="item-action">
-                                                                        <i onClick={()=>removeitem(item,'items',itemshop.items,'items_choice',itemshop.items_choice,currentPage.items)} className="trash-icon icon">
-                                                                            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fillRule="nonzero"><path d="M14.516 3.016h-4v-1a.998.998 0 0 0-.703-.955.99.99 0 0 0-.297-.045h-3a.998.998 0 0 0-.955.703.99.99 0 0 0-.045.297v1h-4a.5.5 0 1 0 0 1h1v10a.998.998 0 0 0 .703.955.99.99 0 0 0 .297.045h9a.998.998 0 0 0 .955-.703.99.99 0 0 0 .045-.297v-10h1a.5.5 0 1 0 0-1zm-8-1h3v1h-3v-1zm6 12h-9v-10h9v10z"></path><path d="M5.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5zM8.016 12.016a.5.5 0 0 0 .5-.5v-5a.5.5 0 1 0-1 0v5a.5.5 0 0 0 .5.5zM10.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5z"></path></g></svg>
-                                                                        </i>
+                                                                        <button onClick={()=>removeitem(item,'items',itemshop.items,'items_choice',itemshop.items_choice,currentPage.items)} data-v-625f739d="" type="button" class="action button button--normal button--circle">
+                                                                            <i class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2,4 C1.72385763,4 1.5,3.77614237 1.5,3.5 C1.5,3.22385763 1.72385763,3 2,3 L6,2.999 L6,2 C6,1.44771525 6.44771525,1 7,1 L10,1 C10.5522847,1 11,1.44771525 11,2 L11,2.999 L15,3 C15.2761424,3 15.5,3.22385763 15.5,3.5 C15.5,3.77614237 15.2761424,4 15,4 L14,4 L14,14 C14,14.5522847 13.5522847,15 13,15 L4,15 C3.44771525,15 3,14.5522847 3,14 L3,4 L2,4 Z M13,4 L4,4 L4,14 L13,14 L13,4 Z M6.5,7 C6.77614237,7 7,7.22385763 7,7.5 L7,11.5 C7,11.7761424 6.77614237,12 6.5,12 C6.22385763,12 6,11.7761424 6,11.5 L6,7.5 C6,7.22385763 6.22385763,7 6.5,7 Z M8.5,6 C8.77614237,6 9,6.22385763 9,6.5 L9,11.5 C9,11.7761424 8.77614237,12 8.5,12 C8.22385763,12 8,11.7761424 8,11.5 L8,6.5 C8,6.22385763 8.22385763,6 8.5,6 Z M10.5,7 C10.7761424,7 11,7.22385763 11,7.5 L11,11.5 C11,11.7761424 10.7761424,12 10.5,12 C10.2238576,12 10,11.7761424 10,11.5 L10,7.5 C10,7.22385763 10.2238576,7 10.5,7 Z M10,2 L7,2 L7,2.999 L10,2.999 L10,2 Z"></path></svg>
+                                                                        </i></button>
                                                                     </div>
                                                                 </div>
                                                             </div>   
@@ -535,7 +495,7 @@ const Voucherinfo=({itemvoucher,date_voucher,voucher_shop,url_voucher,loading_co
                                                             currentPage={currentPage.items}
                                                             totalCount={Math.ceil(itemshop.items_choice.length / Pagesize)}
                                                             Pagesize={Pagesize}
-                                                            onPageChange={(page,name) => handlePageChange(page,'items')}
+                                                            onPageChange={(page) => handlePageChange(page,'items')}
                                                         />
                                                         </div>
                                                     </div>

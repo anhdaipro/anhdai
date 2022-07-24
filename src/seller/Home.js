@@ -150,7 +150,7 @@ const HomePageSeller=()=>{
             tooltipEl.style.opacity = 0;
             return;
           }
-          console.log('iii')
+          
           // Set Text
           const tableRoot = tooltipEl.querySelector('div')
           tableRoot.innerHTML=''

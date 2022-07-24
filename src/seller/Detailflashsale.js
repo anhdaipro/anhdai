@@ -46,6 +46,7 @@ const Newflashsale=()=>{
             <Flashsaleinfo
             date_flashsale={date}
             item_flashsale={itemshop}
+            edit={true}
             flashsale_shop={flashsale}
             loading_content={loading}
             url_flashsale={detailflashsaleURL+id}

@@ -4,19 +4,12 @@ import React, {useState, useEffect,memo} from 'react'
 import {formatter,} from "../constants"
 import { headers } from '../actions/auth';
 import {addToCartURL} from "../urls"
-const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
+const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring,setcartitem})=>{
     const [state, setState] = useState({data:data,inventory:null,price:null,percent_discount:null,product_id:0});
     const [variation, setVariation] = useState({
         count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],
         quantity:1})
-    const minus=(e)=>{
-        variation.quantity-=1
-        setVariation({...variation,quantity:variation.quantity})
-    }
-    const add=(e)=>{
-        variation.quantity+=1
-        setVariation({...variation,quantity:variation.quantity})
-    }
+    const [quantity,setQuantity]=useState(1)
     
     const setcolor=(e,item)=>{ 
         e.preventDefault()
@@ -27,7 +20,7 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
         else{
           setVariation({...variation,color_id:0,variation_color:[],count_color:0})
         }
-        get_price(item,'color_id')
+        get_price('color_id',item.id)
     }
     const setsize=(e,item)=>{
         e.target.classList.toggle('product-variation--selected')
@@ -38,60 +31,57 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
         else{
           setVariation({...variation,size_id:0,variation_size:[],count_size:0})
         }
-        get_price(item,'size_id')
+        get_price('size_id',item.id)
     }
-    function get_price(item,name){
-        setTimeout(function(){
+    function get_price(name,value){
             let variation_active=document.querySelectorAll('.product-variation--selected')
             if(variation_active.length>=count_variation){
             let url=new URL(addToCartURL)
             let search_params=url.searchParams
-            search_params.append('item_id',state.data.item_id)
+            search_params.append('item_id',state.data.id)
             if(variation.color_id!=0){
               search_params.set('color_id',variation.color_id)
             }
             if(variation.size_id!=0){
               search_params.set('size_id',variation.size_id)
             }
-            search_params.set([name],item.id)
+            search_params.set([name],value)
             url.search = search_params.toString();
             let new_url = url.toString();
             axios.get(new_url)
             .then(res => { 
-                setState({...state,
-                    product_id:res.data.id,inventory:res.data.inventory,
-                    price:res.data.price,percent_discount:res.data.percent_discout})
+                setState({...state,...res.data})
             }) 
           }
           else{
             setState({...state,inventory:null,price:null,percent_discount:null,product_id:0});
-          }
-        },10)
+        }
     }
     
     const addtocart=(e)=>{
         setshow(true)
-        setwarring(true)
-        setTimeout(function(){
-            setwarring(false)
-        },2500)
         seterrow(true)
         let variation_active=document.querySelectorAll('.product-variation--selected')
         if(variation_active.length>=count_variation){
             seterrow(false)
             setwarring(true)
             let form =new FormData()
-            form.append('id',state.product_id)
-            form.append('item_id',state.data.item_id)
-            form.append('quantity',variation.quantity) 
+            form.append('id',state.id)
+            form.append('item_id',state.data.id)
+            form.append('quantity',quantity) 
             axios.post(addToCartURL,form,headers)
             .then(res=>{
-            let data=res.data
-            setshow(false)
-            setVariation({
-                count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],
-                quantity:1})
-            setState({data:data,inventory:null,price:null,percent_discount:null,product_id:0})
+                let data=res.data
+                setshow(false)
+                setwarring(true)
+                setcartitem(data)
+                setTimeout(function(){
+                    setwarring(false)
+                },2500)
+                setVariation({count_size:0,count_color:0,size_id:0,color_id:0,
+                variation_color:[],variation_size:[],quantity:1})
+                setState({data:data,inventory:null,price:null,percent_discount:null,
+                id:0})
           })
         }  
     }
@@ -160,11 +150,11 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring})=>{
                                 <div className="_1I2URr">Số lượng:</div>
                                 <div className="_1XKkWz">
                                     <div className="_16mL_A input-quantity">
-                                        <button onClick={e=>minus(e)} className={`_2KdYzP ${variation.quantity==1?'disable':''}`}>
+                                        <button onClick={e=>setQuantity(quantity-1)} className={`_2KdYzP ${quantity==1?'disable':''}`}>
                                             <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon "><polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon></svg>
                                         </button>
-                                        <input className="_2KdYzP iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={variation.quantity}/>
-                                        <button onClick={e=>add(e)} className="_2KdYzP">
+                                        <input onChange={e=>setQuantity(isNaN(e.target.value)?quantity:e.target.value)} className="_2KdYzP iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={variation.quantity}/>
+                                        <button onClick={e=>setQuantity(quantity+1)} className="_2KdYzP">
                                             <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg>
                                         </button>
                                     </div>

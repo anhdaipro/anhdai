@@ -1,9 +1,9 @@
 import {formatter,timecreate,timeago,
     itemvariation,hidestring,rating,ratingitem,list_review_choice,timepromotion} from "../constants"
 import axios from 'axios';
-import React, {useState, useEffect,useRef, useCallback} from 'react'
+import React, {useState, useEffect,useRef, useCallback,useMemo} from 'react'
 import ReactDOM from 'react-dom'
-import {addToCartURL,productinfoURL,listThreadlURL,} from "../urls"
+import {addToCartURL,productinfoURL,listThreadlURL,addToCartBatchURL} from "../urls"
 import Pagination from "../hocs/Pagination"
 import {
 FacebookShareButton,PinterestShareButton,FacebookMessengerShareButton,TwitterShareButton,
@@ -18,6 +18,7 @@ const ReviewItem=(props)=>{
     const [show,setShow]=useState(false)
     const parentref=useRef()
     const [file,setFile]=useState()
+
     const previewimage = useRef();
     useEffect(() => {
         document.addEventListener('click', handleClick)
@@ -34,7 +35,6 @@ const ReviewItem=(props)=>{
         }
     }
 
-    console.log(file)
     const onImageLoad=(e) =>{
         const { width, height } = e.currentTarget
         setFile({width:e.currentTarget.naturalWidth,height:e.currentTarget.naturalHeight})
@@ -149,6 +149,161 @@ const ReviewItem=(props)=>{
     )
 }
 
+
+const Itemdeal=(props)=>{
+    const {setbyproduct,item,listsizedeal,listcolordeal,updatevariation,product}=props
+    const [show,setShow]=useState(false)
+    const [state,setState]=useState({page_no:1,size_id:null,color_id:null,variation_color:[],variation_size:[],count_variation:0,product_id:0,size_value:'',color_value:''})
+    const itemref=useRef()
+    const [quantity,setQuantity]=useState(1)
+    useEffect(() => {
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [])
+
+    const handleClick = (event) => {
+        const { target } = event
+        if(itemref.current!=null){
+            if (!itemref.current.contains(target)) {
+                setShow(false)
+            }
+        }
+    }
+    useEffect(()=>{
+        setQuantity(item.quantity)
+    },[item])
+    const  variation=(e)=>{
+        const size=item.sizes.find(size=>size.value==item.variation_choice.size_value)
+        const color=item.colors.find(color=>color.value==item.variation_choice.color_value)
+        setState({...state,size_id:size?size.id:null,color_id:color?color.id:null,color_value:item.color_value,
+            size_value:item.size_value,
+            variation_color:color?color.variation:[],variation_size:size?size.variation:[],count_variation:item.count_variation,product_id:item.product_id})
+    }
+    
+    const setcolor=(e,item)=>{ 
+        e.target.classList.toggle('product-variation--selected')
+        if(e.target.classList.contains('product-variation--selected')){
+          setState({...state,color_id:item.id,variation_color:item.variation,color_value:item.value})  
+        }
+        else{
+          setState({...state,color_id:null,variation_color:[],color_value:''})
+        }
+    }
+
+    const setsize=(e,item)=>{
+        e.target.classList.toggle('product-variation--selected')
+        if(e.target.classList.contains('product-variation--selected')){
+          setState({...state,size_id:item.id,variation_size:item.variation,size_value:item.value}) 
+        }
+        else{
+          setState({...state,size_id:null,variation_size:[],size_value:''})
+        }
+    }
+    return(
+        <div key={item.id} className="Cgh6x3 wAs-X+">
+            <a className="HqVUvN" href="/Quần-Baggy-Nam-Ống-Rộng-vải-Hàn-Cao-Cấp-Quần-Âu-công-sở-chất-liệu-co-giãn-phong-cách-Hàn-Quốc-i.275899480.12372283368">
+                <span>
+                    <div className="jz7csM">
+                        <div className="nSiDVN SmTGWY" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                    </div>
+                </span>
+                <div className="Pa5Yzn">
+                    <span className="Y-UTmy">{item.name}</span>
+                </div>
+            </a>
+            <div className="V1SZcW">
+                <label className={`stardust-checkbox ${product=='mainproduct'?'disable':''} ${item.check?'stardust-checkbox--checked':''}`}>
+                    <input disabled={product=='mainproduct'?true:false} checked={item.check?true:false} className="stardust-checkbox__input" type="checkbox"/>
+                    <div onClick={(e)=>{
+                        if(product!='mainproduct'){
+                            setbyproduct(e,item,'check',!item.check)
+                        }
+                        }} className="stardust-checkbox__box"></div>
+                </label>
+                
+                <div ref={itemref} className="stardust-popover Krn1TB" id="stardust-popover0" tabindex="0">
+                    {item.count_variation>0?
+                    <div onClick={(e)=>{
+                        setShow(!show)
+                        variation(e)}} role="button" className="stardust-popover__target">
+                        <span className="bdRKsm">{item.variation_choice.color_value!=''?item.variation_choice.color_value:''}{item.variation_choice.size_value!=''?`,${item.variation_choice.size_value}`:''}
+                            <span className="Z6vh+w"></span>
+                        </span>
+                    </div>:''}
+                    {show?
+                    <div
+                    className="stardust-popover__popover stardust-popover__popover--show stardust-popover__popover--border"
+                    style={{top:'30px',left:'-100px'}}
+                    >
+                      <div className="stardust-popover__arrow" style={{top: '1px', left: '100.508px', transform: 'translate(-4px, -100%)', borderBottom: '10px solid rgba(0, 0, 0, 0.09)', borderLeft: '10px solid transparent', borderRight: '10px solid transparent'}}>
+                          <div className="stardust-popover__arrow--inner" style={{borderBottom: '8px solid transparent', borderLeft: '8px solid transparent', borderRight: '8px solid transparent', bottom: '-10px'}}></div>
+                      </div>
+                      <div>
+                          <div className="_3RMcd-">
+                              <div className="_2AlHh9">
+                                  <div className="_22Wxvt">
+                                      {item.colors.length>0?
+                                      <div className="NwiGnj">
+                                          <div className="_3qC1Fg">{item.colors[0].name}:</div>
+                                          {item.colors.map(color=>
+                                              <button key={color.id} onClick={(e)=>setcolor(e,color)} className={`product-variation ${state.variation_size.length>0?`${color.variation.some(r=> state.variation_size.includes(r)) && listcolordeal.some(colordeal=>colordeal==color.id) && product!='mainproduct'?'':'disable'}`:''} ${color.id==state.color_id?'product-variation--selected':''}`} aria-label={color.value}>{color.value}
+                                                  {state.color_id==color.id?
+                                                  <div className="product-variation__tick">
+                                                  <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
+                                                  </div>
+                                                  :''}
+                                              </button>
+                                          )}
+                                      </div>:''}
+                                      {item.sizes.length>0?
+                                      <div className="NwiGnj">
+                                          <div className="_3qC1Fg">{item.sizes[0].name}:</div>
+                                          {item.sizes.map(size=>
+                                              <button key={size.id} onClick={(e)=>setsize(e,size)} className={`product-variation ${state.variation_color.length>0?`${size.variation.some(r=> state.variation_color.includes(r)) && listsizedeal.some(sizedeal=>sizedeal==size.id) && product!='mainproduct'?'':'disable'}`:''}${size.id==state.size_id?'product-variation--selected':''}`} aria-label={size.value}>{size.value}
+                                                  {state.size_id==size.id?
+                                                  <div className="product-variation__tick">
+                                                  <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
+                                                  </div>
+                                                  :''}
+                                              </button>
+                                          )}
+                                      </div>:''}
+                                  </div>
+                                  <div className="x94sjQ">
+                                      <span className="JoCEu1">Số lượng</span>
+                                      <div className="oGEqYd input-quantity">
+                                        <button onClick={e=>setQuantity(quantity-1)} className={`${quantity==1?'disable':''} minus-btn btn-adjust`}>
+                                            <svg enable-background="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon "><polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon></svg>
+                                        </button>
+                                        <input onChange={e=>setQuantity(isNaN(e.target.value)?quantity:e.target.value)} className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={quantity}/>
+                                        <button onClick={e=>setQuantity(quantity+1)} className={`plus-btn btn-adjust`}><svg enable-background="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg></button>
+                                       
+                                    </div>
+                                </div>
+                                  <div className="_270oIB">
+                                      <button onClick={()=>setShow(false)} type="button" className="btn btn-light btn--s btn--inline">Trở Lại</button>
+                                      <button onClick={(e)=>{updatevariation(e,item,state.color_id,state.size_id,quantity,product)
+                                    setShow(false)}} type="button" className={`btn btn-solid-primary btn--s btn--inline ${(item.count_variation==2 && state.color_id&&state.size_id)||(item.count_variation==1 &&  (state.color_id|| state.size_id))?'':'disable'}`}>Xác nhận</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                    :''
+                    }
+                </div>
+
+            </div>
+            <div className="zec-ha">
+                <span className={`${item.variation_choice.discount_price?'SdJ6yI':'++PvFX'}`}>₫{formatter.format(item.variation_choice.price)}</span>
+                {item.variation_choice.discount_price?
+                <span className="++PvFX">₫{formatter.format(item.variation_choice.discount_price)}</span>:''}
+            </div>
+        </div>
+    )
+}
 let pageSize=5
 const ProductDetail = ({report_complete,showchat,show_report,setreport,
     showthreads,data_product,addcartitem,showmediaitem,user,id}) => {
@@ -162,14 +317,21 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
     const [shop,setShop]=useState(null)
     const [page,setPage]=useState(1)
     const [productdetail,setProductdetail]=useState()
+    const [main_product,setMainproduct]=useState()
     const [listmedia,setListmedia]=useState([])
     const [typereview,setTypereview]=useState()
     const [indextype,setIndextype]=useState()
+    const [quantity,setQuantity]=useState(1)
     const [list_hot_sales,setListhostsale]=useState([])
+    const [data,setData]=useState()
     const [itemdeal,setItemdeal]=useState({color_choice:null,size_choice:null})
     const [byproduct,setByproduct]=useState([])
+    const [listcolordeal,setListcolordeal]=useState([])
+    const [listsizedeal,setListsizedeal]=useState([])
     const [promotion,setPromotion]=useState()
+    const [time,setTime]=useState({hours:0,mins:0,seconds:0})
     useEffect(() => {
+        if(data_product){
         const color_choice= data_product.colors.length>0?data_product.colors[0]:null
         const size_choice =color_choice&& data_product.sizes.length>0?data_product.sizes.find(size=>size.variation.some(variation=>color_choice.variation.includes(variation))):null
         const index_choice=data_product.media_upload.length>=5?5:data_product.media_upload.length
@@ -177,9 +339,35 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         const image_preview=data_product.media_upload.filter(item=>item.typefile==='image')
         const list_media=video_preview!=undefined?[video_preview,...image_preview]:image_preview
         setItemdeal({color_choice:color_choice,size_choice:size_choice})
-        setState({...state,data:data_product,index_choice:index_choice,filechoice:list_media[0]})
+        setState({...state,index_choice:index_choice,filechoice:list_media[0]})
         setListmedia(list_media)
+        setData(data_product)
+        if(data_product.flash_sale && new Date()>new Date(data_product.flash_sale.valid_from)){
+            const time_end=data_product.flash_sale.valid_to
+            const countDown= setInterval(() => timer(), 1000);
+            const  timer=()=> {
+                const FalshsaleDate = new Date(time_end);
+                const currentDate = new Date();
+                let totalSeconds = (FalshsaleDate - currentDate) / 1000;
+                setTime({hours:Math.floor(totalSeconds / 3600) % 24,
+                    mins: Math.floor(totalSeconds / 60) % 60,
+                seconds:Math.floor(totalSeconds) % 60})
+                if(totalSeconds<=0){
+                    totalSeconds=0
+                    clearInterval(countDown);
+                }
+            }
+        }
+    }
     },[data_product])
+
+    const number=(number,value)=>{
+        return Array(number).fill().map((_,i)=>
+            <div key={i} style={{color:'#fff'}} className="countdown-timer__number__item">
+                <span>{i}</span>
+            </div>
+        )
+    }
     useEffect(()=>{
         if(!show_report && listreview){
             const list_reviews=listreview.map(review=>{
@@ -192,21 +380,28 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
     let navigate = useNavigate();
     const videoref=useRef();
     const list_preview=listmedia.length>=5?listmedia.slice(state.index_choice-5,state.index_choice):listmedia
-    console.log(state.index_choice)
+   
     const { slug } = useParams();
-    
     useEffect(()=>{
         (async()=>{
             try{
                 if(id){
                     if(data_product.shock_deal_type || data_product.promotion){
                         const res =await axios.get(`${productinfoURL}/${id}?choice=${data_product.shock_deal_type?'deal':'combo'}`,headers)
-                        
+                        const data=res.data
                         if(data_product.shock_deal_type){
-                            setByproduct(res.data.byproduct.map(item=>{
-                                return ({...item,check:true})
+                            setMainproduct({image:data_product.image,quantity:1,
+                            name:data_product.name,id:data_product.id,check:true,
+                            count_variation:data_product.count_variation,deal_id:data.id,
+                            colors:data_product.colors,sizes:data_product.sizes,
+                            variation_choice:data.variation_choice})
+                            const databyproduct=res.data.byproduct
+                            setByproduct(databyproduct.map(item=>{
+                                return ({...item,check:true,quantity:1})
                             }))
-                            }
+                            setListcolordeal(data.colors_deal)
+                            setListsizedeal(data.sizes_deal)
+                        }
                         else{
                             setPromotion(res.data)
                         }  
@@ -226,8 +421,14 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
             }
         })()
     },[id])
-
-    window.onscroll=()=>{
+    useEffect(()=>{
+        document.addEventListener('scroll',addReview)
+        return () => {
+            document.removeEventListener('scroll', addReview)
+        }
+    },[listreview])
+    
+    const addReview=()=>{
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
         if(clientHeight + scrollTop === scrollHeight){
             if(!listreview){
@@ -238,13 +439,13 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                         return({...item,request_report:false})
                     })
                     setReview(list_reviews)
-                    setState({...state,page_count:data.page_count,rating:data.rating,has_comment:data.has_comment,has_media:data.has_media})
+                    setState(current=>{return{...current,page_count:data.page_count,rating:data.rating,has_comment:data.has_comment,has_media:data.has_media}})
                 })  
             }
         }
     }
-
     
+
     function setcolor(e,item){ 
         e.target.classList.toggle('product-variation--selected')
         if(e.target.classList.contains('product-variation--selected')){
@@ -253,7 +454,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         else{
           setState({...state,color_id:0,variation_color:[]})
         }
-        get_price(item,'color_id')
+        get_price('color_id',item.id)
       }
 
     function setsize(e,item){
@@ -265,23 +466,22 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         else{
           setState({...state,size_id:0,variation_size:[]})
         }
-        get_price(item,'size_id')
+        get_price('size_id',item.id)
     }
       
-    const get_price=(item,name)=>{
-        setTimeout(function(){
+    const get_price=(name,value)=>{
           let variation_active=document.querySelectorAll('.choice_variation .product-variation.product-variation--selected')
-          if(variation_active.length>=state.data.count_variation){
+          if(variation_active.length>=data.count_variation){
             let url=new URL(addToCartURL)
             let search_params=url.searchParams
-            search_params.append('item_id',state.data.id)
+            search_params.append('item_id',data.id)
             if(state.color_id!=0){
-              search_params.set('color_id',state.color_id)
+                search_params.set('color_id',state.color_id)
+              }
+              if(state.size_id!=0){
+                search_params.set('size_id',state.size_id)
             }
-            if(state.size_id!=0){
-              search_params.set('size_id',state.size_id)
-            }
-            search_params.set(name,item.id)
+            search_params.set([name],value)
             setWaring({...state,warring:false})
             url.search = search_params.toString();
             let new_url = url.toString();
@@ -294,21 +494,20 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
           else{
             setVariation({...variation,data:null})
           }
-        },10)
     }
 
     const addtocart=(e)=>{
         e.stopPropagation()
         if (localStorage.token!='null' && expiry>0){
             let variation_active=document.querySelectorAll('.product-variation--selected')
-            if(variation_active.length===state.data.count_variation){
+            if(variation_active.length===data.count_variation){
             setWaring({...waring,warring:false})
             let form =new FormData()
             if(variation.data){
                 form.append('id',variation.data.id)
             }
-            form.append('item_id',state.data.id)
-            form.append('quantity',state.quantity) 
+            form.append('item_id',data.id)
+            form.append('quantity',quantity) 
             if(e.currentTarget.classList.contains('btn-tinted')){
                 const Divbox=()=>{
                 const [remove, setRemove] = useState({remove:false});
@@ -339,13 +538,13 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                     document.getElementById('modal')
                 );
                 }
-            axios.post(addToCartURL,form,headers)
-            .then(res=>{
-                addcartitem(res.data)
-            })
+                axios.post(addToCartURL,form,headers)
+                .then(res=>{
+                    addcartitem(res.data)
+                })
             }
             else{
-            setWaring({...state,warring:true})
+                setWaring({...state,warring:true})
             }
         }
         else{
@@ -356,37 +555,27 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
     const setlike=()=>{
         if(localStorage.token!='null' && expiry>0){
             let form=new FormData()
-            form.append('item_id',state.data.id)
-            axios.post( productinfoURL,form,headers)
+            form.append('item_id',data.id)
+            axios.post(`${productinfoURL}/${id}`,form,headers)
             .then(res=>{
-            state.data.num_like_item=res.data.num_like_item
-            state.data.like_item=res.data.like_item
-            setState({...state,data:state.data})
+            data.num_like_item=res.data.num_like_item
+            data.like_item=res.data.like_item
+            setState({...state,data:data})
             })
         }
         else{
             navigate(`/buyer/login?next=${window.location}`, { replace: true });
         }
     }
-
-    const minus=(e)=>{
-        const quanity=variation.quantity==1?1:variation.quantity-1
-        setVariation({...variation,quantity:quanity})
-    }
-
-    const add=(e)=>{
-        variation.quantity+=1
-        setVariation({...variation,quantity:variation.quantity})
-    }
-    
+  
     const setshowthread=(e)=>{
         e.preventDefault()
-        let data={member:[user.id,state.data.user_id],thread:null,item_id:state.data.id,send_to:state.data.user_id}
+        let data={member:[user.id,data.user_id],thread:null,item_id:data.id,send_to:data.user_id}
         showchat(data)
         showthreads()
     }
   
-    const setlikereview=useCallback((e,review)=>{
+    const setlikereview=(e,review)=>{
         let form=new FormData()
         form.append('review_id',review.id)
         if(localStorage.token!='null' && expiry>0){
@@ -409,13 +598,13 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         else{
             navigate(`/buyer/login?next=${window.location}`, { replace: true });
         }
-    },[listreview])
+    }
     
     useEffect(()=>{
         (async()=>{
             if(indextype){
             setPage(1)
-            const res = await axios.get(`${productinfoURL}/${state.data.id}?choice=review&${[typereview.name]}=${typereview.value}`)
+            const res = await axios.get(`${productinfoURL}/${data.id}?choice=review&${[typereview.name]}=${typereview.value}`)
             let data=res.data
             setReview(data.reviews)
             setState({...state,review_choice:typereview.value,page_count:data.page_count,rating:data.rating,has_comment:data.has_comment,has_media:data.has_media})
@@ -423,13 +612,12 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         })()
     },[indextype])
         
-   console.log(indextype)
     const showfile=(e)=>{
         e.stopPropagation() ;
         showmediaitem(state.filechoice,listmedia)
         console.log(listmedia)
     }
-    const  showmedia=useCallback((e,item,reviewchoice)=>{
+    const  showmedia=(e,item,reviewchoice)=>{
         const list_reviews=listreview.map(review=>{
             if(review.id===reviewchoice.id){
                 return({...review,list_file:review.list_file.map(file=>{
@@ -443,53 +631,101 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                 return({...file,show:false})
             })})
         })
-        console.log(list_reviews)
         setReview(list_reviews)
-    },[listreview])
+    }
 
     const setindex=(value)=>{
         setState({...state,index_choice:value})
     }
     
     useEffect(()=>{
-        if(videoref!=undefined && videoref.current!=undefined){
+        if(videoref && videoref.current){
             videoref.current.addEventListener('ended',e=>{
                 setState({...state,finish:true})
             })
         }
-    },[state,videoref])
+    },[videoref])
     
-    const total_price=byproduct.reduce((total,obj,i)=>{
+    const total_price_byproducts=useMemo(()=>{
+       return byproduct.reduce((total,obj,i)=>{
         if(obj.check){
-            return total+obj.price
+            return total+obj.variation_choice.price
         }
         return total
     },0)
-    const discount_price=byproduct.reduce((total,obj,i)=>{
+    },[byproduct])
+    const promotion_price_byproducts=useMemo(()=>{
+        return byproduct.reduce((total,obj,i)=>{
         if(obj.check){
-        return total+obj.price*(1-(obj.percent_discount+obj.discount_deal)/100)
+            return total+obj.variation_choice.discount_price
         }
         return total
     },0)
+    },[byproduct])
 
-    const setbyproduct=(e,itemchoice,name,value)=>{
-        const listitem=byproduct.map(item=>{
+    const pricemain=()=>{return main_product.variation_choice.discount_price?main_product.variation_choice.discount_price:main_product.variation_choice.price}
+    const setbyproduct=useCallback((e,itemchoice,name,value)=>{
+        setByproduct(current=>current.map(item=>{
             if(item.id==itemchoice.id){
                 return({...item,[name]:value})
             }
             return({...item})
+        }))
+    },[])
+
+    const updatevariation=useCallback((e,itemchoice,color_id,size_id,quantity,product)=>{
+        let url=new URL(addToCartBatchURL)
+        let search_params=url.searchParams
+        search_params.set('item_id',itemchoice.id)
+        if(color_id){
+            search_params.set('color_id',color_id)
+        }
+        if(size_id){
+            search_params.set('size_id',size_id)
+        }
+        url.search = search_params.toString();
+        let new_url = url.toString();
+        axios.get(new_url,headers)
+        .then(res=>{
+            const data=res.data
+            if(product=='mainproduct'){
+                setMainproduct(current=>{return{...current,variation_choice:data,quantity:data.inventory<=quantity?data.inventory:quantity}})
+            }
+            else{
+                
+                setByproduct(current=>current.map(item=>{
+                    if(item.id==itemchoice.id){
+                        return({...item,variation_choice:data,quantity:data.inventory<=quantity?data.inventory:quantity})
+                    }
+                    return({...item})
+                })) 
+            }
+        }) 
+    },[])
+
+    const addtocartbatch=(e)=>{
+        const byproducts=byproduct.map(item=>{
+            return({byproduct_id:item.byproduct_id,quantity:item.quantity,check:item.check,
+            product_id:item.variation_choice.product_id,item_id:item.id})
         })
-        setByproduct(listitem)
+        const form={deal_id:main_product.deal_id,item_id:main_product.item_id,action:'add',
+        product_id:main_product.variation_choice.product_id,quantity:main_product.quantity,
+        byproducts:byproducts,item_id:main_product.id}
+        
+        axios.post(addToCartBatchURL,JSON.stringify(form),headers)
+        .then(res => {  
+            addcartitem({id:res.data.id,image:data.image,name:data.name,price:pricemain()*main_product.quantity})
+        })
     }
     return(
     <div className="page-product">
-        {state.data?
+        {data?
         <div className="containers">
             <div className="item-center _3bDXqx page-product__breadcrumb">
                 <a className="_2572CL" href="/">Anhdai</a>
                 <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon _2m4lrt icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
-                {state.data.category.split('>').map((item,i)=>{
-                    if(i<state.data.category.split('>').length-1){
+                {data.category.split('>').map((item,i)=>{
+                    if(i<data.category.split('>').length-1){
                         return <> 
                         <span className="_1w3mKA">{item}</span>
                         <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon _2m4lrt icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
@@ -500,7 +736,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                     }
                 })}
                 <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon _2m4lrt icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
-                <span className="_1w3mKA">{state.data.name}</span>
+                <span className="_1w3mKA">{data.name}</span>
             </div>
             <div className="product-briefing d-flex card _1j7uGn">
                 <div className="_11Y_VZ">
@@ -518,7 +754,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                 <div className={`${state.filechoice.typefile==='video'?'_24bhyl yA8B4u':'aGIJCo'}`}>
                                     {state.filechoice.typefile==='video'?'':<div className="_3rslob _1vc1W7" style={{backgroundImage: `url(${state.filechoice.file})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>}
                                 </div>
-                                {state.filechoice.typefile==='video' && state.finish?<svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="shopee-svg-icon dBlJ2V"><g opacity=".54"><g><circle cx="7.5" cy="7.5" fill="#040000" r="7.3"></circle><path d="m7.5.5c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7m0-.5c-4.1 0-7.5 3.4-7.5 7.5s3.4 7.5 7.5 7.5 7.5-3.4 7.5-7.5-3.4-7.5-7.5-7.5z" fill="#ffffff"></path></g></g><path clip-rule="evenodd" d="m10.2 5.3c.5.7.8 1.4.8 2.2 0 1.9-1.6 3.5-3.5 3.5s-3.5-1.6-3.5-3.5 1.6-3.5 3.5-3.5v.5c-1.6 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3c0-.7-.2-1.3-.6-1.8-.1-.1-.1-.1-.1-.1-.1-.1-.1-.3 0-.4s.3-.1.4.1c0-.1 0 0 0 0z" fill="#ffffff" fill-rule="evenodd"></path><path clip-rule="evenodd" d="m7.5 2.9c0-.1.1-.1.1-.1l1.4 1.5-1.4 1.4c0 .1-.1.1-.1 0z" fill="#ffffff" fill-rule="evenodd"></path></svg>:''}
+                                {state.filechoice.typefile==='video' && state.finish?<svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon dBlJ2V"><g opacity=".54"><g><circle cx="7.5" cy="7.5" fill="#040000" r="7.3"></circle><path d="m7.5.5c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7m0-.5c-4.1 0-7.5 3.4-7.5 7.5s3.4 7.5 7.5 7.5 7.5-3.4 7.5-7.5-3.4-7.5-7.5-7.5z" fill="#ffffff"></path></g></g><path clip-rule="evenodd" d="m10.2 5.3c.5.7.8 1.4.8 2.2 0 1.9-1.6 3.5-3.5 3.5s-3.5-1.6-3.5-3.5 1.6-3.5 3.5-3.5v.5c-1.6 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3c0-.7-.2-1.3-.6-1.8-.1-.1-.1-.1-.1-.1-.1-.1-.1-.3 0-.4s.3-.1.4.1c0-.1 0 0 0 0z" fill="#ffffff" fill-rule="evenodd"></path><path clip-rule="evenodd" d="m7.5 2.9c0-.1.1-.1.1-.1l1.4 1.5-1.4 1.4c0 .1-.1.1-.1 0z" fill="#ffffff" fill-rule="evenodd"></path></svg>:''}
                             </div>
                         </div>
                         <div className="_2riwuv">
@@ -574,8 +810,8 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                             </TwitterShareButton>
                         </div>
                         <div className="item-center _3nBAy8">
-                            <svg onClick={()=>setlike()} width="24" height="20" className="ELoIiZ like-product"><path d="M19.469 1.262c-5.284-1.53-7.47 4.142-7.47 4.142S9.815-.269 4.532 1.262C-1.937 3.138.44 13.832 12 19.333c11.559-5.501 13.938-16.195 7.469-18.07z" stroke="#FF424F" strokeWidth="1.5" fill={state.data.like_item?'#FF424F':'none'} fillRule="evenodd" strokeLinejoin="round"></path></svg>
-                            <div className="pl-1_2 number_like">Đã thích ({state.data.num_like_item})</div>
+                            <svg onClick={()=>setlike()} width="24" height="20" className="ELoIiZ like-product"><path d="M19.469 1.262c-5.284-1.53-7.47 4.142-7.47 4.142S9.815-.269 4.532 1.262C-1.937 3.138.44 13.832 12 19.333c11.559-5.501 13.938-16.195 7.469-18.07z" stroke="#FF424F" strokeWidth="1.5" fill={data.like_item?'#FF424F':'none'} fillRule="evenodd" strokeLinejoin="round"></path></svg>
+                            <div className="pl-1_2 number_like">Đã thích ({data.num_like_item})</div>
                         </div>
                     </div> 
                 </div>
@@ -583,63 +819,100 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                     <div className="flex-auto flex-col _4QIZZo">
                         <div className=" attM6y">
                             <div className="favorite-shop item-center">Yêu thích+</div>
-                            <span className="shop-name">{state.data.name}</span>
+                            <span className="shop-name">{data.name}</span>
                         </div>
                         <div className="item-center _21hHOx">
-                            {state.data.count_review>0?
+                            {data.count_review>0?
                             <>
                             <div className="d-flex item-review-rating">
-                                <div className="item-number-review item-center">{state.data.review_rating.toFixed(1)}</div>
+                                <div className="item-number-review item-center">{data.review_rating.toFixed(1)}</div>
                                 <div className="tuNfsN">
                                     <div className="rating-stars item-center">
                                         <div className="rating-stars__stars item-center">
-                                        {ratingitem(6,state.data)}
+                                        {ratingitem(6,data)}
                                         </div>
                                     </div>
                                 </div>  
                             </div>
                             <div className="item-center item-review-rating">
-                                <div className="item-number-reviews" >{state.data.count_review}</div>
+                                <div className="item-number-reviews" >{data.count_review}</div>
                                 <div className="oMTlt6">Review</div>
                             </div>
                             </>:<div className="vgsTBi">Chưa có đánh giá</div>}
                         
                             <div className="item-center pl-1">
-                                <div className="_3b2Btx">{state.data.num_order}</div>
+                                <div className="_3b2Btx">{data.num_order}</div>
                                 <div className="_3hic1u">đã bán</div>
                             </div>
                         </div>
-                        <div className="item_product-flash-sale">
+                        <div style={{marginTop:'10px'}} className="">
+                            {data.flash_sale && new Date(data.flash_sale.valid_from)<=new Date()?
+                            <div className="SwrRMG">
+                                <svg viewBox="0 0 108 21" height="21" width="108" class="flash-sale-logo flash-sale-logo--white"><g fill="currentColor" fill-rule="evenodd"><path d="M0 16.195h3.402v-5.233h4.237V8H3.402V5.037h5.112V2.075H0zm29.784 0l-.855-2.962h-4.335l-.836 2.962H20.26l4.723-14.12h3.576l4.724 14.12zM26.791 5.294h-.04s-.31 1.54-.563 2.43l-.797 2.744h2.74l-.777-2.745c-.252-.889-.563-2.43-.563-2.43zm7.017 9.124s1.807 2.014 5.073 2.014c3.13 0 4.898-2.034 4.898-4.384 0-4.463-6.259-4.147-6.259-5.925 0-.79.778-1.106 1.477-1.106 1.672 0 3.071 1.245 3.071 1.245l1.439-2.824s-1.477-1.6-4.47-1.6c-2.76 0-4.918 1.718-4.918 4.325 0 4.345 6.258 4.285 6.258 5.964 0 .85-.758 1.126-1.457 1.126-1.75 0-3.324-1.462-3.324-1.462zm12.303 1.777h3.402v-5.53h5.054v5.53h3.401V2.075h-3.401v5.648h-5.054V2.075h-3.402zm18.64-1.678s1.692 1.915 4.763 1.915c2.877 0 4.548-1.876 4.548-4.107 0-4.483-6.492-3.871-6.492-6.36 0-.987.914-1.678 2.08-1.678 1.73 0 3.052 1.224 3.052 1.224l1.088-2.073s-1.4-1.501-4.12-1.501c-2.644 0-4.627 1.738-4.627 4.068 0 4.305 6.512 3.87 6.512 6.379 0 1.145-.952 1.698-2.002 1.698-1.944 0-3.44-1.48-3.44-1.48zm19.846 1.678l-1.166-3.594h-4.84l-1.166 3.594H74.84L79.7 2.174h2.623l4.86 14.021zM81.04 4.603h-.039s-.31 1.382-.583 2.172l-1.224 3.752h3.615l-1.224-3.752c-.253-.79-.545-2.172-.545-2.172zm7.911 11.592h8.475v-2.192H91.46V2.173H88.95zm10.477 0H108v-2.192h-6.064v-3.772h4.645V8.04h-4.645V4.366h5.753V2.174h-8.26zM14.255.808l6.142.163-3.391 5.698 3.87 1.086-8.028 12.437.642-8.42-3.613-1.025z"></path></g></svg>
+                                <svg height="20" viewBox="0 0 20 20" width="20" class="shopee-svg-icon +BapII"><g fill="none" fill-rule="evenodd" stroke="#fff" stroke-width="1.8" transform="translate(1 1)"><circle cx="9" cy="9" r="9"></circle><path d="m11.5639648 5.05283203v4.71571528l-2.72832027 1.57129639" stroke-linecap="round" stroke-linejoin="round" transform="matrix(-1 0 0 1 20.39961 0)"></path></g></svg>
+                                <div class="Suic9m">Kết thúc trong</div>
+                                
+                                    
+                                    <div className="countdown-timer">
+                                        <div className="countdown-timer__number">
+                                            <div className="countdown-timer__number__hexa countdown-timer__number__hexa--hour" style={{animationDelay: '-1744s',transform:`translateY(-${('0'+time.hours).slice(-2,-1)*17}px)`}}>
+                                                {number(10,('0'+time.hours).slice(-2,-1))}
+                                            </div>
+                                            <div className="countdown-timer__number__deca countdown-timer__number__deca--hour" style={{animationDelay: '-1744s',transform:`translateY(-${('0'+time.hours).slice(-1)*17}px)`}}>
+                                                {number(10,('0'+time.hours).slice(-1))} 
+                                            </div>
+                                        </div>
+                                        <div className="countdown-timer__colon">:</div>
+                                        <div className="countdown-timer__number">
+                                            <div className="countdown-timer__number__hexa countdown-timer__number__hexa--minute" style={{animationDelay: '-174s',transform:`translateY(-${('0'+time.mins).slice(-2,-1)*17}px)`}}>
+                                                {number(10,('0'+time.mins).slice(-2,-1))} 
+                                            </div>
+                                            <div className="countdown-timer__number__deca countdown-timer__number__deca--minute" style={{animationDelay: '-174s',transform:`translateY(-${('0'+time.mins).slice(-1)*17}px)`}}>
+                                                {number(10,('0'+time.mins).slice(-1))}  
+                                            </div>
+                                        </div>
+                                        <div className="countdown-timer__colon">:</div>
+                                        <div className="countdown-timer__number">
+                                            <div className="countdown-timer__number__hexa countdown-timer__number__hexa--second" style={{animationDelay: '-18s',transform:`translateY(-${('0'+time.seconds).slice(-2,-1)*17}px)`}}>
+                                                {number(10,('0'+time.seconds).slice(-2,-1))}
+                                            </div>
+                                            <div className="countdown-timer__number__deca countdown-timer__number__deca--second" style={{animationDelay: '-9s',transform:`translateY(-${('0'+time.seconds).slice(-1)*17}px)`}}>
+                                                {number(10,('0'+time.seconds).slice(-1))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                            </div>:''}
                             <div className=" price__flash-sale">
                                 <div className="items-price item-center">
-                                <div className={`${!state.data.percent_discount>0?'price_current':'price_min_max'}`}>₫{!variation.data?`${formatter.format(state.data.min_price)}${state.data.min_price!=state.data.max_price?` -  ₫${formatter.format(state.data.max_price)}`:''}`:`${formatter.format(variation.data.price)}`}</div>
-                                {state.data.percent_discount>0?
-                                <div className="item-center">
-                                    ₫{!variation.data?`${formatter.format(state.data.min_price*(1-state.data.percent_discount/100))}${state.data.min_price!=state.data.max_price?` -  ₫${formatter.format(state.data.max_price*(1-state.data.percent_discount/100))}`:''}`:`${variation.price*(1-variation.data.percent_discount/100)}`}
+                                <div className={`${!data.percent_discount?'price_current':'price_min_max'}`}>₫{!variation.data?`${formatter.format(data.min_price)}${data.min_price!=data.max_price?` -  ₫${formatter.format(data.max_price)}`:''}`:`${formatter.format(variation.data.price)}`}</div>
+                                {data.percent_discount>0?
+                                <div className="item-center price_current">
+                                    ₫{!variation.data?`${formatter.format(data.min_price*(1-data.percent_discount/100))}${data.min_price!=data.max_price?` -  ₫${formatter.format(data.max_price*(1-data.percent_discount/100))}`:''}`:`${formatter.format(variation.data.discount_price?variation.data.discount_price:variation.data.price)}`}
                                     <div className="box-color">
-                                        {variation.data?variation.data.percent_discount:state.data.percent_discount}%Reduce
+                                        {variation.data?(variation.data.price-variation.data.discount_price)*100/variation.data.price:data.percent_discount}%Reduce
                                     </div>
                                 </div>:""
                                 }
                                 </div>
-                                {state.data.flash_sale?
+                                {data.flash_sale && new Date(data.flash_sale.valid_from)>new Date()?
                                 <a className="item-center flash_sale" href="/flash_sale?fromItem=9203700427&amp;promotionId=2029278834">
                                     <svg viewBox="0 0 108 21" height="21" width="108" className="flash-sale-logo flash-sale-logo--default"><g fill="currentColor" fillRule="evenodd"><path d="M0 16.195h3.402v-5.233h4.237V8H3.402V5.037h5.112V2.075H0zm29.784 0l-.855-2.962h-4.335l-.836 2.962H20.26l4.723-14.12h3.576l4.724 14.12zM26.791 5.294h-.04s-.31 1.54-.563 2.43l-.797 2.744h2.74l-.777-2.745c-.252-.889-.563-2.43-.563-2.43zm7.017 9.124s1.807 2.014 5.073 2.014c3.13 0 4.898-2.034 4.898-4.384 0-4.463-6.259-4.147-6.259-5.925 0-.79.778-1.106 1.477-1.106 1.672 0 3.071 1.245 3.071 1.245l1.439-2.824s-1.477-1.6-4.47-1.6c-2.76 0-4.918 1.718-4.918 4.325 0 4.345 6.258 4.285 6.258 5.964 0 .85-.758 1.126-1.457 1.126-1.75 0-3.324-1.462-3.324-1.462zm12.303 1.777h3.402v-5.53h5.054v5.53h3.401V2.075h-3.401v5.648h-5.054V2.075h-3.402zm18.64-1.678s1.692 1.915 4.763 1.915c2.877 0 4.548-1.876 4.548-4.107 0-4.483-6.492-3.871-6.492-6.36 0-.987.914-1.678 2.08-1.678 1.73 0 3.052 1.224 3.052 1.224l1.088-2.073s-1.4-1.501-4.12-1.501c-2.644 0-4.627 1.738-4.627 4.068 0 4.305 6.512 3.87 6.512 6.379 0 1.145-.952 1.698-2.002 1.698-1.944 0-3.44-1.48-3.44-1.48zm19.846 1.678l-1.166-3.594h-4.84l-1.166 3.594H74.84L79.7 2.174h2.623l4.86 14.021zM81.04 4.603h-.039s-.31 1.382-.583 2.172l-1.224 3.752h3.615l-1.224-3.752c-.253-.79-.545-2.172-.545-2.172zm7.911 11.592h8.475v-2.192H91.46V2.173H88.95zm10.477 0H108v-2.192h-6.064v-3.772h4.645V8.04h-4.645V4.366h5.753V2.174h-8.26zM14.255.808l6.142.163-3.391 5.698 3.87 1.086-8.028 12.437.642-8.42-3.613-1.025z"></path></g></svg>
-                                    <div className="time-star-flash-sale">BẮT ĐẦU SAU 21:00, 11 Th11</div>
+                                    <div className="time-star-flash-sale">BẮT ĐẦU SAU {`${('0'+new Date(data.flash_sale.valid_from).getHours()).slice(-2)}:${('0'+new Date(data.flash_sale.valid_from).getMinutes()).slice(-2)}, ${('0'+new Date(data.flash_sale.valid_from).getDate()).slice(-2)} Th${('0'+new Date(data.flash_sale.valid_from).getMonth()+1).slice(-2)}`}</div>
                                     <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
                                 </a>:""}
                             </div>
                         </div>
                         <div className="_7c-I_e">
                             <div className="flex-col">
-                            {state.data.vouchers.length>0?
+                            {data.vouchers.length>0?
                             <div className="item-center _3qYU_y discount-voucher">
                                 <div className="mini-vouchers item-center">
                                 <div className="mini-vouchers__label">Shop discount code</div>
                                 <div className="mini-vouchers__wrapper d-flex ">
                                     <div className="mini-vouchers__vouchers d-flex">
                                     {
-                                        state.data.vouchers.map(vocher=>
+                                        data.vouchers.map(vocher=>
                                         <div className="voucher-ticket--seller-mini-solid mini-voucher-with-popover">
                                             <div className="item-center">
                                             <span className="voucher-promo-value voucher-promo-value--absolute-value">{vocher.discount_type === '1'?`${vocher.percent}% Giảm`:`Giảm ₫${formatter.format(vocher.amount)}k`}</span>
@@ -659,7 +932,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                         Contact the Shop <br/> if there is a problem with the discount code created by the Shop itself.
                                     </div>
                                     <div className="item-col">
-                                        {state.data.vouchers.map(vocher=>
+                                        {data.vouchers.map(vocher=>
                                         <div className="_1HdW_G">
                                             <div className="_1k80K2 _2GgEho _2Jjc-J">
                                                 <div className="_3frbLs _2nXmFs">
@@ -719,7 +992,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                     </div>
                                 </div>
                                 :""}
-                                {state.data.shock_deal_type?
+                                {data.shock_deal_type?
                                 <div className='item-center' >
                                     <div className="koZBMj">Shock deal</div>
                                     <div className="mini-vouchers__wrapper d-flex flex-auto ">
@@ -774,11 +1047,11 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                     </div>
                                 </div>
                                 <div className={`choice_variation ${state.warring?'waring_choice':''}`}>
-                                    {state.data.colors.length>0?
+                                    {data.colors.length>0?
                                     <div className="item-base-line" style={{marginBottom: '8px'}}>
-                                        <label className="koZBMj">{state.data.colors[0].name}</label>
+                                        <label className="koZBMj">{data.colors[0].name}</label>
                                         <div className="variation-item item-center">
-                                        {state.data.colors.map(item=>
+                                        {data.colors.map(item=>
                                             <button onClick={(e)=>setcolor(e,item)} className={`product-variation${state.variation_size.length>0?`${item.variation.some(r=> state.variation_size.includes(r))?'':' disable'}`:''}${item.id===state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                             {state.color_id===item.id?
                                             <div className="product-variation__tick">
@@ -790,11 +1063,11 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                         </div>
                                     </div>
                                     :''}
-                                    {state.data.sizes.length>0?
+                                    {data.sizes.length>0?
                                     <div className="item-base-line" style={{marginBottom: '8px'}}>
-                                        <label className="koZBMj">{state.data.sizes[0].name}</label>
+                                        <label className="koZBMj">{data.sizes[0].name}</label>
                                         <div className="variation-item item-center">
-                                        {state.data.sizes.map(item=>
+                                        {data.sizes.map(item=>
                                             <button onClick={(e)=>setsize(e,item)} className={`product-variation${state.variation_color.length>0?`${item.variation.some(r=> state.variation_color.includes(r))?'':' disable'}`:''}${item.id===state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                             {state.size_id===item.id?
                                             <div className="product-variation__tick">
@@ -810,21 +1083,21 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                         <label className="koZBMj">Quanlity</label>
                                         <div className="item-center" id="choice_quantity">
                                             <div className="_16mL_A item-center mr-1 input-quantity">
-                                                <button onClick={(e)=>minus(e)} className="minus-btn btn-adjust">
+                                                <button onClick={(e)=>setQuantity(quantity-1)} className="minus-btn btn-adjust">
                                                     <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon "><polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon></svg>
                                                 </button>
-                                                <input className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={variation.quantity}/>
-                                                <button onClick={(e)=>add(e)} className="plus-btn btn-adjust">
+                                                <input onChange={e=>setQuantity(isNaN(e.target.value)?quantity:e.target.value)} className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={quantity}/>
+                                                <button onClick={(e)=>setQuantity(quantity+1)} className="plus-btn btn-adjust">
                                                     <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg>
                                                 </button>
                                             </div>
-                                            <div className="inventory">{variation.data?`${variation.data.inventory}`:`${state.data.total_inventory}`} avaliable</div>
+                                            <div className="inventory">{variation.data?`${variation.data.inventory}`:`${data.total_inventory}`} avaliable</div>
                                         </div>
                                     </div>
                                     {waring.warring?<div className="waring">Please choice size or color</div>:''}
                                 </div>
                             </div>
-                            {user&&user.id!=state.data.user_id?
+                            {user&&user.id!=data.user_id?
                             <div className="my-1 item-center pl-1">
                                 <button onClick={(e)=>addtocart(e)} className="buy _3Kiuzg btn-l item-centers btn-tinted mr-1">
                                     <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon _2FCuXA icon-add-to-cart"><g><g><polyline fill="none" points=".5 .5 2.7 .5 5.2 11 12.4 11 14.5 3.5 3.7 3.5" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10"></polyline><circle cx="6" cy="13.5" r="1" stroke="none"></circle><circle cx="11.5" cy="13.5" r="1" stroke="none"></circle></g><line fill="none" strokeLinecap="round" strokeMiterlimit="10" x1="7.5" x2="10.5" y1="7" y2="7"></line><line fill="none" strokeLinecap="round" strokeMiterlimit="10" x1="9" x2="9" y1="8.5" y2="5.5"></line></g></svg>
@@ -837,100 +1110,85 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                 </div> 
             </div>
             <div>
-            {byproduct.length>0?
+            {main_product || promotion?
             <div style={{display: 'contents'}}>
+                {main_product?
                 <section className="xg8mCu">
                     <div className="bN31U-">
-                        <div class="Rac1ap">
-                            <h3 class="CVExdh">Mua thêm deal sốc</h3>
+                        <div className="Rac1ap">
+                            <h3 className="CVExdh">Mua thêm deal sốc</h3>
                             <span>
-                                <div class="vEKlNi">Xem thêm<svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="rLiIra"><path d="M2 2L6 5.99017L2 10" stroke="currentColor" stroke-width="1.5"></path></svg>
+                                <div onClick={e=>navigate(`/addon-deal-selection/${main_product.deal_id}/${main_product.variation_choice.product_id}`)} className="vEKlNi">Xem thêm<svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="rLiIra"><path d="M2 2L6 5.99017L2 10" stroke="currentColor" stroke-width="1.5"></path></svg>
                                 </div>
                             </span>
                         </div>
                         <div className="OuwI+w">
-                            <div className="Cgh6x3 wAs-X+">
-                                <a className="HqVUvN" href="/Quần-Baggy-Nam-Ống-Rộng-vải-Hàn-Cao-Cấp-Quần-Âu-công-sở-chất-liệu-co-giãn-phong-cách-Hàn-Quốc-i.275899480.12372283368">
-                                    <span>
-                                        <div className="jz7csM">
-                                            <div className="nSiDVN SmTGWY" style={{backgroundImage: `url(${state.data.image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
-                                        </div>
-                                    </span>
-                                    <div className="Pa5Yzn">
-                                        <span className="Y-UTmy">{state.data.name}</span>
-                                    </div>
-                                </a>
-                                <div className="V1SZcW">
-                                    <label className="stardust-checkbox stardust-checkbox--disabled stardust-checkbox--checked">
-                                        <input checked className="stardust-checkbox__input" type="checkbox"/>
-                                        <div className="stardust-checkbox__box"></div>
-                                    </label>
-                                    <div className="stardust-popover _3XPJ2Z" id="stardust-popover0" tabindex="0">
-                                        <div role="button" className="stardust-popover__target">
-                                            <span className="_1b3job">{itemdeal.color_choice!=null?itemdeal.color_choice.value:''}{itemdeal.size_choice!=null?`,${itemdeal.size_choice}`:''}
-                                                <span className="_2RY7-Q"></span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="zec-ha">
-                                    <span className="SdJ6yI">₫{(state.data.min_price+state.data.max_price)/2}</span>
-                                    {state.data.count_discount_valid?
-                                    <span className="++PvFX">₫{(state.data.item_discount_min+state.data.item_discount_min)/2}</span>:''}
-                                </div>
-                            </div>
-                            <div class="_91rKmd">
-                                <svg enable-background="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" class="shopee-svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg>
+                            <Itemdeal
+                                item={main_product}
+                                product={'mainproduct'}
+                                listcolordeal={listcolordeal}
+                                listsizedeal={listsizedeal}
+                                updatevariation={(e,item,color_id,size_id,quanity,product)=>updatevariation(e,item,color_id,size_id,quanity,product)}
+                            />
+                            <div className="_91rKmd">
+                                <svg enable-background="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg>
                             </div> 
-                            {byproduct.map(item=>
-                                <div className="_3eSrlV Xtxtlj">
-                                    <a className="_1HN33t" href="/Quần-Baggy-Nam-Ống-Rộng-vải-Hàn-Cao-Cấp-Quần-Âu-công-sở-chất-liệu-co-giãn-phong-cách-Hàn-Quốc-i.275899480.12372283368">
-                                        <span>
-                                            <div className="_2xjPnf">
-                                                <div className="_13tcE_ _2LFWga" style={{backgroundImage: `url(&quot;https://cf.shopee.vn/file/e66d8780015636588a0c4c8d797564d7_tn&quot;)`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
-                                            </div>
-                                        </span>
-                                        <div className="_3lizqa">
-                                            <span className="_3DwJRx">{item.name}</span>
-                                        </div>
-                                    </a>
-                                    <div className="_2eqQf0">
-                                        <label onClick={(e)=>setbyproduct(e,item,'check',!item.check)} className={`stardust-checkbox ${item.check?'stardust-checkbox--checked':''}`}>
-                                            <input checked className="stardust-checkbox__input" type="checkbox"/>
-                                            <div className="stardust-checkbox__box"></div>
-                                        </label>
-                                        <div className="stardust-popover _3XPJ2Z" id="stardust-popover0" tabindex="0">
-                                            <div role="button" className="stardust-popover__target">
-                                                <span className="_1b3job">{itemdeal.color_choice!=null?itemdeal.color_choice.value:''}{itemdeal.size_choice!=null?`,${itemdeal.size_choice}`:''}
-                                                    <span className="_2RY7-Q"></span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="_3m5v9Z">
-                                        <span className="_3BOLsU">₫{(item.min_price+item.max_price)/2}</span>
-                                        {item.percent_discount?
-                                        <span className="_3QGCLf">₫{(item.min_price+item.max_price)/2*(1-item.percent_discount)}</span>:''}
-                                    </div>
-                                </div>
+                            {byproduct.map((item,i)=>
+                                <Itemdeal
+                                item={item}
+                                product={'byproduct'}
+                                listcolordeal={listcolordeal}
+                                listsizedeal={listsizedeal}
+                                updatevariation={(e,item,color_id,size_id,quanity,product)=>updatevariation(e,item,color_id,size_id,quanity,product)}
+                                setbyproduct={(e,item,name,value)=>setbyproduct(e,item,name,value)}
+                                />
                             )}
                         </div>                  
                     </div>
-                    <div className="WyFbFq">
-                        <div className="_3Dhxnq">
+                    <div className="_6Uy99D">
+                        <div className="L76BvI">
                             <span> Tổng cộng:</span>
-                            <div className="jejfWt">
-                                <span className="_1fDy7V">₫{formatter.format(state.data.price_max+total_price)}</span>
-                                <span className="_2vTi-e">₫{state.data.price_max*(1-state.data.discount_price/100)+discount_price}</span>
+                            <div className="gju3A3">
+                                <span className="_1jxndi">₫{formatter.format(main_product.variation_choice.price+total_price_byproducts)}</span>
+                                <span className="khJuax">₫{formatter.format(pricemain()+promotion_price_byproducts)}</span>
                             </div>
-                            <span className="_3X8X28">Tiết kiệm</span>
-                            <span className="_26brOQ">₫{state.data.price_max+total_price-(state.data.price_max*(1-state.data.discount_price/100)+discount_price)}</span>
+                            <span className="_8AoNvW">Tiết kiệm</span>
+                            <span className="eK2OYx">₫{formatter.format(pricemain()+total_price_byproducts-(main_product.variation_choice.price+promotion_price_byproducts))}</span>
                         </div>
-                        <button className="shopee-button-outline _35l9Gd _1LDVl2">
-                            <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="shopee-svg-icon _2kMy9d icon-add-to-cart"><g><g><polyline fill="none" points=".5 .5 2.7 .5 5.2 11 12.4 11 14.5 3.5 3.7 3.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polyline><circle cx="6" cy="13.5" r="1" stroke="none"></circle><circle cx="11.5" cy="13.5" r="1" stroke="none"></circle></g><line fill="none" stroke-linecap="round" stroke-miterlimit="10" x1="7.5" x2="10.5" y1="7" y2="7"></line><line fill="none" stroke-linecap="round" stroke-miterlimit="10" x1="9" x2="9" y1="8.5" y2="5.5"></line></g></svg>Bấm để mua deal sốc
-                        </button>
+                        <button onClick={e=>addtocartbatch(e)} className="button-outline Yzvdc0 _0FecFw">
+                            <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon _12INAk icon-add-to-cart"><g><g><polyline fill="none" points=".5 .5 2.7 .5 5.2 11 12.4 11 14.5 3.5 3.7 3.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polyline><circle cx="6" cy="13.5" r="1" stroke="none"></circle><circle cx="11.5" cy="13.5" r="1" stroke="none"></circle></g><line fill="none" stroke-linecap="round" stroke-miterlimit="10" x1="7.5" x2="10.5" y1="7" y2="7"></line><line fill="none" stroke-linecap="round" stroke-miterlimit="10" x1="9" x2="9" y1="8.5" y2="5.5"></line></g></svg>
+                        Bấm để mua deal sốc</button>
                     </div>    
-                </section>
+                </section>:
+                <section className="lt31pc theme--ofs">
+                        <h3 class="_6WzJJS">Combo khuyến mãi
+                            <div class="cMyLWR e0VUM0">Mua {promotion.quantity_to_reduced} &amp; {promotion.combo_type=='3'?`chỉ với ${promotion.price_special_sale}`:`giảm ${promotion.combo_type=='1'?`${promotion.discount_percent}%`:`₫${formatter.format(promotion.discount_price)}`}`}</div>
+                            
+                            <Link class="YdRCuG _1ipus9" to={`/bundle-deal/${promotion.id}?fromItem=${data.id}`}>
+                                Xem tất cả<svg width="5" height="9" viewBox="0 0 5 9" fill="none" xmlns="http://www.w3.org/2000/svg" class="CRN1qh"><path d="M0.549805 0.705933L4.0498 4.18877L0.549805 7.68877" stroke="currentColor" stroke-width="1.5"></path></svg>
+                            </Link>
+                        </h3>
+                        <ul className="ADFE0a">
+                            {promotion.products.map(item=>
+                            <li class="vDYt3H">
+                                <a title={`${item.name}`} href="/product/182639888/9668689381">
+                                <div class="jwWEwt">
+                                    <div class="zLenew fj1aPh" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                                    </div>
+                                    <p class="AZqucp efbOsy">
+                                        <div class="_6H32eD vmbY7Y">
+                                            <svg viewBox="0 0 24 11" class="svg-icon"><g fill="#fff" fill-rule="evenodd"><path d="M19.615 7.143V1.805a.805.805 0 0 0-1.611 0v5.377H18c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm3 0V1.805a.805.805 0 0 0-1.611 0v5.377H21c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm-7.491-2.985c.01-.366.37-.726.813-.726.45 0 .814.37.814.742v5.058c0 .37-.364.73-.813.73-.395 0-.725-.278-.798-.598a3.166 3.166 0 0 1-1.964.68c-1.77 0-3.268-1.456-3.268-3.254 0-1.797 1.497-3.328 3.268-3.328a3.1 3.1 0 0 1 1.948.696zm-.146 2.594a1.8 1.8 0 1 0-3.6 0 1.8 1.8 0 1 0 3.6 0z"></path><path d="M.078 1.563A.733.733 0 0 1 .565.89c.423-.15.832.16 1.008.52.512 1.056 1.57 1.88 2.99 1.9s2.158-.85 2.71-1.882c.19-.356.626-.74 1.13-.537.342.138.477.4.472.65a.68.68 0 0 1 .004.08v7.63a.75.75 0 0 1-1.5 0V3.67c-.763.72-1.677 1.18-2.842 1.16a4.856 4.856 0 0 1-2.965-1.096V9.25a.75.75 0 0 1-1.5 0V1.648c0-.03.002-.057.005-.085z" fill-rule="nonzero"></path></g></svg>
+                                    </div>{item.name}</p>
+                                    <div class="mx6hDy">
+                                        <del>₫{formatter.format((item.max_price+item.min_price)/2)}</del>
+                                        <em>₫{formatter.format((item.max_price+item.min_price)*(1-item.percent_discount/100)/2)}</em>
+                                    </div>
+                                </a>
+                            </li>
+                            )}
+                        </ul>
+                    
+                </section>}
             </div>:''}
             {shop?<>
                 <div className="page-product__shop">
@@ -949,12 +1207,12 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                             <p className="time_off pb-1_2">Online {!shop.online?`${timeago(shop.is_online)} ago`:''}</p>
                             
                             <div className="d-flex ">
-                                {user && state.data.user_id!=user.id?
+                                {user && data.user_id!=user.id?
                                 <button onClick={(e)=>setshowthread(e)} className="mr-1 item-center btn-m btn-tinted">
                                     <svg viewBox="0 0 16 16" className="svg-icon _8j52Y0"><g fillRule="evenodd"><path d="M15 4a1 1 0 01.993.883L16 5v9.932a.5.5 0 01-.82.385l-2.061-1.718-8.199.001a1 1 0 01-.98-.8l-.016-.117-.108-1.284 8.058.001a2 2 0 001.976-1.692l.018-.155L14.293 4H15zm-2.48-4a1 1 0 011 1l-.003.077-.646 8.4a1 1 0 01-.997.923l-8.994-.001-2.06 1.718a.5.5 0 01-.233.108l-.087.007a.5.5 0 01-.492-.41L0 11.732V1a1 1 0 011-1h11.52zM3.646 4.246a.5.5 0 000 .708c.305.304.694.526 1.146.682A4.936 4.936 0 006.4 5.9c.464 0 1.02-.062 1.608-.264.452-.156.841-.378 1.146-.682a.5.5 0 10-.708-.708c-.185.186-.445.335-.764.444a4.004 4.004 0 01-2.564 0c-.319-.11-.579-.258-.764-.444a.5.5 0 00-.708 0z"></path></g></svg>
                                     CHAT NOW
                                 </button>:''}
-                                <Link className=" btn-light btn-m item-center" to={`${shop.url}?itemId=${state.data.id}&categoryId=${state.data.category_id}`}>
+                                <Link className=" btn-light btn-m item-center" to={`${shop.url}?itemId=${data.id}&categoryId=${data.category_id}`}>
                                     <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" strokeWidth="0" className="svg-icon _8j52Y0"><path d="m13 1.9c-.2-.5-.8-1-1.4-1h-8.4c-.6.1-1.2.5-1.4 1l-1.4 4.3c0 .8.3 1.6.9 2.1v4.8c0 .6.5 1 1.1 1h10.2c.6 0 1.1-.5 1.1-1v-4.6c.6-.4.9-1.2.9-2.3zm-11.4 3.4 1-3c .1-.2.4-.4.6-.4h8.3c.3 0 .5.2.6.4l1 3zm .6 3.5h.4c.7 0 1.4-.3 1.8-.8.4.5.9.8 1.5.8.7 0 1.3-.5 1.5-.8.2.3.8.8 1.5.8.6 0 1.1-.3 1.5-.8.4.5 1.1.8 1.7.8h.4v3.9c0 .1 0 .2-.1.3s-.2.1-.3.1h-9.5c-.1 0-.2 0-.3-.1s-.1-.2-.1-.3zm8.8-1.7h-1v .1s0 .3-.2.6c-.2.1-.5.2-.9.2-.3 0-.6-.1-.8-.3-.2-.3-.2-.6-.2-.6v-.1h-1v .1s0 .3-.2.5c-.2.3-.5.4-.8.4-1 0-1-.8-1-.8h-1c0 .8-.7.8-1.3.8s-1.1-1-1.2-1.7h12.1c0 .2-.1.9-.5 1.4-.2.2-.5.3-.8.3-1.2 0-1.2-.8-1.2-.9z"></path></svg> 
                                     XEM SHOP
                                 </Link>
@@ -1019,7 +1277,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                 </div>
                                 <div className="_1pEVDa">
                                     <label className="_1A0RCW">Kho hàng</label>
-                                    <div>{state.data.total_inventory}</div>
+                                    <div>{data.total_inventory}</div>
                                 </div>
                                 <div className="_1pEVDa">
                                     <label className="_1A0RCW">Gửi từ</label>
@@ -1031,7 +1289,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                             <div className="_1Qm7yD">MÔ TẢ SẢN PHẨM</div>
                             <div className="Fo12Im">
                                 <div className="Mhqp_x">
-                                <p className="_2Y002L">{state.data.description}</p>
+                                <p className="_2Y002L">{data.description}</p>
                                 </div>
                             </div>
                         </div>
@@ -1039,11 +1297,11 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                 </div>
                 <div className="page-product__content--right">
                     <div className="display: contents">
-                        {state.data.vouchers.length>0?
+                        {data.vouchers.length>0?
                         <div className="product-shop-vouchers page-product__shop-voucher">
                             <div className="product-shop-vouchers__header">Mã giảm giá của Shop</div>
                             <div className="product-shop-vouchers__list" style={{maxHeight: '23.25rem'}}>
-                                {state.data.vouchers.map(vocher=>
+                                {data.vouchers.map(vocher=>
                                 <div className="_1v21H2 _3v4TxM">
                                     <div className="_5i0d1d O5jY-J _1HW0fp _143EYI">
                                         <div className="_2RHirG _3ovy3V _2PNEOW">
@@ -1112,12 +1370,12 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                     <div className="product-rating-overview">
                         <div className="product-rating-overview__briefing">
                             <div className="product-rating-overview__score-wrapper">
-                                <span className="product-rating-overview__rating-score">{state.data.review_rating.toFixed(1)}</span>
+                                <span className="product-rating-overview__rating-score">{data.review_rating.toFixed(1)}</span>
                                 <span className="product-rating-overview__rating-score-out-of"> trên 5 </span>
                             </div>
                             <div className="rating-stars product-rating-overview__stars">
                                 <div className="rating-stars__stars">
-                                    {rating(6,state.data)}
+                                    {rating(6,data)}
                                 </div>
                             </div>
                         </div>
@@ -1125,8 +1383,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                             {list_review_choice(5).map((item,i)=>
                                 <div onClick={()=>{
                                     setIndextype(i+1)
-                                    console.log(i)
-                                    console.log(item.keys)
+                                   
                                     setTypereview({name:item.keys,value:item.value})}}
                               key={i}  className={`product-rating-overview__filter ${item.value===state.review_choice?'product-rating-overview__filter--active':''} `}>{item.name} {item.keys==='all'?'':`(${item.keys==='comment'?state.has_comment:item.keys==='media'?state.has_media:state.rating.filter(i=>item.value==i).length})`}</div>
                             )}

@@ -123,8 +123,8 @@ const Itemsearch=({listitem,setsearch,searchitem,search,data,setsearchitem})=>{
                             <span>Yêu thích</span>
                         </div>
                         {item.percent_discount>0?
-                        <div className="home-product-item__sale-off">
-                            <span className="home-product-item__sale-off-percent">{item.percent_discount}</span>
+                        <div className="home-product-item__sale-off flex-col">
+                            <span className="home-product-item__sale-off-percent">{item.percent_discount}%</span>
                             <span className="home-product-item__sale-off-label">GIẢM</span>
                         </div>:''}
                         </div>

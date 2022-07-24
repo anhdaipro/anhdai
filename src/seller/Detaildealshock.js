@@ -2,13 +2,16 @@ import axios from 'axios';
 import Navbar from "./Navbar"
 import { useParams,Link } from "react-router-dom";
 import Productoffer from "./Productoffer"
-import React, {useState,useEffect,useCallback,useRef} from 'react'
+import React, {useState,useEffect,useCallback,useRef,useMemo} from 'react'
 import ReactDOM, { render } from 'react-dom'
-import {formatter,itemvariation} from "../constants"
+import {formatter,itemvariation,timesubmit} from "../constants"
 import Pagination from "../hocs/Pagination"
 import Dealshockinfo from "../hocs/Dealshockinfo"
 import {dealDetailshopURL,itemdealURL, newdealURL,} from "../urls"
 import { headers } from '../actions/auth';
+import { Draggable, DragDropContext,
+    Droppable,
+    OnDragEndResponder } from 'react-beautiful-dnd';
 let Pagesize=5
 const Detaildealshock=()=>{
     const { id } = useParams(); 
@@ -21,16 +24,26 @@ const Detaildealshock=()=>{
     const [show,setShow]=useState({items:false,byproduct:false})
     const [loading,setLoading]=useState(false)
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
-    const [current, setCurrent] = useState(1);
+    const [byproduct, setByproduct] = useState([]);
     const [disable,setDisable]=useState(true)
     const[date,setDate]=useState({deal_date:[new Date(),new Date()]})
-    const firstPageIndex = (currentPage.items - 1) * Pagesize;
-    const lastPageIndex = firstPageIndex + Pagesize;
-    const currentitemPage=itemshop.items_choice.slice(firstPageIndex, lastPageIndex);
-    console.log(currentitemPage)
-    const firstpagebyproductIndex=(currentPage.byproduct - 1) * Pagesize;
-    const lastPagebyproductIndex = firstpagebyproductIndex + Pagesize;
-    const byproductPage=itemshop.byproduct_choice.slice(firstpagebyproductIndex, lastPagebyproductIndex);
+    const [sameitem,setSameitem]=useState([])
+    const [duplicate,setDuplicate]=useState(false)
+
+    const currentitemPage=useMemo(()=>{
+        const firstPageIndex = (currentPage.items - 1) * Pagesize;
+        const lastPageIndex = firstPageIndex + Pagesize;
+        return itemshop.items_choice.slice(firstPageIndex, lastPageIndex);
+    },[currentPage.items,itemshop.items_choice])
+    
+    const byproductPage=useMemo(()=>{
+        const firstpagebyproductIndex=(currentPage.byproduct - 1) * Pagesize;
+        const lastPagebyproductIndex = firstpagebyproductIndex + Pagesize;
+        return itemshop.byproduct_choice.slice(firstpagebyproductIndex, lastPagebyproductIndex);
+    },[currentPage.byproduct,itemshop.byproduct_choice])
+    const list_enable_byproduct_on=itemshop.byproduct_choice.filter(item=>item.variations.some(variation=>variation.enable))
+    const list_enable_main_on=itemshop.items_choice.filter(item=>item.enable)
+    const item_unvalid=list_enable_main_on.some(item=>sameitem.some(product=>product==item.id))
     useEffect(() => {
         const getJournal = async () => {
             await axios(dealDetailshopURL+id,headers)
@@ -41,8 +54,7 @@ const Detaildealshock=()=>{
                 setState({...state,loading:true})
                 setDate([{time:new Date(data.valid_from),show:false,hours:new Date(data.valid_from).getHours(),minutes:new Date(data.valid_from).getMinutes()}
               ,{time:new Date(data.valid_to),show:false,hours:new Date(data.valid_to).getHours(),minutes:new Date(data.valid_to).getMinutes()}])
-                setLoading(true)
-                
+                setLoading(true) 
                 const savemain=data.main_products.length>0?true:false
                 const savebyproduct=data.byproducts.length>0?true:false
                 const main_products=data.main_products.map(item=>{
@@ -50,8 +62,8 @@ const Detaildealshock=()=>{
                 })
                 const variations=data.variations.map(variation=>{
                     return {...variation,
-                        percent_discount:(variation.price-parseInt(variation.promotion_price))*100/variation.price,
-                        promotion_price:parseInt(variation.promotion_price)}
+                    percent_discount:(variation.price-parseInt(variation.promotion_price))*100/variation.price,
+                    promotion_price:parseInt(variation.promotion_price)}
                 })
                 const list_byproducts=data.byproducts.map(byproduct=>{
                     return({...byproduct,variations:variations.filter(variation=>variation.item_id==byproduct.id)})
@@ -81,60 +93,35 @@ const Detaildealshock=()=>{
     const additem=(e)=>{
         setLoading(true)
         setShow({...show,items:true,byproduct:false})
-        if(itemshop.items.length==0){
-            axios.get(`${newdealURL}?item=item&deal_id=${id}`,headers)
-            .then(res=>{
-                const items=res.data.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
-                const list_items=items.map(item=>{
-                if(itemshop.items_choice.some(product=>product.id==item.id)){
-                    return({...item,check:true})
-                }
-                return({...item,check:false})
-                })
-                setItem({...itemshop,itemshops:res.data,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize)})  
-            })
-        }
-        else{
-            const items=itemshop.itemshops.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
+        axios.get(`${newdealURL}?deal_id=${id}&mainproducts=true&valid_from=${timesubmit(deal.valid_from)}&valid_to=${timesubmit(deal.valid_to)}`,headers)
+        .then(res=>{
+            const items=res.data.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
             const list_items=items.map(item=>{
-                if(itemshop.items_choice.some(product=>product.id==item.id)){
-                    return({...item,check:true})
-                }
-                return({...item,check:false})
-                })
-            setItem({...itemshop,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize)})  
-        }
+            if(itemshop.items_choice.some(product=>product.id==item.id)){
+                return({...item,check:true,disable:true})
+            }
+            return({...item,check:false})
+            })
+            setItem({...itemshop,itemshops:res.data,items:list_items,page_count_main:Math.ceil(list_items.length / Pagesize)})  
+        })
     }
 
     const addbyproduct=(e)=>{
         setShow({...show,byproduct:true,items:false})
-        if(itemshop.items.length==0){
-            axios.get(`${newdealURL}?item=item&deal_id=${id}`,headers)
-            .then(res=>{
-                const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
-                const byproduct=list_byproduct.map(item=>{
-                    if(itemshop.byproduct_choice.some(by=>by.id==item.id)){
-                        return({...item,check:true})
-                    }
-                     return({...item,check:false})
-                })
-                
-                setItem({...itemshop,itemshops:res.data,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
-            })
-        }
-        else{
-            const list_byproduct=itemshop.itemshops.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
+        axios.get(`${newdealURL}?byproducts=true&deal_id=${id}`,headers)
+        .then(res=>{
+            const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
             const byproduct=list_byproduct.map(item=>{
                 if(itemshop.byproduct_choice.some(by=>by.id==item.id)){
-                    return({...item,check:true})
+                    return({...item,check:true,disable})
                 }
                     return({...item,check:false})
-            })
-            setItem({...itemshop,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
-        }
+            }) 
+            setItem({...itemshop,itemshops:res.data,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
+        })
     }
 
-    const setcheckitem=useCallback((item,product,keys)=>{
+    const setcheckitem=(item,product,keys)=>{
         const list_item=product.map(ite=>{
             if(item.id==ite.id){
                 return({...ite,check:!ite.check})
@@ -143,51 +130,37 @@ const Detaildealshock=()=>{
                 return({...ite})
             }
         })
-        setItem({...itemshop,[keys]:list_item})
-        console.log({[keys]:list_item})
-    },[itemshop])
+        setItem(current=>{return{...current,[keys]:list_item}})
+    }
 
     const setcheckall=(e,list_items,keys,value,value_choice)=>{
-        for (let k in value){
-            for(let i in list_items){
-                if(e.target.checked==true && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !value_choice.some(ite=>ite.id==value[k].id)){
-                    value[k].check=true
-                }
-                if(e.target.checked==false && list_items[i]==value[k] && keys!='byproduct_choice' && keys!='items_choice' && !value_choice.some(ite=>ite.id==value[k].id)){
-                    value[k].check=false
-                }
-                if(e.target.checked==true && list_items[i]==value[k]){
-                    if(keys=='byproduct_choice' || keys=='items_choice'){
-                        value[k].check=true
-                    }
-                }
-                if(e.target.checked==false && list_items[i]==value[k]){
-                    if(keys=='byproduct_choice' || keys=='items_choice'){
-                        value[k].check=false
-                    }
-                }
+        const listitems=value.map(item=>{
+            if(e.target.checked){
+                return({...item,check:list_items.some(product=>product.id==item.id)?true:item.check})
             }
-        }
-        setItem({...itemshop,[keys]:value})
+            return({...item,check:list_items.some(product=>product.id==item.id) && !item.disable?false:item.check})
+        })
+       
+        setItem({...itemshop,[keys]:listitems})
     }
 
     const setshow=(sho,name)=>{
         setShow({...show,[name]:sho})
     }
 
-    const submit=useCallback(()=>{
-        
+    const submit=()=>{
         const list_itemscheck=itemshop.items.filter(ite=>ite.check && !itemshop.items_choice.some(item=>item.id==ite.id))
         const list_itemschoice=list_itemscheck.map(item=>{
             return({...item,check:false,enable:true})
         })
         console.log(list_itemschoice)
-        itemshop.items_choice=[...list_itemschoice,...itemshop.items_choice]
-        setItem({...itemshop,items_choice:itemshop.items_choice})
+        setItem(current=>{
+            return {...current,items_choice:[...list_itemschoice,...itemshop.items_choice]}
+            })
         setShow({...show,items:false})
-    },[itemshop,show])
+    }
 
-    const submitby=()=>{
+    const submitby=useCallback(()=>{
         const list_itemscheck=itemshop.byproduct.filter(ite=>ite.check && !itemshop.byproduct_choice.some(item=>item.id==ite.id))
         const data={byproducts:list_itemscheck.map(item=>{return item.id}),
             action:'addbyproduct'
@@ -199,13 +172,13 @@ const Detaildealshock=()=>{
                     return({...variation,enable:false,percent_discount:0,promotion_price:variation.price,user_item_limit:''})
                 })})})
             
-            itemshop.byproduct_choice=[...list_itemschoice,...itemshop.byproduct_choice]
-            setItem({...itemshop,byproduct_choice:itemshop.byproduct_choice})
+            const byproduct_choice=[...list_itemschoice,...itemshop.byproduct_choice]
+            setItem({...itemshop,byproduct_choice:byproduct_choice})
             setShow({...show,byproduct:false})
             console.log(itemshop.byproduct_choice)
         })
         
-    }
+    },[itemshop,show])
 
     const setenableitem=(e,product,value,key)=>{
         const list_item=value.map(ite=>{
@@ -228,47 +201,62 @@ const Detaildealshock=()=>{
             return({...ite})
         })
         setItem({...itemshop,[keys]:list_item,[keys_choice]:list_itemchoice})
-        let page=page_current
-        if(page>=Math.ceil(list_itemchoice.length / Pagesize)){
-            page=Math.ceil(list_itemchoice.length / Pagesize)
-            console.log(list_itemchoice.length)
-        }
-        
-        setCurrentPage({...currentPage,[keys]:page})
-        handlePageChange(page,keys)
+        setpageitem(keys,list_itemchoice,page_current)
     }
-    const list_enable_on=itemshop.byproduct_choice.filter(item=>item.variations.some(variation=>variation.enable))
+
     const save=(keys,value,keys_choice,value_choice)=>{
         if(keys_choice=='items_choice'){
             const list_enable_off=value_choice.filter(item=>!item.enable)
             const list_item=[...value_choice.filter(item=>item.enable),...list_enable_off]
-            setItem({...itemshop,[keys]:value,[keys_choice]:list_item})
-            const data={list_items:value_choice.filter(item=>item.enable).map(item=>{
+            const data={valid_from:deal.valid_from,valid_to:deal.valid_to,list_items:value_choice.filter(item=>item.enable).map(item=>{
                 return item.id}),action:'savemain'
             }
             if(value){
-                axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
-                .then(res=>{
-
-                })
+                if(!item_unvalid){
+                    axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
+                    .then(res=>{
+                        if(!res.data.error){
+                            setSameitem([])
+                            setItem({...itemshop,[keys]:value,[keys_choice]:list_item})
+                        }
+                        else{
+                            setDuplicate(true)
+                            setSameitem(res.data.sameitem)
+                            const itemchoice=itemshop.items_choice.map(item=>{
+                                return({...item,enable:res.data.sameitem.some(product=>product==item.id)?false:true})
+                            })
+                            setItem({...itemshop,[keys_choice]:itemchoice})
+                            
+                        }
+                    })
+                }
+                else{
+                    setDuplicate(true)
+                    const itemchoice=itemshop.items_choice.map(item=>{
+                        return({...item,enable:sameitem.some(product=>product==item.id)?false:true})
+                    })
+                    setItem({...itemshop,items_choice:itemchoice})
+                }
+            }
+            else{
+                setItem({...itemshop,[keys]:value,[keys_choice]:list_item})
             }
         }
         else{
             const valid=value_choice.every(item=>item.variations.every(variation=>variation.percent_discount>0 && variation.percent_discount<100))
-            const list_enable_off=value_choice.filter(item=>list_enable_on.every(items=>item.id!=items.id))
-            const list_item=[...list_enable_on,...list_enable_off]
+            const list_enable_off=value_choice.filter(item=>list_enable_byproduct_on.every(items=>item.id!=items.id))
+            const list_item=[...list_enable_byproduct_on,...list_enable_off]
             if(valid || !value || deal.shock_deal_type=='2'){
                 setItem({...itemshop,[keys]:value,[keys_choice]:list_item})
-                const discount_model_list=list_enable_on.reduce((arr,obj,i)=>{
+                const discount_model_list=list_enable_byproduct_on.reduce((arr,obj,i)=>{
                     const datavariation= obj.variations.map(variation=>{
                         return({promotion_price:variation.promotion_price,id:variation.id,
                         variation_id:variation.variation_id,item_id:variation.item_id,
-                        promotion_stock:variation.promotion_stock?variation.promotion_stock:0,
                         user_item_limit:obj.user_item_limit?obj.user_item_limit:0,enable:variation.enable})
                     })
                     return [...arr,...datavariation]
                 },[])
-                const data={action:'savebyproduct',byproducts:list_enable_on.map(item=>{return item.id}),discount_model_list:discount_model_list}
+                const data={action:'savebyproduct',byproducts:list_enable_byproduct_on.map(item=>{return item.id}),discount_model_list:discount_model_list}
                 if(value){
                     axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
                     .then(res=>{
@@ -301,7 +289,37 @@ const Detaildealshock=()=>{
         })
         setItem({...itemshop,items_choice:list_item})
     }
+    const dragItem = useRef(null)
+	const dragOverItem = useRef(null)
+	//const handle drag sorting
+	const handleSort = (itemchoice) => {
+		//duplicate items
+		let _fruitItems = byproduct.map(item=>{
+            return({...item,choice:itemchoice.id==item.id?true:false})
+        })
+		//remove and save the dragged item content
+		const draggedItemContent =  _fruitItems.splice(dragItem.current, 1)[0]
+        console.log(draggedItemContent)
+		//switch the position
+        _fruitItems.splice(dragOverItem.current, 0, draggedItemContent)
+		//reset the position ref
+		dragItem.current = null
+		dragOverItem.current = null
+        setByproduct(_fruitItems)
+		//update the actual array
+	}
 
+	//handle name change
+	
+    const setbyproduct=(e,index,value,item)=>{
+        let databyproduct=[...byproduct]
+       
+        databyproduct.splice(index,1)
+        databyproduct.splice(value,0,item)
+        console.log(index)
+        setByproduct(databyproduct)
+    }
+	//handle new item addition
     const setdeletechoice=(keys,value,keys_choice,value_choice,page_current)=>{
         const list_itemchoice=value_choice.filter(item=>!item.check)
         const list_item=value.map(item=>{
@@ -311,17 +329,17 @@ const Detaildealshock=()=>{
             return({...item})
         })
         setItem({...itemshop,[keys_choice]:list_itemchoice,[keys]:list_item})
-        let page=page_current
-        if(page>=Math.ceil(list_itemchoice.length / Pagesize)){
-            page=Math.ceil(list_itemchoice.length / Pagesize)
-            if(list_itemchoice.length==0){
-                page=1
-            }
-        }
+        setpageitem(keys,list_itemchoice,page_current)
+    }
+    
+    const setpageitem=(keys,list_itemchoice,page_current)=>{
+        const page=list_itemchoice.length==0?1:page_current>=Math.ceil(list_itemchoice.length / Pagesize)?Math.ceil(list_itemchoice.length / Pagesize):page_current
+        console.log(page)
+        console.log(list_itemchoice.length)
         setCurrentPage({...currentPage,[keys]:page})
         handlePageChange(page,keys)
     }
-    
+
     const setpage=(itemchoice,name)=>{
         let page=state.page_input
         if(state.page_input>Math.ceil(itemchoice.length / Pagesize)){
@@ -369,18 +387,18 @@ const Detaildealshock=()=>{
     }
     
     const updateall=(e)=>{
-        itemshop.byproduct_choice.map(item=>{
-            item.variations.map(variation=>{
-                variation.percent_discount=state.percent_discount
-                variation.promotion_price=variation.price*(1-state.percent_discount/100)
-                variation.error=false
-            })
+        const list_byproducts=itemshop.byproduct_choice.map(item=>{
+            return({...item,variations:item.variations.map(variation=>{
+                return({...variation,percent_discount:state.percent_discount,
+                error:false,user_item_limit:state.user_item_limit,
+                promotion_price:variation.price*(1-state.percent_discount/100)})
+            })})
         })
-        setItem({...itemshop,byproduct_choice:itemshop.byproduct_choice})
+        setItem({...itemshop,byproduct_choice:list_byproducts})
     }
 
     const updatechoice=(e)=>{
-        const list_byproduct=itemshop.byproduct_choice.map(byproduct=>{
+        const list_byproducts=itemshop.byproduct_choice.map(byproduct=>{
             return({...byproduct,variations:byproduct.variations.map(variation=>{
                 if(byproduct.check){
                     if(state.percent_discount!==''){
@@ -395,7 +413,7 @@ const Detaildealshock=()=>{
             })})
         })
         
-        setItem({...itemshop,byproduct_choice:list_byproduct})
+        setItem({...itemshop,byproduct_choice:list_byproducts})
     }
 
     const setenableby=(e,variation,item)=>{
@@ -466,7 +484,7 @@ const Detaildealshock=()=>{
 
     const get_price=()=>{
         let price_box={total_price:0,total_discount:0}
-        list_enable_on.map((item,index)=>{
+        list_enable_byproduct_on.map((item,index)=>{
             if(index<2){
                 price_box.total_price+=get_percent_discount(item).price
                 price_box.total_discount+=get_percent_discount(item).promotion_price
@@ -480,35 +498,29 @@ const Detaildealshock=()=>{
         setDate(list_date);
     },[date])
 
-    const setdatevalid=useCallback((index)=>{
+    const setdatevalid=(index,date)=>{
         if(index==0){
-            deal.valid_from=date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)
-            setDeal({...deal,valid_from:deal.valid_from})
+            setDeal({...deal,valid_from:date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date.hours).slice(-2)+':'+("0"+date.minutes).slice(-2)})
 
         }
         else{
-            setDeal({...deal,valid_to:deal.valid_to})
-            deal.valid_to=date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)
+            setDeal({...deal,valid_to:date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date.hours).slice(-2)+':'+("0"+date.minutes).slice(-2)})
+        
         }
-    },[deal])
+    }
 
-    const setform=useCallback((e)=>{
+    const setform=(e)=>{
         setDeal({...deal,[e.target.name]:e.target.value})
-    },[deal])
-
+    }
+    console.log(deal)
     const editdeal=useCallback(()=>{
-        const datadeal= Object.keys(deal).map(item=>{
-            if(deal[item]!=null){
-                return({item:deal[item]})
-            }
-        })
-        const data={...datadeal,action:'change'}
+        const data={...deal,action:'change'}
         axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
         .then(res=>{
             setDeal(res.data)
             setState({...state,edit:false})
         })
-    },[state])
+    },[state,deal])
 
     const setvariation=(e,keys)=>{
         let item=parseInt(e.target.value)
@@ -520,24 +532,37 @@ const Detaildealshock=()=>{
         }
     }
 
-    const setdrag=()=>{
-
-    }
+    const  onDragOver = (e, index) => {
+        e.preventDefault();
+        const draggedOverItem = byproduct[index];
+    
+        // if the item is dragged over itself, ignore
+        if (this.draggedItem === draggedOverItem) {
+          return;
+        }
+    
+        // filter out the currently dragged item
+        let items = this.state.items.filter(item => item !== this.draggedItem);
+    
+        // add the dragged item after the dragged over item
+        items.splice(index, 0, this.draggedItem);
+    
+        this.setState({ items });
+      };
 
     const complete=()=>{
-        if(list_enable_on.length>0){
-            const data={action:'submit'}
-            const countDown = setInterval(() => {
-                state.timeSecond--;
-                setState({...state,complete:true})
-                if (state.timeSecond <= 0) {
-                    clearInterval(countDown)
-                    setState({...state,complete:false})
-                }
-            }, 1000);
-
+        if(list_enable_byproduct_on.length>0){
+            const data={action:'submit',byproducts:list_enable_byproduct_on.map(item=>{return(item.id)})}
             axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
             .then(res=>{
+                const countDown = setInterval(() => {
+                    state.timeSecond--;
+                    setState({...state,complete:true})
+                    if (state.timeSecond <= 0) {
+                        clearInterval(countDown)
+                        setState({...state,complete:false})
+                    }
+                }, 1000);
             })
         }
         else{
@@ -561,7 +586,7 @@ const Detaildealshock=()=>{
                                     setform={(e)=>setform(e)}
                                     settimechoice={(value,index,name)=>settimechoice(value,index,name)}
                                     setindexchoice={(list_date)=>setindexchoice(list_date)}
-                                    setdatevalid={(index)=>setdatevalid(index)}
+                                    setdatevalid={(index,date)=>setdatevalid(index,date)}
                                     onChange={(datechoice)=>onChange(datechoice)}
                                     disable={disable}
                                     date={date}
@@ -669,7 +694,7 @@ const Detaildealshock=()=>{
                                     </form>
                                     <div className="item-spaces my-1">
                                         <p className="enabled">
-                                            <span>{itemshop.items_choice.filter(item=>item.enable).length}</span> product is enabled on a total of <span>{itemshop.items_choice.length}</span> products
+                                            <span>{list_enable_main_on.length}</span> product is enabled on a total of <span>{itemshop.items_choice.length}</span> products
                                         </p>
                                     </div>
                                 </div>
@@ -752,19 +777,30 @@ const Detaildealshock=()=>{
                                                             ₫{formatter.format(item.min_price)} {item.min_price!=item.max_price?`- ${formatter.format(item.max_price)}`:''}
                                                         </div>
                                                         <div>{item.total_inventory}</div>
-                                                        <div className="column_edit-shipping">{item.item_shipping}</div>
+                                                        <div className="column_edit-shipping">{item.shipping}</div>
                                                         <div className="item-center status">
-                                                            {itemshop.savemain?<span  className="status-desc">{item.enable?'On':"Off"}</span>:
+                                                            {itemshop.savemain?<span  className="status-desc">{item.enable?'On':"Off"}</span>:<>
                                                             <input type="checkbox" onChange={(e)=>setenableitem(e,item,itemshop.items_choice,'items_choice')} checked={item.enable?true:false}  className="switch_1 " name="check"/>
-                                                            }
+                                                            {sameitem.some(product=>product==item.id)?
+                                                                <div data-v-6ec5aca5="" class="item-update-error popover popover--light">
+                                                                    <div class="popover__ref">
+                                                                        <span data-v-6ec5aca5="">
+                                                                            <i data-v-6ec5aca5="" class="icon">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-.875a6.125 6.125 0 1 0 0-12.25 6.125 6.125 0 0 0 0 12.25zm1.35-3.313c.22 0 .4.154.4.344 0 .19-.18.344-.4.344h-2.7c-.22 0-.4-.154-.4-.344 0-.19.18-.344.4-.344h.95V6.938H6.93c-.221 0-.4-.154-.4-.344 0-.19.179-.344.4-.344H8c.222 0 .4.154.4.344v4.218h.95zM8 4.875A.437.437 0 1 1 8 4a.437.437 0 0 1 0 .875z"></path></svg>
+                                                                            </i>
+                                                                        </span> 
+                                                                    </div> 
+                                                            </div>:''}
+                                                            </>}
                                                         </div>
                                                         {itemshop.savemain?'':
                                                         <div className="table-edit">
-                                                            <i onClick={()=>removeitem(item,'items',itemshop.items,'items_choice',itemshop.items_choice,currentPage.items)} className="trash-icon icon">
-                                                                <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                                                    <g fillRule="nonzero"><path d="M14.516 3.016h-4v-1a.998.998 0 0 0-.703-.955.99.99 0 0 0-.297-.045h-3a.998.998 0 0 0-.955.703.99.99 0 0 0-.045.297v1h-4a.5.5 0 1 0 0 1h1v10a.998.998 0 0 0 .703.955.99.99 0 0 0 .297.045h9a.998.998 0 0 0 .955-.703.99.99 0 0 0 .045-.297v-10h1a.5.5 0 1 0 0-1zm-8-1h3v1h-3v-1zm6 12h-9v-10h9v10z"></path><path d="M5.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5zM8.016 12.016a.5.5 0 0 0 .5-.5v-5a.5.5 0 1 0-1 0v5a.5.5 0 0 0 .5.5zM10.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5z"></path></g>
-                                                                </svg>
+                                                            <button onClick={()=>removeitem(item,'items',itemshop.items,'items_choice',itemshop.items_choice,currentPage.items)} data-v-625f739d="" type="button" class="action button button--normal button--circle">
+                                                            <i class="icon">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2,4 C1.72385763,4 1.5,3.77614237 1.5,3.5 C1.5,3.22385763 1.72385763,3 2,3 L6,2.999 L6,2 C6,1.44771525 6.44771525,1 7,1 L10,1 C10.5522847,1 11,1.44771525 11,2 L11,2.999 L15,3 C15.2761424,3 15.5,3.22385763 15.5,3.5 C15.5,3.77614237 15.2761424,4 15,4 L14,4 L14,14 C14,14.5522847 13.5522847,15 13,15 L4,15 C3.44771525,15 3,14.5522847 3,14 L3,4 L2,4 Z M13,4 L4,4 L4,14 L13,14 L13,4 Z M6.5,7 C6.77614237,7 7,7.22385763 7,7.5 L7,11.5 C7,11.7761424 6.77614237,12 6.5,12 C6.22385763,12 6,11.7761424 6,11.5 L6,7.5 C6,7.22385763 6.22385763,7 6.5,7 Z M8.5,6 C8.77614237,6 9,6.22385763 9,6.5 L9,11.5 C9,11.7761424 8.77614237,12 8.5,12 C8.22385763,12 8,11.7761424 8,11.5 L8,6.5 C8,6.22385763 8.22385763,6 8.5,6 Z M10.5,7 C10.7761424,7 11,7.22385763 11,7.5 L11,11.5 C11,11.7761424 10.7761424,12 10.5,12 C10.2238576,12 10,11.7761424 10,11.5 L10,7.5 C10,7.22385763 10.2238576,7 10.5,7 Z M10,2 L7,2 L7,2.999 L10,2.999 L10,2 Z"></path></svg>
                                                             </i>
+                                                        </button>
+                                                            
                                                         </div>}
                                                     </div> 
                                                 </div> 
@@ -781,14 +817,14 @@ const Detaildealshock=()=>{
                                                     
                                                     totalCount={Math.ceil(itemshop.items_choice.length / Pagesize)}
                                                     Pagesize={Pagesize}
-                                                    onPageChange={(page,name) => handlePageChange(page,'items')}
+                                                    onPageChange={(page) => handlePageChange(page,'items')}
                                                 />
                                             </div>
                                             <div className="pagination-jumperpagination__part">
                                                 <span className="pagination-jumper__label">Go to page</span>
                                                 <div className="pagination-jumper__input">
                                                 <div className="number-input  number-input--no-suffix">
-                                                    <input onChange={(e)=>setState({...state,page_input:parseInt(e.target.value)})} type="text" value={state.page_input}  className="input_input"/>
+                                                    <input onChange={(e)=>setState({...state,page_input:isNaN(e.target.value)?state.page_input:e.target.value})} type="text" value={state.page_input}  className="input_input"/>
                                                 </div>
                                                 <button onClick={()=>setpage(itemshop.items_choice,'items')} type="button" className="button btn-m btn-light "><span>Go</span></button>
                                                 </div>
@@ -1008,11 +1044,13 @@ const Detaildealshock=()=>{
                                                 {itemshop.savebyproduct?"":
                                                 <div className="action header-column_edit">
                                                     <span>
-                                                        <button onClick={()=>removeitem(item,'byproduct',itemshop.byproduct,'byproduct_choice',itemshop.byproduct_choice,currentPage.byproduct)} type="button" className="action-del button button--normal button--circle">
-                                                            <i className="icon trash-icon">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M2,4 C1.72385763,4 1.5,3.77614237 1.5,3.5 C1.5,3.22385763 1.72385763,3 2,3 L6,2.999 L6,2 C6,1.44771525 6.44771525,1 7,1 L10,1 C10.5522847,1 11,1.44771525 11,2 L11,2.999 L15,3 C15.2761424,3 15.5,3.22385763 15.5,3.5 C15.5,3.77614237 15.2761424,4 15,4 L14,4 L14,14 C14,14.5522847 13.5522847,15 13,15 L4,15 C3.44771525,15 3,14.5522847 3,14 L3,4 L2,4 Z M13,4 L4,4 L4,14 L13,14 L13,4 Z M6.5,7 C6.77614237,7 7,7.22385763 7,7.5 L7,11.5 C7,11.7761424 6.77614237,12 6.5,12 C6.22385763,12 6,11.7761424 6,11.5 L6,7.5 C6,7.22385763 6.22385763,7 6.5,7 Z M8.5,6 C8.77614237,6 9,6.22385763 9,6.5 L9,11.5 C9,11.7761424 8.77614237,12 8.5,12 C8.22385763,12 8,11.7761424 8,11.5 L8,6.5 C8,6.22385763 8.22385763,6 8.5,6 Z M10.5,7 C10.7761424,7 11,7.22385763 11,7.5 L11,11.5 C11,11.7761424 10.7761424,12 10.5,12 C10.2238576,12 10,11.7761424 10,11.5 L10,7.5 C10,7.22385763 10.2238576,7 10.5,7 Z M10,2 L7,2 L7,2.999 L10,2.999 L10,2 Z"></path></svg>
+                                                        <div className="table-edit">
+                                                        <button onClick={()=>removeitem(item,'byproduct',itemshop.byproduct,'byproduct_choice',itemshop.byproduct_choice,currentPage.byproduct)} data-v-625f739d="" type="button" class="action button button--normal button--circle">
+                                                            <i class="icon">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2,4 C1.72385763,4 1.5,3.77614237 1.5,3.5 C1.5,3.22385763 1.72385763,3 2,3 L6,2.999 L6,2 C6,1.44771525 6.44771525,1 7,1 L10,1 C10.5522847,1 11,1.44771525 11,2 L11,2.999 L15,3 C15.2761424,3 15.5,3.22385763 15.5,3.5 C15.5,3.77614237 15.2761424,4 15,4 L14,4 L14,14 C14,14.5522847 13.5522847,15 13,15 L4,15 C3.44771525,15 3,14.5522847 3,14 L3,4 L2,4 Z M13,4 L4,4 L4,14 L13,14 L13,4 Z M6.5,7 C6.77614237,7 7,7.22385763 7,7.5 L7,11.5 C7,11.7761424 6.77614237,12 6.5,12 C6.22385763,12 6,11.7761424 6,11.5 L6,7.5 C6,7.22385763 6.22385763,7 6.5,7 Z M8.5,6 C8.77614237,6 9,6.22385763 9,6.5 L9,11.5 C9,11.7761424 8.77614237,12 8.5,12 C8.22385763,12 8,11.7761424 8,11.5 L8,6.5 C8,6.22385763 8.22385763,6 8.5,6 Z M10.5,7 C10.7761424,7 11,7.22385763 11,7.5 L11,11.5 C11,11.7761424 10.7761424,12 10.5,12 C10.2238576,12 10,11.7761424 10,11.5 L10,7.5 C10,7.22385763 10.2238576,7 10.5,7 Z M10,2 L7,2 L7,2.999 L10,2.999 L10,2 Z"></path></svg>
                                                             </i>
                                                         </button>
+                                                        </div>
                                                     </span>
                                                 </div>}
                                             </div>
@@ -1109,14 +1147,14 @@ const Detaildealshock=()=>{
                                                 currentPage={currentPage.byproduct}
                                                 totalCount={Math.ceil(itemshop.byproduct_choice.length / Pagesize)}
                                                 Pagesize={Pagesize}
-                                                onPageChange={(page,name)=>handlePageChange(page,'byproduct')}
+                                                onPageChange={(page)=>handlePageChange(page,'byproduct')}
                                             />
                                         </div>
                                         <div className="pagination-jumperpagination__part">
                                             <span className="pagination-jumper__label">Go to page</span>
                                             <div className="pagination-jumper__input">
                                                 <div className="number-input  number-input--no-suffix">
-                                                    <input onChange={(e)=>setState({...state,page_input:parseInt(e.target.value)})} type="text" value={state.page_input}  className="input_input"/>
+                                                    <input onChange={(e)=>setState({...state,page_input:isNaN(e.target.value)?state.page_input:e.target.value})} type="text" value={state.page_input}  className="input_input"/>
                                                 </div>
                                                 <button onClick={()=>setpage(itemshop.byproduct_choice)} type="button" className="button btn-m btn-light "><span>Go</span></button>
                                             </div>
@@ -1131,9 +1169,11 @@ const Detaildealshock=()=>{
                             </>:'' 
                             }
                             </div>
-                            {deal.shock_deal_type=='1' && list_enable_on.lengt>0 && itemshop.items_choice.filter(item=>item.enable).length>0?
+                            {deal.shock_deal_type=='1' && list_enable_byproduct_on.length>0 && list_enable_main_on.length>0?
                             <>
-                            <div onClick={()=>setState({...state,show:!state.show})} className={`foldline-container fold ${state.show?'show-up':''}`}>
+                            <div onClick={()=>{
+                                setByproduct(list_enable_byproduct_on)
+                                setState({...state,show:!state.show})}} className={`foldline-container fold ${state.show?'show-up':''}`}>
                                 <div className="line"></div> 
                                 <div className="content">
                                     <span className="desc">Set up display of by-products</span> 
@@ -1163,8 +1203,8 @@ const Detaildealshock=()=>{
                                                 <div className="display-order-body">
                                                     
                                                         
-                                                        {list_enable_on.map(item=>
-                                                        <div className="display-order-row">
+                                                        {byproduct.map((item,index)=>
+                                                        <div key={item.id} className={`display-order-row ${item.choice?'adjust-chosen':''}`}>
                                                             <div className="display-order-inner-row">
                                                                 <div className="display-item-name">
                                                                     <img className="display-item-img" src={item.image} alt="" width="36px" height="36px"/>
@@ -1178,7 +1218,7 @@ const Detaildealshock=()=>{
                                                                 <div className="display-item-action">
                                                                     <div className=" sort-btn-item popover popover--dark">
                                                                         <div className="popover__ref">
-                                                                            <button type="button" className="sort-top-btn  button--circle " delay="1000">
+                                                                            <button onClick={(e)=>setbyproduct(e,index,0,item)} type="button" className="sort-top-btn buttom button--circle " delay="1000">
                                                                                 <i className="icon"><svg xmlns="http://www.w3.org/2000/svg"><path d="M7 3a.5.5 0 0 1 .398.197l4.905 4.907a.5.5 0 0 1-.707.707L7.5 4.715V15.5a.5.5 0 1 1-1 0V4.714L2.404 8.811a.5.5 0 0 1-.707-.707l4.905-4.907A.5.5 0 0 1 7 3zm6.5-3a.5.5 0 1 1 0 1H.5a.5.5 0 0 1 0-1h13z" fillRule="evenodd"></path></svg></i>
                                                                             </button>
                                                                         </div> 
@@ -1188,7 +1228,7 @@ const Detaildealshock=()=>{
                                                                     </div> 
                                                                     <div className=" sort-btn-item popover popover--dark">
                                                                         <div className="popover__ref">
-                                                                            <button type="button" className="sort-bottom-btn  button--circle" delay="1000">
+                                                                            <button onClick={(e)=>setbyproduct(e,index,byproduct.length-1,item)} type="button" className="sort-bottom-btn buttom button--circle" delay="1000">
                                                                                 <i className="icon"><svg xmlns="http://www.w3.org/2000/svg"><path d="M7 13a.5.5 0 0 1-.398-.197L1.697 7.896a.5.5 0 0 1 .707-.707L6.5 11.285V.5a.5.5 0 1 1 1 0v10.786l4.096-4.097a.5.5 0 0 1 .707.707l-4.905 4.907A.5.5 0 0 1 7 13zM.5 16a.5.5 0 1 1 0-1h13a.5.5 0 0 1 0 1H.5z" fillRule="evenodd"></path></svg></i>
                                                                             </button>
                                                                         </div> 
@@ -1197,12 +1237,23 @@ const Detaildealshock=()=>{
                                                                         </div>
                                                                     </div> 
                                                                     <div className=" sort-btn-item popover popover--dark">
-                                                                        <div onClick={()=>setdrag()} className="popover__ref">
-                                                                            <button type="button" className="drag-btn  button--circle" delay="1000">
+                                                                        <div  className="popover__ref">
+                                                                            <button draggable
+                                                                                onDragOver={(e) => onDragOver(e, index)}
+                                                                             onDragStart={(e) => {
+                                                                                dragItem.current = index
+                                                                                
+                                                                            }}
+                                                                                onDragEnter={(e) => {
+                                                                                    (dragOverItem.current = index)
+                                                                                    
+                                                                                }}
+                                                                                onDragEnd={(item)=>handleSort(item)}
+                                                                                onDragOver={(e) => e.preventDefault()}  type="button" className="drag-btn buttom button--circle" delay="1000">
                                                                                 <i className="icon"><svg xmlns="http://www.w3.org/2000/svg"><path d="M3.684 10.475a.5.5 0 0 1-.707.707l-2.86-2.86a.498.498 0 0 1-.114-.27v-.018A.139.139 0 0 1 0 8l.003-.034.002-.018L0 8c0-.123.044-.235.118-.322l2.859-2.86a.5.5 0 0 1 .707.707L1.708 7.5h5.791V1.711L5.525 3.686a.5.5 0 0 1-.707-.707L7.612.184a.499.499 0 0 1 .776 0l2.794 2.795a.5.5 0 1 1-.707.707L8.499 1.71V7.5h5.79l-1.975-1.975a.5.5 0 1 1 .707-.707l2.795 2.794a.499.499 0 0 1 0 .776l-2.795 2.794a.5.5 0 1 1-.707-.707L14.288 8.5H8.499v5.791l1.976-1.975a.5.5 0 1 1 .707.707l-2.86 2.86a.502.502 0 0 1-.034.026l-.007.002a.463.463 0 0 1-.191.08l-.04.005A.9.9 0 0 1 8 16l-.04-.004h-.011L8 16a.498.498 0 0 1-.282-.087v-.002a.258.258 0 0 1-.04-.029l-2.86-2.859a.5.5 0 1 1 .707-.707L7.5 14.29V8.5H1.71l1.975 1.975z" fillRule="evenodd"></path></svg></i>
                                                                             </button>
                                                                         </div> 
-                                                                        <div onClick={()=>setdrag()} className="popper popover__popper popover__popper--dark __popper reorder-drag-popper" style={{maxWidth: '280px', position: 'absolute', zIndex: 1, willChange: 'top, left', transformOrigin: 'center bottom', display: 'none', top: '60px', left: '760px'}} x-placement="top">
+                                                                        <div className="popper popover__popper popover__popper--dark __popper reorder-drag-popper" style={{maxWidth: '280px', position: 'absolute', zIndex: 1, willChange: 'top, left', transformOrigin: 'center bottom', display: 'none', top: '60px', left: '760px'}} x-placement="top">
                                                                             <div className="popover__content">Drag &amp; Drop</div>
                                                                         </div>
                                                                     </div>
@@ -1226,13 +1277,13 @@ const Detaildealshock=()=>{
                                                                 <span className="price">₫{formatter.format(itemshop.items_choice[0].min_price)} {itemshop.items_choice[0].max_price!=itemshop.items_choice[0].min_price?`- ₫${formatter.format(itemshop.items_choice[0].max_price)}`:''}</span>
                                                             </p>
                                                         </div>
-                                                        {list_enable_on.length>1?
+                                                        {byproduct.length>1?
                                                         <>
-                                                            {list_enable_on.map((item,index)=>{
+                                                            {byproduct.map((item,index)=>{
                                                                 if(index<2){
                                                                     return(<>
                                                                         <div className="plus-split">+</div> 
-                                                                        <div className="product">
+                                                                        <div key={item.id} className="product">
                                                                             <div className="product-img">
                                                                                 <img src={item.image} alt="" className="product-preview"/>
                                                                             </div>
@@ -1245,10 +1296,10 @@ const Detaildealshock=()=>{
                                                             )}
                                                         </>
                                                         :<>
-                                                        {list_enable_on.map(item=>
+                                                        {byproduct.map(item=>
                                                             <>
                                                             <div className="plus-split">+</div> 
-                                                            <div className="product">
+                                                            <div key={item.id} className="product">
                                                                 <div className="product-img">
                                                                     <img src={item.image} alt="" className="product-preview"/>
                                                                 </div>
@@ -1297,6 +1348,7 @@ const Detaildealshock=()=>{
                 </div>
             </div>
             <div id="modal">
+                {show.byproduct || show.items || state.complete || duplicate?
                 <Productoffer
                     showmain={show.items}
                     showbyproduct={show.byproduct}
@@ -1304,7 +1356,10 @@ const Detaildealshock=()=>{
                     items={itemshop.items}
                     sec={state.timeSecond}
                     text={deal}
+                    edit={true}
                     complete={state.complete}
+                    duplicate={duplicate}
+                    setDuplicate={data=>setDuplicate(data)}
                     items_choice={itemshop.items_choice}
                     byproduct={itemshop.byproduct}
                     byproduct_choice={itemshop.byproduct_choice}
@@ -1313,7 +1368,7 @@ const Detaildealshock=()=>{
                     submit={()=>submit()}
                     submitby={()=>submitby()}
                     setshow={(sho,name)=>setshow(sho,name)}
-                />
+                />:''}
             </div>
              
         </>

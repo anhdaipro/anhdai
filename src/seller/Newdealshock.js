@@ -6,72 +6,41 @@ import Dealshockinfo from "../hocs/Dealshockinfo"
 import Navbar from "./Navbar"
 
 import { headers } from '../actions/auth';
+import { Navigate, useNavigate } from 'react-router';
+import { valid_from, valid_to } from '../constants';
 const Newdealshock=()=>{
-    const [deal,setDeal]=useState({valid_from:new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),limited_product_bundle:null,minimum_price_to_receive_gift:null,number_gift:null,
-    program_name_buy_with_shock_deal:'',shock_deal_type:'1',valid_to:new Date(new Date().setHours(new Date().getHours()+1)).toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16)
+    const [deal,setDeal]=useState({valid_from:valid_from.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),limited_product_bundle:null,minimum_price_to_receive_gift:null,number_gift:null,
+    program_name_buy_with_shock_deal:'',shock_deal_type:'1',valid_to:valid_to.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16)
     })
     const [date,setDate]=useState([{time:new Date(),show:false,hours:new Date().getHours(),minutes:new Date().getMinutes()}
     ,{time:new Date(),show:false,hours:new Date().getHours()+1,minutes:new Date().getMinutes()}])
     const [disable,setDisable]=useState(false)
-    const onChange = useCallback((datechoice) => {
-        const list_date=date.map(item=>{
-            if(item.show){
-                return({...item,time:datechoice})
-            }
-            return({...item})
-        })
-
-        setDate(list_date);
-    },[date])
-
-    const settimechoice=useCallback((value,index,name)=>{
-        const list_date=date.map((item,i)=>{
-            if(i==index){
-                console.log(name)
-                return({...item,[name]:value})
-            }
-            return({...item})
-        })
-        setDate(list_date); 
-    },[date])
-
-    const setindexchoice=useCallback((list_date)=>{
-        setDate(list_date);
-    },[date])
-
-    const setdatevalid=useCallback((index)=>{
+    const navigate=useNavigate()
+    console.log(deal)
+    const setdatevalid=(index,date)=>{
         if(index==0){
-            deal.valid_from=date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)
-            setDeal({...deal,valid_from:deal.valid_from})
-
+            setDeal({...deal,valid_from:date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date.hours).slice(-2)+':'+("0"+date.minutes).slice(-2)})
         }
         else{
-            setDeal({...deal,valid_to:deal.valid_to})
-            deal.valid_to=date[index].time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date[index].hours).slice(-2)+':'+("0"+date[index].minutes).slice(-2)
+            setDeal({...deal,valid_to:date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date.hours).slice(-2)+':'+("0"+date.minutes).slice(-2)})
         }
-    },[date])
+    }
 
-    const setform=useCallback((e)=>{
+    const setform=(e)=>{
         setDeal({...deal,[e.target.name]:e.target.value})
-    },[deal])
+    }
 
-    const editdeal=useCallback(()=>{
-        const datadeal= Object.keys(deal).map(item=>{
-            if(deal[item]!=null){
-                delete item
-            }
-        })
-        const data={...datadeal,action:'change'}
-        axios.post(newdealURL,JSON.stringify(data),headers)
+    const editdeal=()=>{
+        axios.post(newdealURL,JSON.stringify(deal),headers)
         .then(res=>{
             let id=res.data.id
-           
+            navigate(`/marketing/add-on-deal/${id}`)
         })
-    },[])
+    }
 
-    const setdealtype=useCallback((item)=>{
+    const setdealtype=(item)=>{
         setDeal({...deal,shock_deal_type:item.value})
-    },[deal])
+    }
 
     return(
         <>
@@ -88,10 +57,7 @@ const Newdealshock=()=>{
                             editdeal={()=>editdeal()}
                             setdealtype={item=>setdealtype(item)}
                             setform={(e)=>setform(e)}
-                            settimechoice={(value,index,name)=>settimechoice(value,index,name)}
-                            setindexchoice={(list_date)=>setindexchoice(list_date)}
-                            setdatevalid={(index)=>setdatevalid(index)}
-                            onChange={(datechoice)=>onChange(datechoice)}
+                            setdatevalid={(index,date)=>setdatevalid(index,date)}
                             disable={disable}
                             date={date}
                             deal={deal}
