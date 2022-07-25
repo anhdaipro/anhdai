@@ -6947,35 +6947,8 @@ cursor: pointer;
 .hover{
   color: #ee4d2d;
 }
-.month-list,.year-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
- margin-top: 1rem;
-}
 
-.month_now{
-  color:#ffa4a4
-}
 
-.year-list >div{
-  margin-bottom: 2.2rem;
-  font-size: 1rem;
-  text-align: center;
-}
-.month-list >div{
-  margin-bottom: 2.2rem;
-  font-size: 1rem;
-  text-align: center;
-}
-
-.month-table{
-  display: flex;
-  width: 85px;
-  padding-bottom: 4px;
-  font-size: 1.02rem;
-  align-items: center;
-  justify-content: center;
-}
 
 .calendar,.calendar_select{
     width:300px;
@@ -6986,14 +6959,7 @@ cursor: pointer;
     align-items: center;
     padding: 0.2rem 0.6rem 0.2rem 0.6rem;
 }
-.calendar-picker{
-  width:272px;
-  display: flex;
-  flex-direction: column;
-  position:relative;
-  align-items: center;
-  border-right: 1px solid var(--border-color);
-}
+
 .date_picker-date{
   border-bottom: 1px solid var(--border-color);
 }
@@ -7001,14 +6967,7 @@ cursor: pointer;
   font-size: 14px;
   line-height: 16px;
 }
-.date-picker-panel__date{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 1rem;
-  align-items: center;
-  width: 100%;
-}
+
 
 .calendar .header{
     display: flex;

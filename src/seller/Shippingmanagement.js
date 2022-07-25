@@ -13,7 +13,7 @@ const Shippingmanagement=()=>{
     ,{name:'Đơn huỷ',type:'canceled'}],show_select:false,listoptionsearch:[{name:'Mã đơn hàng',type:'refcode'},{name:'Tên người mua',type:'username'},{name:'Sản phẩm',type:'product'},{name:'Mã vận đơn',type:'shipping'}]})
     const [params, setSearchParams] = useSearchParams();
     const [loading,setLoading]=useState(false)
-    const [data,setData]=useState(null)
+    const [data,setData]=useState([])
     const tabs_ink=useRef(null)
     useEffect(() => {
         (async () => {
@@ -240,7 +240,7 @@ const Shippingmanagement=()=>{
                                         </div>
                                     </div>
                                     <div data-v-4a7bd8a8="" className="order-panel-header">
-                                        <div data-v-4a7bd8a8="" className="title">{data.list_orders.length} Đơn hàng</div> 
+                                        <div data-v-4a7bd8a8="" className="title">{data.length} Đơn hàng</div> 
                                         <div data-v-4a7bd8a8="" className="more-action"> 
                                             <div data-v-4a7bd8a8="" className="tab-buttons">
                                                 <button data-v-4a7bd8a8="" type="button" className="ship-btn button button--primary button--large">
@@ -283,7 +283,7 @@ const Shippingmanagement=()=>{
                                             <span data-v-a414b804="" data-v-dff31658="" className="item-action">Thao tác</span>
                                         </div>
                                     </div>
-                                    <div data-v-a414b804="" className={data.list_orders.length==0?'no-data':'order-list_body'}>
+                                    <div data-v-a414b804="" className={data.length==0?'no-data':'order-list_body'}>
                                         {data.length==0?
                                         <div data-v-a414b804="" className="default-page">
                                             <i className="default-page__icon icon normal">

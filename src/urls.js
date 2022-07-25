@@ -33,7 +33,6 @@ export const updateAddressURL = `${endpoint}/update_address`;
 export const ItemsellerURL=`${endpoint}/item/seller`;
 export const itemcommon=`${endpoint}/item/common`
 
-export const paymentURL = `${endpoint}/payment`;
 export const categoryURL = `${endpoint}/category`;
 export const  categoryinfoURL=`${endpoint}/categoryinfo`
 export const verifyotpURL=`${endpoint}/verify-sms`;
@@ -56,6 +55,7 @@ export const  cartviewURL=`${endpoint}/cart`;
 export const  cartURL=`${endpoint}/cartview`;
 export const addToCartURL = `${endpoint}/add-to-cart`;
 export const shoporderURL = `${endpoint}/shop/order`;
+export const paymentURL = `${endpoint}/payment`;
 export const addToCartBatchURL = `${endpoint}/add-to-cart-batch`;
 export const checkoutURL = `${endpoint}/checkout`;
 //chat
@@ -68,7 +68,6 @@ export const createthreadURL=`${apichat}/thread/new`
 export const originweb =window.location.origin
 
 const apivendorURL = "/api/v3";
-export const dashboardpromotionURL=`${localhost}${apivendorURL}/dashboard/promotion`
 export const shopratingURL=`${localhost}${apivendorURL}/shop/rating`;
 export const productshopURL=`${localhost}${apivendorURL}/product/list`;
 export const vouchershopURL=`${localhost}${apivendorURL}/voucher/new`;
@@ -83,7 +82,7 @@ export const detailprogramURL=`${localhost}${apivendorURL}/discount/`
 export const detailvoucherURL=`${localhost}${apivendorURL}/voucher/`
 export const newflashsaleURL=`${localhost}${apivendorURL}/flashsale/create`
 export const detailflashsaleURL=`${localhost}${apivendorURL}/flashsale/`
-export const dashboardURL=`${localhost}${apivendorURL}/dashboard`
+
 export const newproductURL=`${localhost}${apivendorURL}/product/category`
 export const detailproductURL=`${localhost}${apivendorURL}/product/`
 export const newproductdetailURL=`${localhost}${apivendorURL}/product/new`
@@ -93,10 +92,24 @@ export const listshippingURL=`${localhost}${apivendorURL}/shipping/list`
 export const listvouchershopURL=`${localhost}${apivendorURL}/vouchers/list`
 export const listdiscountshopURL=`${localhost}${apivendorURL}/list/discount`
 export const listcomboshopURL=`${localhost}${apivendorURL}/bundle/list`
-export const listdealhopURL=`${localhost}${apivendorURL}/add-on-deal/list`
+export const listAddonshopURL=`${localhost}${apivendorURL}/add-on-deal/list`
 export const listflashsaleshopURL=`${localhost}${apivendorURL}/shop-flash-sale/list`
 export const newshopURL =`${localhost}${apivendorURL}/shop/create`
 export const infosellerURL=`${localhost}${apivendorURL}/infoseller`
 export const chartURL=`${localhost}${apivendorURL}/home/seller`
 export const shopprofileURL=`${localhost}${apivendorURL}/shop/profile`
 export const listordersellerURL=`${localhost}${apivendorURL}/shop/order`
+
+//dashboard
+const apidashboardURL="/api/v2"
+export const dashboardURL=`${localhost}${apidashboardURL}/dashboard`
+export const dashboardpromotionURL=`${localhost}${apidashboardURL}/dashboard/bundle`
+export const dashboardvoucherURL=`${localhost}${apidashboardURL}/dashboard/voucher`
+export const dashboardflashsaleURL=`${localhost}${apidashboardURL}/dashboard/flash`
+export const dashboardAddonURL=`${localhost}${apidashboardURL}/dashboard/voucher`
+export const dashboardprogramURL=`${localhost}${apidashboardURL}/dashboard/discount`
+export const dataProgramURL=`${localhost}${apidashboardURL}/data/discount`
+export const dataPromotionURL=`${localhost}${apidashboardURL}/data/bundle`
+export const dataFlashsaleURL=`${localhost}${apidashboardURL}/data/flash`
+export const dataVoucherURL=`${localhost}${apidashboardURL}/data/voucher`
+export const dataAddonURL=`${localhost}${apidashboardURL}/data/addon`

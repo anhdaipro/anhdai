@@ -204,28 +204,26 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
     const updateall=(e)=>{
         const dataproduct=itemshop.byproduct_choice.map(item=>{
             return({...item,user_item_limit:state.user_item_limit,variations:item.variations.map(variation=>{
-                return{...variation,percent_discount:state.percent_discount,error:false,
+                return({...variation,percent_discount:state.percent_discount,error:false,
                 promotion_price:variation.price*(1-state.percent_discount/100),
-                promotion_stock:state.promotion_stock}
+                promotion_stock:state.promotion_stock})
             })})
         })
         setItem({...itemshop,byproduct_choice:dataproduct})
     }
 
     const updatechoice=(e)=>{
-        const list_product=itemshop.byproduct_choice.map(item=>{
-            if(item.check){
-                return({...item,user_item_limit:state.user_item_limit,variations:item.variations.map(variation=>{
-                    return({...variation,percent_discount:state.percent_discount,promotion_price:variation.price(1-state.percent_discount/100),promotion_stock:state.promotion_stock})
-                })})
-            }
+        const dataproduct=itemshop.byproduct_choice.map(item=>{
             return({...item,variations:item.variations.map(variation=>{
                 if(variation.check){
-                    return({...variation,percent_discount:state.percent_discount,promotion_price:variation.price(1-state.percent_discount/100),promotion_stock:state.promotion_stock})
+                    return({...variation,percent_discount:state.percent_discount,error:false,
+                        promotion_price:variation.price*(1-state.percent_discount/100),
+                        promotion_stock:state.promotion_stock})
                 }
+                return({...variation})
             })})
         })
-        setItem({...itemshop,byproduct_choice:list_product})
+        setItem({...itemshop,byproduct_choice:dataproduct})
     }
 
     const setenableby=(e,variation,item)=>{
@@ -783,7 +781,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
                                                                     <div className="input currency-input" size="normal" prefix-label="₫" error-message="Giá không hợp lệ" placeholder=" " error="true">
                                                                         <div className={`input__inner ${variation.error?'error':''} input__inner--normal`}>
                                                                             <div className="input__prefix">₫<span className="input__prefix-split"></span></div> 
-                                                                            <input onChange={(e)=>setdiscount(e,'promotion_price',variation,item)} value={variation.promotion_price} type="text" placeholder=" " size="normal" resize="vertical" rows="2" minrows="2" maxLength="13" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                            <input onChange={(e)=>setdiscount(e,'promotion_price',variation,item)} value={Math.round(variation.promotion_price)} type="text" placeholder=" " size="normal" resize="vertical" rows="2" minrows="2" maxLength="13" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                         </div>
                                                                         {variation.error?
                                                                         <p className="input__error-msg">Giá không hợp lệ</p>:''}

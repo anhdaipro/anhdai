@@ -1,12 +1,12 @@
 
 import React, {useState,useEffect,useCallback,useRef,memo} from 'react'
 
-import Calendar from 'react-calendar';
 import { timesubmit } from '../constants';
+import Calendar from './Calendar';
 const scrollToRef = (ref) => window.scrollTo(50, ref.current.offsetTop)   
 
 const Datepicker=(props)=>{
-    const {item,index,setdatevalid,time,edit,data,setlistdate,listdate}=props
+    const {item,index,setdatevalid,time,edit,data,setlistdate,listdate,time_start,time_end}=props
     const [show,setShow]=useState(false)
     const [date,setDate]=useState(()=>{return{time:new Date(),hours:new Date().getHours(),minutes:new Date().getMinutes()}})
     useEffect(()=>{
@@ -71,20 +71,12 @@ const Datepicker=(props)=>{
                 
                 <div className="date_pickers popper_content" style={{display:`${show?'':'none'}`}}>
                     <div className="d-flex date_picker-date">
-                        <div className="calendar-picker">
-                            <div className="months">
-                            <Calendar  
-                                prevLabel={<i className="icon picker-header__icon picker-header__prev"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M6.81066017,8 L10.7803301,4.03033009 C11.0732233,3.73743687 11.0732233,3.26256313 10.7803301,2.96966991 C10.4874369,2.6767767 10.0125631,2.6767767 9.71966991,2.96966991 L5.21966991,7.46966991 C4.9267767,7.76256313 4.9267767,8.23743687 5.21966991,8.53033009 L9.71966991,13.0303301 C10.0125631,13.3232233 10.4874369,13.3232233 10.7803301,13.0303301 C11.0732233,12.7374369 11.0732233,12.2625631 10.7803301,11.9696699 L6.81066017,8 Z"></path></svg></i>}
-                                prev2Label={<i className="icon picker-header__icon picker-header__prev"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M6.71966991,2.96966991 C7.01256313,2.6767767 7.48743687,2.6767767 7.78033009,2.96966991 C8.0732233,3.26256313 8.0732233,3.73743687 7.78033009,4.03033009 L7.78033009,4.03033009 L3.81066017,8 L7.78033009,11.9696699 C8.0732233,12.2625631 8.0732233,12.7374369 7.78033009,13.0303301 C7.48743687,13.3232233 7.01256313,13.3232233 6.71966991,13.0303301 L6.71966991,13.0303301 L2.21966991,8.53033009 C1.9267767,8.23743687 1.9267767,7.76256313 2.21966991,7.46966991 L2.21966991,7.46966991 Z M11.7196699,2.96966991 C12.0125631,2.6767767 12.4874369,2.6767767 12.7803301,2.96966991 C13.0732233,3.26256313 13.0732233,3.73743687 12.7803301,4.03033009 L12.7803301,4.03033009 L8.81066017,8 L12.7803301,11.9696699 C13.0732233,12.2625631 13.0732233,12.7374369 12.7803301,13.0303301 C12.4874369,13.3232233 12.0125631,13.3232233 11.7196699,13.0303301 L11.7196699,13.0303301 L7.21966991,8.53033009 C6.9267767,8.23743687 6.9267767,7.76256313 7.21966991,7.46966991 L7.21966991,7.46966991 Z"></path></svg></i>}
-                                nextLabel={<i className="icon picker-header__icon picker-header__next" ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M9.18933983,8 L5.21966991,11.9696699 C4.9267767,12.2625631 4.9267767,12.7374369 5.21966991,13.0303301 C5.51256313,13.3232233 5.98743687,13.3232233 6.28033009,13.0303301 L10.7803301,8.53033009 C11.0732233,8.23743687 11.0732233,7.76256313 10.7803301,7.46966991 L6.28033009,2.96966991 C5.98743687,2.6767767 5.51256313,2.6767767 5.21966991,2.96966991 C4.9267767,3.26256313 4.9267767,3.73743687 5.21966991,4.03033009 L9.18933983,8 Z"></path></svg></i>}
-                                next2Label={<i className="icon picker-header__icon picker-header__next"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M3.21966991,2.96966991 C3.51256313,2.6767767 3.98743687,2.6767767 4.28033009,2.96966991 L4.28033009,2.96966991 L8.78033009,7.46966991 C9.0732233,7.76256313 9.0732233,8.23743687 8.78033009,8.53033009 L8.78033009,8.53033009 L4.28033009,13.0303301 C3.98743687,13.3232233 3.51256313,13.3232233 3.21966991,13.0303301 C2.9267767,12.7374369 2.9267767,12.2625631 3.21966991,11.9696699 L3.21966991,11.9696699 L7.18933983,8 L3.21966991,4.03033009 C2.9267767,3.73743687 2.9267767,3.26256313 3.21966991,2.96966991 Z M8.21966991,2.96966991 C8.51256313,2.6767767 8.98743687,2.6767767 9.28033009,2.96966991 L9.28033009,2.96966991 L13.7803301,7.46966991 C14.0732233,7.76256313 14.0732233,8.23743687 13.7803301,8.53033009 L13.7803301,8.53033009 L9.28033009,13.0303301 C8.98743687,13.3232233 8.51256313,13.3232233 8.21966991,13.0303301 C7.9267767,12.7374369 7.9267767,12.2625631 8.21966991,11.9696699 L8.21966991,11.9696699 L12.1893398,8 L8.21966991,4.03033009 C7.9267767,3.73743687 7.9267767,3.26256313 8.21966991,2.96966991 Z"></path></svg></i>}
-                                onClickYear={(value, event) => setDate({...date,show:value})}
-                                onChange={(value)=>setDate({...date,time:value})} 
-                                tileDisabled={({date, view }) => ((edit && date>new Date(data.valid_to)) || date<new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()))}
-                                value={date.time} 
-                            />
-                            </div>
-                        </div>
+                        <Calendar
+                            onChange={value=>setDate({...date,time:value})}
+                            value={date.time}
+                            time_start={time_start}
+                            time_end={time_end}
+                        />
                         <div className="date-picker-panel__time" >
                             <div className="time-picker-panel">
                                 <div className="time-picker-panel__body">
@@ -132,33 +124,6 @@ const Datepicker=(props)=>{
                     <div className="date-picker-panel__footer">
                         <button onClick={()=>{setdatevalid(index,date)
                         setShow(false)
-                        const datatime=index==0?{valid_from:new Date(datevalid),valid_to:new Date(data.valid_to)}:{valid_to:new Date(datevalid),valid_from:new Date(data.valid_from)}
-                        if(new Date(datevalid)<new Date() || datatime.valid_to.getTime()<datatime.valid_from.getTime()+3600*1000){
-                            if(new Date(datevalid).getTime()<new Date().getTime()){
-                                const listdates=listdate.map(item=>{
-                                    if(index==0){
-                                        return({...item,error:true,text:`Vui lòng nhập thời gian bắt đầu muộn hơn thời gian hiện tại.`})
-                                    }
-                                    return({...item,error:false})
-                                })
-                                setlistdate(listdates)
-                            }
-                            else{
-                                const listdates=listdate.map(item=>{
-                                    if(index==0){
-                                        return({...item,error:false,text:`Vui lòng nhập thời gian bắt đầu muộn hơn thời gian hiện tại.`})
-                                    }
-                                    return({...item,error:true,text:'Chương trình phải kéo dài ít nhất là 1h kể từ khi bắt đầu'})
-                                })
-                                setlistdate(listdates)
-                            }
-                            
-                        }
-                        else{
-                            setlistdate(listdate.map(item=>{
-                                return({...item,error:false})
-                            }))
-                        }
                         }} className="button-select ">xac nhan</button>
                     </div>
                 </div>
@@ -173,7 +138,7 @@ const Datepicker=(props)=>{
     </>
     )
 }
-const Timeoffer=({data,setdatevalid,edit})=>{
+const Timeoffer=({data,setdatevalid,edit,time_end,time_start})=>{
     const [date,setDate]=useState(()=>[{time:new Date(),show:false,hours:new Date().getHours(),minutes:new Date().getMinutes()}
     ,{time:new Date(),show:false,hours:new Date().getHours()+1,minutes:new Date().getMinutes()}])
     useEffect(()=>{
@@ -183,11 +148,8 @@ const Timeoffer=({data,setdatevalid,edit})=>{
         }
     },[data])
     
-    const setlistdate=(data)=>{
-        setDate(data)
-    }
     
-   
+
     return(
         <div>
             {data?
@@ -199,7 +161,8 @@ const Timeoffer=({data,setdatevalid,edit})=>{
                     edit={edit}
                     data={data}
                     listdate={date}
-                    setlistdate={data=>setlistdate(data)}
+                    time_end={time_end}
+                    time_start={time_start}
                     time={index==0?new Date(data.valid_from):new Date(data.valid_to)}
                     setdatevalid={(index,date)=>setdatevalid(index,date)}
                     />  

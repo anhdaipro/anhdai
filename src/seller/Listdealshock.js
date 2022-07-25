@@ -1,38 +1,91 @@
 import React, {useState,useCallback,useEffect} from 'react'
-import {formatter,timepromotion} from "../constants"
-import {useNavigate} from 'react-router-dom'
-import {listdealhopURL,} from "../urls"
+import {formatter,timepromotion,percent,timeformat,listchoice} from "../constants"
+import {useNavigate,useSearchParams} from 'react-router-dom'
+import {dataAddonURL, listAddonshopURL,} from "../urls"
 import axios from 'axios'
 import { headers } from '../actions/auth'
+import Navbar from './Navbar'
+import Tabs from './Tabs'
+const now=new Date()
+now.setDate(new Date().getDate()-7)
 const Listdealshop=()=>{
     const [listdeal,setDeal]=useState([])
     const [loading,setLoading]=useState(true)
+    const [count,setCount]=useState(0)
+    const [choice,setChoice]=useState('all')
+    const [params, setSearchParams] = useSearchParams();
+    const [stats,setStats]=useState([{name:'Doanh số sản phẩm chính',id:1,info:'Tổng giá trị của các đơn hàng có áp dụng discount Của Shop đã được xác nhận, bao gồm phí vận chuyển và không bao gồm các khuyến mãi khác, tính trong khoảng thời gian đã chọn.',result:0,result_last:0,symbol:true},
+    {name:'Doanh số sản phẩm mua kèm',id:2,info:'Tổng số lượng các đơn hàng bao gồm sản phẩm có áp dụng khuyến mãi được xác nhận, tính trong khoảng thời gian đã chọn.',result:0,result_last:0},
+    {name:'Đơn hàng',id:3,info:'Tổng số lượng sản phẩm có áp dụng khuyến mãi đã bán, tính trên toàn bộ các đơn hàng được xác nhận trong khoảng thời gian đã chọn.',result:0,result_last:0},
+    {name:'Người mua',id:4,info:'Tổng số lượng người mua duy nhất đã mua sản phẩm có áp dụng khuyến mãi, tính trên toàn bộ các đơn hàng được xác nhận trong khoảng thời gian đã chọn.',result:0,result_last:0}])
     const navite=useNavigate()
     useEffect(()=>{
-        axios.get(listdealhopURL,headers)
-        .then(res=>{
-            setDeal(res.data)
-        })
+        (async()=>{
+            try{
+            const obj1=await axios.get(dataAddonURL,headers)
+            const datapromotion=stats.map(item=>{
+                if(item.id==1){
+                    return ({...item,result:obj1.amount_main
+                        ,result_last:obj1.data.amount_main_last})
+                }
+                else if(item.id==2){
+                    return ({...item,result:obj1.data.amount_byproducts,result_last:obj1.data.amount_byproducts_last})
+                    
+                }
+                else if(item.id==3){
+                    return ({...item,result:obj1.data.total_order,result_last:obj1.data.total_order_last})
+                }
+                else{
+                    return ({...item,result:obj1.data.number_buyer,result_last:obj1.data.number_buyer_last})
+                }
+            })
+            setStats(datapromotion)
+            }
+            catch(err){
+                console.log(err)
+            }
+        })()
     },[])
+    
+
+    useEffect(()=>{
+        document.addEventListener('scroll',addItem)
+        return () => {
+            document.removeEventListener('scroll', addItem)
+        }
+    },[count,loading,listdeal.length])
+
+    const addItem=()=>{
+        (async()=>{
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listdeal.length< count){
+                setLoading(false)
+                const res =await axios.get(`${listAddonshopURL}?&offset=${listdeal.length}`,headers)
+                setDeal(current=>[...current,...res.data.deal_shocks])
+                setLoading(true)
+            }
+        })()
+    }
 
     const setdetail=(item)=>{
         navite(`/marketing/add-on-deal/${item.id}`)
     }
     return(
         <>
-
+            <Navbar/>
+            <div data-v-a555442e className="wrapper">
                 <div data-v-6b00c90e="" data-v-4d2c3cc3="" className="bundle-list-page"> 
-                    <div className="wrapper">
+                    
                         <p data-v-771d39f6="" className="list-title">Deal Khuyến Mãi</p>
                         <div data-v-439649ed="" data-v-b811fefc="" data-v-6b00c90e="" className="metrics-dashboard deal-metrics-dashboard card"> 
                             <div className="card__content">
                                 <div data-v-439649ed="" className="header">
                                     <div data-v-439649ed="" className="title">
                                         <div data-v-439649ed="" style={{lineHeight: '20px'}}>Chỉ số quan trọng</div> 
-                                        <div data-v-439649ed="" className="time">(Từ 06-04-2022 đến 13-04-2022GMT+7)</div>
+                                        <div data-v-439649ed="" className="time">(Từ {timeformat(now)} đến {timeformat(new Date().toDateString())}GMT+7)</div>
                                     </div> 
                                     <div data-v-439649ed="" className="header-action"> 
-                                        <button data-v-439649ed="" type="button" className="button button--link button--normal">
+                                        <button onClick={()=>navite('/datacenter/marketing/tools/addon')} data-v-439649ed="" type="button" className="button button--link button--normal">
                                             <i className="icon">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2.5 2a.5.5 0 01.5.5V14h11.5a.5.5 0 110 1h-12a.5.5 0 01-.5-.5v-12a.5.5 0 01.5-.5zm11.818 2.614a.5.5 0 01.119.63l-.05.074-3.6 4.375a.5.5 0 01-.661.1l-.075-.06-1.41-1.37-3.255 3.955a.5.5 0 01-.823-.561l.05-.075 3.6-4.375a.5.5 0 01.661-.1l.075.06 1.41 1.37 3.255-3.955a.5.5 0 01.704-.068z"></path></svg>
                                             </i>
@@ -41,9 +94,10 @@ const Listdealshop=()=>{
                                     </div>
                                 </div> 
                                 <div data-v-439649ed="" className="metrics-container">
+                                {stats.map(item=>
                                     <div data-v-439649ed="" className="metrics" style={{flex: '1 1 0%'}}>
                                         <div data-v-439649ed="" className="metrics-title">
-                                            <span data-v-439649ed="" className="metrics-name">Doanh Số</span> 
+                                            <span data-v-439649ed="" className="metrics-name">{item.name}</span> 
                                             <div data-v-439649ed="" className="popover popover--light">
                                                 <div className="popover__ref">
                                                     <i data-v-439649ed="" className="icon">
@@ -52,23 +106,23 @@ const Listdealshop=()=>{
                                                 </div> 
                                                 <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
                                                     <div className="popover__content">
-                                                        <div data-v-439649ed="">Tổng giá trị của các đơn hàng có áp dụng deal Của Shop đã được xác nhận, bao gồm phí vận chuyển và không bao gồm các khuyến mãi khác, tính trong khoảng thời gian đã chọn.</div>
+                                                        <div data-v-439649ed="">{item.info}</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div> 
                                         <p data-v-439649ed="" className="metrics-data">
-                                            <span className="metrics-symbol">₫</span>
-                                            <span className="metrics-number">0</span>
+                                            {item.symbol?<span className="metrics-symbol">₫</span>:''}
+                                            <span className="metrics-number">{formatter.format(item.result)}</span>
                                         </p> 
                                         <p data-v-439649ed="" className="metrics-ratio">so với 7 ngày trước
                                             <span data-v-439649ed="" className="metrics-percent">
-                                                <span className="metrics-number">0.00</span>
+                                                <span className="metrics-number">{percent(item.result,item.result_last)}</span>
                                                 <span className="metrics-symbol">%</span>
                                             </span>  
                                         </p>
                                     </div>
-                                    
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -94,17 +148,17 @@ const Listdealshop=()=>{
                                 </div>
                                 <div data-v-439649ed="" className="landing-page-content aguth_iEwtiEw1ejuP3Yg">
                                     <div className="tabs tabs-line tabs-normal tabs-top landing-page-tab">
-                                        <div className="tabs__nav">  
-                                            <div className="tabs__nav-warp">
-                                                <div className="tabs__nav-tabs" style={{transform: 'translateX(0px)'}}>
-                                                    <div className="tabs__nav-tab active" style={{whiteSpace: 'normal'}}>Tất cả </div>
-                                                    <div className="tabs__nav-tab" style={{whiteSpace: 'normal'}}>Đang diễn ra </div>
-                                                    <div className="tabs__nav-tab" style={{whiteSpace: 'normal'}}>Sắp diễn ra </div>
-                                                    <div className="tabs__nav-tab" style={{whiteSpace: 'normal'}}>Đã kết thúc </div>
-                                                </div> 
-                                                <div className="tabs__ink-bar" style={{width: '72px', transform: 'translateX(0px)'}}></div>
-                                            </div> 
-                                        </div> 
+                                        <Tabs
+                                        listchoice={listchoice}
+                                        url={listAddonshopURL}
+                                        listchoice={listchoice}
+                                        choice={choice}
+                                        loading={loading}
+                                        setchoice={data=>setChoice(data)}
+                                        setcount={data=>setCount(data)}
+                                        setdata={data=>setDeal(data)}
+                                        setloading={data=>setLoading(data)}
+                                        />
                                         <div className="tabs__content">
                                             <div className="tabs-tabpane"></div>
                                             <div className="tabs-tabpane" style={{display: 'none'}}></div>
@@ -119,7 +173,7 @@ const Listdealshop=()=>{
                                                 <div data-v-40673d96="" className="input-group search-type">
                                                     <span className="input-group__prepend" style={{width: '160px'}}>
                                                         <div data-v-40673d96="" className="select">
-                                                            <div tabindex="0" className="selector selector--normal"> 
+                                                            <div tabindex="0" className="selector selector--normal item-space"> 
                                                                 <div className="selector__inner line-clamp--1">Tên chương trình</div> 
                                                                 <div className="selector__suffix"> 
                                                                     <i className="selector__suffix-icon icon">
@@ -173,7 +227,7 @@ const Listdealshop=()=>{
                                         </div>
                                     </div>
                                     <div data-v-771d39f6="" className="landing-page-filter-hints">
-                                        Có tất cả <em data-v-771d39f6="" place="count">8</em> deal Khuyến Mãi
+                                        Có tất cả <em data-v-771d39f6="" place="count">{count}</em> deal Khuyến Mãi
                                     </div>
                                     <div data-v-439649ed="" className="table list-table">
                                         <div className="table__header-container" style={{position: 'sticky', top: '56px', zIndex: 2}}> 
@@ -371,6 +425,17 @@ const Listdealshop=()=>{
                                                                     </tbody>
                                                                 </div>
                                                             </div>
+                                                            {count==0?
+                                                            <div class="table__empty">
+                                                                <div data-v-6b00c90e="" class="default-page list-no-result">
+                                                                    <i class="default-page__icon icon normal">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 88"><g fill="none" fill-rule="evenodd" transform="translate(-4 -3)"><rect width="96" height="96" fill="#D8D8D8" opacity="0"></rect><ellipse cx="49" cy="86" fill="#F2F2F2" rx="45" ry="5"></ellipse><g stroke="#D8D8D8" transform="rotate(-8 143.93 -42.979)"><rect width="7" height="19" x="1" y="21" fill="#FAFAFA" rx="2"></rect><path fill="#FAFAFA" d="M10.8736633,41.4199548 C10.8104883,41.4199548 10.7473763,41.4239459 10.6847045,41.4319042 C9.86287689,41.5362633 9.28125369,42.287086 9.38561275,43.1089136 L11.5443429,60.1089136 C11.6394986,60.858265 12.2770247,61.4199548 13.0323935,61.4199548 L16.1748757,61.4199548 C16.9302445,61.4199548 17.5677706,60.858265 17.6629263,60.1089136 L19.8216565,43.1089136 C19.8296148,43.0462418 19.8336059,42.9831299 19.8336059,42.9199548 C19.8336059,42.0915277 19.162033,41.4199548 18.3336059,41.4199548 L10.8736633,41.4199548 Z"></path><path fill="#FFF" d="M6.18492396,14.3994139 C5.49369034,14.5479211 5,15.1589431 5,15.8659496 L5,45.1340504 C5,45.8410569 5.49369034,46.4520789 6.18492396,46.6005861 L66.184924,59.4912111 C66.2884734,59.513458 66.3940878,59.5246754 66.5,59.5246754 C67.3284271,59.5246754 68,58.8531025 68,58.0246754 L68,2.97532465 C68,2.86941241 67.9887827,2.763798 67.9665357,2.66024861 C67.7925241,1.85030328 66.9948693,1.33477721 66.184924,1.50878891 L6.18492396,14.3994139 Z"></path><path fill="#FAFAFA" d="M60.0037917,2.86333895 L60.5236588,58.2648486 L66.080424,59.4645943 C66.1894478,59.4881334 66.3006173,59.5 66.4120933,59.5 C67.2881455,59.5 68,58.7822686 68,57.894856 L68,3.10557927 C68,2.99232089 67.9881413,2.87938372 67.964624,2.76865444 C67.780501,1.90172832 66.936587,1.35098915 66.0816147,1.53558232 L60.0037917,2.86333895 Z"></path></g><g fill="#D8D8D8" transform="translate(80.16 3.04)"><circle cx="10" cy="13" r="3" opacity=".5"></circle><circle cx="2" cy="9" r="2" opacity=".3"></circle><path d="M8.5,1 C7.67157288,1 7,1.67157288 7,2.5 C7,3.32842712 7.67157288,4 8.5,4 C9.32842712,4 10,3.32842712 10,2.5 C10,1.67157288 9.32842712,1 8.5,1 Z M8.5,7.10542736e-15 C9.88071187,7.10542736e-15 11,1.11928813 11,2.5 C11,3.88071187 9.88071187,5 8.5,5 C7.11928813,5 6,3.88071187 6,2.5 C6,1.11928813 7.11928813,7.10542736e-15 8.5,7.10542736e-15 Z" opacity=".3"></path></g></g></svg>
+                                                                        </i> 
+                                                                        <div class="default-page__content">
+                                                                        Không có Deal shock nào
+                                                                    </div>
+                                                                </div>
+                                                            </div>:''}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -382,7 +447,8 @@ const Listdealshop=()=>{
                             </div>
                         </div>
                     </div> 
-                </div>
+                
+            </div>
         </>
     )
 }

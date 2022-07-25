@@ -51,25 +51,19 @@ export const list_review_text_star=[
       'Thời gian giao hàng rất nhanh'
       ]
   ]
-
+export  const time_end=new Date()
+time_end.setMonth(new Date().getMonth()+4)
 export const valid_from=new Date()
 valid_from.setHours(new Date().getHours()+1)
 valid_from.setMinutes(0)
 export const valid_to=new Date()
+
 valid_to.setHours(new Date().getHours()+2)
 valid_to.setMinutes(0)
 export function rating_score(number,review){
-  let rating=[]
-  for(let k=1;k<number;k++){
-      if(review.review_rating!=undefined){
-        let score=review.review_rating
-        rating.push(<div className="rating-stars__star _2Jb05n" style={{width: '14px', height: '14px'}}>{k<=score?star_solid:star_empty}</div>)
-      }
-      else{
-        rating.push(<div className="rating-stars__star _2Jb05n" style={{width: '14px', height: '14px'}}>{star_empty}</div>)
-      }
-  }
-  return rating
+  return Array(number).fill().map((_,k)=>
+      <div className="rating-stars__star _2Jb05n" style={{width: '14px', height: '14px'}}>{review.review_rating?k<=review.review_rating?star_solid:star_empty:star_empty}</div>
+  )
 }
 export const regExp = /^[a-zA-Z@.]+$/;
 export function validatEemail(email)
@@ -120,6 +114,11 @@ export function hidestring(username){
   }
   return string
 }
+export const listchoice=[{name:"Tất cả",value:'all'},
+{name:"Đang diễn ra",value:'current'},
+{name:'Sắp diễn ra',value:"upcoming"},
+{name:'Đã kêt thúc',value:"finished"}
+]
 export const limit_choice=[{value:false,name:'Unlimit'},{value:true,name:"Limit"}]
 export const itemvariation=(data)=>{
   let item_variation=''
@@ -248,15 +247,34 @@ export function groupBy(data, property) {
   }, []);
 }
 
+export const percent=(value,value_last)=>{
+  if(value>0 && value_last==0){
+      return `+ 100`
+  }
+  else if(value==0 && value_last==0 || value==value_last){
+      return `0.00`
+  }
+  else{
+      if(value<value_last){
+      return `- ${((1- value/value_last)*100).toFixed(2)}`
+      }
+      else{
+          return `+ ${((value/value_last-1)*100).toFixed(2)}`
+      }
+  }
+}
+export const partition=(array, n)=>{
+  return array.length ? [array.splice(0, n)].concat(partition(array, n)) : [];
+}
 export const rating=(number,item)=>{
   let result=[]
   if(item.review_rating>0){
-    for(let k=1;k<number;k++){
+    return Array(number).fill().map((_,k)=>{
       let int_start=item.review_rating
       let int_part = Math.trunc(int_start); // returns 3
       let float_part = Number((int_start-int_part).toFixed(2)); 
       if(k<= Math.trunc(item.review_rating)){
-        result.push(
+        return(
           <div className="rating-stars__star-wrapper">
             <div className="rating-stars__lit" style={{width: '100%'}}>
               <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__gold-star icon-rating-solid"><polygon points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10"></polygon></svg>
@@ -265,7 +283,7 @@ export const rating=(number,item)=>{
           </div>)
           }
       else{
-        result.push(
+        return(
           <div className="rating-stars__star-wrapper">
             <div className="rating-stars__lit" style={{width: `${float_part*100}%`}}>
               <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__gold-star icon-rating-solid"><polygon points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10"></polygon></svg>
@@ -273,9 +291,8 @@ export const rating=(number,item)=>{
             <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__dark-star icon-rating-solid"><polygon points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10"></polygon></svg>
           </div>)
         }
-      }
+      })
     }
-    return result
   }
 export function matchYoutubeUrl(url) {
   var p = /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;

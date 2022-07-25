@@ -7,13 +7,15 @@ import Productoffer from "../seller/Productoffer"
 import React, {useState,useEffect,useCallback,useRef,memo,useMemo} from 'react'
 import Pagination from "./Pagination"
 import {newcomboURL,} from "../urls"
-import {formatter,timesubmit,combo_type,valid_from,valid_to} from "../constants"
+import {formatter,timesubmit,combo_type,valid_from,valid_to,time_end} from "../constants"
 import { headers } from '../actions/auth';
 import {debounce} from 'lodash'
 let Pagesize=5
 const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_combo})=>{
     const navite=useNavigate()
     const {id}=useParams()
+    const [time_end,setTime_end]=useState(()=>time_end.toTimeString())
+    const [time_start,setTime_start]=useState(()=>new Date().toTimeString())
     const [combo,setCombo]=useState(()=>{return{
         quantity_to_reduced:'',discount_price:'',price_special_sale:'',
         discount_percent:0,limit_order:'',promotion_combo_name:'',combo_type:'1',
@@ -273,6 +275,8 @@ const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_com
                                         <div className="flex-col">
                                             <Timeoffer
                                             edit={edit}
+                                            time_end={time_end}
+                                            time_start={time_start}
                                             data={combo}
                                             setdatevalid={(index,date)=>setdatevalid(index,date)}
                                             />

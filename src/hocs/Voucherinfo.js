@@ -20,7 +20,7 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
         limit:[{value:'L',name:'Limited'},{value:'U',name:'Unlimited'}],open_discount:false,open_time:false})
     const [voucher,setVoucher]=useState({name_of_the_discount_program:'',code_type:'All',code:'',
         discount_type:'1',amount:null,percent:null,
-        maximum_usage:null,voucher_type:"Offer",maximum_discount:'U',minimum_order_value:null,
+        maximum_usage:null,voucher_type:"Offer",maximum_discount:0,minimum_order_value:null,
         valid_from:valid_from.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
         valid_to:valid_to.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
         setting_display:'Show many'})

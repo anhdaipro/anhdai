@@ -10,7 +10,7 @@ const Sidebarmenu=()=>{
     {info:[{name:'All product',url:'/vendor/product/list'},{name:'Add Product',url:'/vendor/product/new'},],show:true,name:'Manage product',src:''},
     {info:[{name:'Marketing channel',url:'/vendor/marketing'},{name:'Adventity',url:'/vendor/marketing'},
     {name:'Vocher shop',url:'/marketing/vouchers/list'}],show:true,name:'Marketing channel',src:''},
-    {info:[{name:'Sales Analysis',url:'/vendor/datacenter'},{name:'Operational Efficiency',url:'/vendor/shipping'},
+    {info:[{name:'Sales Analysis',url:'/datacenter/dashboard'},{name:'Operational Efficiency',url:'/vendor/shipping'},
     ],show:true,name:'Data',src:''},
     {info:[{name:'Shop Rating',url:'/setting/shop/rating'},
     {name:'Shop Profile',url:'/setting/shop/profile'},{name:'Decorate shop',url:'/vendor/shipping'},

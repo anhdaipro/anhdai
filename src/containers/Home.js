@@ -1,14 +1,12 @@
 import React,{useState,useEffect,createRef} from 'react';
 import axios from 'axios';
 import Navbar from "./Navbar"
-import {formatter,} from "../constants"
+import {formatter,partition} from "../constants"
 import {ItemRecommend,topsearchURL,imagehomeURL,dashboardpromotionURL,listitemflashsalelURL,listcategoryURL} from "../urls"
 import { Link } from 'react-router-dom';
 import SlideshowGallery from "../hocs/Slideshow"
 import { headers } from '../actions/auth';
-function partition(array, n) {
-    return array.length ? [array.splice(0, n)].concat(partition(array, n)) : [];
-}
+
 const int = 2;
 class ImageHome extends React.Component {
     constructor(props) {
@@ -309,31 +307,35 @@ const Itemflashsale =()=> {
 export default class HomePage extends React.Component {
     state={items:[],item_common:[],list_trend_search:[],list_top_search:[],showimage:true,from_index:0}
     componentDidMount() {  
-        axios.get(`${dashboardpromotionURL}?time=yesterday`,headers)
+        axios.get(`${dashboardpromotionURL}?time=currentday&choice=combo`,headers)
         .then(res=>{
 
         })
-        document.body.onscroll=()=>{
-            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-                if(clientHeight + scrollTop == scrollHeight && this.state.items.length==0){
-                    (async () => {
-                        try {
-                          const res1 = await axios.get(topsearchURL,headers)
-                          this.setState({list_top_search:res1.data.item_top_search,list_trend_search:res1.data.item_top_search})
-                        } catch (error) {
-                          console.log(error);
-                        }
-                      })();
-                    (async () => {
-                        try {
-                            const res = await axios.get(ItemRecommend,headers)
-                            let data=res.data
-                            this.setState({items:data});
-                        } catch (error) {
-                            console.log(error);
-                        }
-                })();   
-            }
+        document.addEventListener('scroll',this.addItem)
+        return () => {
+            document.removeEventListener('scroll', this.addItem)
+        }
+    }
+    addItem=()=>{
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            if(clientHeight + scrollTop == scrollHeight && this.state.items.length==0){
+                (async () => {
+                    try {
+                      const res1 = await axios.get(topsearchURL,headers)
+                      this.setState({list_top_search:res1.data.item_top_search,list_trend_search:res1.data.item_top_search})
+                    } catch (error) {
+                      console.log(error);
+                    }
+                  })();
+                (async () => {
+                    try {
+                        const res = await axios.get(ItemRecommend,headers)
+                        let data=res.data
+                        this.setState({items:data});
+                    } catch (error) {
+                        console.log(error);
+                    }
+            })();   
         }
     }
     addtrendsearch=(value)=>{

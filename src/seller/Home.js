@@ -49,9 +49,9 @@ const HomePageSeller=()=>{
                 borderColor: 'rgb(88, 183, 241)',
                 backgroundColor: 'rgb(88, 183, 241)',
             },
-            ],
-        })
-    const [option,setOption]=useState({options:{
+        ],
+    })
+    const [options,setOptions]=useState({
         responsive: true,
             plugins:{
                 legend: {
@@ -64,7 +64,7 @@ const HomePageSeller=()=>{
                 min: 0,                                 
             }
         },
-    }})
+    })
     
     useEffect(()=>{
         const getJournal = async () => {
@@ -249,8 +249,9 @@ const HomePageSeller=()=>{
                 }
             }
         }
-        setOption({...option,options:options})
-    }, [chart]);
+        setOptions(options)
+    }, []);
+
     return(
         <>
             <Navbar/>
@@ -310,7 +311,7 @@ const HomePageSeller=()=>{
                                         <p>Tổng quan về dữ liệu của cửa hàng cho kích thước của đơn hàng đã xác nhận</p>
                                     </div>
                                     <div>
-                                        <a href="{% url 'vendor:dashboard' %}">Xem them</a>
+                                        <Link to="datacenter/dashboard">Xem them</Link>
                                     </div>
                                 </div>
                                 <div className="item-spaces">
@@ -338,7 +339,7 @@ const HomePageSeller=()=>{
                                                         margin: 0,
                                                         borderWidth: 0}}
                                                         ref={chartRef}
-                                                        options={option.options}
+                                                        options={options}
                                                         data={chart}
                                                     />
                                                 </div>

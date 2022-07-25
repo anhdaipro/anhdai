@@ -438,14 +438,14 @@ class Cart extends React.Component{
             
             let count_order=0
             let total=0
-            let total_discount=0
+            let discount_product=0
             let discount_promotion=0
             let discount_deal=0
             let discount_voucher_shop=0
             let count_cartitem=0
             obj1.data.orders.map(order=>{
                 total+=order.total
-                total_discount+=order.total_discount
+                discount_product+=order.discount_product
                 discount_promotion+=order.discount_promotion
                 discount_deal+=order.discount_deal
                 discount_voucher_shop+=order.discount_voucher_shop
@@ -465,7 +465,7 @@ class Cart extends React.Component{
                 count_order:count_order,
                 total:total,
                 count_cartitem:count_cartitem,
-                total_discount:total_discount,
+                discount_product:discount_product,
                 discount_promotion:discount_promotion,
                 discount_deal:discount_deal,
                 list_shop:list_shop,
@@ -518,9 +518,7 @@ class Cart extends React.Component{
         axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let data=rep.data
-            this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
-                discount_deal:data.discount_deal,count_order:data.count,
-                discount_voucher_shop:data.discount_voucher_shop,count_cartitem:data.count_cartitem,
+            this.setState({...data,
                 list_cartitem:this.state.list_cartitem
             })
         }) 
@@ -545,9 +543,7 @@ class Cart extends React.Component{
         axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let data=rep.data
-            this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
-                discount_deal:data.discount_deal,count_order:data.count,
-                discount_voucher_shop:data.discount_voucher_shop,count_cartitem:data.count_cartitem,
+            this.setState({...data,
                 list_cartitem:this.state.list_cartitem
             })
         }) 
@@ -567,10 +563,7 @@ class Cart extends React.Component{
         axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let data=rep.data
-            this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
-                discount_deal:data.discount_deal,count_order:data.count,
-                discount_voucher_shop:data.discount_voucher_shop
-            })
+            this.setState({...data})
         }) 
     }
 
@@ -638,9 +631,7 @@ class Cart extends React.Component{
                 }
                 return({...cartitem})
             })
-            this.setState({total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
-                discount_deal:data.discount_deal,count_order:data.count,
-                discount_voucher_shop:data.discount_voucher_shop,list_cartitem:list_cartitem
+            this.setState({...data,list_cartitem:list_cartitem
             })
         }) 
         
@@ -659,9 +650,7 @@ class Cart extends React.Component{
             }
             return ({...cartitem})
         }):this.state.list_cartitem.filter(item=>item.id!=itemchoice.id)
-        this.setState({list_cartitem:list_cartitem,total:data.total,total_discount:data.total_discount,discount_promotion:data.discount_promotion,
-            discount_deal:data.discount_deal,count_order:data.count,
-            discount_voucher_shop:data.discount_voucher_shop})
+        this.setState({list_cartitem:list_cartitem,...data})
         })
     }
 
@@ -732,7 +721,7 @@ class Cart extends React.Component{
 
     checkout(e,warring){
         e.stopPropagation()
-        if(this.state.count_order>0){
+        if(this.state.list_cartitem.filter(item=>item.check).length>0){
             this.setState({error:false})
             window.location.href='/checkout'
         }
@@ -790,7 +779,7 @@ class Cart extends React.Component{
             }
         }
         let {count,count_order,total,discount_promotion,loading,count_cartitem,
-        discount_deal,total_discount,discount_voucher_shop,list_shop,
+        discount_deal,discount_product,discount_voucher_shop,list_shop,
         warring,list_cartitem}=this.state
         return(
             <>
@@ -991,20 +980,20 @@ class Cart extends React.Component{
                                         <div className=""><button className="clear-btn-style">Bỏ sản phẩm không hoạt động</button></div>
                                         <button className="clear-btn-style _2mPWt7">Lưu vào mục Đã thích</button>
                                         <div className="_2ntEgZ"></div>
-                                        {total_discount>0||discount_deal>0||discount_promotion>0||discount_voucher_shop>0 && this.state.show_order?
+                                        {discount_product>0||discount_deal>0||discount_promotion>0||discount_voucher_shop>0 && this.state.show_order?
                                         <div className="stardust-popover" onMouseEnter={()=>this.setState({show_order:true})} onMouseLeave={()=>this.setState({show_order:false})}>
                                             <div className="stardust-popover__target">
                                                 <div className="_2BT_es">
                                                     <div className="item-center">
                                                         <div className="flex-end _2LMWss">
                                                             <div className="_10A7e2">Total payment ({count_order} {count_order>1?'products':'product'}):</div>
-                                                            <div className="nBHs8H">₫{formatter.format(total-total_discount-discount_voucher_shop-discount_promotion-discount_deal)}</div>
+                                                            <div className="nBHs8H">₫{formatter.format(total-discount_product-discount_voucher_shop-discount_promotion-discount_deal)}</div>
                                                         </div>
                                                         <div className="M2OhX6">
                                                             <svg viewBox="0 0 12 12" fill="none" width="12" height="12" color="rgba(0, 0, 0, 0.54)"><path fillRule="evenodd" clipRule="evenodd" d="M6 4L.854 9.146.146 8.44l5.147-5.146a1 1 0 011.414 0l5.147 5.146-.707.707L6 4z" fill="currentColor"></path></svg>
                                                         </div>
                                                     </div>
-                                                    <div className="_1TwgPm">Tiết kiệm<span className="_2e4fz5">₫{formatter.format(total_discount+discount_voucher_shop+discount_promotion+discount_deal)}k</span></div>
+                                                    <div className="_1TwgPm">Tiết kiệm<span className="_2e4fz5">₫{formatter.format(discount_product+discount_voucher_shop+discount_promotion+discount_deal)}k</span></div>
                                                 </div>
                                             </div>
                                             {this.state.show_order?
@@ -1021,10 +1010,10 @@ class Cart extends React.Component{
                                                             </div>
                                                         </div>
                                                         <div className="_2gELoZ _16PoCd">
-                                                            {this.state.total_discount>0?
+                                                            {this.state.discount_product>0?
                                                             <div className="_1219oq">
                                                                 <span className="_1QnjKN">Giảm giá sản phẩm</span>
-                                                                <span className="">-₫{formatter.format(this.state.total_discount)}</span>
+                                                                <span className="">-₫{formatter.format(this.state.discount_product)}</span>
                                                             </div>:''}
                                                             {this.state.discount_voucher_shop>0?
                                                                 <div className="_1219oq">
@@ -1045,11 +1034,11 @@ class Cart extends React.Component{
                                                         <div className="_2gELoZ">
                                                             <div className="_1219oq">
                                                                 <span className="_1QnjKN uDWyka">Tiết kiệm</span>
-                                                                <span className="imvFus">-₫{formatter.format(this.state.total_discount+this.state.discount_voucher_shop+this.state.discount_promotion+this.state.discount_deal)}</span>
+                                                                <span className="imvFus">-₫{formatter.format(this.state.discount_product+this.state.discount_voucher_shop+this.state.discount_promotion+this.state.discount_deal)}</span>
                                                             </div>
                                                             <div className="_1219oq">
                                                                 <span className="_1QnjKN uDWyka">Tổng số tiền</span>
-                                                                <span className="_3pc_Bt">₫{formatter.format(this.state.total-this.state.total_discount-discount_voucher_shop-this.state.discount_promotion-this.state.discount_deal)}</span>
+                                                                <span className="_3pc_Bt">₫{formatter.format(this.state.total-this.state.discount_product-discount_voucher_shop-this.state.discount_promotion-this.state.discount_deal)}</span>
                                                             </div>
                                                             <div className="K9ylvZ">Số tiền cuối cùng thanh toán</div>
                                                         </div>

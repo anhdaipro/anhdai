@@ -1090,8 +1090,8 @@ const Detaildealshock=()=>{
                                                                         </div> 
                                                                         <span className="split">or</span> 
                                                                         <div className="input discount-input" size="normal" placeholder=" ">
-                                                                            <div className="input__inner input__inner--normal">
-                                                                                <input type="text" onChange={(e)=>setdiscount(e,'percent_discount',variation,item)} value={variation.percent_discount>0?('0'+variation.percent_discount).slice(-2):'0'} placeholder=" " size="normal" resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                            <div className="input-inner input__inner--normal">
+                                                                                <input type="text" onChange={(e)=>setdiscount(e,'percent_discount',variation,item)} value={variation.percent_discount>0?('0'+variation.percent_discount).slice(-2):'0'} placeholder=" " size="normal" resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="form-select input__input"/> 
                                                                                 <div className="input__suffix"><span className="input__suffix-split"></span>%GIẢM</div>
                                                                             </div>
                                                                         </div>

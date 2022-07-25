@@ -62,6 +62,13 @@ import  Ratingshop from './seller/Ratingshop'
 import Profileshop from './seller/Profileshop'
 import Shippingmanagement from "./seller/Shippingmanagement"
 import Flashsale from "./containers/Flashsale"
+import DashboardVoucher from './seller/DashboardVoucher'
+import DashboardShockdeal from './seller/DashboardShockdeal'
+import DashboardFlashsale from './seller/DashboardFlashsale'
+import DashboardProgram from './seller/DashboardProgram'
+import DashboardPromotion from './seller/DashboardPromotion'
+import Calendar from './hocs/Calendar'
+
 const Appstore=()=>{
 return(
         <Provider store={store}>
@@ -71,6 +78,7 @@ return(
                                         <Route exact path="/" element={<Home/>}/>
                                         <Route exact path='/password/reset/confirm/:uid/:token'element={<ResetPasswordConfirm/>} />
                                         <Route path="*" element={<NoPage />} />
+                                        <Route exact path="/calendar" element={<Calendar/>}/>
                                         <Route exact path='/search' element={<Searchitem/>} /> 
                                         <Route  path='/buyer/login/otp' element={<Loginotp replace to="/" />} />
                                         <Route  path='/buyer/login' element={<Login replace to="/" />} />
@@ -116,7 +124,12 @@ return(
                                         <Route exact path='/sale/order' element={<Shippingmanagement/>} /> 
                                         <Route exact path='/vendor/product/list' element={<Listproduct/>} /> 
                                         <Route exact path='/vendor/shipping/list' element={<Shipping/>} /> 
-                                        <Route exact path='/vendor/datacenter' element={<Dashboard/>} />
+                                        <Route exact path='/datacenter/dashboard' element={<Dashboard/>} />
+                                        <Route exact path='datacenter/marketing/tools/voucher' element={<DashboardVoucher/>} />
+                                        <Route exact path='datacenter/marketing/tools/flash' element={<DashboardFlashsale/>} />
+                                        <Route exact path='/datacenter/marketing/tools/bundle' element={<DashboardPromotion/>} />
+                                        <Route exact path='/datacenter/marketing/tools/discount' element={<DashboardProgram/>} />
+                                        <Route exact path='/datacenter/marketing/tools/addon' element={<DashboardShockdeal/>} />
                                         <Route exact path='/setting/shop/rating' element={<Ratingshop/>} />
                                         <Route exact path='/setting/shop/profile' element={<Profileshop/>} />
                                 </Routes>
