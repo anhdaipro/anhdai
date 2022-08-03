@@ -1,9 +1,10 @@
 import axios from 'axios';
 import {useParams} from 'react-router-dom'
 import React, {useState,useEffect} from 'react'
-import {detailvoucherURL} from "../urls"
-import Voucherinfo from "../hocs/Voucherinfo"
-import { headers } from '../actions/auth';
+import {detailvoucherURL} from "../../urls"
+import Voucherinfo from "../../hocs/Voucherinfo"
+import { headers } from '../../actions/auth';
+import { timevalue,timesubmit } from '../../constants';
 let Pagesize=10
 const Detailvoucher=()=>{
     const { id } = useParams(); 
@@ -21,7 +22,7 @@ const Detailvoucher=()=>{
             .then(res=>{
                 let data=res.data
                 const limit=data.maximum_discount==null?'U':'L'
-                setVoucher({...data.voucher,limit:limit})
+                setVoucher({...data.voucher,limit:limit,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)})
                 setLoading(true)
                 setItem({...itemshop,items_choice:data.items_choice,page_count_main:Math.ceil(data.items_choice.length / Pagesize)})
           })

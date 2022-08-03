@@ -1,6 +1,8 @@
-export const localhost = "https://anhdai.herokuapp.com";
+export const localhost = "http://127.0.0.1:8000";
 const apiURL = "/api/v4";
 export const endpoint = `${localhost}${apiURL}`;
+export const refreshtokenURL=`${localhost}${apiURL}/refresh/token`
+export const loginURL=`${localhost}${apiURL}/login`
 export const user =`${localhost}${apiURL}/user-id/`
 export const forgotpasswordURL=`${endpoint}/buyer/forgot_password`;
 export const purchaselistdURL=`${endpoint}/purchase`;
@@ -68,13 +70,11 @@ export const createthreadURL=`${apichat}/thread/new`
 export const originweb =window.location.origin
 
 const apivendorURL = "/api/v3";
-export const shopratingURL=`${localhost}${apivendorURL}/shop/rating`;
-export const productshopURL=`${localhost}${apivendorURL}/product/list`;
+//prmotions
 export const vouchershopURL=`${localhost}${apivendorURL}/voucher/new`;
 export const dealDetailshopURL=`${localhost}${apivendorURL}/deal_shock/`;
 export const itemdealURL=`${localhost}${apivendorURL}/item_deal_shock`;
 export const newdealURL=`${localhost}${apivendorURL}/new_deal`
-export const listProductshopURL=`${localhost}${apivendorURL}/product`
 export const newcomboURL=`${localhost}${apivendorURL}/new_combo`
 export const detailcomboURL=`${localhost}${apivendorURL}/combo/`
 export const newprogramURL=`${localhost}${apivendorURL}/discount/create`
@@ -82,23 +82,34 @@ export const detailprogramURL=`${localhost}${apivendorURL}/discount/`
 export const detailvoucherURL=`${localhost}${apivendorURL}/voucher/`
 export const newflashsaleURL=`${localhost}${apivendorURL}/flashsale/create`
 export const detailflashsaleURL=`${localhost}${apivendorURL}/flashsale/`
-
-export const newproductURL=`${localhost}${apivendorURL}/product/category`
-export const detailproductURL=`${localhost}${apivendorURL}/product/`
-export const newproductdetailURL=`${localhost}${apivendorURL}/product/new`
-export const shippingshopURL=`${localhost}${apivendorURL}/shipping/shop/list`
-export const updateimageURL = `${localhost}${apivendorURL}/product/update_image`
-export const listshippingURL=`${localhost}${apivendorURL}/shipping/list`
+export const newAwardshopURL=`${localhost}${apivendorURL}/shop-game/new`
+export const detailAwardshopURL=`${localhost}${apivendorURL}/shop-game`
+export const listAwardshopURL=`${localhost}${apivendorURL}/shop-game/list`
+export const newFollowOffershopURL=`${localhost}${apivendorURL}/follow-prize/new`
+export const detailFollowOffershopURL=`${localhost}${apivendorURL}/follow-prize`
+export const listFollowOffershopURL=`${localhost}${apivendorURL}/follow-prize/list`
 export const listvouchershopURL=`${localhost}${apivendorURL}/vouchers/list`
 export const listdiscountshopURL=`${localhost}${apivendorURL}/list/discount`
 export const listcomboshopURL=`${localhost}${apivendorURL}/bundle/list`
 export const listAddonshopURL=`${localhost}${apivendorURL}/add-on-deal/list`
 export const listflashsaleshopURL=`${localhost}${apivendorURL}/shop-flash-sale/list`
+
+///shop
+export const newproductdetailURL=`${localhost}${apivendorURL}/product/new`
+export const shippingshopURL=`${localhost}${apivendorURL}/shipping/shop/list`
+export const updateimageURL = `${localhost}${apivendorURL}/product/update_image`
+export const listshippingURL=`${localhost}${apivendorURL}/shipping/list`
 export const newshopURL =`${localhost}${apivendorURL}/shop/create`
 export const infosellerURL=`${localhost}${apivendorURL}/infoseller`
 export const chartURL=`${localhost}${apivendorURL}/home/seller`
 export const shopprofileURL=`${localhost}${apivendorURL}/shop/profile`
 export const listordersellerURL=`${localhost}${apivendorURL}/shop/order`
+export const shopratingURL=`${localhost}${apivendorURL}/shop/rating`;
+export const productshopURL=`${localhost}${apivendorURL}/product/list`;
+export const listProductshopURL=`${localhost}${apivendorURL}/product`
+export const newproductURL=`${localhost}${apivendorURL}/product/category`
+export const detailproductURL=`${localhost}${apivendorURL}/product/`
+
 
 //dashboard
 const apidashboardURL="/api/v2"
@@ -106,10 +117,14 @@ export const dashboardURL=`${localhost}${apidashboardURL}/dashboard`
 export const dashboardpromotionURL=`${localhost}${apidashboardURL}/dashboard/bundle`
 export const dashboardvoucherURL=`${localhost}${apidashboardURL}/dashboard/voucher`
 export const dashboardflashsaleURL=`${localhost}${apidashboardURL}/dashboard/flash`
-export const dashboardAddonURL=`${localhost}${apidashboardURL}/dashboard/voucher`
+export const dashboardAddonURL=`${localhost}${apidashboardURL}/dashboard/addon`
 export const dashboardprogramURL=`${localhost}${apidashboardURL}/dashboard/discount`
+export const dashboardOfferURL=`${localhost}${apidashboardURL}/dashboard/prize`
+export const dashboardAwardURL=`${localhost}${apidashboardURL}/dashboard/game`
 export const dataProgramURL=`${localhost}${apidashboardURL}/data/discount`
 export const dataPromotionURL=`${localhost}${apidashboardURL}/data/bundle`
 export const dataFlashsaleURL=`${localhost}${apidashboardURL}/data/flash`
 export const dataVoucherURL=`${localhost}${apidashboardURL}/data/voucher`
 export const dataAddonURL=`${localhost}${apidashboardURL}/data/addon`
+export const dataOfferURL=`${localhost}${apidashboardURL}/data/prize`
+export const dataShopawardURL=`${localhost}${apidashboardURL}/data/game`

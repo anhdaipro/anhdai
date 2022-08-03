@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import {formatter,} from "../constants"
-import {cartviewURL,categoryhomeURL,updateuseronlineURL} from "../urls"
+import {cartviewURL,categoryhomeURL,updateuseronlineURL,refreshtokenURL} from "../urls"
 import { logout,headers,expiry } from '../actions/auth';
 import { connect } from 'react-redux';
 import React, { Fragment, useState,useEffect } from 'react';
@@ -89,7 +89,16 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     const hideaccount=()=>{
         setState({...state,view_account:false})
     };
-    
+    useEffect(()=>{
+    if(user){
+        setTimeout(()=>{
+            axios.post(`${refreshtokenURL}/${user.id}`)
+            .then(res=>{
+                localStorage.setItem("expirationDate", res.data.access_expires);
+            })
+            },72000)
+        }
+    },[user])
     const searchitem=()=>{
         if(searchchoice){
         navigate(`/search?keyword=${keyword}&${searchchoice.user_id?`shop=${data.name}`:`category=${data.id}`}`)
@@ -170,10 +179,10 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                                     {data?
                                     
                                     <div onMouseLeave={()=>setState({...state,show_choice:false})} onMouseEnter={()=>setState({...state,show_choice:true})} className="searchbar-selector">
-                                        <div className="drawer " id="pc-drawer-id-11" tabindex="0">
+                                        <div className="drawer " id="pc-drawer-id-11" tabIndex="0">
                                             <div className="searchbar-selector__selected">
                                                 <div className="searchbar-selector__selected-label">{searchchoice?searchchoice.name?'Trong Shop này':data.title:'Trong Shopee'}</div> 
-                                                <svg enable-background="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-down"><g><path d="m11 2.5c0 .1 0 .2-.1.3l-5 6c-.1.1-.3.2-.4.2s-.3-.1-.4-.2l-5-6c-.2-.2-.1-.5.1-.7s.5-.1.7.1l4.6 5.5 4.6-5.5c.2-.2.5-.2.7-.1.1.1.2.3.2.4z"></path></g></svg>
+                                                <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-down"><g><path d="m11 2.5c0 .1 0 .2-.1.3l-5 6c-.1.1-.3.2-.4.2s-.3-.1-.4-.2l-5-6c-.2-.2-.1-.5.1-.7s.5-.1.7.1l4.6 5.5 4.6-5.5c.2-.2.5-.2.7-.1.1.1.2.3.2.4z"></path></g></svg>
                                             </div>
                                             {state.show_choice?
                                             <div className="drawer__contents" aria-describedby="pc-drawer-id-11" aria-hidden="false" style={{transitionDelay: '0.2s', right: '0px'}}>
@@ -181,13 +190,13 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                                                     <div onClick={()=>setSearchchoice('ok')} className="searchbar-selector__option">
                                                         <div className="searchbar-selector__option-label">{data.user_id?'Trong Shop này':data.title}</div> 
                                                         {searchchoice?
-                                                        <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon searchbar-selector__option-tick icon-tick"><g><path d="m6.5 13.6c-.2 0-.5-.1-.7-.2l-5.5-4.8c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l4.7 4 6.8-9.4c.3-.4.9-.5 1.4-.2.4.3.5 1 .2 1.4l-7.4 10.3c-.2.2-.4.4-.7.4 0 0 0 0-.1 0z"></path></g></svg>
+                                                        <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon searchbar-selector__option-tick icon-tick"><g><path d="m6.5 13.6c-.2 0-.5-.1-.7-.2l-5.5-4.8c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l4.7 4 6.8-9.4c.3-.4.9-.5 1.4-.2.4.3.5 1 .2 1.4l-7.4 10.3c-.2.2-.4.4-.7.4 0 0 0 0-.1 0z"></path></g></svg>
                                                         :''}
                                                     </div>
                                                     <div className="searchbar-selector__option">
                                                         <div onClick={()=>setSearchchoice(null)} className="searchbar-selector__option-label">Trong Shopee</div> 
                                                         {searchchoice==null?
-                                                        <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon searchbar-selector__option-tick icon-tick"><g><path d="m6.5 13.6c-.2 0-.5-.1-.7-.2l-5.5-4.8c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l4.7 4 6.8-9.4c.3-.4.9-.5 1.4-.2.4.3.5 1 .2 1.4l-7.4 10.3c-.2.2-.4.4-.7.4 0 0 0 0-.1 0z"></path></g></svg>
+                                                        <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon searchbar-selector__option-tick icon-tick"><g><path d="m6.5 13.6c-.2 0-.5-.1-.7-.2l-5.5-4.8c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l4.7 4 6.8-9.4c.3-.4.9-.5 1.4-.2.4.3.5 1 .2 1.4l-7.4 10.3c-.2.2-.4.4-.7.4 0 0 0 0-.1 0z"></path></g></svg>
                                                         :''}
                                                     </div>
                                                 </div>

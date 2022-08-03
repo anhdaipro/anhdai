@@ -389,7 +389,7 @@ const Checkout =({user,showchat})=>{
                                 <div className="checkout-payment-method-view__current-title">Phương thức thanh toán</div>
                                 <div className="checkout-payment-setting__payment-methods-tab">
                                     {state.method_payment.map(method=>
-                                        <span key={method} tabindex="0">
+                                        <span key={method} tabIndex="0">
                                             <button onClick={()=>setState({...state,method_choice:method})} className={`product-variation ${method==state.method_choice?'product-variation--selected':''}`}>{method=='Số dư TK Shopee'?<div>
                                                 <span>Số dư TK Shopee</span>
                                                 <span className="_14y5eV _8sLn79">(₫0)</span>
@@ -415,7 +415,7 @@ const Checkout =({user,showchat})=>{
                                     <div className="bank-transfer-category">
                                         <div className="bank-transfer-category__body">
                                             <div className="checkout-bank-transfer-item">
-                                                <div className="stardust-radio" tabindex="0" role="radio" aria-checked="false" aria-disabled="false">
+                                                <div className="stardust-radio" tabIndex="0" role="radio" aria-checked="false" aria-disabled="false">
                                                     <div className="stardust-radio-button">
                                                         <div className="stardust-radio-button__outer-circle">
                                                             <div className="stardust-radio-button__inner-circle"></div>
@@ -443,7 +443,7 @@ const Checkout =({user,showchat})=>{
                             <div className="bank-transfer-category">
                                 <div className="bank-transfer-category__body">
                                     <div className="checkout-bank-transfer-item">
-                                        <div className="stardust-radio" tabindex="0" role="radio" aria-checked="false">
+                                        <div className="stardust-radio" tabIndex="0" role="radio" aria-checked="false">
                                             <div className="stardust-radio-button">
                                                 <div className="stardust-radio-button__outer-circle">
                                                     <div className="stardust-radio-button__inner-circle"></div>

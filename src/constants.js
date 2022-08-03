@@ -52,7 +52,7 @@ export const list_review_text_star=[
       ]
   ]
 export  const time_end=new Date()
-time_end.setMonth(new Date().getMonth()+4)
+time_end.setMonth(new Date().getMonth()+6)
 export const valid_from=new Date()
 valid_from.setHours(new Date().getHours()+1)
 valid_from.setMinutes(0)
@@ -107,6 +107,9 @@ export const list_review_choice=(number)=>{
   list_review_choice.push({name:'Có Bình Luận',value:'comment',keys:'comment'},{name:'Có Hình Ảnh / Video',value:'media',keys:'media'})
   return list_review_choice
 }
+export function TaoSoNgauNhien(min, max){
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 export function hidestring(username){
   let string=''
   for(let m=1;m<username.length-1;m++){
@@ -145,6 +148,9 @@ export const timeformat=(data)=>{
 }
 export const timevalue=(data)=>{
   return new Date(data).getFullYear() + "-" + ("0"+(new Date(data).getMonth()+1)).slice(-2) + "-" + ("0" + new Date(data).getDate()).slice(-2)
+}
+export const safe_div=(x,y)=>{
+  return y==0?x:x/y
 }
 
 export const timesubmit=(data)=>{
@@ -218,6 +224,9 @@ export const code_type=[{image:"http://127.0.0.1:8000/media/my_web/deal.png",nam
 export const combo_type=[{name:'Giảm giá theo %',value:'1'},
 {name:'Giảm giá theo số tiền',value:'2'},{name:'Giảm giá đặc biệt',value:'3'}]
 
+export const discount_type=[{name:'Theo phần trăm',value:'1'},
+{name:'Theo số tiền',value:'2'}]
+export const award_type=[{name:'Mã giảm giá của Shop',value:'1'},{name:'Shopee Xu',value:'2'},]
 export function isVietnamesePhoneNumber(number) {
   return /([\+84 |84 |0|+84|84|(+84)|(+84 )]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/.test(number);
 }
@@ -312,16 +321,16 @@ export const ratingitem=(number,item)=>{
         result.push(
           <div className="rating-stars__star-wrapper">
             <div className="rating-stars__lit" style={{width: '100%'}}>
-              <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__primary-star icon-rating-solid"><polygon points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polygon></svg></div><svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__hollow-star icon-rating"><polygon fill="none" points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polygon></svg>
+              <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__primary-star icon-rating-solid"><polygon points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" strokeLinecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polygon></svg></div><svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__hollow-star icon-rating"><polygon fill="none" points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" strokeLinecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polygon></svg>
           </div>)
           }
       else{
         result.push(
           <div className="rating-stars__star-wrapper">
             <div className="rating-stars__lit" style={{width: `${float_part*100}%`}}>
-            <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__primary-star icon-rating-solid"><polygon points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polygon></svg>
+            <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__primary-star icon-rating-solid"><polygon points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" strokeLinecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polygon></svg>
             </div>
-            <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__hollow-star icon-rating"><polygon fill="none" points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polygon></svg>
+            <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__hollow-star icon-rating"><polygon fill="none" points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" strokeLinecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polygon></svg>
           </div>)
         }
       })

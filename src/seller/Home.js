@@ -2,256 +2,128 @@
 import Sidebamenu from "./Sidebar-menu"
 import axios from 'axios';
 import Navbar from "./Navbar"
-import { useParams,Link } from "react-router-dom";
-import React, {useState,useEffect,useCallback,useRef} from 'react'
-import {chartURL } from "../urls"
+import { useParams,Link,me } from "react-router-dom";
+import React, {useState,useEffect,useCallback,useRef,useMemo} from 'react'
+import {chartURL,dashboardURL } from "../urls"
 import {timeformat, } from "../constants"
 import {headers} from "../actions/auth"
-
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-  } from 'chart.js';
-import { Line } from 'react-chartjs-2';
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-  );
+import GradientChart from "./dashboard/GradientChart"
+const listhour=Array(25).fill().map((_,i)=>{
+    return i
+})    
+const today=new Date()
+const hours=today.getHours()    
 const HomePageSeller=()=>{
     const chartRef = useRef();
     const [loading,setLoading]=useState(false)
     const [data,setData]=useState({sum:0,count:0,count_order_waiting_comfirmed:0,count_order_canceled:0,count_order_processed:0,count_order_waiting_processed:0})
-    const [chart,setChart]=useState({
-        labels:[],
+    const [listsum,setListsum]=useState([])
+    const [time,setTime]=useState('currentday')
+    const [listcount,setListcount]=useState([])
+    const [labels,setLabels]=useState([])
+    const [text,setText]=useState()
+    const scale=useMemo(()=>({
+        x: {
+            grid: {
+                display:true, //value
+                drawTicks: true,//tich x
+                drawBorder: true,//tich x
+                drawOnChartArea: false,//dường sọc dohc
+            },
+            ticks: {
+                // For a category axis, the val is the index so the lookup via getLabelForValue is needed
+                callback: function(val, index) {
+                // Hide every 6nd tick label
+                return index % 6 === 0 ? this.getLabelForValue(val) : '';
+                },
+                    color: 'gray',
+                },
+            },
+        y:{
+            beginAtZero: true,
+            ticks:{
+                display:false //value
+            },
+            grid: {
+                display:true,
+                drawTicks: true,//tich value y
+                drawBorder: true,//tich value y màu sọc fuction
+                drawOnChartArea: false,//dường sọc ngang
+            },
+            title: {
+                display: false,
+                text: 'Value',
+                color: '#191',
+                font: {
+                    family: 'Times',
+                    size: 20,
+                    style: 'normal',
+                    lineHeight: 1.2
+                },
+            }
+        }
+    }),[])
+
+    const chart=useMemo(()=>{return{
+            labels:labels,
             datasets: [
             {
                 label: 'Doanh thu',
-                data: [],
-                fill:true,
-                borderColor: 'rgb(38, 115, 221)',
-                backgroundColor: 'rgb(38, 115, 221)',
+                data: listsum,
+                fill:false,
+                borderWidth:1,
+                stepped: false,
+                borderColor:'rgb(251, 115, 75)',
+                backgroundColor: 'rgb(251, 115, 75)',
             },
             {
                 label: 'Luot truy cap',
-                data: [],
-                fill:true,
-                borderColor: 'rgb(88, 183, 241)',
+                data: listcount,
+                fill:false,
+                borderWidth:1,
+                stepped: false,
+                borderColor:'rgb(88, 183, 241)',
                 backgroundColor: 'rgb(88, 183, 241)',
             },
         ],
-    })
-    const [options,setOptions]=useState({
-        responsive: true,
-            plugins:{
-                legend: {
-                display: false,
-                },                      
-            },
-            maintainAspectRatio: false,
-            scales: {
-            y: {
-                min: 0,                                 
-            }
-        },
-    })
+    }},[listsum,listcount,labels])
     
     useEffect(()=>{
         const getJournal = async () => {
-            await axios(chartURL,headers)
+            await axios(`${dashboardURL}?time=currentday`,headers)
            // <-- passed to API URL
             .then(res=>{
-                const arr=Array(25).fill().map((_,i)=>{
-                    return ('0'+i).slice(-2)+':00'
-                })
-                const sums=res.data.sum.reduce((total,item)=>{
-                    return(total+item)
-                },0)
-                const counts=res.data.count.reduce((count,item)=>{
-                    return(count+item)
-                },0)
-                setData({...data,sum:sums,count:counts,count_order_waiting_comfirmed:res.data.count_order_waiting_comfirmed,
-                count_order_canceled:res.data.count_order_canceled,count_order_processed:res.data.count_order_processed,
-                count_order_waiting_processed:res.data.count_order_waiting_processed})
-                
-                const data_chart={
-                    labels:arr,
-                    datasets: [
-                    {
-                        label: 'Doanh thu',
-                        data: res.data.sum,
-                        fill:true,
-                        borderColor: 'rgb(38, 115, 221)',
-                        backgroundColor: 'rgb(38, 115, 221)',
-                    },
-                    {
-                        label: 'Luot truy cap',
-                        data: res.data.count,
-                        fill:true,
-                        borderColor: 'rgb(88, 183, 241)',
-                        backgroundColor: 'rgb(88, 183, 241)',
-                    },
-                    ],
-                }
-                setChart(data_chart)
                 setLoading(true)
+                const text_preview=`So với 00 -- ${('0'+hours).slice(-2)} hôm qua`
+                setText(text_preview)
+                const listtimes=listhour
+                const listsumsdata=listtimes.map(item=>{
+                    const sumitem=res.data.sum.find(datechoice=>new Date(datechoice.day).getHours()==item)
+                    console.log(sumitem)
+                    const sum_default=res.data.times.find(date=>date==item)
+                    return sumitem?sumitem.sum:sum_default|| sum_default==0?0:null
+                })
+                const listcountdata=listtimes.map(item=>{
+                    const countitem=res.data.count.find(date=>new Date(date.day).getHours()==item)
+                    const count_default=res.data.times.find(date=>date==item)
+                    return countitem?countitem.count:count_default || count_default==0?0:null
+                })
+                const times=listtimes.map(item=>{ 
+                    if(item==24){
+                        return '23:59'
+                    }
+                    return `${('0'+item).slice(-2)}:00`
+                })
+                
+                setLabels(times)
+                setListsum(current=>[...listsumsdata])
+                setListcount(current=>[...listcountdata])
           })
         }
         getJournal();
     },[])
 
-    useEffect(() => {
-        const getOrCreateTooltip = (chart) => {
-            let tooltipEl = chart.canvas.parentNode.querySelector('div');          
-            if (!tooltipEl) {
-            tooltipEl = document.createElement('div');
-            tooltipEl.style.position='absolute'
-            tooltipEl.style.font='14px / 21px &quot;Microsoft YaHei&quot'
-            tooltipEl.style.padding= '0px'
-            tooltipEl.style. border= '1px solid rgb(229, 229, 229)'
-            tooltipEl.style.background = 'rgba(255, 255, 255, 0.95)';
-            tooltipEl.style.borderRadius = '4px';
-            tooltipEl.style.color = 'rgb(255, 255, 255)';
-            tooltipEl.style.display = 'block';
-            tooltipEl.style.pointerEvents = 'none';
-            tooltipEl.style.boxShadow= 'rgba(0, 0, 0, 0.12) 0px 6px 16px 0px';
-            tooltipEl.style.whiteSpace= 'nowrap';
-            tooltipEl.style.zIndex= 9999999;
-            tooltipEl.style.transform = 'translate(-50%, 0) , top 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s';
-            tooltipEl.style.transition = 'left 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s';
-            const table = document.createElement('div');
-            table.style.fontFamily='Roboto'
-            table.style.fontSize='14px'
-            table.style.color='#333'
-            tooltipEl.appendChild(table);
-            chart.canvas.parentNode.appendChild(tooltipEl);
-          }
-        
-          return tooltipEl;
-        };
-        
-        const externalTooltipHandler = (context) => {
-          // Tooltip Element
-          const {chart, tooltip} = context;
-          const tooltipEl = getOrCreateTooltip(chart);
-        
-          // Hide if no tooltip
-          if (tooltip.opacity === 0) {
-            tooltipEl.style.opacity = 0;
-            return;
-          }
-          
-          // Set Text
-          const tableRoot = tooltipEl.querySelector('div')
-          tableRoot.innerHTML=''
-          if (tooltip.body) {
-            
-            const titleLines = tooltip.title || [];
-            const bodyLines = tooltip.body.map(b => b.lines);
-            console.log(tooltip.body)
-            
-            titleLines.forEach(title => {
-                const x = document.createElement('div');
-                tableRoot.appendChild(x)
-                x.style.paddingLeft='12px'
-                x.style.height='30px'
-                x.style.lineHeight='30px'
-                x.style.background= '#f6f6f6'
-                x.style.fontSize='12px'
-                x.style.color='#666'
-                x.textContent=`${title} ${timeformat(new Date())}`
-            });
-            
-            bodyLines.map((body, i) => {
-                console.log(body)
-              const colors = tooltip.labelColors[i];
-              const y = document.createElement('div');
-              tableRoot.appendChild(y);
-              console.log(colors)
-              y.style.display='flex';
-              y.style.alignItems='center'
-              y.style.margin='16px 12px'
-              y.innerHTML=`
-              <span style="background: ${colors.backgroundColor};border-radius:50%;width:10px;height:10px;margin-right:8px;"></span>
-              ${body[0].split(': ')[0]}<span style="padding-left:16px;flex:1;text-align:right;font-weight:500;">${body[0].split(': ')[1]}</span>
-              `
-
-            });
-          }
-          const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
-        
-          // Display, position, and set styles for font
-          tooltipEl.style.opacity = 1;
-          tooltipEl.style.left = positionX + tooltip.caretX+10+'px';
-          tooltipEl.style.top = positionY + tooltip.caretY-tooltipEl.offsetHeight-20 + 'px';
-        };
-        const options={
-            responsive: true,
-                plugins:{
-                    legend: {
-                    display: false,
-                },
-                    tooltip:{
-                    enabled:false,
-                    external: externalTooltipHandler,
-                    }                            
-                },
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        grid: {
-                            display:true, //value
-                            drawTicks: true,//tich x
-                            drawBorder: true,//tich x
-                            drawOnChartArea: false,//dường sọc dohc
-                        },
-                        ticks: {
-                          // For a category axis, the val is the index so the lookup via getLabelForValue is needed
-                          callback: function(val, index) {
-                            // Hide every 6nd tick label
-                            return index % 6 === 0 ? this.getLabelForValue(val) : '';
-                          },
-                          color: 'gray',
-                        },
-                    },
-                    y:{
-                        min:0,
-                        ticks:{
-                            display:false //value
-                        },
-                        grid: {
-                            display:true,
-                            drawTicks: true,//tich value y
-                            drawBorder: true,//tich value y màu sọc fuction
-                            drawOnChartArea: false,//dường sọc ngang
-                        },
-                        title: {
-                            display: false,
-                            text: 'Value',
-                            color: '#191',
-                            font: {
-                              family: 'Times',
-                              size: 20,
-                              style: 'normal',
-                              lineHeight: 1.2
-                        },
-                    }
-                }
-            }
-        }
-        setOptions(options)
-    }, []);
-
+   
     return(
         <>
             <Navbar/>
@@ -327,21 +199,13 @@ const HomePageSeller=()=>{
                                         <div>
                                             <div className="chartBox">
                                                 <div style={{position: 'relative', width: '360px', height: '200px', padding: '0px', margin: '0px', borderWidth: '0px', cursor: 'default'}}>
-                                                    <Line
-                                                        style={{
-                                                        position: 'absolute',
-                                                        left: '0px',
-                                                        top: 0,
-                                                        width: '1208px',
-                                                        height:'285px',
-                                                        userSelect: 'none',
-                                                        padding: 0,
-                                                        margin: 0,
-                                                        borderWidth: 0}}
-                                                        ref={chartRef}
-                                                        options={options}
-                                                        data={chart}
-                                                    />
+                                                    <GradientChart
+                                                        chart={chart}
+                                                        time={time}
+                                                        listsum={listsum}
+                                                        scale={scale}
+                                                        datechoice={today}
+                                                    />  
                                                 </div>
                                             </div>
                                                 <div data-v-17c34edb="" className="chart-footer">

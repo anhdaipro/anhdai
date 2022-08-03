@@ -1,9 +1,8 @@
 
 import React, {useState,useEffect,useCallback,useRef, memo} from 'react'
-import {code_type} from "../constants"
-import 'react-calendar/dist/Calendar.css';
+import {code_type,timevalue} from "../constants"
 import Timeoffer from "./Timeoffer"
-const Dealshockinfo=({deal,setform,editdeal,disable,setdealtype,edit,state,setdatevalid})=>{
+const Dealshockinfo=({deal,setform,editdeal,disable,setdealtype,edit,state,setdatevalid,time_start,time_end})=>{
     return(
         <div className="voucher-basic-info">
             <h4>info basic</h4>
@@ -43,6 +42,8 @@ const Dealshockinfo=({deal,setform,editdeal,disable,setdealtype,edit,state,setda
                             state={state}
                             data={deal}
                             selectRange={true}
+                            time_end={time_end}
+                            time_start={time_start}
                             setdatevalid={(index,date)=>setdatevalid(index,date)}
                             edit={edit}
                             />

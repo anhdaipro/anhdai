@@ -3,15 +3,13 @@ import Navbar from "../seller/Navbar"
 import {Link,useParams} from 'react-router-dom'
 import ReactDOM, { render } from 'react-dom'
 import Timeoffer from "./Timeoffer"
-import Productoffer from "../seller/Productoffer"
 import React, {useState,useEffect,useCallback,useRef,useMemo} from 'react'
 import Pagination from "./Pagination"
-
-import {formatter,itemvariation,limit_choice,timesubmit,valid_from,valid_to} from "../constants"
+import {formatter,itemvariation,limit_choice,timesubmit,valid_from,valid_to,time_end,timevalue} from "../constants"
 import { headers } from '../actions/auth';
 import { newprogramURL } from '../urls';
+import Productoffer from '../seller/promotions/Productoffer';
 let Pagesize=5
-
 const Limit=(props)=>{
     const [show,setShow]=useState(false)
     const parent=useRef()
@@ -35,7 +33,7 @@ const Limit=(props)=>{
         <div ref={parent} className="popover__ref">
             <div data-v-0d5f8626="" className={`${item.limit?'d-flex':''}`} prepend-width="110">
                 <div data-v-0d5f8626="" className="select" style={{width: '110px',position:'relative'}}>
-                    <div onClick={(e)=>setShow(!show)} tabindex="0" className="selector item-space selector--normal"> 
+                    <div onClick={(e)=>setShow(!show)} tabIndex="0" className="selector item-space selector--normal"> 
                         <div className="selector__inner line-clamp--1">{item.limit?'Giới hạn':"Không giới hạn"}</div> 
                         <div className="selector__suffix"> 
                             <i className="selector__suffix-icon icon">
@@ -98,6 +96,8 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
     const [itemshop,setItem]=useState({items:[],page_count_main:0,items_choice:[],savemain:false
     ,page_count_by:0,byproduct:[],byproduct_choice:[],savebyproduct:false})
     const [loading,setLoading]=useState(false)
+    const [timestart,setTime_start]=useState(()=>timevalue(new Date()))
+    const [timeend,setTime_end]=useState(()=>timevalue(time_end))
     const [sameitem,setSameitem]=useState([])
     const [duplicate,setDuplicate]=useState(false)
     const {id}=useParams()
@@ -107,6 +107,8 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
         setProgram(program_shop)
         setLoading(loading_content)
         setItem(item_program)
+        setTime_end(program_shop.valid_to)
+        setTime_start(program_shop.valid_from)
         }
       }, [loading_content,item_program,program_shop]);
    
@@ -493,6 +495,8 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
                                         <div className="flex-col">
                                             <Timeoffer
                                             data={program}
+                                            time_start={timestart}
+                                            time_end={timeend}
                                             setdatevalid={(index,date)=>setdatevalid(index,date)}
                                             edit={edit}
                                             />
@@ -663,6 +667,7 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
                                                     <div className="item-purchase-limit plus-disable-enable d-flex ">
                                                         <Limit
                                                             item={item}
+                                                            
                                                             name="item"
                                                             keys={'user_item_limit'}
                                                             setlimit={(e,itemchoice,name,keys,value)=>setlimit(e,itemchoice,name,keys,value)}
@@ -785,10 +790,10 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
                     </div>
                     <div className="bottom-card">
                         <div className="fix-container fixed-bottom">
-                            <div className="action-button">
-                                <button className="cancel btn-m btn-light">Cancel</button>
-                                <button onClick={()=>complete()} className="submit btn-orange btn-m" type="button" >Submit</button>
-                            </div>
+                        <div className="action-button">
+                                        <button className="cancel-btn btn-m btn-light">Cancel</button>
+                                        <button onClick={(e)=>complete(e)} className="submit save-btn btn-orange mr-1 btn-m" type="button" >Submit</button>
+                                    </div>
                         </div>
                     </div>  
                 </div>

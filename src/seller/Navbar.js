@@ -1,11 +1,11 @@
 
 import axios from 'axios';
-import {infosellerURL} from "../urls"
-import { headers, logout,expiry } from '../actions/auth';
+import {infosellerURL, refreshtokenURL} from "../urls"
+import { headers, logout,expiry, login } from '../actions/auth';
 import { connect } from 'react-redux';
 import React, { useState,useEffect } from 'react';
 import {useNavigate , Link,useLocation} from 'react-router-dom';
-const Navbar = ({ logout, isAuthenticated }) => {
+const Navbar = ({ logout, isAuthenticated,user }) => {
     const location = useLocation();
     const [state, setState] = useState({loading:false,username:null,image:null});
     let navigate = useNavigate();
@@ -26,7 +26,16 @@ const Navbar = ({ logout, isAuthenticated }) => {
         }
         info();
     }, [])
-    
+    useEffect(()=>{
+        if(user){
+            setTimeout(()=>{
+                axios.post(`${refreshtokenURL}/${user.id}`)
+                .then(res=>{
+                    localStorage.setItem("expirationDate", res.data.access_expires);
+                })
+            },72000)
+        }
+    },[user])
     
     const logout_user=(e)=> {
         logout();  
@@ -163,7 +172,7 @@ const Navbar = ({ logout, isAuthenticated }) => {
     )
 }
 const mapStateToProps = state => ({
-    isAuthenticated: state.isAuthenticated
+    isAuthenticated: state.isAuthenticated,user:state.user
 });
 
-export default connect(mapStateToProps, { logout })(Navbar);
+export default connect(mapStateToProps, { logout,login })(Navbar);

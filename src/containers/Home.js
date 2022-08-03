@@ -109,7 +109,7 @@ class Category extends React.Component {
                                     <div className="home-category-list__group">
                                         {
                                         item.map(category=>
-                                        <Link onClick={remove} to={category.url} key={category.title} className="home-category-list__category-grid">
+                                        <Link onClick={remove} to={category.url} key={category.id} className="home-category-list__category-grid">
                                             <div className="_5XYhbS">
                                                 <div className="WCwWZw">
                                                     <div className="_25_r8I _3K5s_h">
@@ -369,7 +369,7 @@ export default class HomePage extends React.Component {
                                     </div>
                                     <div className="header-section__content item-center">
                                         {this.state.list_trend_search.slice(this.state.from_index,this.state.from_index+5).map((item,i)=>
-                                                <a className="_2o9bHG X_20U5" href={`/search?keyword=${item.title}`}>
+                                                <a key={i} className="_2o9bHG X_20U5" href={`/search?keyword=${item.title}`}>
                                                     <div className="_3gOWPW">
                                                         <div className="_1-oDWo">
                                                             <div className="_2-Akqx">{item.tile}</div>
@@ -394,7 +394,7 @@ export default class HomePage extends React.Component {
                                     </div>
                                     <a className="header-section__header-link" href="/top_products?catId=VN_BITL0_157">
                                         <button className="button-no-outline">Xem tất cả&nbsp;
-                                            <svg enable-background="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
+                                            <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
                                         </button>
                                     </a>
                                 </div>
@@ -418,10 +418,10 @@ export default class HomePage extends React.Component {
                                             </ul>               
                                         </div>
                                         <div className="stardust-carousel__arrow stardust-carousel__arrow--type-2 stardust-carousel__arrow--prev stardust-carousel__arrow--disabled">
-                                            <svg enable-background="new 0 0 13 20" viewBox="0 0 13 20" role="img" className="stardust-icon stardust-icon-arrow-left-bold"><path stroke="none" d="m4.2 10l7.9-7.9-2.1-2.2-9 9-1.1 1.1 1.1 1 9 9 2.1-2.1z"></path></svg>
+                                            <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" role="img" className="stardust-icon stardust-icon-arrow-left-bold"><path stroke="none" d="m4.2 10l7.9-7.9-2.1-2.2-9 9-1.1 1.1 1.1 1 9 9 2.1-2.1z"></path></svg>
                                         </div>
                                         <div className="stardust-carousel__arrow stardust-carousel__arrow--type-2 stardust-carousel__arrow--next">
-                                            <svg enable-background="new 0 0 13 21" viewBox="0 0 13 21" role="img" className="stardust-icon stardust-icon-arrow-right-bold"><path stroke="none" d="m11.1 9.9l-9-9-2.2 2.2 8 7.9-8 7.9 2.2 2.1 9-9 1-1z"></path></svg>
+                                            <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" role="img" className="stardust-icon stardust-icon-arrow-right-bold"><path stroke="none" d="m11.1 9.9l-9-9-2.2 2.2 8 7.9-8 7.9 2.2 2.1 9-9 1-1z"></path></svg>
                                         </div>
                                     </div>
                                 </div>
@@ -440,8 +440,8 @@ export default class HomePage extends React.Component {
                                     <div className="home-popup__close-area">
                                         <div onClick={()=>this.setState({showimage:false})} className="popup__close-btn">
                                             <svg viewBox="0 0 16 16" stroke="#EE4D2D" className="home-popup__close-button">
-                                            <path stroke-linecap="round" d="M1.1,1.1L15.2,15.2"></path>
-                                            <path stroke-linecap="round" d="M15,1L0.9,15.1"></path>
+                                            <path strokeLinecap="round" d="M1.1,1.1L15.2,15.2"></path>
+                                            <path strokeLinecap="round" d="M15,1L0.9,15.1"></path>
                                             </svg>
                                         </div>
                                     </div>

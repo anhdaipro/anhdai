@@ -3,21 +3,21 @@ import Navbar from "../seller/Navbar"
 import {Link,useNavigate,useParams} from 'react-router-dom'
 import ReactDOM, { render } from 'react-dom'
 import Timeoffer from "./Timeoffer"
-import Productoffer from "../seller/Productoffer"
 import React, {useState,useEffect,useCallback,useRef,memo,useMemo} from 'react'
 import Pagination from "./Pagination"
 import {newcomboURL,} from "../urls"
 import {formatter,timesubmit,combo_type,valid_from,valid_to,time_end} from "../constants"
 import { headers } from '../actions/auth';
 import {debounce} from 'lodash'
+import Productoffer from '../seller/promotions/Productoffer';
 let Pagesize=5
 const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_combo})=>{
     const navite=useNavigate()
     const {id}=useParams()
-    const [time_end,setTime_end]=useState(()=>time_end.toTimeString())
-    const [time_start,setTime_start]=useState(()=>new Date().toTimeString())
+    const [timeend,setTime_end]=useState(()=>time_end.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
+    const [timestart,setTime_start]=useState(()=>new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
     const [combo,setCombo]=useState(()=>{return{
-        quantity_to_reduced:'',discount_price:'',price_special_sale:'',
+        quantity_to_reduced:'',discount_price:0,price_special_sale:0,
         discount_percent:0,limit_order:'',promotion_combo_name:'',combo_type:'1',
         valid_from:valid_from.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
         valid_to:valid_to.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
@@ -35,10 +35,12 @@ const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_com
     const item_unvalid=list_enable_on.some(item=>sameitem.some(product=>product==item.id))
     
     useEffect(() => {
-        if(combo_shop){
+        if(combo_shop && item_combo){
         setLoading(loading_content)
         setCombo(combo_shop)
         setItem(item_combo)
+        setTime_end(combo_shop.valid_to)
+        setTime_start(combo_shop.valid_from)
         }
       }, [loading_content,item_combo,combo_shop]);
     
@@ -219,7 +221,7 @@ const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_com
         if(!item_unvalid){
             const datacombo=combo
             delete datacombo.products
-            const data={list_items:list_enable_on.map(item=>{
+            const data={action:'submit',list_items:list_enable_on.map(item=>{
             return(item.id)}),...datacombo}
             axios.post(url_combo,JSON.stringify(data),headers)
             .then(res=>{
@@ -275,8 +277,8 @@ const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_com
                                         <div className="flex-col">
                                             <Timeoffer
                                             edit={edit}
-                                            time_end={time_end}
-                                            time_start={time_start}
+                                            time_end={timeend}
+                                            time_start={timestart}
                                             data={combo}
                                             setdatevalid={(index,date)=>setdatevalid(index,date)}
                                             />
@@ -484,7 +486,7 @@ const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_com
                                                     <div className="table-edit">
                                                         <button onClick={()=>removeitem(item,'items',itemshop.items,'items_choice',itemshop.items_choice,currentPage.items)} data-v-625f739d="" type="button" class="action button button--normal button--circle">
                                                             <i class="icon">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2,4 C1.72385763,4 1.5,3.77614237 1.5,3.5 C1.5,3.22385763 1.72385763,3 2,3 L6,2.999 L6,2 C6,1.44771525 6.44771525,1 7,1 L10,1 C10.5522847,1 11,1.44771525 11,2 L11,2.999 L15,3 C15.2761424,3 15.5,3.22385763 15.5,3.5 C15.5,3.77614237 15.2761424,4 15,4 L14,4 L14,14 C14,14.5522847 13.5522847,15 13,15 L4,15 C3.44771525,15 3,14.5522847 3,14 L3,4 L2,4 Z M13,4 L4,4 L4,14 L13,14 L13,4 Z M6.5,7 C6.77614237,7 7,7.22385763 7,7.5 L7,11.5 C7,11.7761424 6.77614237,12 6.5,12 C6.22385763,12 6,11.7761424 6,11.5 L6,7.5 C6,7.22385763 6.22385763,7 6.5,7 Z M8.5,6 C8.77614237,6 9,6.22385763 9,6.5 L9,11.5 C9,11.7761424 8.77614237,12 8.5,12 C8.22385763,12 8,11.7761424 8,11.5 L8,6.5 C8,6.22385763 8.22385763,6 8.5,6 Z M10.5,7 C10.7761424,7 11,7.22385763 11,7.5 L11,11.5 C11,11.7761424 10.7761424,12 10.5,12 C10.2238576,12 10,11.7761424 10,11.5 L10,7.5 C10,7.22385763 10.2238576,7 10.5,7 Z M10,2 L7,2 L7,2.999 L10,2.999 L10,2 Z"></path></svg>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M2,4 C1.72385763,4 1.5,3.77614237 1.5,3.5 C1.5,3.22385763 1.72385763,3 2,3 L6,2.999 L6,2 C6,1.44771525 6.44771525,1 7,1 L10,1 C10.5522847,1 11,1.44771525 11,2 L11,2.999 L15,3 C15.2761424,3 15.5,3.22385763 15.5,3.5 C15.5,3.77614237 15.2761424,4 15,4 L14,4 L14,14 C14,14.5522847 13.5522847,15 13,15 L4,15 C3.44771525,15 3,14.5522847 3,14 L3,4 L2,4 Z M13,4 L4,4 L4,14 L13,14 L13,4 Z M6.5,7 C6.77614237,7 7,7.22385763 7,7.5 L7,11.5 C7,11.7761424 6.77614237,12 6.5,12 C6.22385763,12 6,11.7761424 6,11.5 L6,7.5 C6,7.22385763 6.22385763,7 6.5,7 Z M8.5,6 C8.77614237,6 9,6.22385763 9,6.5 L9,11.5 C9,11.7761424 8.77614237,12 8.5,12 C8.22385763,12 8,11.7761424 8,11.5 L8,6.5 C8,6.22385763 8.22385763,6 8.5,6 Z M10.5,7 C10.7761424,7 11,7.22385763 11,7.5 L11,11.5 C11,11.7761424 10.7761424,12 10.5,12 C10.2238576,12 10,11.7761424 10,11.5 L10,7.5 C10,7.22385763 10.2238576,7 10.5,7 Z M10,2 L7,2 L7,2.999 L10,2.999 L10,2 Z"></path></svg>
                                                             </i>
                                                         </button>
                                                        
@@ -523,8 +525,10 @@ const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_com
                     <div className="bottom-card">
                         <div className="fix-container fixed-bottom">
                             <div className="action-button">
-                                <button className="cancel btn-m btn-light">Cancel</button>
-                                <button onClick={()=>complete()} className="submit btn-orange btn-m" type="button" >Submit</button>
+                            
+                                        <button className="cancel-btn btn-m btn-light">Cancel</button>
+                                        <button onClick={(e)=>complete(e)} className="submit save-btn btn-orange mr-1 btn-m" type="button" >Submit</button>
+                                   
                             </div>
                         </div>
                     </div>  

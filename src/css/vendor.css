@@ -610,16 +610,7 @@ border-color: #ebebeb;
     width: 16px;
     height: 16px;
 }
-.react-calendar{
-  border:none !important
-}
-.react-calendar__tile--active {
-    background-color: #ee4d2d !important;
-    color: white;
-}
-.react-calendar__tile--active:enabled:hover, .react-calendar__tile--active:enabled:focus {
-    background: #1087ff;
-}
+
 .button:before {
     position: absolute;
     top: -1px;
@@ -941,7 +932,7 @@ border-color: #ebebeb;
 }
 .form-item__content:before {
     display: table;
-    height: 32px;
+    height: 10px;
     content: "";
 }
 .signin-form-template[data-v-1d0455cd] .form-item__control, .signin-form-template[data-v-1d0455cd] .input {
@@ -1790,9 +1781,6 @@ width: 250px;
   margin-top: 56px;
 }
 /*------------------product------------------------*/
-.input-group{
-padding-top: 1rem;
-}
 .content-box-item .input-group{
   padding-top: 0;
   }
@@ -3538,10 +3526,6 @@ button.button--frameless {
   transform: scale(.8333);
   -webkit-transform-origin-x: 0;
 }
-.marketing-tools{
-  position: relative;
-  overflow: auto;
-}
 .card[data-v-1c303110]:last-of-type {
   margin-bottom: 0;
 }
@@ -4771,28 +4755,9 @@ text-align: right;
 .flash-sale-content{
 height: 440px;
 }
-.calendar-flash-sale{
-    width: 330px;
-    font-size: 100%;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    align-items: center;
-    padding: 0.2rem 1rem 0.2rem 1rem;
-    border: 1px solid #d8d8d8;
-}
-.calendar-flash-sale .table{
-  height: 300px;
-}
-.calendar-flash-sale .table{
-  height: 300px;
-}
-.calendar-flash-sale .date-picker-panel__date{
-  font-size: 16px;
-  border-bottom: 1px solid #d8d8d8;
-  padding: 1rem 0;
-  width: 100%;
-}
+
+
+
 .time_range{
   border: 1px solid #d8d8d8;
   border-left: 0;
@@ -4812,34 +4777,8 @@ background-color: #f8f8f8;
   border-bottom: 0;
   padding: 1rem 0;
 }
-.calendar-flash-sale .days{
-  height: 44px;
-  font-size: 16px;
-  margin: 0;
-  align-items: center;
-  padding-bottom:8px;
-}
-.calendar-flash-sale .months{
-  padding-top: 1rem;
-}
 
-.calendar-flash-sale .button-select{
-  color: #c0c0c0;
-  cursor: not-allowed !important;
-  
-}
-.calendar-flash-sale .button-select:active{
-  pointer-events: none;
-}
 
-.calendar-flash-sale .weekselect,.calendar-flash-sale .days{
-  height: 44px;
-  margin: 0;
-  align-items: center;
-  padding-bottom:12px;
-  font-size: 1rem;
-  grid-column-gap: 0;
-}
 .time_range{
   display:flex ;
   flex-direction: column;
@@ -5189,9 +5128,7 @@ top: 4px
     height: 32px;
     line-height: 32px;
 }
-.ellipsis-text-wrapper{
-  text-align:center
-}
+
 .table-edit .action-drag {
     margin-left: 8px;
 }
@@ -6418,24 +6355,97 @@ align-items: center;
   align-items: center;
     margin-left: 8px;
 }
-.number-input{
-  display: inline-block;
-  width: 40px;
-  border:1px solid var(--border-color);
-  height: 28px;
-  border-radius: 4px;
-  display: flex;
-  text-align: center;
-}
-.button span{
-  line-height: 1;
-  vertical-align: middle;
-}
 
 .basic-info-wrapper{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+.game-template{
+  display: flex;
+  justify-content: center;
+  flex:1
+}
+.game-sample {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+.game-sample .game-sample-selector {
+  margin: 16px 0;
+}
+.budget-and-prizes-wrapper[data-v-1eec1518] {
+    padding: 24px;
+    -webkit-box-shadow: 0 1px 4px 0 rgb(0 0 0 / 10%);
+    box-shadow: 0 1px 4px 0 rgb(0 0 0 / 10%);
+    border-radius: 2px;
+    background-color: #fff;
+    margin-top: 17px;
+}
+.budget-and-prizes-wrapper .header[data-v-1eec1518] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.game-sample .game-sample-tips {
+  color: #666;
+  font-size: 12px;
+}
+.module-title[data-v-bc4998e0] {
+  margin-bottom: 16px;
+}
+
+.module-title .title-info[data-v-bc4998e0] {
+    font-size: 18px;
+    line-height: 20px;
+    font-weight: 500;
+    vertical-align: middle;
+}
+.module-title .desc-info[data-v-bc4998e0] {
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+  color: #999;
+  margin-top: 8px;
+}
+.action-buttons-wrapper .game-prizes-outline-container[data-v-121ca16c] .game-prizes-outline {
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+.game-prizes-outline.bold[data-v-0a2be7a1] {
+  color: #666;
+}
+.shop-game-edit-page .bottom-card .action-buttons-wrapper {
+    background: #fff;
+    -webkit-box-shadow: 0 -2px 6px 0 rgb(0 0 0 / 5%);
+    box-shadow: 0 -2px 6px 0 rgb(0 0 0 / 5%);
+}
+.shop-game-edit-page .action-buttons-wrapper[data-v-121ca16c] {
+    width: 1264px;
+    height: 72px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin: auto;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.game-prizes-outline[data-v-0a2be7a1] {
+  display: flex;
+}
+.budget-and-prizes-wrapper .budget-wrapper[data-v-1eec1518] {
+  display: flex;
+  margin-bottom: 24px;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
 }
 .fixed-bottom {
   left: 0;
@@ -6485,12 +6495,146 @@ margin-left: 4px;
 }
 .fixed-bottom .action-button {
     padding: 16px 0;
-    background: #fff;
-    -webkit-box-shadow: 0 -2px 6px 0 rgb(0 0 0 / 5%);
-    box-shadow: 0 -2px 6px 0 rgb(0 0 0 / 5%);
-    width: 100%;
     padding: 24px 0;
     text-align: end;
+}
+.bottom-card .action-button {
+  padding: 16px 0;
+  background: #fff;
+  -webkit-box-shadow: 0 -2px 6px 0 rgb(0 0 0 / 5%);
+  box-shadow: 0 -2px 6px 0 rgb(0 0 0 / 5%);
+}
+.bottom-card .action-button {
+  width: 1264px;
+  padding: 24px 0;
+  text-align: end;
+}
+
+.number-input__controls {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    width: 24px;
+    height: 100%;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background: #fff;
+    border-left: 1px solid #e5e5e5;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    opacity: 0;
+}
+.number-input__controls:before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #e5e5e5;
+  content: "";
+  -webkit-transform: translateY(-0.5px);
+  transform: translateY(-0.5px);
+}
+.voucher-metrics-dashboard,.combo-metrics-dashboard,.deal-metrics-dashboard,.flashsale-metrics-dashboard,.discount-metrics-dashboard{
+  margin-bottom: 16px;
+}
+.tag__information.success {
+  color: #5c7;
+  background-color: #eaf9ef;
+}
+.tag__information {
+  line-height: 18px;
+  border-style: none;
+  border-radius: 2px;
+}
+.tag__information.invalid {
+  color: #666;
+  background-color: #eee;
+}
+.tag__information.default {
+  color: #ee4d2d;
+  background-color: #fff1f0;
+}
+.quantity-input:hover .number-input__controls{
+  opacity: 1;
+}
+.budget-and-prizes-wrapper .game-prizes .prize-tips[data-v-1eec1518] {
+  margin-bottom: 16px;
+}
+.alert--error {
+  background-color: #ffe9e8;
+  border-color: #ff736f;
+}
+.alert-icon {
+  margin-right: 8px;
+  font-size: 0;
+  color: #d6d6d6;
+}
+
+.alert-title {
+  margin-right: 20px;
+  font-size: 14px;
+  line-height: 16px;
+}
+.alert--error .alert-icon {
+  color: #ff4742;
+}
+.number-input__control.up {
+  top: 0;
+}
+.number-input__control {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  overflow: hidden;
+  line-height: 16px;
+  -webkit-transition: opacity .2s ease-in-out;
+  transition: opacity .2s ease-in-out;
+}
+
+.number-input__control.down {
+    bottom: 0;
+}
+.prize-outline-wrapper .game-prizes-outline .prize-outline-item[data-v-0a2be7a1] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-right: 32px;
+  line-height: 16px;
+}
+.prize-outline-wrapper .game-prizes-outline .prize-outline-item .prize-outline-item-title[data-v-0a2be7a1] {
+  margin-right: 4px;
+  color: #666;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.prize-outline-wrapper .game-prizes-outline.bold .prize-outline-item-content[data-v-0a2be7a1] {
+  font-size: 20px;
+}
+.prize-outline-wrapper .game-prizes-outline .prize-outline-item .prize-outline-item-content[data-v-0a2be7a1] {
+  font-weight: 500;
+  font-weight: var(--font-weight);
+}
+.shop-game-edit-page .action-buttons-wrapper .action-buttons[data-v-121ca16c] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.bottom-card .fixed-bottom .action-buttons .save-btn {
+    margin-right: 24px;
+}
+.shop-game-edit-page .action-buttons-wrapper .action-buttons .cancel-btn{
+    margin-right: 16px;
+    margin-left: 48px;
+}
+.prize-outline-wrapper .game-prizes-outline.bold .prize-outline-item-content.final-budget[data-v-0a2be7a1] {
+    color: #ee4d2d;
+}
+.prize-outline-wrapper .game-prizes-outline.bold .prize-outline-item-content[data-v-0a2be7a1] {
+    font-size: 20px;
 }
 .info_more{
   font-size: 12px;
@@ -6948,18 +7092,6 @@ cursor: pointer;
   color: #ee4d2d;
 }
 
-
-
-.calendar,.calendar_select{
-    width:300px;
-    font-size:100%;
-    display: flex;
-    flex-direction: column;
-    position:relative;
-    align-items: center;
-    padding: 0.2rem 0.6rem 0.2rem 0.6rem;
-}
-
 .date_picker-date{
   border-bottom: 1px solid var(--border-color);
 }
@@ -6969,13 +7101,6 @@ cursor: pointer;
 }
 
 
-.calendar .header{
-    display: flex;
-    color:#fff;
-    position: relative;
-    align-items: center;
-}
- 
 .week_day-select{
   background-color: #dfdfdf;
 }
@@ -7039,10 +7164,17 @@ cursor: pointer;
     height: 16px;
     vertical-align: middle;
 }
+.action-btns .button[data-v-40673d96]:first-child {
+    margin-right: 16px;
+}
+.custom-input-group[data-v-40673d96] {
+    padding-right: 24px;
+}
 .selector {
     border: 1px solid #e5e5e5;
     border-radius: 4px;
     outline: none;
+    display:inline-table;
     -webkit-transition: border .2s ease-in-out;
     transition: border .2s ease-in-out;
     position: relative;
@@ -7063,23 +7195,6 @@ cursor: pointer;
     margin-left: -10px;
     content: "*";
     visibility: hidden;
-}
-
-.flash-sale-content .react-calendar__tile{
-  padding: 0px;
-  width: 44px;
-  height: 44px;
-  margin-bottom:16px;
-}
-.react-calendar__navigation button {
-  min-width: 36px !important;
-  font-size: 14px;
-  background: none;
-}
-.flash-sale-content .react-calendar__navigation button {
-  min-width: 40px;
-  font-size: 16px;
-  background: none;
 }
 
 .date-shortcut-item {
@@ -9545,12 +9660,7 @@ padding: 0 12px 12px 0;
 .url-selector .select[data-v-cd1a176a] {
   width: 100%;
 }
-.selector__clear-btn.icon {
-  display: inline-block;
-  visibility: hidden;
-  -webkit-transition: color .2s ease-in-out;
-  transition: color .2s ease-in-out;
-}
+
 .selector .selector__clear-btn.icon {
   width: 16px;
   height: 16px;
@@ -9580,6 +9690,32 @@ padding: 0 12px 12px 0;
   position: relative;
   width: 100%;
   height: 100%;
+}
+.form-item__content {
+ 
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  line-height: 32px;
+}
+ .each-game-info {
+  font-weight: 500;
+  font-weight: var(--font-weight);
+}
+.base-infos[data-v-75b2c032] {
+  display: flex;
+  flex-wrap:wrap
+}
+.base-info-wrapper[data-v-75b2c032] {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 618px;
+  flex: 0 0 618px;
 }
 .contain-image-wrapper .contain-image {
   position: absolute;
@@ -9665,6 +9801,229 @@ padding: 0 12px 12px 0;
 .url-input-modal__content .preview-button.disabled[data-v-abd46a46] {
   color: #bbb;
   cursor: not-allowed;
+}
+.prize-model-wrapper .reward-setting[data-v-48e5cded] {
+  width: 100%;
+}
+.form-item[data-v-16507936] {
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+.form--label-top .form-item {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.prize-model-wrapper[data-v-48e5cded] .form-item__label {
+    text-align: left;
+}
+.form-item[data-v-16507936] .form-item__control, .form-item[data-v-16507936] .form-item__label {
+    width: 100%;
+}
+.prize-model-wrapper[data-v-48e5cded] .form-item__content {
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+.form-item .radio-group[data-v-16507936] {
+  width: 100%;
+}
+.radio-group .radio:not(:last-child) {
+  margin-right: 24px;
+}
+.radio__input:checked+.radio__indicator {
+  background-color: #ee4d2d;
+  border-color: #ee4d2d;
+}
+.radio__indicator {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  vertical-align: middle;
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 50%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: border-color .2s ease-in-out;
+  transition: border-color .2s ease-in-out;
+}
+.radio__input:checked+.radio__indicator:before {
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+.radio__indicator:before {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 6px;
+  height: 6px;
+  background-color: #fff;
+  border-radius: 50%;
+  content: "";
+  -webkit-transform: scale(0);
+  transform: scale(0);
+  -webkit-transition: -webkit-transform .2s;
+  transition: -webkit-transform .2s;
+  transition: transform .2s;
+  transition: transform .2s,-webkit-transform .2s;
+}
+.form-item .radio-group[data-v-16507936] .radio__label {
+  vertical-align: top;
+}
+.radio__label {
+  display: inline-block;
+  font-size: 14px;
+  vertical-align: middle;
+}
+.radio__input {
+  display: none;
+}
+.success-content .form-item__label {
+  text-align: left;
+}
+.modal__content--medium {
+  width: 500px;
+}
+.src-components-voucher-reward-setting-src---discount-amount--30KK_ .src-components-voucher-reward-setting-src---discount-amount-group--1SNZl {
+  min-width: 400px;
+}
+.src-components-voucher-reward-setting-src---discount-amount--30KK_ .input-group__prepend {
+  width: 150px!important;
+}
+.src-components-voucher-reward-setting-src---discount-amount--30KK_ .src-components-voucher-reward-setting-src---discount-amount-wrapper--QubKh {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 250px;
+}
+.src-components-voucher-reward-setting-src---voucher-reward-setting--1SMAd .form-item__control, .src-components-voucher-reward-setting-src---voucher-reward-setting--1SMAd .input, .src-components-voucher-reward-setting-src---voucher-reward-setting--1SMAd .radio-group {
+  width: 100%;
+}
+.input__inner .input__input {
+  height: 30px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+.form-item.vertical-item {
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-orient: inherit;
+  -webkit-box-direction: inherit;
+}
+.modal__close.icon {
+  position: absolute;
+  top: 24px;
+  right: 48px;
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  color: #999;
+  cursor: pointer;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: color .2s ease-in-out;
+  transition: color .2s ease-in-out;
+}
+.table thead tr {
+  vertical-align: top;
+}
+.game-prizes .table-header[data-v-1eec1518] {
+  display: inline-block;
+  vertical-align: middle;
+}
+table tbody tr.valign-top {
+  vertical-align: top;
+}
+.src-components-promotion-info-src---promotion-info-comp--2YkTi {
+  display: flex;
+  max-width: 100%;
+}
+.src-components-promotion-info-src---promotion-info-comp--2YkTi .info-left {
+  margin-right: 8px;
+}
+.src-components-promotion-info-src---promotion-info-comp--2YkTi .info-right {
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: 100%;
+}
+.src-components-promotion-info-src---promotion-info-comp--2YkTi .promotion-name {
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  max-width: 100%;
+}
+.src-components-promotion-info-src---promotion-info-comp--2YkTi .info-right-item {
+  margin-bottom: 4px;
+}
+.budget-and-prizes-wrapper[data-v-1eec1518] .popover {
+  vertical-align: middle;
+}
+.ellipsis-text-wrapper[data-v-4679d5c2] .popover, .ellipsis-text-wrapper[data-v-4679d5c2] .popover__ref {
+  display: block;
+}
+.ellipsis-text-wrapper .single[data-v-4679d5c2] {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ellipsis-text-wrapper .ellipsis-content[data-v-4679d5c2] {
+  overflow: initial;
+}
+.src-components-promotion-info-src---promotion-info-comp--2YkTi .promotion-desc {
+  color: #666;
+  font-size: 12px;
+  line-height: 12px;
+}
+.game-prizes-table .quantity-input[data-v-1eec1518] {
+  width: 100px;
+}
+.number-input .input__inner {
+  padding-right: 0;
+}
+.table tbody .table__cell {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  color: #333;
+}
+.table__cell.last-cell {
+  padding-right: 16px;
+}
+.table__cell {
+  padding-right: 8px;
+  padding-left: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: left;
+  word-wrap: break-word;
+}
+.table__cell.last-cell {
+  padding-right: 16px;
+}
+.table tbody tr td {
+  position: relative;
+  vertical-align: inherit;
+  border-color: #eee;
+}
+.action-list .action-list-wrapper[data-v-079a06a0] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+.action-list .action-list-wrapper li[data-v-079a06a0] {
+  display: inline-block;
+  width: 100%;
+}
+.action-list .action-list-wrapper .action-item[data-v-079a06a0] {
+  margin-right: 24px;
+  margin-bottom: 16px;
 }
 /*-----
 .--------------------shipping-----------------------------------*/

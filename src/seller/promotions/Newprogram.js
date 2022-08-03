@@ -1,8 +1,8 @@
 
-import Programinfo from "../hocs/Programinfo"
+import Programinfo from "../../hocs/Programinfo"
 import React, {useState} from 'react'
-import {newprogramURL} from "../urls"
-import { valid_from,valid_to } from "../constants"
+import {newprogramURL} from "../../urls"
+import { valid_from,valid_to } from "../../constants"
 
 const Newprogram=()=>{
     

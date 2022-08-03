@@ -18,16 +18,15 @@ import {
     SHOW_THREADS,
     BUYAGAIN
 } from './types';
-import {createthreadURL, listThreadlURL,buyagainURL} from "../urls"
+import {createthreadURL, listThreadlURL,buyagainURL,loginURL, user} from "../urls"
 import axios from 'axios';
-axios.defaults.withCredentials = true;
 const expirationDate = localStorage.getItem("expirationDate")
 export const expiry=new Date(expirationDate).getTime() - new Date().getTime()
 export const headers={'headers': localStorage.token!='null' && expiry>0?{ Authorization:`JWT ${localStorage.token}`,'Content-Type': 'application/json' }:{'Content-Type': 'application/json'}}
 export const checkAuthenticated = () => async dispatch => {
     if (localStorage.getItem('access')) {
         try {
-            const res = await axios.get(`https://anhdai.herokuapp.com/api/v4/user-id/`,{ 'headers': { Authorization:`JWT ${localStorage.token}` }})
+            const res = await axios.get(user,{ 'headers': { Authorization:`JWT ${localStorage.token}` }})
             dispatch({
                  payload: res.data,
                     type: AUTHENTICATED_SUCCESS
@@ -192,7 +191,7 @@ export const login = (username, password) => async dispatch => {
     form.append('password',password)
     
     try {
-        const res = await axios.post('https://anhdai.herokuapp.com/api/v4/login', form, config);
+        const res = await axios.post(loginURL, form, config);
 
         dispatch({
             type: LOGIN_SUCCESS,

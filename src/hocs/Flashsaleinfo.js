@@ -1,19 +1,18 @@
 import axios from 'axios';
 import Navbar from "../seller/Navbar"
-import Calendar from 'react-calendar';
+import Calendar from './Calendar';
 import 'react-calendar/dist/Calendar.css';
-import Productoffer from "../seller/Productoffer"
 import React, {useState,useEffect,useCallback,useRef} from 'react'
-import {localhost,formatter,itemvariation} from "../constants"
+import {formatter,itemvariation,time_end,timevalue} from "../constants"
 
 import { headers } from '../actions/auth';
 import { newflashsaleURL } from '../urls';
 import { useParams } from 'react-router';
+import Productoffer from '../seller/promotions/Productoffer';
 const Pagesize=10
-const time_choice=[ {name:'00:00:00 - 00:30:00',hour:0,minutes:0,hour_to:0,minutes_to:30},
-{name:'00:30:00 - 01:00:00',hour:0,minutes:30,hour_to:1,minutes_to:0},
-{name:'01:00:00 - 06:00:00',hour:1,minutes:0,hour_to:6,minutes_to:0},
-{name:'06:00:00 - 09:00:00',hour:6,minutes:0,hour_to:9,minutes_to:0},
+const list_fram_time_choice=[ {name:'00:00:00 - 00:02:00',hour:0,minutes:0,hour_to:2,minutes_to:0},
+
+{name:'02:00:00 - 09:00:00',hour:2,minutes:0,hour_to:9,minutes_to:0},
 {name:'09:00:00 - 12:00:00',hour:9,minutes:0,hour_to:12,minutes_to:0},
 {name:'12:00:00 - 13:00:00',hour:12,minutes:0,hour_to:13,minutes_to:0},
 {name:'13:00:00 - 15:00:00',hour:13,minutes:0,hour_to:15,minutes_to:0},
@@ -21,6 +20,8 @@ const time_choice=[ {name:'00:00:00 - 00:30:00',hour:0,minutes:0,hour_to:0,minut
 {name:'18:00:00 - 21:00:00',hour:18,minutes:0,hour_to:21,minutes_to:0},
 {name:'21:00:00 - 22:00:00',hour:21,minutes:0,hour_to:22,minutes_to:0},
 {name:'22:00:00 - 00:00:00',hour:22,minutes:0,hour_to:23,minutes_to:59}]
+const today=new Date()
+const nextweek=new Date(new Date().setDate(new Date().getDate() + 7))
 const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_content})=>{
     const [flashsale,setFlashsale]=useState({time:null,hour:null,minutes:null,minutes_to:null,
         hour_to:null
@@ -28,7 +29,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
     const dragbtn=useRef()
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
     const [state,setState]=useState({percent_discount:'',promotion_stock:'',user_item_limit:'',timeSecond:5,complete:false,page_input:1,show:false})
-    const [date,setDate]=useState({time:new Date(),hour:new Date().getHours(),minutes:new Date().getMinutes(),
+    const [date,setDates]=useState({time:new Date(),hour:new Date().getHours(),minutes:new Date().getMinutes(),
        hour_to:new Date().getHours(),minutes_to:new Date().getMinutes(),
     })
     const [show,setShow]=useState({items:false,byproduct:false})
@@ -36,6 +37,8 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
     ,page_count_by:0,byproduct:[],byproduct_choice:[],savebyproduct:false})
     const [loading,setLoading]=useState(false)
     const [showtime,setShowtime]=useState(false)
+    const [timestart,setTime_start]=useState(()=>timevalue(new Date()))
+    const [timeend,setTime_end]=useState(()=>timevalue(nextweek))
     const [sameitem,setSameitem]=useState(false)
     const [duplicate,setDuplicate]=useState(false)
     const {id}=useParams()
@@ -339,7 +342,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
 
 	//handle new item addition
     const setframtime=(item)=>{
-        setDate({...date,hour:item.hour,minutes:item.minutes,hour_to:item.hour_to,minutes_to:item.minutes_to})
+        setDates({...date,hour:item.hour,minutes:item.minutes,hour_to:item.hour_to,minutes_to:item.minutes_to})
     }
     const setcheckitemflashsale=(e,itemchoice)=>{
         e.stopPropagation()
@@ -460,7 +463,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
             })
         }
     }
-    
+    const count_valid_framtime=list_fram_time_choice.filter(item=>new Date(`${timevalue(date.time)} ${('0'+item.hour).slice(-2)}:${('0'+item.minutes).slice(-2)}`)>new Date())
     return(
         <>
             <div id="app">
@@ -493,11 +496,22 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
                                                         <div className="hour_select-text">Hour</div>
                                                     </div>
                                                     <div className="d-flex flash-sale-content px-1">
-                                                        <div className="calendar-flash-sale sc border-right">
+                                                        <div data-v-3321a628 className="date-picker-panel sc border-right">
                                                             <Calendar
                                                             value={date.time}
-                                                            onChange={(day)=>setDate({time:day})} 
-                                                            tileDisabled={({date, view }) => (date<new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()) ||date>new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()+7) )}
+                                                            time_end={timeend}
+                                                            text={count_valid_framtime.length}
+                                                            time_start={timestart}
+                                                            choice={'day'}
+                                                            hideOutMonth={true}
+                                                            show_month={true}
+                                                            children={true}
+                                                            list_fram_time_choice={list_fram_time_choice}
+                                                            selectmonth={true}
+                                                            selectyear={true}
+                                                            selectday={true}
+                                                            onChange={(day)=>setDates({time:day})} 
+                                                            
                                                             />
                                                         </div>
                                                         <div className="time_range">
@@ -506,8 +520,8 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
                                                                 <div className="frame_product">Product</div>
                                                             </div>
                                                             <div className="range_time_select d-flex-col">
-                                                                {time_choice.map((item,i)=>{
-                                                                    if(new Date(`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+item.hour).slice(-2)}:${('0'+item.minutes).slice(-2)}`)>new Date()){
+                                                                {list_fram_time_choice.map((item,i)=>{
+                                                                    if(new Date(`${timevalue(date.time)} ${('0'+item.hour).slice(-2)}:${('0'+item.minutes).slice(-2)}`)>new Date()){
                                                                         return(
                                                                             <div key={i} className="item-center">
                                                                                 <div onClick={()=>setframtime(item)} className="custom-radio">
@@ -840,10 +854,10 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
                         </div>
                         <div className="bottom-card">
                             <div className="fix-container fixed-bottom">
-                                <div className="action-button">
-                                    <button className="cancel btn-m btn-light">Cancel</button>
-                                    <button onClick={()=>complete()} className="submit btn-orange btn-m" type="button" >Submit</button>
-                                </div>
+                            <div className="action-button">
+                                        <button className="cancel-btn btn-m btn-light">Cancel</button>
+                                        <button onClick={(e)=>complete(e)} className="submit save-btn btn-orange mr-1 btn-m" type="button" >Submit</button>
+                                    </div>
                             </div>
                         </div>  
                     </div>

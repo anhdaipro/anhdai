@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React, {useState,useEffect} from 'react'
 import { useParams} from "react-router-dom";
-import Flashsaleinfo from "../hocs/Flashsaleinfo"
-import {detailflashsaleURL} from "../urls"
-import { headers } from '../actions/auth';
+import Flashsaleinfo from "../../hocs/Flashsaleinfo"
+import {detailflashsaleURL} from "../../urls"
+import { headers } from '../../actions/auth';
 let Pagesize=5
 const Newflashsale=()=>{
     const { id } = useParams(); 

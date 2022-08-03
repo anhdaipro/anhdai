@@ -784,7 +784,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                                                     <div className="popover__ref">
                                                                                         <div data-v-15e71864="" className="icon">
                                                                                             <i onClick={()=>setPreviewimage({...previewimage,rotate:90})} data-v-15e71864="" className="icon-others icon">
-                                                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 17"><path fill-rule="nonzero" d="M5 7h8a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H5zm3.127-5.52l-.715-.652a.5.5 0 0 1 .674-.739l1.666 1.52a.5.5 0 0 1-.015.752l-1.666 1.4a.5.5 0 1 1-.644-.765l.616-.517c-3.988-.047-6.21 1.48-6.828 4.618a.5.5 0 0 1-.981-.194C.957 4.231 3.643 2.411 8.127 2.48z"></path></svg>
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 17"><path fillRule="nonzero" d="M5 7h8a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H5zm3.127-5.52l-.715-.652a.5.5 0 0 1 .674-.739l1.666 1.52a.5.5 0 0 1-.015.752l-1.666 1.4a.5.5 0 1 1-.644-.765l.616-.517c-3.988-.047-6.21 1.48-6.828 4.618a.5.5 0 0 1-.981-.194C.957 4.231 3.643 2.411 8.127 2.48z"></path></svg>
                                                                                             </i>
                                                                                         </div>
                                                                                     </div> 
@@ -793,7 +793,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                                                     <div className="popover__ref">
                                                                                     <div data-v-15e71864="" className="icon">
                                                                                         <i onClick={()=>setPreviewimage({...previewimage,scaleX:-previewimage.scaleX})} data-v-15e71864="" className="icon-others icon">
-                                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 14"><path d="M9.379.758l6.476 12.953a.2.2 0 0 1-.179.289H9V.847a.2.2 0 0 1 .379-.09zm-2.758 0A.2.2 0 0 1 7 .848V14H.324a.2.2 0 0 1-.18-.29L6.622.759zM6 4.236L1.618 13H6V4.236z" fill-rule="evenodd"></path></svg>
+                                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 14"><path d="M9.379.758l6.476 12.953a.2.2 0 0 1-.179.289H9V.847a.2.2 0 0 1 .379-.09zm-2.758 0A.2.2 0 0 1 7 .848V14H.324a.2.2 0 0 1-.18-.29L6.622.759zM6 4.236L1.618 13H6V4.236z" fillRule="evenodd"></path></svg>
                                                                                         </i>
                                                                                     </div>
                                                                                 </div> 
@@ -802,7 +802,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                                                 <div className="popover__ref">
                                                                                     <div data-v-15e71864="" className="icon">
                                                                                         <i onClick={()=>setPreviewimage({...previewimage,scaleY:-previewimage.scaleY})} data-v-15e71864="" className="icon-others icon">
-                                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 16"><path d="M13.242 9.379L.29 15.855A.2.2 0 0 1 0 15.676V9h13.153a.2.2 0 0 1 .09.379zm0-2.758a.2.2 0 0 1-.09.379H0V.324a.2.2 0 0 1 .29-.18l12.952 6.477zM9.764 6L1 1.618V6h8.764z" fill-rule="evenodd"></path></svg>
+                                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 16"><path d="M13.242 9.379L.29 15.855A.2.2 0 0 1 0 15.676V9h13.153a.2.2 0 0 1 .09.379zm0-2.758a.2.2 0 0 1-.09.379H0V.324a.2.2 0 0 1 .29-.18l12.952 6.477zM9.764 6L1 1.618V6h8.764z" fillRule="evenodd"></path></svg>
                                                                                         </i>
                                                                                     </div>
                                                                                 </div> 
@@ -846,7 +846,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                     
                                                 </div> 
                                                 <i className="icon modal__close">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2.85355339,1.98959236 L8.157,7.29314575 L13.4601551,1.98959236 C13.6337215,1.81602601 13.9031459,1.79674086 14.098014,1.93173691 L14.1672619,1.98959236 C14.362524,2.18485451 14.362524,2.501437 14.1672619,2.69669914 L14.1672619,2.69669914 L8.864,8.00014575 L14.1672619,13.3033009 C14.362524,13.498563 14.362524,13.8151455 14.1672619,14.0104076 C13.9719997,14.2056698 13.6554173,14.2056698 13.4601551,14.0104076 L8.157,8.70714575 L2.85355339,14.0104076 C2.67998704,14.183974 2.41056264,14.2032591 2.2156945,14.0682631 L2.14644661,14.0104076 C1.95118446,13.8151455 1.95118446,13.498563 2.14644661,13.3033009 L2.14644661,13.3033009 L7.45,8.00014575 L2.14644661,2.69669914 C1.95118446,2.501437 1.95118446,2.18485451 2.14644661,1.98959236 C2.34170876,1.79433021 2.65829124,1.79433021 2.85355339,1.98959236 Z"></path></svg>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M2.85355339,1.98959236 L8.157,7.29314575 L13.4601551,1.98959236 C13.6337215,1.81602601 13.9031459,1.79674086 14.098014,1.93173691 L14.1672619,1.98959236 C14.362524,2.18485451 14.362524,2.501437 14.1672619,2.69669914 L14.1672619,2.69669914 L8.864,8.00014575 L14.1672619,13.3033009 C14.362524,13.498563 14.362524,13.8151455 14.1672619,14.0104076 C13.9719997,14.2056698 13.6554173,14.2056698 13.4601551,14.0104076 L8.157,8.70714575 L2.85355339,14.0104076 C2.67998704,14.183974 2.41056264,14.2032591 2.2156945,14.0682631 L2.14644661,14.0104076 C1.95118446,13.8151455 1.95118446,13.498563 2.14644661,13.3033009 L2.14644661,13.3033009 L7.45,8.00014575 L2.14644661,2.69669914 C1.95118446,2.501437 1.95118446,2.18485451 2.14644661,1.98959236 C2.34170876,1.79433021 2.65829124,1.79433021 2.85355339,1.98959236 Z"></path></svg>
                                                 </i>
                                             </div>
                                         </div>
@@ -980,7 +980,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                     <div data-v-5bb79eae="" data-v-9a4c8da0="" className="popover-wrap attribute-text" data-v-a3311712="">
                                                         <div className="select" data-v-5bb79eae="">
                                                             <div className="dropdown select-popover" max-width="292">
-                                                                <div tabindex="0" className="selector item-space selector--large"> 
+                                                                <div tabIndex="0" className="selector item-space selector--large"> 
                                                                     <div className="selector__inner placeholder line-clamp--1"> Vui lòng chọn</div> 
                                                                     <div className="selector__suffix">  
                                                                         <i className="selector__suffix-icon icon">
@@ -1010,7 +1010,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                     <div data-v-5bb79eae="" data-v-9a4c8da0="" className="popover-wrap attribute-text" data-v-a3311712="">
                                                         <div className="select" data-v-5bb79eae="">
                                                             <div className="dropdown select-popover" max-width="292">
-                                                                <div tabindex="0" className="selector item-space selector--large"> 
+                                                                <div tabIndex="0" className="selector item-space selector--large"> 
                                                                     <div className="selector__inner placeholder line-clamp--1"> Vui lòng chọn</div> 
                                                                     <div className="selector__suffix">  
                                                                         <i className="selector__suffix-icon icon">
@@ -1030,7 +1030,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                                                 <input type="text" placeholder="Nhập vào" clearable="true" resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                                 <div className="input__suffix">
                                                                                     <i className="input__clear-btn icon">
-                                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8,2 C11.3137085,2 14,4.6862915 14,8 C14,11.3137085 11.3137085,14 8,14 C4.6862915,14 2,11.3137085 2,8 C2,4.6862915 4.6862915,2 8,2 Z M10.5924919,5.27303573 C10.4094355,5.1521972 10.1606887,5.17236516 9.99956233,5.33352414 L9.99956233,5.33352414 L8.00023568,7.33325477 L6.00047136,5.33349045 C5.81628967,5.14930876 5.51767215,5.14930876 5.33349045,5.33349045 L5.33349045,5.33349045 L5.27301564,5.40754038 C5.1522078,5.59059052 5.17239885,5.83931011 5.33355782,6.00040399 L5.33355782,6.00040399 L7.33372614,7.99976432 L5.33352414,9.99956232 L5.33352414,9.99956232 L5.27306194,10.0735738 C5.15220491,10.2566181 5.17234775,10.5053668 5.33349045,10.6665095 L5.33349045,10.6665095 L5.40750807,10.7269643 C5.5905645,10.8478028 5.83931125,10.8276348 6.00043768,10.6664759 L6.00043768,10.6664759 L8.00023568,8.66627386 L9.99959601,10.6664422 L9.99959601,10.6664422 L10.0736337,10.726932 C10.2566595,10.8477768 10.5053831,10.827636 10.6665095,10.6665095 C10.8506912,10.4823279 10.8506912,10.1837103 10.6665095,9.99952864 L10.6665095,9.99952864 L8.66674523,7.99976432 L10.6664759,6.00043767 L10.6664759,6.00043767 L10.7269381,5.92642616 C10.8477951,5.74338194 10.8276522,5.49463316 10.6665095,5.33349045 L10.6665095,5.33349045 Z"></path></svg>
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M8,2 C11.3137085,2 14,4.6862915 14,8 C14,11.3137085 11.3137085,14 8,14 C4.6862915,14 2,11.3137085 2,8 C2,4.6862915 4.6862915,2 8,2 Z M10.5924919,5.27303573 C10.4094355,5.1521972 10.1606887,5.17236516 9.99956233,5.33352414 L9.99956233,5.33352414 L8.00023568,7.33325477 L6.00047136,5.33349045 C5.81628967,5.14930876 5.51767215,5.14930876 5.33349045,5.33349045 L5.33349045,5.33349045 L5.27301564,5.40754038 C5.1522078,5.59059052 5.17239885,5.83931011 5.33355782,6.00040399 L5.33355782,6.00040399 L7.33372614,7.99976432 L5.33352414,9.99956232 L5.33352414,9.99956232 L5.27306194,10.0735738 C5.15220491,10.2566181 5.17234775,10.5053668 5.33349045,10.6665095 L5.33349045,10.6665095 L5.40750807,10.7269643 C5.5905645,10.8478028 5.83931125,10.8276348 6.00043768,10.6664759 L6.00043768,10.6664759 L8.00023568,8.66627386 L9.99959601,10.6664422 L9.99959601,10.6664422 L10.0736337,10.726932 C10.2566595,10.8477768 10.5053831,10.827636 10.6665095,10.6665095 C10.8506912,10.4823279 10.8506912,10.1837103 10.6665095,9.99952864 L10.6665095,9.99952864 L8.66674523,7.99976432 L10.6664759,6.00043767 L10.6664759,6.00043767 L10.7269381,5.92642616 C10.8477951,5.74338194 10.8276522,5.49463316 10.6665095,5.33349045 L10.6665095,5.33349045 Z"></path></svg>
                                                                                     </i>
                                                                                 </div>
                                                                             </div>
@@ -1069,7 +1069,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                     <div data-v-5bb79eae="" data-v-9a4c8da0="" className="popover-wrap attribute-text" data-v-a3311712="">
                                                         <div className="select" data-v-5bb79eae="">
                                                             <div className="dropdown select-popover" max-width="292">
-                                                                <div tabindex="0" className="selector item-space selector--large"> 
+                                                                <div tabIndex="0" className="selector item-space selector--large"> 
                                                                     <div className="selector__inner placeholder line-clamp--1"> Vui lòng chọn</div> 
                                                                     <div className="selector__suffix">  
                                                                         <i className="selector__suffix-icon icon">
@@ -1099,7 +1099,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                     <div data-v-5bb79eae="" data-v-9a4c8da0="" className="popover-wrap attribute-text" data-v-a3311712="">
                                                         <div className="select" data-v-5bb79eae="">
                                                             <div className="dropdown select-popover" max-width="292">
-                                                                <div tabindex="0" className="selector item-space selector--large"> 
+                                                                <div tabIndex="0" className="selector item-space selector--large"> 
                                                                     <div className="selector__inner placeholder line-clamp--1"> Vui lòng chọn</div> 
                                                                     <div className="selector__suffix">  
                                                                         <i className="selector__suffix-icon icon">
@@ -1129,7 +1129,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                     <div data-v-5bb79eae="" data-v-9a4c8da0="" className="popover-wrap attribute-text" data-v-a3311712="">
                                                         <div className="select" data-v-5bb79eae="">
                                                             <div className="dropdown select-popover" max-width="292">
-                                                                <div tabindex="0" className="selector item-space selector--large"> 
+                                                                <div tabIndex="0" className="selector item-space selector--large"> 
                                                                     <div className="selector__inner placeholder line-clamp--1"> Vui lòng chọn</div> 
                                                                     <div className="selector__suffix">  
                                                                         <i className="selector__suffix-icon icon">
@@ -1277,7 +1277,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                                         {data.list_color.length>1?
                                                                         <span onClick={()=>removecolor(color)} data-v-44d9d323="" className="options-remove-btn">
                                                                             <i data-v-44d9d323="" className="icon">
-                                                                                <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fill-rule="nonzero"><path d="M14.516 3.016h-4v-1a.998.998 0 0 0-.703-.955.99.99 0 0 0-.297-.045h-3a.998.998 0 0 0-.955.703.99.99 0 0 0-.045.297v1h-4a.5.5 0 1 0 0 1h1v10a.998.998 0 0 0 .703.955.99.99 0 0 0 .297.045h9a.998.998 0 0 0 .955-.703.99.99 0 0 0 .045-.297v-10h1a.5.5 0 1 0 0-1zm-8-1h3v1h-3v-1zm6 12h-9v-10h9v10z"></path><path d="M5.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5zM8.016 12.016a.5.5 0 0 0 .5-.5v-5a.5.5 0 1 0-1 0v5a.5.5 0 0 0 .5.5zM10.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5z"></path></g></svg>
+                                                                                <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fillRule="nonzero"><path d="M14.516 3.016h-4v-1a.998.998 0 0 0-.703-.955.99.99 0 0 0-.297-.045h-3a.998.998 0 0 0-.955.703.99.99 0 0 0-.045.297v1h-4a.5.5 0 1 0 0 1h1v10a.998.998 0 0 0 .703.955.99.99 0 0 0 .297.045h9a.998.998 0 0 0 .955-.703.99.99 0 0 0 .045-.297v-10h1a.5.5 0 1 0 0-1zm-8-1h3v1h-3v-1zm6 12h-9v-10h9v10z"></path><path d="M5.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5zM8.016 12.016a.5.5 0 0 0 .5-.5v-5a.5.5 0 1 0-1 0v5a.5.5 0 0 0 .5.5zM10.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5z"></path></g></svg>
                                                                             </i>
                                                                         </span>:''}
                                                                     </div>
@@ -1370,7 +1370,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                                         {data.list_size.length>1?
                                                                         <span onClick={()=>removesize(size)} data-v-44d9d323="" className="options-remove-btn">
                                                                             <i data-v-44d9d323="" className="icon">
-                                                                                <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fill-rule="nonzero"><path d="M14.516 3.016h-4v-1a.998.998 0 0 0-.703-.955.99.99 0 0 0-.297-.045h-3a.998.998 0 0 0-.955.703.99.99 0 0 0-.045.297v1h-4a.5.5 0 1 0 0 1h1v10a.998.998 0 0 0 .703.955.99.99 0 0 0 .297.045h9a.998.998 0 0 0 .955-.703.99.99 0 0 0 .045-.297v-10h1a.5.5 0 1 0 0-1zm-8-1h3v1h-3v-1zm6 12h-9v-10h9v10z"></path><path d="M5.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5zM8.016 12.016a.5.5 0 0 0 .5-.5v-5a.5.5 0 1 0-1 0v5a.5.5 0 0 0 .5.5zM10.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5z"></path></g></svg>
+                                                                                <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fillRule="nonzero"><path d="M14.516 3.016h-4v-1a.998.998 0 0 0-.703-.955.99.99 0 0 0-.297-.045h-3a.998.998 0 0 0-.955.703.99.99 0 0 0-.045.297v1h-4a.5.5 0 1 0 0 1h1v10a.998.998 0 0 0 .703.955.99.99 0 0 0 .297.045h9a.998.998 0 0 0 .955-.703.99.99 0 0 0 .045-.297v-10h1a.5.5 0 1 0 0-1zm-8-1h3v1h-3v-1zm6 12h-9v-10h9v10z"></path><path d="M5.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5zM8.016 12.016a.5.5 0 0 0 .5-.5v-5a.5.5 0 1 0-1 0v5a.5.5 0 0 0 .5.5zM10.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5z"></path></g></svg>
                                                                             </i>
                                                                         </span>:''}
                                                                     </div>
@@ -1584,7 +1584,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                             </div> 
                                                             <div onClick={()=>removebymore(item)} data-v-c3ab6ec8="" className="repeater-remove">
                                                                 <i data-v-c3ab6ec8="" className="icon">
-                                                                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fill-rule="nonzero"><path d="M14.516 3.016h-4v-1a.998.998 0 0 0-.703-.955.99.99 0 0 0-.297-.045h-3a.998.998 0 0 0-.955.703.99.99 0 0 0-.045.297v1h-4a.5.5 0 1 0 0 1h1v10a.998.998 0 0 0 .703.955.99.99 0 0 0 .297.045h9a.998.998 0 0 0 .955-.703.99.99 0 0 0 .045-.297v-10h1a.5.5 0 1 0 0-1zm-8-1h3v1h-3v-1zm6 12h-9v-10h9v10z"></path><path d="M5.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5zM8.016 12.016a.5.5 0 0 0 .5-.5v-5a.5.5 0 1 0-1 0v5a.5.5 0 0 0 .5.5zM10.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5z"></path></g></svg>
+                                                                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fillRule="nonzero"><path d="M14.516 3.016h-4v-1a.998.998 0 0 0-.703-.955.99.99 0 0 0-.297-.045h-3a.998.998 0 0 0-.955.703.99.99 0 0 0-.045.297v1h-4a.5.5 0 1 0 0 1h1v10a.998.998 0 0 0 .703.955.99.99 0 0 0 .297.045h9a.998.998 0 0 0 .955-.703.99.99 0 0 0 .045-.297v-10h1a.5.5 0 1 0 0-1zm-8-1h3v1h-3v-1zm6 12h-9v-10h9v10z"></path><path d="M5.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5zM8.016 12.016a.5.5 0 0 0 .5-.5v-5a.5.5 0 1 0-1 0v5a.5.5 0 0 0 .5.5zM10.516 12.016a.5.5 0 0 0 .5-.5v-4a.5.5 0 1 0-1 0v4a.5.5 0 0 0 .5.5z"></path></g></svg>
                                                                 </i> 
                                                             </div>
                                                         </div>
@@ -1675,7 +1675,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                                                         <div className="popover__ref">
                                                                                             <div data-v-15e71864="" className="icon">
                                                                                                 <i data-v-15e71864="" className="icon-others icon">
-                                                                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 17"><path fill-rule="nonzero" d="M5 7h8a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H5zm3.127-5.52l-.715-.652a.5.5 0 0 1 .674-.739l1.666 1.52a.5.5 0 0 1-.015.752l-1.666 1.4a.5.5 0 1 1-.644-.765l.616-.517c-3.988-.047-6.21 1.48-6.828 4.618a.5.5 0 0 1-.981-.194C.957 4.231 3.643 2.411 8.127 2.48z"></path></svg>
+                                                                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 17"><path fillRule="nonzero" d="M5 7h8a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H5zm3.127-5.52l-.715-.652a.5.5 0 0 1 .674-.739l1.666 1.52a.5.5 0 0 1-.015.752l-1.666 1.4a.5.5 0 1 1-.644-.765l.616-.517c-3.988-.047-6.21 1.48-6.828 4.618a.5.5 0 0 1-.981-.194C.957 4.231 3.643 2.411 8.127 2.48z"></path></svg>
                                                                                                 </i>
                                                                                             </div>
                                                                                         </div> 
@@ -1684,7 +1684,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                                                         <div className="popover__ref">
                                                                                         <div data-v-15e71864="" className="icon">
                                                                                             <i data-v-15e71864="" className="icon-others icon">
-                                                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 14"><path d="M9.379.758l6.476 12.953a.2.2 0 0 1-.179.289H9V.847a.2.2 0 0 1 .379-.09zm-2.758 0A.2.2 0 0 1 7 .848V14H.324a.2.2 0 0 1-.18-.29L6.622.759zM6 4.236L1.618 13H6V4.236z" fill-rule="evenodd"></path></svg>
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 14"><path d="M9.379.758l6.476 12.953a.2.2 0 0 1-.179.289H9V.847a.2.2 0 0 1 .379-.09zm-2.758 0A.2.2 0 0 1 7 .848V14H.324a.2.2 0 0 1-.18-.29L6.622.759zM6 4.236L1.618 13H6V4.236z" fillRule="evenodd"></path></svg>
                                                                                             </i>
                                                                                         </div>
                                                                                     </div> 
@@ -1693,7 +1693,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                                                     <div className="popover__ref">
                                                                                         <div data-v-15e71864="" className="icon">
                                                                                             <i data-v-15e71864="" className="icon-others icon">
-                                                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 16"><path d="M13.242 9.379L.29 15.855A.2.2 0 0 1 0 15.676V9h13.153a.2.2 0 0 1 .09.379zm0-2.758a.2.2 0 0 1-.09.379H0V.324a.2.2 0 0 1 .29-.18l12.952 6.477zM9.764 6L1 1.618V6h8.764z" fill-rule="evenodd"></path></svg>
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 16"><path d="M13.242 9.379L.29 15.855A.2.2 0 0 1 0 15.676V9h13.153a.2.2 0 0 1 .09.379zm0-2.758a.2.2 0 0 1-.09.379H0V.324a.2.2 0 0 1 .29-.18l12.952 6.477zM9.764 6L1 1.618V6h8.764z" fillRule="evenodd"></path></svg>
                                                                                             </i>
                                                                                         </div>
                                                                                     </div> 
@@ -1735,7 +1735,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                         </div>
                                                     </div> 
                                                     <i className="icon modal__close">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2.85355339,1.98959236 L8.157,7.29314575 L13.4601551,1.98959236 C13.6337215,1.81602601 13.9031459,1.79674086 14.098014,1.93173691 L14.1672619,1.98959236 C14.362524,2.18485451 14.362524,2.501437 14.1672619,2.69669914 L14.1672619,2.69669914 L8.864,8.00014575 L14.1672619,13.3033009 C14.362524,13.498563 14.362524,13.8151455 14.1672619,14.0104076 C13.9719997,14.2056698 13.6554173,14.2056698 13.4601551,14.0104076 L8.157,8.70714575 L2.85355339,14.0104076 C2.67998704,14.183974 2.41056264,14.2032591 2.2156945,14.0682631 L2.14644661,14.0104076 C1.95118446,13.8151455 1.95118446,13.498563 2.14644661,13.3033009 L2.14644661,13.3033009 L7.45,8.00014575 L2.14644661,2.69669914 C1.95118446,2.501437 1.95118446,2.18485451 2.14644661,1.98959236 C2.34170876,1.79433021 2.65829124,1.79433021 2.85355339,1.98959236 Z"></path></svg>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M2.85355339,1.98959236 L8.157,7.29314575 L13.4601551,1.98959236 C13.6337215,1.81602601 13.9031459,1.79674086 14.098014,1.93173691 L14.1672619,1.98959236 C14.362524,2.18485451 14.362524,2.501437 14.1672619,2.69669914 L14.1672619,2.69669914 L8.864,8.00014575 L14.1672619,13.3033009 C14.362524,13.498563 14.362524,13.8151455 14.1672619,14.0104076 C13.9719997,14.2056698 13.6554173,14.2056698 13.4601551,14.0104076 L8.157,8.70714575 L2.85355339,14.0104076 C2.67998704,14.183974 2.41056264,14.2032591 2.2156945,14.0682631 L2.14644661,14.0104076 C1.95118446,13.8151455 1.95118446,13.498563 2.14644661,13.3033009 L2.14644661,13.3033009 L7.45,8.00014575 L2.14644661,2.69669914 C1.95118446,2.501437 1.95118446,2.18485451 2.14644661,1.98959236 C2.34170876,1.79433021 2.65829124,1.79433021 2.85355339,1.98959236 Z"></path></svg>
                                                     </i>
                                                 </div>
                                             </div>
@@ -1755,7 +1755,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                             <input type="file" name="file" accept="image/*" simple="true" className="upload__input"/> 
                                                             <div data-v-05c78f31="" className="size-chart-upload">
                                                                 <i data-v-05c78f31="" className="icon">
-                                                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.387 5.807a.387.387 0 1 0-.774 0v5.806H5.806a.387.387 0 1 0 0 .774h5.807v5.807a.387.387 0 1 0 .774 0v-5.807h5.807a.387.387 0 1 0 0-.774h-5.807V5.807z"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12zm0-.774c6.2 0 11.226-5.026 11.226-11.226C23.226 5.8 18.2.774 12 .774 5.8.774.774 5.8.774 12 .774 18.2 5.8 23.226 12 23.226z"></path></svg>
+                                                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clip-rule="evenodd" d="M12.387 5.807a.387.387 0 1 0-.774 0v5.806H5.806a.387.387 0 1 0 0 .774h5.807v5.807a.387.387 0 1 0 .774 0v-5.807h5.807a.387.387 0 1 0 0-.774h-5.807V5.807z"></path><path fillRule="evenodd" clip-rule="evenodd" d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12zm0-.774c6.2 0 11.226-5.026 11.226-11.226C23.226 5.8 18.2.774 12 .774 5.8.774.774 5.8.774 12 .774 18.2 5.8 23.226 12 23.226z"></path></svg>
                                                                 </i>
                                                             </div>
                                                         </div>  
@@ -1951,7 +1951,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                 <div className='edit-text-mini'>
                                     <div data-v-5bb79eae="" data-v-708e34e0="" className="popover-wrap">
                                         <div data-v-708e34e0="" className="select" data-v-5bb79eae="">
-                                            <div tabindex="0" className="selector item-space selector--large"> 
+                                            <div tabIndex="0" className="selector item-space selector--large"> 
                                                 <div className="selector__inner line-clamp--1">Mới</div> 
                                                 <div className="selector__suffix"> 
                                                     <i className="selector__suffix-icon icon">

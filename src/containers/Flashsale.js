@@ -115,8 +115,8 @@ const Flashsale=()=>{
                                     
                                 </ul>
                             </div>
-                            <div class="carousel-arrow carousel-arrow--prev carousel-arrow--hidden" role="button" tabindex="0" style={{opacity: 1, visibility: 'hidden'}}><svg viewBox="0 0 13 20" width="13" height="22" class="svg-icon icon-arrow-left-bold-round"><path d="M11 2l-9.2832 9L11 20" stroke-width="3" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
-                            <div class="carousel-arrow carousel-arrow--next carousel-arrow--hidden" role="button" tabindex="0" style={{opacity: 1, visibility: 'hidden'}}><svg viewBox="0 0 13 20" width="13" height="22" class="svg-icon icon-arrow-right-bold-round"><path d="M2 2l9.2832 9L2 20" stroke-width="3" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            <div class="carousel-arrow carousel-arrow--prev carousel-arrow--hidden" role="button" tabIndex="0" style={{opacity: 1, visibility: 'hidden'}}><svg viewBox="0 0 13 20" width="13" height="22" class="svg-icon icon-arrow-left-bold-round"><path d="M11 2l-9.2832 9L11 20" strokeWidth="3" fill="none" fillRule="evenodd" strokeLinecap="round" stroke-linejoin="round"></path></svg></div>
+                            <div class="carousel-arrow carousel-arrow--next carousel-arrow--hidden" role="button" tabIndex="0" style={{opacity: 1, visibility: 'hidden'}}><svg viewBox="0 0 13 20" width="13" height="22" class="svg-icon icon-arrow-right-bold-round"><path d="M2 2l9.2832 9L2 20" strokeWidth="3" fill="none" fillRule="evenodd" strokeLinecap="round" stroke-linejoin="round"></path></svg>
                             </div>
                         </div>
                     </div>
@@ -145,7 +145,7 @@ const Flashsale=()=>{
                                 </a>
                                 <div class="navbar-with-more-menu__item navbar-with-more-menu__more">
                                     <div class="navbar-with-more-menu__more-label">Thêm</div>
-                                    <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" class="svg-icon icon-down-arrow-filled"><path d="m6.5 12.9-6-7.9s-1.4-1.5.5-1.5h13s1.8 0 .6 1.5l-6 7.9c-.1 0-.9 1.3-2.1 0z"></path></svg>
+                                    <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" class="svg-icon icon-down-arrow-filled"><path d="m6.5 12.9-6-7.9s-1.4-1.5.5-1.5h13s1.8 0 .6 1.5l-6 7.9c-.1 0-.9 1.3-2.1 0z"></path></svg>
                                 
                                 </div>
                             </div>

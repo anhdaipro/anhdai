@@ -1,7 +1,7 @@
-import Pagination from "../hocs/Pagination"
+import Pagination from "../../hocs/Pagination"
 import axios from 'axios';
 import React, {useState, useEffect,memo,useMemo,useCallback} from 'react'
-import {formatter,} from "../constants"
+import {formatter,} from "../../constants"
 let PageSize = 10;
 const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,submitby,
     setshow,duplicate,sec,text,complete,setDuplicate,

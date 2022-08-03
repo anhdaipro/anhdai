@@ -1,9 +1,10 @@
 import axios from 'axios';
 import React, {useState,useEffect} from 'react'
-import Promotioninfo from "../hocs/Promotioninfo"
-import {detailcomboURL} from "../urls"
+import Promotioninfo from "../../hocs/Promotioninfo"
+import {detailcomboURL} from "../../urls"
 import { useParams,Link } from "react-router-dom";
-import { headers } from '../actions/auth';
+import { headers } from '../../actions/auth';
+import { timevalue,timesubmit } from '../../constants';
 let Pagesize=5
 
 const Detailpromotion=()=>{
@@ -22,8 +23,7 @@ const Detailpromotion=()=>{
             await axios(detailcomboURL+id,headers)
             .then(res=>{
                 let data=res.data
-                const date={valid_from:new Date(data.valid_from).toDateString(),valid_to:new Date(data.valid_to).toDateString()}
-                setCombo(data)
+                setCombo({...data,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)})
                 
                 setLoading(true)
                 const list_products=data.products.map(item=>{

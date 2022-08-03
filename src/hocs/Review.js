@@ -716,7 +716,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                                 </div>
                                 <div className="reson_cancel">
                                     {list_reason_cancel.map(item=>
-                                        <div onClick={()=>setState({...state,reason_choice:item})} className={`stardust-radio ${state.reason_choice==item?'stardust-radio-button--checked':""}`} tabindex="0" role="radio" aria-checked="false">
+                                        <div onClick={()=>setState({...state,reason_choice:item})} className={`stardust-radio ${state.reason_choice==item?'stardust-radio-button--checked':""}`} tabIndex="0" role="radio" aria-checked="false">
                                             <div className="stardust-radio-button">
                                                 <div className="stardust-radio-button__outer-circle">
                                                     <div className="stardust-radio-button__inner-circle"></div>

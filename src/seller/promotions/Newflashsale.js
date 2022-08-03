@@ -1,7 +1,7 @@
 
 import React, {useState} from 'react'
-import Flashsaleinfo from "../hocs/Flashsaleinfo"
-import { newflashsaleURL } from '../urls';
+import Flashsaleinfo from "../../hocs/Flashsaleinfo"
+import { newflashsaleURL } from '../../urls';
 const Newflashsale=()=>{
     const [flashsale,setFlashsale]=useState({time:null,hour:null,minutes:null,minutes_to:null,
         hour_to:null

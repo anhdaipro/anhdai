@@ -1,13 +1,11 @@
 import axios from 'axios';
 import React, {useState,useEffect,useCallback,useRef} from 'react'
-import {localhost,newdealURL} from "../urls"
-import 'react-calendar/dist/Calendar.css';
-import Dealshockinfo from "../hocs/Dealshockinfo"
-import Navbar from "./Navbar"
-
-import { headers } from '../actions/auth';
+import {localhost,newdealURL} from "../../urls"
+import Dealshockinfo from "../../hocs/Dealshockinfo"
+import Navbar from "../Navbar"
+import { headers } from '../../actions/auth';
 import { Navigate, useNavigate } from 'react-router';
-import { valid_from, valid_to } from '../constants';
+import { valid_from, valid_to ,time_end,timevalue} from '../../constants';
 const Newdealshock=()=>{
     const [deal,setDeal]=useState({valid_from:valid_from.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),limited_product_bundle:null,minimum_price_to_receive_gift:null,number_gift:null,
     program_name_buy_with_shock_deal:'',shock_deal_type:'1',valid_to:valid_to.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16)
@@ -16,6 +14,8 @@ const Newdealshock=()=>{
     ,{time:new Date(),show:false,hours:new Date().getHours()+1,minutes:new Date().getMinutes()}])
     const [disable,setDisable]=useState(false)
     const navigate=useNavigate()
+    const [timestart,setTime_start]=useState(()=>timevalue(new Date()))
+    const [timeend,setTime_end]=useState(()=>timevalue(time_end))
     console.log(deal)
     const setdatevalid=(index,date)=>{
         if(index==0){
@@ -61,6 +61,8 @@ const Newdealshock=()=>{
                             disable={disable}
                             date={date}
                             deal={deal}
+                            time_end={timeend}
+                            time_start={timestart}
                         />
                     </div>
                     <div className="main_info">

@@ -223,7 +223,7 @@ const Itemdeal=(props)=>{
                         }} className="stardust-checkbox__box"></div>
                 </label>
                 
-                <div ref={itemref} className="stardust-popover Krn1TB" id="stardust-popover0" tabindex="0">
+                <div ref={itemref} className="stardust-popover Krn1TB" id="stardust-popover0" tabIndex="0">
                     {item.count_variation>0?
                     <div onClick={(e)=>{
                         setShow(!show)
@@ -275,10 +275,10 @@ const Itemdeal=(props)=>{
                                       <span className="JoCEu1">Số lượng</span>
                                       <div className="oGEqYd input-quantity">
                                         <button onClick={e=>setQuantity(quantity-1)} className={`${quantity==1?'disable':''} minus-btn btn-adjust`}>
-                                            <svg enable-background="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon "><polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon></svg>
+                                            <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon "><polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon></svg>
                                         </button>
                                         <input onChange={e=>setQuantity(isNaN(e.target.value)?quantity:e.target.value)} className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={quantity}/>
-                                        <button onClick={e=>setQuantity(quantity+1)} className={`plus-btn btn-adjust`}><svg enable-background="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg></button>
+                                        <button onClick={e=>setQuantity(quantity+1)} className={`plus-btn btn-adjust`}><svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg></button>
                                        
                                     </div>
                                 </div>
@@ -533,10 +533,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                 </>
                 )
                 }
-                ReactDOM.render(
-                    <Divbox />,
-                    document.getElementById('modal')
-                );
+               
                 }
                 axios.post(addToCartURL,form,headers)
                 .then(res=>{
@@ -754,7 +751,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                 <div className={`${state.filechoice.typefile==='video'?'_24bhyl yA8B4u':'aGIJCo'}`}>
                                     {state.filechoice.typefile==='video'?'':<div className="_3rslob _1vc1W7" style={{backgroundImage: `url(${state.filechoice.file})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>}
                                 </div>
-                                {state.filechoice.typefile==='video' && state.finish?<svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon dBlJ2V"><g opacity=".54"><g><circle cx="7.5" cy="7.5" fill="#040000" r="7.3"></circle><path d="m7.5.5c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7m0-.5c-4.1 0-7.5 3.4-7.5 7.5s3.4 7.5 7.5 7.5 7.5-3.4 7.5-7.5-3.4-7.5-7.5-7.5z" fill="#ffffff"></path></g></g><path clip-rule="evenodd" d="m10.2 5.3c.5.7.8 1.4.8 2.2 0 1.9-1.6 3.5-3.5 3.5s-3.5-1.6-3.5-3.5 1.6-3.5 3.5-3.5v.5c-1.6 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3c0-.7-.2-1.3-.6-1.8-.1-.1-.1-.1-.1-.1-.1-.1-.1-.3 0-.4s.3-.1.4.1c0-.1 0 0 0 0z" fill="#ffffff" fill-rule="evenodd"></path><path clip-rule="evenodd" d="m7.5 2.9c0-.1.1-.1.1-.1l1.4 1.5-1.4 1.4c0 .1-.1.1-.1 0z" fill="#ffffff" fill-rule="evenodd"></path></svg>:''}
+                                {state.filechoice.typefile==='video' && state.finish?<svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon dBlJ2V"><g opacity=".54"><g><circle cx="7.5" cy="7.5" fill="#040000" r="7.3"></circle><path d="m7.5.5c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7m0-.5c-4.1 0-7.5 3.4-7.5 7.5s3.4 7.5 7.5 7.5 7.5-3.4 7.5-7.5-3.4-7.5-7.5-7.5z" fill="#ffffff"></path></g></g><path clip-rule="evenodd" d="m10.2 5.3c.5.7.8 1.4.8 2.2 0 1.9-1.6 3.5-3.5 3.5s-3.5-1.6-3.5-3.5 1.6-3.5 3.5-3.5v.5c-1.6 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3c0-.7-.2-1.3-.6-1.8-.1-.1-.1-.1-.1-.1-.1-.1-.1-.3 0-.4s.3-.1.4.1c0-.1 0 0 0 0z" fill="#ffffff" fillRule="evenodd"></path><path clip-rule="evenodd" d="m7.5 2.9c0-.1.1-.1.1-.1l1.4 1.5-1.4 1.4c0 .1-.1.1-.1 0z" fill="#ffffff" fillRule="evenodd"></path></svg>:''}
                             </div>
                         </div>
                         <div className="_2riwuv">
@@ -848,8 +845,8 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                         <div style={{marginTop:'10px'}} className="">
                             {data.flash_sale && new Date(data.flash_sale.valid_from)<=new Date()?
                             <div className="SwrRMG">
-                                <svg viewBox="0 0 108 21" height="21" width="108" class="flash-sale-logo flash-sale-logo--white"><g fill="currentColor" fill-rule="evenodd"><path d="M0 16.195h3.402v-5.233h4.237V8H3.402V5.037h5.112V2.075H0zm29.784 0l-.855-2.962h-4.335l-.836 2.962H20.26l4.723-14.12h3.576l4.724 14.12zM26.791 5.294h-.04s-.31 1.54-.563 2.43l-.797 2.744h2.74l-.777-2.745c-.252-.889-.563-2.43-.563-2.43zm7.017 9.124s1.807 2.014 5.073 2.014c3.13 0 4.898-2.034 4.898-4.384 0-4.463-6.259-4.147-6.259-5.925 0-.79.778-1.106 1.477-1.106 1.672 0 3.071 1.245 3.071 1.245l1.439-2.824s-1.477-1.6-4.47-1.6c-2.76 0-4.918 1.718-4.918 4.325 0 4.345 6.258 4.285 6.258 5.964 0 .85-.758 1.126-1.457 1.126-1.75 0-3.324-1.462-3.324-1.462zm12.303 1.777h3.402v-5.53h5.054v5.53h3.401V2.075h-3.401v5.648h-5.054V2.075h-3.402zm18.64-1.678s1.692 1.915 4.763 1.915c2.877 0 4.548-1.876 4.548-4.107 0-4.483-6.492-3.871-6.492-6.36 0-.987.914-1.678 2.08-1.678 1.73 0 3.052 1.224 3.052 1.224l1.088-2.073s-1.4-1.501-4.12-1.501c-2.644 0-4.627 1.738-4.627 4.068 0 4.305 6.512 3.87 6.512 6.379 0 1.145-.952 1.698-2.002 1.698-1.944 0-3.44-1.48-3.44-1.48zm19.846 1.678l-1.166-3.594h-4.84l-1.166 3.594H74.84L79.7 2.174h2.623l4.86 14.021zM81.04 4.603h-.039s-.31 1.382-.583 2.172l-1.224 3.752h3.615l-1.224-3.752c-.253-.79-.545-2.172-.545-2.172zm7.911 11.592h8.475v-2.192H91.46V2.173H88.95zm10.477 0H108v-2.192h-6.064v-3.772h4.645V8.04h-4.645V4.366h5.753V2.174h-8.26zM14.255.808l6.142.163-3.391 5.698 3.87 1.086-8.028 12.437.642-8.42-3.613-1.025z"></path></g></svg>
-                                <svg height="20" viewBox="0 0 20 20" width="20" class="shopee-svg-icon +BapII"><g fill="none" fill-rule="evenodd" stroke="#fff" stroke-width="1.8" transform="translate(1 1)"><circle cx="9" cy="9" r="9"></circle><path d="m11.5639648 5.05283203v4.71571528l-2.72832027 1.57129639" stroke-linecap="round" stroke-linejoin="round" transform="matrix(-1 0 0 1 20.39961 0)"></path></g></svg>
+                                <svg viewBox="0 0 108 21" height="21" width="108" class="flash-sale-logo flash-sale-logo--white"><g fill="currentColor" fillRule="evenodd"><path d="M0 16.195h3.402v-5.233h4.237V8H3.402V5.037h5.112V2.075H0zm29.784 0l-.855-2.962h-4.335l-.836 2.962H20.26l4.723-14.12h3.576l4.724 14.12zM26.791 5.294h-.04s-.31 1.54-.563 2.43l-.797 2.744h2.74l-.777-2.745c-.252-.889-.563-2.43-.563-2.43zm7.017 9.124s1.807 2.014 5.073 2.014c3.13 0 4.898-2.034 4.898-4.384 0-4.463-6.259-4.147-6.259-5.925 0-.79.778-1.106 1.477-1.106 1.672 0 3.071 1.245 3.071 1.245l1.439-2.824s-1.477-1.6-4.47-1.6c-2.76 0-4.918 1.718-4.918 4.325 0 4.345 6.258 4.285 6.258 5.964 0 .85-.758 1.126-1.457 1.126-1.75 0-3.324-1.462-3.324-1.462zm12.303 1.777h3.402v-5.53h5.054v5.53h3.401V2.075h-3.401v5.648h-5.054V2.075h-3.402zm18.64-1.678s1.692 1.915 4.763 1.915c2.877 0 4.548-1.876 4.548-4.107 0-4.483-6.492-3.871-6.492-6.36 0-.987.914-1.678 2.08-1.678 1.73 0 3.052 1.224 3.052 1.224l1.088-2.073s-1.4-1.501-4.12-1.501c-2.644 0-4.627 1.738-4.627 4.068 0 4.305 6.512 3.87 6.512 6.379 0 1.145-.952 1.698-2.002 1.698-1.944 0-3.44-1.48-3.44-1.48zm19.846 1.678l-1.166-3.594h-4.84l-1.166 3.594H74.84L79.7 2.174h2.623l4.86 14.021zM81.04 4.603h-.039s-.31 1.382-.583 2.172l-1.224 3.752h3.615l-1.224-3.752c-.253-.79-.545-2.172-.545-2.172zm7.911 11.592h8.475v-2.192H91.46V2.173H88.95zm10.477 0H108v-2.192h-6.064v-3.772h4.645V8.04h-4.645V4.366h5.753V2.174h-8.26zM14.255.808l6.142.163-3.391 5.698 3.87 1.086-8.028 12.437.642-8.42-3.613-1.025z"></path></g></svg>
+                                <svg height="20" viewBox="0 0 20 20" width="20" class="shopee-svg-icon +BapII"><g fill="none" fillRule="evenodd" stroke="#fff" strokeWidth="1.8" transform="translate(1 1)"><circle cx="9" cy="9" r="9"></circle><path d="m11.5639648 5.05283203v4.71571528l-2.72832027 1.57129639" strokeLinecap="round" stroke-linejoin="round" transform="matrix(-1 0 0 1 20.39961 0)"></path></g></svg>
                                 <div class="Suic9m">Kết thúc trong</div>
                                 
                                     
@@ -1118,7 +1115,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                         <div className="Rac1ap">
                             <h3 className="CVExdh">Mua thêm deal sốc</h3>
                             <span>
-                                <div onClick={e=>navigate(`/addon-deal-selection/${main_product.deal_id}/${main_product.variation_choice.product_id}`)} className="vEKlNi">Xem thêm<svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="rLiIra"><path d="M2 2L6 5.99017L2 10" stroke="currentColor" stroke-width="1.5"></path></svg>
+                                <div onClick={e=>navigate(`/addon-deal-selection/${main_product.deal_id}/${main_product.variation_choice.product_id}`)} className="vEKlNi">Xem thêm<svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="rLiIra"><path d="M2 2L6 5.99017L2 10" stroke="currentColor" strokeWidth="1.5"></path></svg>
                                 </div>
                             </span>
                         </div>
@@ -1131,7 +1128,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                 updatevariation={(e,item,color_id,size_id,quanity,product)=>updatevariation(e,item,color_id,size_id,quanity,product)}
                             />
                             <div className="_91rKmd">
-                                <svg enable-background="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg>
+                                <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg>
                             </div> 
                             {byproduct.map((item,i)=>
                                 <Itemdeal
@@ -1156,7 +1153,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                             <span className="eK2OYx">₫{formatter.format(pricemain()+total_price_byproducts-(main_product.variation_choice.price+promotion_price_byproducts))}</span>
                         </div>
                         <button onClick={e=>addtocartbatch(e)} className="button-outline Yzvdc0 _0FecFw">
-                            <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon _12INAk icon-add-to-cart"><g><g><polyline fill="none" points=".5 .5 2.7 .5 5.2 11 12.4 11 14.5 3.5 3.7 3.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polyline><circle cx="6" cy="13.5" r="1" stroke="none"></circle><circle cx="11.5" cy="13.5" r="1" stroke="none"></circle></g><line fill="none" stroke-linecap="round" stroke-miterlimit="10" x1="7.5" x2="10.5" y1="7" y2="7"></line><line fill="none" stroke-linecap="round" stroke-miterlimit="10" x1="9" x2="9" y1="8.5" y2="5.5"></line></g></svg>
+                            <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon _12INAk icon-add-to-cart"><g><g><polyline fill="none" points=".5 .5 2.7 .5 5.2 11 12.4 11 14.5 3.5 3.7 3.5" strokeLinecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polyline><circle cx="6" cy="13.5" r="1" stroke="none"></circle><circle cx="11.5" cy="13.5" r="1" stroke="none"></circle></g><line fill="none" strokeLinecap="round" stroke-miterlimit="10" x1="7.5" x2="10.5" y1="7" y2="7"></line><line fill="none" strokeLinecap="round" stroke-miterlimit="10" x1="9" x2="9" y1="8.5" y2="5.5"></line></g></svg>
                         Bấm để mua deal sốc</button>
                     </div>    
                 </section>:
@@ -1165,7 +1162,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                             <div class="cMyLWR e0VUM0">Mua {promotion.quantity_to_reduced} &amp; {promotion.combo_type=='3'?`chỉ với ${promotion.price_special_sale}`:`giảm ${promotion.combo_type=='1'?`${promotion.discount_percent}%`:`₫${formatter.format(promotion.discount_price)}`}`}</div>
                             
                             <Link class="YdRCuG _1ipus9" to={`/bundle-deal/${promotion.id}?fromItem=${data.id}`}>
-                                Xem tất cả<svg width="5" height="9" viewBox="0 0 5 9" fill="none" xmlns="http://www.w3.org/2000/svg" class="CRN1qh"><path d="M0.549805 0.705933L4.0498 4.18877L0.549805 7.68877" stroke="currentColor" stroke-width="1.5"></path></svg>
+                                Xem tất cả<svg width="5" height="9" viewBox="0 0 5 9" fill="none" xmlns="http://www.w3.org/2000/svg" class="CRN1qh"><path d="M0.549805 0.705933L4.0498 4.18877L0.549805 7.68877" stroke="currentColor" strokeWidth="1.5"></path></svg>
                             </Link>
                         </h3>
                         <ul className="ADFE0a">
@@ -1177,7 +1174,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                     </div>
                                     <p class="AZqucp efbOsy">
                                         <div class="_6H32eD vmbY7Y">
-                                            <svg viewBox="0 0 24 11" class="svg-icon"><g fill="#fff" fill-rule="evenodd"><path d="M19.615 7.143V1.805a.805.805 0 0 0-1.611 0v5.377H18c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm3 0V1.805a.805.805 0 0 0-1.611 0v5.377H21c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm-7.491-2.985c.01-.366.37-.726.813-.726.45 0 .814.37.814.742v5.058c0 .37-.364.73-.813.73-.395 0-.725-.278-.798-.598a3.166 3.166 0 0 1-1.964.68c-1.77 0-3.268-1.456-3.268-3.254 0-1.797 1.497-3.328 3.268-3.328a3.1 3.1 0 0 1 1.948.696zm-.146 2.594a1.8 1.8 0 1 0-3.6 0 1.8 1.8 0 1 0 3.6 0z"></path><path d="M.078 1.563A.733.733 0 0 1 .565.89c.423-.15.832.16 1.008.52.512 1.056 1.57 1.88 2.99 1.9s2.158-.85 2.71-1.882c.19-.356.626-.74 1.13-.537.342.138.477.4.472.65a.68.68 0 0 1 .004.08v7.63a.75.75 0 0 1-1.5 0V3.67c-.763.72-1.677 1.18-2.842 1.16a4.856 4.856 0 0 1-2.965-1.096V9.25a.75.75 0 0 1-1.5 0V1.648c0-.03.002-.057.005-.085z" fill-rule="nonzero"></path></g></svg>
+                                            <svg viewBox="0 0 24 11" class="svg-icon"><g fill="#fff" fillRule="evenodd"><path d="M19.615 7.143V1.805a.805.805 0 0 0-1.611 0v5.377H18c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm3 0V1.805a.805.805 0 0 0-1.611 0v5.377H21c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm-7.491-2.985c.01-.366.37-.726.813-.726.45 0 .814.37.814.742v5.058c0 .37-.364.73-.813.73-.395 0-.725-.278-.798-.598a3.166 3.166 0 0 1-1.964.68c-1.77 0-3.268-1.456-3.268-3.254 0-1.797 1.497-3.328 3.268-3.328a3.1 3.1 0 0 1 1.948.696zm-.146 2.594a1.8 1.8 0 1 0-3.6 0 1.8 1.8 0 1 0 3.6 0z"></path><path d="M.078 1.563A.733.733 0 0 1 .565.89c.423-.15.832.16 1.008.52.512 1.056 1.57 1.88 2.99 1.9s2.158-.85 2.71-1.882c.19-.356.626-.74 1.13-.537.342.138.477.4.472.65a.68.68 0 0 1 .004.08v7.63a.75.75 0 0 1-1.5 0V3.67c-.763.72-1.677 1.18-2.842 1.16a4.856 4.856 0 0 1-2.965-1.096V9.25a.75.75 0 0 1-1.5 0V1.648c0-.03.002-.057.005-.085z" fillRule="nonzero"></path></g></svg>
                                     </div>{item.name}</p>
                                     <div class="mx6hDy">
                                         <del>₫{formatter.format((item.max_price+item.min_price)/2)}</del>

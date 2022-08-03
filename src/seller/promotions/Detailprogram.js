@@ -1,9 +1,10 @@
 import axios from 'axios';
-import Programinfo from "../hocs/Programinfo"
+import Programinfo from "../../hocs/Programinfo"
 import React, {useState, useEffect} from 'react'
-import {detailprogramURL} from "../urls"
+import {detailprogramURL} from "../../urls"
 import { useParams} from "react-router-dom";
-import { headers } from '../actions/auth';
+import { headers } from '../../actions/auth';
+import { timevalue,timesubmit } from '../../constants';
 let Pagesize=5
 const DetailProgram=()=>{
     const { id } = useParams(); 
@@ -19,7 +20,7 @@ const DetailProgram=()=>{
            // <-- passed to API URL
             .then(res=>{
                 let data=res.data
-                setProgram(data)
+                setProgram({...data,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)})
                 setLoading(true)
                 const variations=data.variations.map(variation=>{
                     return {...variation,limit:variation.promotion_stock>0?true:false,

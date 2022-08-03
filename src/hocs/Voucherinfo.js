@@ -2,11 +2,11 @@ import axios from 'axios';
 import Navbar from "../seller/Navbar"
 import Timeoffer from "./Timeoffer"
 import {Link,useNavigate} from 'react-router-dom'
-import Productoffer from "../seller/Productoffer"
+import Productoffer from "../seller/promotions/Productoffer"
 import React, {useState,useEffect,useCallback,memo,useMemo} from 'react'
 import Pagination from "./Pagination"
 import {vouchershopURL} from "../urls"
-import {formatter,valid_from,valid_to} from "../constants"
+import {formatter,valid_from,valid_to,time_end,timevalue} from "../constants"
 import {headers} from "../actions/auth"
 let Pagesize=5
 const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=>{
@@ -30,11 +30,15 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
     const [show,setShow]=useState({items:false,byproduct:false})
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
     const [loading,setLoading]=useState(false)
+    const [timeend,setTime_end]=useState(()=>time_end.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
+    const [timestart,setTime_start]=useState(()=>new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
     useEffect(() => {
         if(voucher_shop){
         setItem(itemvoucher)
         setVoucher(voucher_shop)
         setLoading(loading_content)
+        setTime_end(voucher_shop.valid_to)
+        setTime_start(voucher_shop.valid_from)
         }
       }, [voucher_shop,itemvoucher]);
     
@@ -255,6 +259,8 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
                                                 <Timeoffer
                                                    edit={edit}
                                                     data={voucher}
+                                                    time_end={timevalue(time_end)}
+                                                    time_start={timestart}
                                                     setdatevalid={(index,date)=>setdatevalid(index,date)}
                                                  
                                                 />
@@ -294,7 +300,7 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
                                                             <div className="input-group discount-amount-group d-flex">
                                                                 <span onClick={(e)=>opendiscount(e)} className="input-group__prepend" style={{width: '160px'}}>
                                                                     <div className="select discount-type">
-                                                                        <div tabindex="0" className="selector item-space selector--normal">
+                                                                        <div tabIndex="0" className="selector item-space selector--normal">
                                                                             <div className="selector__inner line-clamp--1">{voucher.discount_type=='1'?"Percent":'Amount'}</div> 
                                                                             <div className="selector__suffix">
                                                                                 <i className="selector__suffix-icon icon">
@@ -478,7 +484,7 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
                                                                     <div className="item-stocks">{item.total_inventory}</div>
                                                                     <div className="item-action">
                                                                         <button onClick={()=>removeitem(item,'items',itemshop.items,'items_choice',itemshop.items_choice,currentPage.items)} data-v-625f739d="" type="button" class="action button button--normal button--circle">
-                                                                            <i class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2,4 C1.72385763,4 1.5,3.77614237 1.5,3.5 C1.5,3.22385763 1.72385763,3 2,3 L6,2.999 L6,2 C6,1.44771525 6.44771525,1 7,1 L10,1 C10.5522847,1 11,1.44771525 11,2 L11,2.999 L15,3 C15.2761424,3 15.5,3.22385763 15.5,3.5 C15.5,3.77614237 15.2761424,4 15,4 L14,4 L14,14 C14,14.5522847 13.5522847,15 13,15 L4,15 C3.44771525,15 3,14.5522847 3,14 L3,4 L2,4 Z M13,4 L4,4 L4,14 L13,14 L13,4 Z M6.5,7 C6.77614237,7 7,7.22385763 7,7.5 L7,11.5 C7,11.7761424 6.77614237,12 6.5,12 C6.22385763,12 6,11.7761424 6,11.5 L6,7.5 C6,7.22385763 6.22385763,7 6.5,7 Z M8.5,6 C8.77614237,6 9,6.22385763 9,6.5 L9,11.5 C9,11.7761424 8.77614237,12 8.5,12 C8.22385763,12 8,11.7761424 8,11.5 L8,6.5 C8,6.22385763 8.22385763,6 8.5,6 Z M10.5,7 C10.7761424,7 11,7.22385763 11,7.5 L11,11.5 C11,11.7761424 10.7761424,12 10.5,12 C10.2238576,12 10,11.7761424 10,11.5 L10,7.5 C10,7.22385763 10.2238576,7 10.5,7 Z M10,2 L7,2 L7,2.999 L10,2.999 L10,2 Z"></path></svg>
+                                                                            <i class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M2,4 C1.72385763,4 1.5,3.77614237 1.5,3.5 C1.5,3.22385763 1.72385763,3 2,3 L6,2.999 L6,2 C6,1.44771525 6.44771525,1 7,1 L10,1 C10.5522847,1 11,1.44771525 11,2 L11,2.999 L15,3 C15.2761424,3 15.5,3.22385763 15.5,3.5 C15.5,3.77614237 15.2761424,4 15,4 L14,4 L14,14 C14,14.5522847 13.5522847,15 13,15 L4,15 C3.44771525,15 3,14.5522847 3,14 L3,4 L2,4 Z M13,4 L4,4 L4,14 L13,14 L13,4 Z M6.5,7 C6.77614237,7 7,7.22385763 7,7.5 L7,11.5 C7,11.7761424 6.77614237,12 6.5,12 C6.22385763,12 6,11.7761424 6,11.5 L6,7.5 C6,7.22385763 6.22385763,7 6.5,7 Z M8.5,6 C8.77614237,6 9,6.22385763 9,6.5 L9,11.5 C9,11.7761424 8.77614237,12 8.5,12 C8.22385763,12 8,11.7761424 8,11.5 L8,6.5 C8,6.22385763 8.22385763,6 8.5,6 Z M10.5,7 C10.7761424,7 11,7.22385763 11,7.5 L11,11.5 C11,11.7761424 10.7761424,12 10.5,12 C10.2238576,12 10,11.7761424 10,11.5 L10,7.5 C10,7.22385763 10.2238576,7 10.5,7 Z M10,2 L7,2 L7,2.999 L10,2.999 L10,2 Z"></path></svg>
                                                                         </i></button>
                                                                     </div>
                                                                 </div>
@@ -512,8 +518,8 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
                             <div className="bottom-card">
                                 <div className="fix-container fixed-bottom">
                                     <div className="action-button">
-                                        <button className="cancel btn-m btn-light">Cancel</button>
-                                        <button onClick={(e)=>complete(e)} className="submit btn-orange btn-m" type="button" >Submit</button>
+                                        <button className="cancel-btn btn-m btn-light">Cancel</button>
+                                        <button onClick={(e)=>complete(e)} className="submit save-btn btn-orange mr-1 btn-m" type="button" >Submit</button>
                                     </div>
                                 </div>
                             </div>
