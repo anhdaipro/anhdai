@@ -1,4 +1,4 @@
-export const localhost = "http://127.0.0.1:8000";
+export const localhost = "https://anhdai.herokuapp.com";
 const apiURL = "/api/v4";
 export const endpoint = `${localhost}${apiURL}`;
 export const refreshtokenURL=`${localhost}${apiURL}/refresh/token`

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import Navbar from "../seller/Navbar"
 import Calendar from './Calendar';
-import 'react-calendar/dist/Calendar.css';
 import React, {useState,useEffect,useCallback,useRef} from 'react'
 import {formatter,itemvariation,time_end,timevalue} from "../constants"
 
