@@ -291,7 +291,7 @@ const Iteminfo=(props)=>{
             </div>
             <div className="shop-item-price-origin item-center">
                 <span className={`_1CXksa ${item.discount_price>0?'_1k1Vcm':''}`}>₫{formatter.format(item.price)}</span>
-                {item.discount_price<item.price?
+                {item.discount_price?
                 <span className="_1CXksa">₫{formatter.format(item.discount_price)}</span>
                 :''}
             </div>
