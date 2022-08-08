@@ -905,7 +905,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                 </div>
                                 <div className="edit-input edit-main">
                                     <div className="input__inner input__inner--large"> 
-                                        <input type="text" className="form-select name" style={{width:'100%'}} name="name" minlength="10" maxLength="120" onChange={(e)=>setformData({...formData,name:e.target.value.trim()})} value={formData.name.trim()} id="nameproduct" placeholder="Name Product"  required/>
+                                        <input type="text" className="form-select name" style={{width:'100%'}} name="name" minLength="10" maxLength="120" onChange={(e)=>setformData({...formData,name:e.target.value.trim()})} value={formData.name.trim()} id="nameproduct" placeholder="Name Product"  required/>
                                         <div className="input__suffix">
                                             <span className="input__suffix-split"></span>
                                             {formData.name.trim().length}/120
@@ -1755,7 +1755,7 @@ const ProductDetail=({form,data_item,list_buymore,shipping_shop,setshow,list_var
                                                             <input type="file" name="file" accept="image/*" simple="true" className="upload__input"/> 
                                                             <div data-v-05c78f31="" className="size-chart-upload">
                                                                 <i data-v-05c78f31="" className="icon">
-                                                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clip-rule="evenodd" d="M12.387 5.807a.387.387 0 1 0-.774 0v5.806H5.806a.387.387 0 1 0 0 .774h5.807v5.807a.387.387 0 1 0 .774 0v-5.807h5.807a.387.387 0 1 0 0-.774h-5.807V5.807z"></path><path fillRule="evenodd" clip-rule="evenodd" d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12zm0-.774c6.2 0 11.226-5.026 11.226-11.226C23.226 5.8 18.2.774 12 .774 5.8.774.774 5.8.774 12 .774 18.2 5.8 23.226 12 23.226z"></path></svg>
+                                                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M12.387 5.807a.387.387 0 1 0-.774 0v5.806H5.806a.387.387 0 1 0 0 .774h5.807v5.807a.387.387 0 1 0 .774 0v-5.807h5.807a.387.387 0 1 0 0-.774h-5.807V5.807z"></path><path fillRule="evenodd" clipRule="evenodd" d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12zm0-.774c6.2 0 11.226-5.026 11.226-11.226C23.226 5.8 18.2.774 12 .774 5.8.774.774 5.8.774 12 .774 18.2 5.8 23.226 12 23.226z"></path></svg>
                                                                 </i>
                                                             </div>
                                                         </div>  

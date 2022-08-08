@@ -1,6 +1,6 @@
 import Pagination from "../../hocs/Pagination"
 import axios from 'axios';
-import React, {useState, useEffect,memo,useMemo,useCallback} from 'react'
+import React, {useState, useEffect,memo,useMemo,useCallback,useRef} from 'react'
 import {formatter,} from "../../constants"
 let PageSize = 10;
 const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,submitby,
@@ -12,7 +12,9 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
     const [name,setName]=useState('items')
     const [show,setShow]=useState(false)
     const [choice_product,setChoiceproduct]=useState([])
-
+    const [showoption,setShowoption]=useState(false)
+    const [showcategory,setShowcategory]=useState(false)
+    const parent=useRef()
     const handlePageChange=useCallback((page)=>{
         setCurrentPage(page)
     },[currentPage])
@@ -41,6 +43,21 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
         return list_items.slice(firstPageIndex, lastPageIndex);
     },[currentPage,list_items])
     
+    
+    useEffect(() => {
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [])
+    const handleClick = (event) => {
+        const { target } = event
+        if(parent.current!=null){
+            if (!parent.current.contains(target)) {
+                setShowoption(false)
+            }
+        }
+    }
     function list_productshop(item,product,name,product_choice){
         return(
             <div key={item.id} className="item">
@@ -82,17 +99,17 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
             <div className="modal__container">
                 <div className="modal__box">
                     {duplicate?
-                        <div class="modal__content modal__content--normal">
-                            <div class="modal__header">
-                                <div class="modal__header-inner"> 
-                                <div class="modal__title">Chú ý</div> 
+                        <div className="modal__content modal__content--normal">
+                            <div className="modal__header">
+                                <div className="modal__header-inner"> 
+                                <div className="modal__title">Chú ý</div> 
                                 </div></div> 
-                                <div class="modal__body">
+                                <div className="modal__body">
                                     <div data-v-6ec5aca5="">Sản phẩm đang chạy Combo Khuyến Mãi sẽ không thể chạy chung với chương trình khác trong cùng thời điểm. Vui lòng xóa những sản phẩm này để tạo Combo Khuyến Mãi thành công.</div>
                                     </div> 
-                                    <div class="modal__footer"> 
-                                <div class="modal__footer-buttons"> 
-                                <button onClick={e=>setDuplicate(false)} type="button" class="button button--primary button--normal"><span>Bỏ kích hoạt sản phẩm</span></button>
+                                    <div className="modal__footer"> 
+                                <div className="modal__footer-buttons"> 
+                                <button onClick={e=>setDuplicate(false)} type="button" className="button button--primary button--normal"><span>Bỏ kích hoạt sản phẩm</span></button>
                             </div>
                         </div>
                     </div> 
@@ -129,13 +146,13 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
                                             <div className="item-center form-item">
                                                 <label className="form-item__label">Categories</label>
                                                 <div className="input-category-choice item-center">
-                                                    <div className=" item-center input-choice" style={{width: '190px'}}>
+                                                    <div onClick={()=>setShowcategory(!showcategory)} className=" item-center input-choice" style={{width: '190px'}}>
                                                         <div className="ellipsis-content" style={{width: '160px'}}>All categories</div> 
-                                                        <div className="selector__suffix">
+                                                        <div className="">
                                                             <i className="selector__suffix-icon icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,9.18933983 L4.03033009,5.21966991 C3.73743687,4.9267767 3.26256313,4.9267767 2.96966991,5.21966991 C2.6767767,5.51256313 2.6767767,5.98743687 2.96966991,6.28033009 L7.46966991,10.7803301 C7.76256313,11.0732233 8.23743687,11.0732233 8.53033009,10.7803301 L13.0303301,6.28033009 C13.3232233,5.98743687 13.3232233,5.51256313 13.0303301,5.21966991 C12.7374369,4.9267767 12.2625631,4.9267767 11.9696699,5.21966991 L8,9.18933983 Z"></path></svg></i>
                                                         </div>
                                                     </div>
-                                                    <div className="popper" x-placement="bottom-start" style={{position: 'absolute',display:'none',zIndex: 1000054, willChange: 'top, left', transformOrigin: 'left top', top: '32px', left: '90px'}}>
+                                                    <div className="popper" x-placement="bottom-start" style={{position: 'absolute',display:`${showcategory?'':'none'}`,zIndex: 1000054, willChange: 'top, left', transformOrigin: 'left top', top: '32px', left: '90px'}}>
                                                         <div className="d-flex category">
                                                             <div className="cascader-menu" style={{maxHeight: '306px', maxWidth: '320px'}}>
                                                                 <div className="scrollbar">
@@ -145,7 +162,7 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
                                                                         </div> 
                                                                         <div className="scrollbar__content" style={{position: 'relative'}}>
                                                                             <div className="cascader-menu__items">
-                                                                                <div className="cascader-menu__item">All category</div>
+                                                                                <div className="cascader-menu__item"><>All category</></div>
                                                                                 <div className="cascader-menu__item has-children selected">Categories
                                                                                     <i className="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M9.18933983,8 L5.21966991,11.9696699 C4.9267767,12.2625631 4.9267767,12.7374369 5.21966991,13.0303301 C5.51256313,13.3232233 5.98743687,13.3232233 6.28033009,13.0303301 L10.7803301,8.53033009 C11.0732233,8.23743687 11.0732233,7.76256313 10.7803301,7.46966991 L6.28033009,2.96966991 C5.98743687,2.6767767 5.51256313,2.6767767 5.21966991,2.96966991 C4.9267767,3.26256313 4.9267767,3.73743687 5.21966991,4.03033009 L9.18933983,8 Z"></path></svg></i>
                                                                                     </div>
@@ -170,19 +187,20 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
                                                 <label className="form-item__label" for="price" >Search</label>
                                                 
                                                 <div className=" item-center input-group">
-                                                    <div className="input-group_choice item-center">
-                                                        <div className="input-choice item-center" style={{width: '120px'}}>
-                                                            <div style={{width: '100px'}}>Product name</div>
-                                                            <div className="selector__suffix">
+                                                    <div ref={parent} className="input-group_choice">
+                                                        <div onClick={()=>setShowoption(!showoption)} className={`input-choice ${showoption?'is-show':''} item-space item-center`} style={{width: '160px'}}>
+                                                            <div>Product name</div>
+                                                            <div className="">
                                                                 <i className="selector__suffix-icon icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,9.18933983 L4.03033009,5.21966991 C3.73743687,4.9267767 3.26256313,4.9267767 2.96966991,5.21966991 C2.6767767,5.51256313 2.6767767,5.98743687 2.96966991,6.28033009 L7.46966991,10.7803301 C7.76256313,11.0732233 8.23743687,11.0732233 8.53033009,10.7803301 L13.0303301,6.28033009 C13.3232233,5.98743687 13.3232233,5.51256313 13.0303301,5.21966991 C12.7374369,4.9267767 12.2625631,4.9267767 11.9696699,5.21966991 L8,9.18933983 Z"></path></svg></i>
                                                             </div>
                                                         </div>
+                                                        {showoption?
                                                         <div className="select__options">
-                                                            <div className="p-1_2">
+                                                            <div className="">
                                                                 <div className="variation-option">Product name</div>
                                                                 <div className="variation-option">Product code</div>
                                                             </div>
-                                                        </div> 
+                                                        </div>:''}
                                                     </div>
                                                     <div className="input">
                                                         <div className="input-inner item-center">
@@ -194,7 +212,7 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
                                         </form>
                                         <div className="item-spaces py-1 mr-1">
                                             <div className="buttions">
-                                                <button className="btn-m btn-orange">Search </button>
+                                                <button className="btn-m mr-1 btn-orange">Search </button>
                                                 <button className="btn-m btn-light">Enter again</button>
                                             </div>
                                             <div className="item-center">
@@ -266,9 +284,9 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
                                             <div className="item-end">
                                                 <div className="item-center page-pagination">
                                                     <Pagination
-                                                    classActive={`buttons active`}
-                                                    classNormal={`buttons`}
-                                                    classIcon={`buttons`}
+                                                    classActive={`pager__page active`}
+                                                    classNormal={`pager__page`}
+                                                    classIcon={`pager__page`}
                                                     currentPage={currentPage}
                                                     totalCount={page_count}
                                                     pageSize={PageSize}

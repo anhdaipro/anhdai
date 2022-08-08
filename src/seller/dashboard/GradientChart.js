@@ -2,7 +2,7 @@ import Calendar from "../../hocs/Calendar"
 import axios from 'axios';
 import { useParams,Link,useSearchParams } from "react-router-dom";
 import React, {useState,useEffect,useCallback,useRef,memo, useMemo} from 'react'
-import {timeformat,timevalue,formatter,valid_to, percent} from "../../constants"
+import {timeformat,yesterday, percent, today} from "../../constants"
 import {dashboardURL,} from "../../urls"
 import { Line } from 'react-chartjs-2';
 import { headers } from '../../actions/auth';
@@ -26,13 +26,13 @@ import {
     Legend
   );
 const GradientChart = (props) => {
-    const {chart,datechoice,time,listsum,scale}=props
+    const {chart,datechoice,time,scale}=props
     const [tooltipVisible, setTooltipVisible] = useState(false);
     const [tooltipData, setTooltipData] = useState(null);
     const [tooltipPos, setTooltipPos] = useState(null);
     const [title,setTitle]=useState()
     const chartRef=useRef()
-    console.log(datechoice)
+   
     const customTooltip = useCallback((context) => {
         if (context.tooltip.opacity == 0) {
           // hide tooltip visibilty
@@ -94,7 +94,7 @@ const GradientChart = (props) => {
              left: `${tooltipPos?tooltipPos.left:0}px`, top: `${tooltipPos?tooltipPos.top:0}px`}}>
             {tooltipData?
             <div style={{fontFamily: `Roboto`, fontSize: `14px`, color: `rgb(51, 51, 51)`}}>
-                <div style={{paddingLeft: `12px`, height: `30px`, lineHeight: `30px`, background: `rgb(246, 246, 246)`, fontSize: `12px`, color: `rgb(102, 102, 102)`}}>{time=='currentday' || time=='day' || time=='yesterday'?`${title} ${timeformat(datechoice)}`:time!='year'?('0'+title).slice(-2)+'-'+('0'+datechoice.getMonth()).slice(-2)+'-'+datechoice.getFullYear():('0'+title).slice(-2)-datechoice.getFullYear()}</div>
+                <div style={{paddingLeft: `12px`, height: `30px`, lineHeight: `30px`, background: `rgb(246, 246, 246)`, fontSize: `12px`, color: `rgb(102, 102, 102)`}}>{time=='currentday'?`${title} ${timeformat(today)}`:time=='day'?`${title} ${timeformat(datechoice)}`:time=='yesterday'?`${title} ${timeformat(yesterday)}`:time!='year'?('0'+title).slice(-2)+'-'+('0'+datechoice.getMonth()).slice(-2)+'-'+datechoice.getFullYear():('0'+title).slice(-2)-datechoice.getFullYear()}</div>
                 {tooltipData.dataPoints.map((val, index) => 
                 <div key={index} className="item-center" style={{margin: `16px 12px`}}>
                     <span style={{background: `${val?.dataset.backgroundColor}`,borderRadius:`50%`,width:`10px`,height:`10px`,marginRight:`8px`}}></span>

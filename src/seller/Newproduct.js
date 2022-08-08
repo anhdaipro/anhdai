@@ -13,6 +13,8 @@ const Newproduct=()=>{
     list_color:[],list_size:[],position:0})
     const [level,setLevel]=useState(0)
     const [variation,setVariation]=useState([])
+
+    const [keyword,setKeyword]=useState('')
     const [shipping,setShipping]=useState()
     const [show,setShow]=useState(false)
     const [loading,setLoading]=useState(false)
@@ -70,7 +72,7 @@ const Newproduct=()=>{
         setShow(value)
     }
    const setfiltercategory=(e)=>{
-        setState({...state,category:e.target.value})
+        setKeyword(e.target.value)
         setLevel(0)
    }
    console.log(state.list_choice)
@@ -102,7 +104,7 @@ const Newproduct=()=>{
                                 <label className="label-product">Product name:</label>
                                 <div className="input-wrap">
                                     <div className="input-inner--large input-inner"> 
-                                        <input onChange={(e)=>setformData({...formData,'name':e.target.value})} type="text" className="form-select name" value={formData.name} id="nameproduct" placeholder="Name Product" minlength="10" maxLength="120"  required/>
+                                        <input onChange={(e)=>setformData({...formData,'name':e.target.value})} type="text" className="form-select name" value={formData.name} id="nameproduct" placeholder="Name Product" minLength="10" maxLength="120"  required/>
                                         <div className="input__suffix">
                                             <span className="input__suffix-split"></span>
                                             {formData.name.length}/120
@@ -117,7 +119,7 @@ const Newproduct=()=>{
                                             <div className="input search-input">
                                                 <div className="input__inner input__inner--normal">
                                                     <div className="input__prefix">
-                                                        <i className="input__prefix-icon icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M31.7 31.7c-.4.4-1 .4-1.3 0l-8.9-8.9c-2.3 2-5.2 3.2-8.5 3.2-7.2 0-13-5.8-13-13S5.8 0 13 0s13 5.8 13 13c0 3.2-1.2 6.2-3.2 8.5l8.9 8.9c.4.3.4.9 0 1.3zM24 13c0-6.1-4.9-11-11-11S2 6.9 2 13s4.9 11 11 11 11-4.9 11-11z" fillRule="evenodd" clip-rule="evenodd"></path></svg></i>
+                                                        <i className="input__prefix-icon icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M31.7 31.7c-.4.4-1 .4-1.3 0l-8.9-8.9c-2.3 2-5.2 3.2-8.5 3.2-7.2 0-13-5.8-13-13S5.8 0 13 0s13 5.8 13 13c0 3.2-1.2 6.2-3.2 8.5l8.9 8.9c.4.3.4.9 0 1.3zM24 13c0-6.1-4.9-11-11-11S2 6.9 2 13s4.9 11 11 11 11-4.9 11-11z" fillRule="evenodd" clipRule="evenodd"></path></svg></i>
                                                     </div> 
                                                     <input value={state.category} onChange={(e)=>setfiltercategory(e)} type="text" placeholder="Tên Ngành Hàng" resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/>
                                                 </div>
@@ -144,12 +146,12 @@ const Newproduct=()=>{
                                             </div>
                                             <div className="category-list" style={{left: `${state.list_choice.filter(item=>item.id!=null && !item.choice).length<3?0:state.position<2?'0':-20}%`,width: `${(state.max_level+1)*300}px`}}>
                                                 {Array(state.max_level).fill().map((_, i) =>
-                                                    <ul  className="scroll-item">
+                                                    <ul key={i} className="scroll-item">
                                                         {i<=level?<>
                                                         {state.list_category.map(category=>{
-                                                            if((i>0&&category.level==i && category.parent==state.list_choice[i-1].id && category.level>0) || (category.level==0 && i==0 && category.title.indexOf(state.category)>-1)){
+                                                            if((i>0 && category.level==i && category.parent==state.list_choice[i-1].id && category.level>0) || (category.level==0 && i==0 && category.title.indexOf(keyword)>-1)){
                                                                 return(
-                                                                <li onClick={()=>setcategorychoice(i,category)} className={`category-item ${category.id==state.list_choice[i].id?'selected':''}`}>
+                                                                <li key={category.id} onClick={()=>setcategorychoice(i,category)} className={`category-item ${category.id==state.list_choice[i].id?'selected':''}`}>
                                                                     <p className="text-overflow">{category.title}</p> 
                                                                     {category.choice?'':
                                                                     <div className="category-item-right">

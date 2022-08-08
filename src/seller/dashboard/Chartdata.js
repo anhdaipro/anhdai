@@ -3,11 +3,11 @@ import Calendar from "../../hocs/Calendar"
 import axios from 'axios';
 import { useParams,Link,useSearchParams } from "react-router-dom";
 import React, {useState,useEffect,useCallback,useRef, useMemo} from 'react'
-import {timeformat,timevalue,formatter,valid_to, percent} from "../../constants"
+import {timeformat,timevalue,formatter,today,yesterday,lastmonth,lastweek, percent} from "../../constants"
 import {dashboardURL,} from "../../urls"
 import { headers } from '../../actions/auth';
 import GradientChart from "./GradientChart"
-const today=new Date()
+
 const hours=today.getHours()
 const listhour=Array(25).fill().map((_,i)=>{
     return i
@@ -15,10 +15,7 @@ const listhour=Array(25).fill().map((_,i)=>{
 const listmonth=Array(12).fill().map((_,i)=>{
     return i
 })
-const yesterday=new Date(new Date().setDate(new Date().getDate() - 1))
-const tomorow=new Date(new Date().setDate(new Date().getDate() + 1))
-const lastweek=new Date(new Date().setDate(new Date().getDate() - 7))
-const lastmonth=new Date(new Date().setDate(new Date().getDate() - 30))
+
 const time_start=new Date(new Date().setFullYear(new Date().getFullYear() - 20))
 const listtypeorder=[{name:'Đơn Đã Xác Nhận',value:'accepted',info:'Tất cả các đơn được người mua đặt hàng thành công. Bao gồm cả đơn đã thanh toán và đơn thanh toán sau khi nhận hàng (trước và sau khi hệ thống Anhdai xác nhận).'},
 {name:'Đơn Đã Thanh Toán',value:'received',info:'Tất cả các đơn được người mua đặt hàng thành công. Bao gồm cả đơn đã thanh toán và đơn thanh toán sau khi nhận hàng (trước và sau khi hệ thống Anhdai xác nhận).'},
@@ -41,7 +38,8 @@ const timeselect=[{name:'By day',time:'day',value:null},{name:'By week',time:'we
 
 const Chartdata=(props)=>{
     const {datatime,promotion,url,liststats,setstats,widthchart}=props
-    const [state,setState]=useState(()=>{return{time:[{name:'Today',time_display:`Tới ${today.getHours()} now`,value:'currentday'},
+    const [state,setState]=useState(()=>{return{time:[
+    {name:'Today',time_display:`Tới ${today.getHours()} now`,value:'currentday',time:today},
     {name:'Yesterday',value:'yesterday',time_display:timeformat(yesterday),time:yesterday},
     {name:'Last 7 days',value:'week_before',time_display:timeformat(lastweek) + ' - ' + timeformat(today)},
     {name:'Thirty day ago',value:'month_before',time_display:timeformat(lastmonth) + ' - ' + timeformat(today)}],
@@ -53,7 +51,7 @@ const Chartdata=(props)=>{
     const [params, setSearchParams] = useSearchParams();
     const [time,setTime]=useState('currentday')
     const [choice,setChoice]=useState()
-    const [timeend,setTime_end]=useState(()=>timevalue(tomorow))
+    const [timeend,setTime_end]=useState(()=>timevalue(today))
     const [timestart,setTimestart]=useState(()=>time_start.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
     const chartRef = useRef();
     const [show,setShow]=useState({show_order:false,show:false})
@@ -178,7 +176,7 @@ const Chartdata=(props)=>{
                 const search_params=params
                 search_params.set('time',time?time:'currentday')
                 if(timechoice){
-                    search_params.set('time_choice',timechoice)
+                    search_params.set('time_choice',timevalue(timechoice))
                 }
                 if(!promotion){
                     search_params.set('typeorder',typeorder)
@@ -217,7 +215,8 @@ const Chartdata=(props)=>{
                 setListcount(current=>[...listcountdata])
             }
         })()
-    },[typeorder,promotion,time,timechoice,text])
+    },[typeorder,time,timechoice])
+
     console.log(listsum)
     const setshowtime=(item)=>{
         setState({...state,date_choice:item.time,hover:item.name})
@@ -234,7 +233,6 @@ const Chartdata=(props)=>{
         calendar.current.style.display=value
     }
     const setdashboardtime=(item)=>{
-        setTimechoice(item.time)
         setTime(item.value)
         setDashboard({...dashboard,time_choice:item.time_display,name:item.name})
     }
@@ -255,26 +253,23 @@ const Chartdata=(props)=>{
         setDates(value)
         setTime('year')
         setDashboard({...dashboard,name:"By year",time_choice:value.getFullYear(),value:timevalue(value)})
-        setTimechoice(timevalue(value))
+        setTimechoice(value)
     }
     const setmonthchoice=(value)=>{
         setDates(value)
         setTime('month')
-        setTimechoice(current=>timevalue(value))
+        setTimechoice(current=>value)
         setDashboard(current=>{return {...current,value:timevalue(value),name:"By month",time_choice:value.getFullYear()+'.'+('0'+(value.getMonth()+1)).slice(-2)}})
     }
     const setweekchoice=(value,value_choice)=>{
         setTime(()=>'week')
-        
         setDashboard(current=>{return {...current,value:timevalue(value),name:"By week",time_choice:`${timeformat(value)} - ${timeformat(value_choice)}`}})
-        setTimechoice(()=>timevalue(value))
-        
+        setTimechoice(()=>value)
         setDates(()=>value)
     }
     console.log(date)
     const setdaychoice=(value)=>{
-       
-        setTimechoice(()=>timevalue(value))
+        setTimechoice(()=>value)
         setTime(()=>'day')
         setDates(()=>value)
         setDashboard(current=>{return {...current,name:"By day",time_choice:timeformat(value),value:timevalue(value)}})
@@ -301,14 +296,14 @@ const Chartdata=(props)=>{
                                 <div className="date_picker popper_content" style={{display:`${show.show?'':'none'}`}}>
                                     <ul className={`bi-date-shortcuts date-shortcut-list ${dashboard.show_time?'with-display-text':''}`}>
                                         {state.time.map(item=>
-                                            <li onClick={()=>setdashboardtime(item)} onMouseEnter={()=>setshowdate('none')} className={`date-shortcut-item ${item.time_display==dashboard.time_choice?'active':''}`}>
+                                            <li onClick={()=>setdashboardtime(item)} onMouseEnter={()=>setshowdate('none')} className={`date-shortcut-item ${item.value==time?'active':''}`}>
                                                 <span className="date-shortcut-item__text">{item.name}</span> 
                                                 <span className="date-shortcut-item__display">{item.time_display}</span>
                                             </li>
                                         )}
                                         <li data-v-f7189dec="" className="date-shortcut-split"></li>
                                         {timeselect.map(item=>
-                                            <li key={item.time} onMouseEnter={()=>setshowtime(item)} className={`date-shortcut-item track-click-time-selector with-picker ${state.hover==item.name?'hover':''}`}>
+                                            <li key={item.time} onMouseEnter={()=>setshowtime(item)} className={`date-shortcut-item track-click-time-selector with-picker ${state.hover==item.name || time==item.time?'hover':''}`}>
                                                 <span>{item.name}</span>
                                                 <i data-v-f7189dec="" className="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M9.18933983,8 L5.21966991,11.9696699 C4.9267767,12.2625631 4.9267767,12.7374369 5.21966991,13.0303301 C5.51256313,13.3232233 5.98743687,13.3232233 6.28033009,13.0303301 L10.7803301,8.53033009 C11.0732233,8.23743687 11.0732233,7.76256313 10.7803301,7.46966991 L6.28033009,2.96966991 C5.98743687,2.6767767 5.51256313,2.6767767 5.21966991,2.96966991 C4.9267767,3.26256313 4.9267767,3.73743687 5.21966991,4.03033009 L9.18933983,8 Z"></path></svg></i>
                                             </li>
@@ -471,7 +466,7 @@ const Chartdata=(props)=>{
                             chart={chart}
                             time={time}
                             listsum={listsum}
-                            datechoice={date}
+                            datechoice={timechoice}
                             scale={scale}
                             />
                         

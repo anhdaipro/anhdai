@@ -62,14 +62,14 @@ const Dealshockinfo=({deal,setform,editdeal,disable,setdealtype,edit,state,setda
                                 <>
                                 Buy
                                     <div className="input-inner mx-1_2"> 
-                                        <input onChange={(e)=>setform(e)} type="text" className="form-select" value={deal.minimum_price_to_receive_gift} name="minimum_price_to_receive_gift" placeholder="" minlength="10" maxLength="100" style={{width: '140px'}} required=""/>
+                                        <input onChange={(e)=>setform(e)} type="text" className="form-select" value={deal.minimum_price_to_receive_gift} name="minimum_price_to_receive_gift" placeholder="" minLength="10" maxLength="100" style={{width: '140px'}} required=""/>
                                         <div className="input__suffix">
                                             <span className="input__suffix-split"></span>₫
                                         </div>
                                     </div>
                                     to receive                                            
                                     <div className="input-inner mx-1_2"> 
-                                        <input onChange={(e)=>setform(e)} type="text" className="form-select" value={deal.number_gift} name="number_gift" placeholder="quantity less than 50" minlength="10" maxLength="100" style={{width: '160px'}} required=""/>
+                                        <input onChange={(e)=>setform(e)} type="text" className="form-select" value={deal.number_gift} name="number_gift" placeholder="quantity less than 50" minLength="10" maxLength="100" style={{width: '160px'}} required=""/>
                                         <div className="input__suffix">
                                         </div>
                                     </div>

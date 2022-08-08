@@ -250,7 +250,7 @@ const Calendar = (props) => {
                                             ${date.month_end?'month-end':''} ${date.month_start?'month-start':''} ${date.out_month?'out-of-month':''} ${j==week.filter(item=>!item.hide).length-1?'line-end':''} ${week.find(item=>!item.hide).day==date.day?'line-start':''}`}>
                                             {children?<div data-v-3321a628="" className={`${!date.disabled?'timeslots':'no-timeslot'} ${dayObj.set('date',date.day).set('month',date.month).isSame(timevalue(new Date()),'day')?'current':'valid'}`}>
                                                 <p data-v-3321a628="" className="date-text">{date.day}</p> 
-                                                {count_valid_framtime(list_fram_time_choice,new Date(`${date.year}-${date.month+1}-${date.day}`))?<p data-v-3321a628="" className="slots-count">{count_valid_framtime(list_fram_time_choice,new Date(`${date.year}-${date.month+1}-${date.day}`))} khung giờ</p>:''}
+                                                {!date.disabled && count_valid_framtime(list_fram_time_choice,new Date(`${date.year}-${date.month+1}-${date.day}`))?<p data-v-3321a628="" className="slots-count">{count_valid_framtime(list_fram_time_choice,new Date(`${date.year}-${date.month+1}-${date.day}`))} khung giờ</p>:''}
                                             </div>:
                                             `${date.day}`}
                                             </span>

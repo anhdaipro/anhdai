@@ -108,7 +108,7 @@ const Divbox=(props)=>{
                             </div>
                             {item.id==shop.voucher?
                             <div onClick={()=>remove_voucher(item)} className="_1DC8ps">
-                                <svg fill="none" viewport="0 0 21 18" className="svg-icon icon-voucher-close"><path fillRule="evenodd" clip-rule="evenodd" d="M.05.001C.016.33 0 .663 0 1v7c0 5.523 4.477 10 10 10h10V.001H.05z" fill="#000" fill-opacity=".26"></path><rect x="13.273" y="5" width="1.029" height="10.285" rx=".5" transform="rotate(45 13.273 5)" fill="#fff"></rect><rect x="6.727" y="5" width="10.285" height="1.029" rx=".5" transform="rotate(45 6.727 5)" fill="#fff"></rect></svg>
+                                <svg fill="none" viewport="0 0 21 18" className="svg-icon icon-voucher-close"><path fillRule="evenodd" clipRule="evenodd" d="M.05.001C.016.33 0 .663 0 1v7c0 5.523 4.477 10 10 10h10V.001H.05z" fill="#000" fill-opacity=".26"></path><rect x="13.273" y="5" width="1.029" height="10.285" rx=".5" transform="rotate(45 13.273 5)" fill="#fff"></rect><rect x="6.727" y="5" width="10.285" height="1.029" rx=".5" transform="rotate(45 6.727 5)" fill="#fff"></rect></svg>
                             </div>:''}
                         </div>
                     </div>)}
@@ -210,13 +210,13 @@ const Iteminfo=(props)=>{
                 <Link to={`${item.url}?itemId=${item.item_id}`}>
                     <div className="shop-item-image" style={{backgroundImage: `url(${item.image})`}}></div>
                 </Link>
-                <div class="_3OrWGt">
-                    <Link class="_2fQT1K" title={`${item.name}`} to={`${item.url}?itemId=${item.item_id}`}>
-                        {product=='byproduct'?<span class="Uow98x">Deal Sốc</span>:''}
+                <div className="_3OrWGt">
+                    <Link className="_2fQT1K" title={`${item.name}`} to={`${item.url}?itemId=${item.item_id}`}>
+                        {product=='byproduct'?<span className="Uow98x">Deal Sốc</span>:''}
                        {item.name}
                     </Link>
-                        <div class="_2o95Vf" style={{backgroundImage: `url(https://cf.shopee.vn/file/bce88a398239da749aa0cb149eafe579)`}}></div>
-                            <div class="_931iK8"><span></span>
+                        <div className="_2o95Vf" style={{backgroundImage: `url(https://cf.shopee.vn/file/bce88a398239da749aa0cb149eafe579)`}}></div>
+                            <div className="_931iK8"><span></span>
                         </div>
                 </div>
                 
@@ -689,8 +689,6 @@ class Cart extends React.Component{
     }
 
     save_voucher(voucher){
-        let form=new FormData()
-        form.append('voucher_id',voucher.id)
         const list_shop=this.state.list_shop.map(shop=>{
             if(this.shopchoice().id==shop.id){
                 return({...shop,listvoucher:shop.listvoucher.map(item=>{
@@ -703,7 +701,7 @@ class Cart extends React.Component{
             return({...shop})
         })
         this.setState({list_shop:list_shop})
-        axios.post(savevoucherURL,form,headers)
+        axios.post(savevoucherURL,JSON.stringify({voucher_id:voucher.id}),headers)
         .then(rep=>{
             let data=rep.data
         })
@@ -855,7 +853,7 @@ class Cart extends React.Component{
                                                     {this.item_promotion(shop)?
                                                         <div className="shop-item-order">
                                                             <div className="shop-discount">
-                                                                <span class="_319wph">Combo khuyến mãi</span>
+                                                                <span className="_319wph">Combo khuyến mãi</span>
                                                                 <span className="discount-title">Buy {this.item_promotion(shop).promotion.quantity_to_reduced} more {this.item_promotion(shop).promotion.combo_type=='1'?` (will be reduced ${this.item_promotion(shop).promotion.discount_percent}%)`:this.item_promotion(shop).promotion.combo_type=='2'?` (will be reduced ₫${formatter.format(this.item_promotion(shop).promotion.discount_price)}`:` (only with ₫${formatter.format(this.item_promotion(shop).promotion.price_special_sale)}`}</span>
                                                                     <span className="add-byproduct">
                                                                         <Link to={`/bundle-deal/${this.item_promotion(shop).promotion.id}`}>Add
@@ -880,7 +878,7 @@ class Cart extends React.Component{
                                                         <div key={cartitem.id} className="shop-item-order">
                                                             {cartitem.shock_deal?
                                                                 <div className="shop-discount">
-                                                                    <span class="_319wph">{cartitem.shock_deal.shock_deal_type=='1'?'Deal sốc':'Mua kèm'}</span>
+                                                                    <span className="_319wph">{cartitem.shock_deal.shock_deal_type=='1'?'Deal sốc':'Mua kèm'}</span>
                                                                     <span className="discount-title">{cartitem.shock_deal.shock_deal_type=='1'?'Mua kèm deal độc quyền':'Mua nhiều hơn ₫99.000 và nhận được 1 quà tặng'}</span>
                                                                         <span className="add-byproduct">
                                                                             <Link onClick={(e)=>addealshock(e,cartitem)} to={`/addon-deal-selection/${cartitem.shock_deal.id}/${cartitem.product_id}`}>{cartitem.deal_shock_id?'Edit':'Add'}

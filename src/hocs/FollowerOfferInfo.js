@@ -131,8 +131,8 @@ const FollowerOfferInfo=({follower_offer_shop,url,loading_content})=>{
                                                 <label for="" className="form-item__label">
                                                     Tên Ưu Đãi
                                                 </label>
-                                                <div class="form-item__control">
-                                                    <div class="form-item__content">
+                                                <div className="form-item__control">
+                                                    <div className="form-item__content">
                                                         <p data-v-047a15b4="">7 ngày kể từ lúc Voucher được lưu vào Kho Voucher</p>
                                                     </div>  
                                                 </div>
@@ -287,23 +287,23 @@ const FollowerOfferInfo=({follower_offer_shop,url,loading_content})=>{
                                                 </div>
                                             </div>
                                         </div>
-                                        <div data-v-047a15b4="" class="item-base-lines">
-                                            <label class="form-item__label"> Sản phẩm áp dụng</label> 
-                                            <div class="form-item__control">
-                                                <div class="form-item__content">
+                                        <div data-v-047a15b4="" className="item-base-lines">
+                                            <label className="form-item__label"> Sản phẩm áp dụng</label> 
+                                            <div className="form-item__control">
+                                                <div className="form-item__content">
                                                     <div data-v-047a15b4="">
                                                         <span data-v-047a15b4="">Tất cả sản phẩm</span> 
-                                                        <div data-v-047a15b4="" class="popover popover--light">
-                                                            <div class="popover__ref"> 
-                                                            <i data-v-047a15b4="" class="all-products-question-icon icon">
+                                                        <div data-v-047a15b4="" className="popover popover--light">
+                                                            <div className="popover__ref"> 
+                                                            <i data-v-047a15b4="" className="all-products-question-icon icon">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M8,1 C11.8659932,1 15,4.13400675 15,8 C15,11.8659932 11.8659932,15 8,15 C4.13400675,15 1,11.8659932 1,8 C1,4.13400675 4.13400675,1 8,1 Z M8,2 C4.6862915,2 2,4.6862915 2,8 C2,11.3137085 4.6862915,14 8,14 C11.3137085,14 14,11.3137085 14,8 C14,4.6862915 11.3137085,2 8,2 Z M7.98750749,10.2375075 C8.40172105,10.2375075 8.73750749,10.5732939 8.73750749,10.9875075 C8.73750749,11.401721 8.40172105,11.7375075 7.98750749,11.7375075 C7.57329392,11.7375075 7.23750749,11.401721 7.23750749,10.9875075 C7.23750749,10.5732939 7.57329392,10.2375075 7.98750749,10.2375075 Z M8.11700238,4.60513307 C9.97011776,4.60513307 10.7745841,6.50497267 9.94298079,7.72186504 C9.76926425,7.97606597 9.56587088,8.14546785 9.27050506,8.31454843 L9.11486938,8.39945305 L8.95824852,8.47993747 C8.56296349,8.68261431 8.49390831,8.75808648 8.49390831,9.0209925 C8.49390831,9.29713488 8.27005069,9.5209925 7.99390831,9.5209925 C7.71776594,9.5209925 7.49390831,9.29713488 7.49390831,9.0209925 C7.49390831,8.34166619 7.7650409,7.99681515 8.35913594,7.6662627 L8.76655168,7.45066498 C8.9424056,7.3502536 9.04307851,7.26633638 9.11735517,7.1576467 C9.52116165,6.56675314 9.11397414,5.60513307 8.11700238,5.60513307 C7.41791504,5.60513307 6.82814953,6.01272878 6.75715965,6.55275918 L6.75,6.66244953 L6.74194433,6.75232516 C6.69960837,6.98557437 6.49545989,7.16244953 6.25,7.16244953 C5.97385763,7.16244953 5.75,6.9385919 5.75,6.66244953 C5.75,5.44256682 6.87194406,4.60513307 8.11700238,4.60513307 Z"></path></svg>
                                                             </i>
                                                         </div> 
-                                                        <div class="popper popover__popper popover__popper--light with-arrow" style={{display: `none`, maxWidth: `320px`}}>
-                                                            <div class="popover__content">
+                                                        <div className="popper popover__popper popover__popper--light with-arrow" style={{display: `none`, maxWidth: `320px`}}>
+                                                            <div className="popover__content">
                                                                 <div data-v-047a15b4="">
                                                                     Một số sản phẩm sẽ không được tham gia khuyến mãi theo quy định của pháp luật.
-                                                                    <a data-v-047a15b4="" href="https://banhang.shopee.vn/edu/article/12073" target="_blank" class="promotion-product-error-blocked-link button button--link button--normal underline">
+                                                                    <a data-v-047a15b4="" href="https://banhang.shopee.vn/edu/article/12073" target="_blank" className="promotion-product-error-blocked-link button button--link button--normal underline">
                                                                         <span>Tìm hiểu thêm.</span>
                                                                     </a>
                                                                 </div>

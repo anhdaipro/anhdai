@@ -746,10 +746,10 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
                                                 <div className="item-enable-disable">
                                                     <input onChange={(e)=>setenableby(e,variation,item)} checked={variation.enable?true:false} type="checkbox" className="switch_1"/>
                                                     {sameitem.some(product=>product==item.id)?
-                                                        <div data-v-6ec5aca5="" class="item-update-error popover popover--light">
-                                                            <div class="popover__ref">
+                                                        <div data-v-6ec5aca5="" className="item-update-error popover popover--light">
+                                                            <div className="popover__ref">
                                                                 <span data-v-6ec5aca5="">
-                                                                    <i data-v-6ec5aca5="" class="icon">
+                                                                    <i data-v-6ec5aca5="" className="icon">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-.875a6.125 6.125 0 1 0 0-12.25 6.125 6.125 0 0 0 0 12.25zm1.35-3.313c.22 0 .4.154.4.344 0 .19-.18.344-.4.344h-2.7c-.22 0-.4-.154-.4-.344 0-.19.18-.344.4-.344h.95V6.938H6.93c-.221 0-.4-.154-.4-.344 0-.19.179-.344.4-.344H8c.222 0 .4.154.4.344v4.218h.95zM8 4.875A.437.437 0 1 1 8 4a.437.437 0 0 1 0 .875z"></path></svg>
                                                                     </i>
                                                                 </span> 
@@ -766,9 +766,9 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
                             <div className="with-assist">
                                 <div className="item-center page-pagination">
                                     <Pagination
-                                        classActive={`buttons active`}
-                                        classNormal={`buttons`}
-                                        classIcon={`buttons`}
+                                        classActive={`pager__page active`}
+                                        classNormal={`pager__page`}
+                                        classIcon={`pager__page`}
                                         currentPage={currentPage.byproduct}
                                         totalCount={Math.ceil(itemshop.byproduct_choice.length / Pagesize)}
                                         Pagesize={Pagesize}

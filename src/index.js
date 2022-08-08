@@ -1,10 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Message from "./containers/Chat"
+import reportWebVitals from './reportWebVitals';
 import Appstore from "./App"
 ReactDOM.render(
+  
     <Appstore/>
-    ,
-  document.querySelector('body')
+  ,
+  document.body
 )
-
+reportWebVitals();

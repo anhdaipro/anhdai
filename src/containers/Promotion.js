@@ -16,6 +16,7 @@ const Promotion = () => {
     const [loading,setLoading]=useState(false)
     const [errow, setErrow] = useState(false);
     const [warring, setWarring] = useState(false);
+    const [cartitem,setCartitem]=useState()
     const [variation, setVariation] = useState({data:null,
         count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],
         count_variation:0,quantity:1})
@@ -57,6 +58,7 @@ const Promotion = () => {
             form.append('quantity',1)
             axios.post(addToCartURL,form,headers)
             .then(res=>{
+                setCartitem(res.data)
             })
         }
         else{
@@ -69,7 +71,9 @@ const Promotion = () => {
             <div  id="main">
                 <div className="_193wCc">
                     <div className="item-col top container-wrapper">
-                        <Navbar/>
+                        <Navbar
+                        cartitem={cartitem}
+                        />
                     </div>
                     <div className="bundle-deal__wrapper">
                         {loading?
@@ -100,7 +104,7 @@ const Promotion = () => {
                                                                 </div>
                                                             </div>
                                                             <div className="_3_Th2m">
-                                                                <svg viewBox="0 0 20 20" enableBackground="new 0 0 20 20" className="svg-icon _2MJ96d icon-video-play2"><path d="m10 20c5.5228 0 10-4.4772 10-10 0-5.5228-4.4772-10-10-10-5.5228 0-10 4.4772-10 10 0 5.5228 4.4772 10 10 10z" clip-rule="evenodd" fill-opacity=".5" fillRule="evenodd"></path><path d="m7 6.1263c0-0.55798 0.4141-0.78618 0.91986-0.50718l6.6976 3.8599c0.506 0.27899 0.506 0.73534 0 1.0143l-6.6976 3.8876c-0.50603 0.279-0.91986 0.0508-0.91986-0.5072v-7.7474z" fill="#fff"></path></svg>
+                                                                <svg viewBox="0 0 20 20" enableBackground="new 0 0 20 20" className="svg-icon _2MJ96d icon-video-play2"><path d="m10 20c5.5228 0 10-4.4772 10-10 0-5.5228-4.4772-10-10-10-5.5228 0-10 4.4772-10 10 0 5.5228 4.4772 10 10 10z" clipRule="evenodd" fill-opacity=".5" fillRule="evenodd"></path><path d="m7 6.1263c0-0.55798 0.4141-0.78618 0.91986-0.50718l6.6976 3.8599c0.506 0.27899 0.506 0.73534 0 1.0143l-6.6976 3.8876c-0.50603 0.279-0.91986 0.0508-0.91986-0.5072v-7.7474z" fill="#fff"></path></svg>
                                                             </div>
                                                         </div>
                                                         <div className="_2x8wqR">
@@ -123,8 +127,8 @@ const Promotion = () => {
                                                                 </div>
                                                                 <div onClick={(e)=>openvariation(e,item)} className="_1cDeok">
                                                                     <div className="_3z_bMk">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" className="_3toOwm"><path fillRule="evenodd" clip-rule="evenodd" d="M0.5 2.49878H2.14326L3.99234 11.833C4.06191 12.1842 4.37002 12.4372 4.72804 12.4372H12.8281C13.167 12.4372 13.4638 12.2099 13.5522 11.8827L15.5194 4.59456C15.5802 4.36921 15.5327 4.1284 15.3908 3.94309C15.2488 3.75778 15.0287 3.64911 14.7953 3.64911H3.90029L3.49496 1.60304L3.37526 0.998779H2.75926H0.5V2.49878ZM5.34404 10.9372L4.19743 5.14911H13.816L12.2537 10.9372H5.34404ZM4.46721 15.0001C4.91991 15.0001 5.28689 14.6293 5.28689 14.1719C5.28689 13.7145 4.91991 13.3437 4.46721 13.3437C4.01451 13.3437 3.64752 13.7145 3.64752 14.1719C3.64752 14.6293 4.01451 15.0001 4.46721 15.0001ZM12.651 15.0001C13.1037 15.0001 13.4707 14.6293 13.4707 14.1719C13.4707 13.7145 13.1037 13.3437 12.651 13.3437C12.1983 13.3437 11.8313 13.7145 11.8313 14.1719C11.8313 14.6293 12.1983 15.0001 12.651 15.0001Z" fill="white"></path></svg>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" className="c9kS2Y"><path fillRule="evenodd" clip-rule="evenodd" fill="#EE4D2D" d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24Z"></path></svg>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" className="_3toOwm"><path fillRule="evenodd" clipRule="evenodd" d="M0.5 2.49878H2.14326L3.99234 11.833C4.06191 12.1842 4.37002 12.4372 4.72804 12.4372H12.8281C13.167 12.4372 13.4638 12.2099 13.5522 11.8827L15.5194 4.59456C15.5802 4.36921 15.5327 4.1284 15.3908 3.94309C15.2488 3.75778 15.0287 3.64911 14.7953 3.64911H3.90029L3.49496 1.60304L3.37526 0.998779H2.75926H0.5V2.49878ZM5.34404 10.9372L4.19743 5.14911H13.816L12.2537 10.9372H5.34404ZM4.46721 15.0001C4.91991 15.0001 5.28689 14.6293 5.28689 14.1719C5.28689 13.7145 4.91991 13.3437 4.46721 13.3437C4.01451 13.3437 3.64752 13.7145 3.64752 14.1719C3.64752 14.6293 4.01451 15.0001 4.46721 15.0001ZM12.651 15.0001C13.1037 15.0001 13.4707 14.6293 13.4707 14.1719C13.4707 13.7145 13.1037 13.3437 12.651 13.3437C12.1983 13.3437 11.8313 13.7145 11.8313 14.1719C11.8313 14.6293 12.1983 15.0001 12.651 15.0001Z" fill="white"></path></svg>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" className="c9kS2Y"><path fillRule="evenodd" clipRule="evenodd" fill="#EE4D2D" d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24Z"></path></svg>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -164,6 +168,7 @@ const Promotion = () => {
                     count_variation={variation.count_variation}
                     show={show}
                     setshow={es=>setshow(es)}
+                    setcartitem={data=>setCartitem(data)}
                     seterrow={err=>seterrow(err)}
                     setwarring={war=>setwarring(war)}
                 />:''}

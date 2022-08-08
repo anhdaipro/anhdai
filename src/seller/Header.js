@@ -17,7 +17,7 @@ const Header=()=>{
                                     <span data-v-51b8243c="" className="username">daipham427</span>
                                 </div> 
                                 <i data-v-51b8243c="" className="arrow-icon down icon">
-                                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clip-rule="evenodd" d="M8.25 9.19L4.28 5.22a.75.75 0 0 0-1.06 1.06l4.5 4.5a.75.75 0 0 0 1.06 0l4.5-4.5a.75.75 0 0 0-1.06-1.06L8.25 9.19z"></path></svg>
+                                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M8.25 9.19L4.28 5.22a.75.75 0 0 0-1.06 1.06l4.5 4.5a.75.75 0 0 0 1.06 0l4.5-4.5a.75.75 0 0 0-1.06-1.06L8.25 9.19z"></path></svg>
                                 </i>
                             </div> 
                         </div> 

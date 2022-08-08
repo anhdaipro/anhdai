@@ -73,17 +73,6 @@ const Detaildealshock=()=>{
         getJournal();
     }, [id]);
     
-    const onChange = useCallback((datechoice)=> {
-        const list_date=date.map(item=>{
-            if(item.show){
-                return({...item,time:datechoice})
-            }
-            return({...item})
-        })
-
-        setDate(list_date);
-    },[date])
-
     const handlePageChange=(page,name)=>{
         setCurrentPage({...currentPage,[name]:page})
     }
@@ -491,10 +480,6 @@ const Detaildealshock=()=>{
         return price_box
     }
     
-   
-    const setindexchoice=useCallback((list_date)=>{
-        setDate(list_date);
-    },[date])
 
     const setdatevalid=(index,date)=>{
         if(index==0){
@@ -582,10 +567,7 @@ const Detaildealshock=()=>{
                                 <Dealshockinfo
                                     editdeal={()=>editdeal()}
                                     setform={(e)=>setform(e)}
-                                    settimechoice={(value,index,name)=>settimechoice(value,index,name)}
-                                    setindexchoice={(list_date)=>setindexchoice(list_date)}
                                     setdatevalid={(index,date)=>setdatevalid(index,date)}
-                                    onChange={(datechoice)=>onChange(datechoice)}
                                     disable={disable}
                                     time_start={deal.valid_from}
                                     time_end={deal.valid_to}
@@ -782,10 +764,10 @@ const Detaildealshock=()=>{
                                                             {itemshop.savemain?<span  className="status-desc">{item.enable?'On':"Off"}</span>:<>
                                                             <input type="checkbox" onChange={(e)=>setenableitem(e,item,itemshop.items_choice,'items_choice')} checked={item.enable?true:false}  className="switch_1 " name="check"/>
                                                             {sameitem.some(product=>product==item.id)?
-                                                                <div data-v-6ec5aca5="" class="item-update-error popover popover--light">
-                                                                    <div class="popover__ref">
+                                                                <div data-v-6ec5aca5="" className="item-update-error popover popover--light">
+                                                                    <div className="popover__ref">
                                                                         <span data-v-6ec5aca5="">
-                                                                            <i data-v-6ec5aca5="" class="icon">
+                                                                            <i data-v-6ec5aca5="" className="icon">
                                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-.875a6.125 6.125 0 1 0 0-12.25 6.125 6.125 0 0 0 0 12.25zm1.35-3.313c.22 0 .4.154.4.344 0 .19-.18.344-.4.344h-2.7c-.22 0-.4-.154-.4-.344 0-.19.18-.344.4-.344h.95V6.938H6.93c-.221 0-.4-.154-.4-.344 0-.19.179-.344.4-.344H8c.222 0 .4.154.4.344v4.218h.95zM8 4.875A.437.437 0 1 1 8 4a.437.437 0 0 1 0 .875z"></path></svg>
                                                                             </i>
                                                                         </span> 
@@ -795,8 +777,8 @@ const Detaildealshock=()=>{
                                                         </div>
                                                         {itemshop.savemain?'':
                                                         <div className="table-edit">
-                                                            <button onClick={()=>removeitem(item,'items',itemshop.items,'items_choice',itemshop.items_choice,currentPage.items)} data-v-625f739d="" type="button" class="action button button--normal button--circle">
-                                                            <i class="icon">
+                                                            <button onClick={()=>removeitem(item,'items',itemshop.items,'items_choice',itemshop.items_choice,currentPage.items)} data-v-625f739d="" type="button" className="action button button--normal button--circle">
+                                                            <i className="icon">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M2,4 C1.72385763,4 1.5,3.77614237 1.5,3.5 C1.5,3.22385763 1.72385763,3 2,3 L6,2.999 L6,2 C6,1.44771525 6.44771525,1 7,1 L10,1 C10.5522847,1 11,1.44771525 11,2 L11,2.999 L15,3 C15.2761424,3 15.5,3.22385763 15.5,3.5 C15.5,3.77614237 15.2761424,4 15,4 L14,4 L14,14 C14,14.5522847 13.5522847,15 13,15 L4,15 C3.44771525,15 3,14.5522847 3,14 L3,4 L2,4 Z M13,4 L4,4 L4,14 L13,14 L13,4 Z M6.5,7 C6.77614237,7 7,7.22385763 7,7.5 L7,11.5 C7,11.7761424 6.77614237,12 6.5,12 C6.22385763,12 6,11.7761424 6,11.5 L6,7.5 C6,7.22385763 6.22385763,7 6.5,7 Z M8.5,6 C8.77614237,6 9,6.22385763 9,6.5 L9,11.5 C9,11.7761424 8.77614237,12 8.5,12 C8.22385763,12 8,11.7761424 8,11.5 L8,6.5 C8,6.22385763 8.22385763,6 8.5,6 Z M10.5,7 C10.7761424,7 11,7.22385763 11,7.5 L11,11.5 C11,11.7761424 10.7761424,12 10.5,12 C10.2238576,12 10,11.7761424 10,11.5 L10,7.5 C10,7.22385763 10.2238576,7 10.5,7 Z M10,2 L7,2 L7,2.999 L10,2.999 L10,2 Z"></path></svg>
                                                             </i>
                                                         </button>
@@ -810,9 +792,9 @@ const Detaildealshock=()=>{
                                         <div className="with-assist">
                                             <div className="item-center page-pagination">
                                                 <Pagination
-                                                    classActive={`buttons active`}
-                                                    classNormal={`buttons`}
-                                                    classIcon={`buttons`}
+                                                    classActive={`pager__page active`}
+                                                    classNormal={`pager__page`}
+                                                    classIcon={`pager__page`}
                                                     currentPage={currentPage.items}
                                                     
                                                     totalCount={Math.ceil(itemshop.items_choice.length / Pagesize)}
@@ -1045,8 +1027,8 @@ const Detaildealshock=()=>{
                                                 <div className="action header-column_edit">
                                                     <span>
                                                         <div className="table-edit">
-                                                        <button onClick={()=>removeitem(item,'byproduct',itemshop.byproduct,'byproduct_choice',itemshop.byproduct_choice,currentPage.byproduct)} data-v-625f739d="" type="button" class="action button button--normal button--circle">
-                                                            <i class="icon">
+                                                        <button onClick={()=>removeitem(item,'byproduct',itemshop.byproduct,'byproduct_choice',itemshop.byproduct_choice,currentPage.byproduct)} data-v-625f739d="" type="button" className="action button button--normal button--circle">
+                                                            <i className="icon">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M2,4 C1.72385763,4 1.5,3.77614237 1.5,3.5 C1.5,3.22385763 1.72385763,3 2,3 L6,2.999 L6,2 C6,1.44771525 6.44771525,1 7,1 L10,1 C10.5522847,1 11,1.44771525 11,2 L11,2.999 L15,3 C15.2761424,3 15.5,3.22385763 15.5,3.5 C15.5,3.77614237 15.2761424,4 15,4 L14,4 L14,14 C14,14.5522847 13.5522847,15 13,15 L4,15 C3.44771525,15 3,14.5522847 3,14 L3,4 L2,4 Z M13,4 L4,4 L4,14 L13,14 L13,4 Z M6.5,7 C6.77614237,7 7,7.22385763 7,7.5 L7,11.5 C7,11.7761424 6.77614237,12 6.5,12 C6.22385763,12 6,11.7761424 6,11.5 L6,7.5 C6,7.22385763 6.22385763,7 6.5,7 Z M8.5,6 C8.77614237,6 9,6.22385763 9,6.5 L9,11.5 C9,11.7761424 8.77614237,12 8.5,12 C8.22385763,12 8,11.7761424 8,11.5 L8,6.5 C8,6.22385763 8.22385763,6 8.5,6 Z M10.5,7 C10.7761424,7 11,7.22385763 11,7.5 L11,11.5 C11,11.7761424 10.7761424,12 10.5,12 C10.2238576,12 10,11.7761424 10,11.5 L10,7.5 C10,7.22385763 10.2238576,7 10.5,7 Z M10,2 L7,2 L7,2.999 L10,2.999 L10,2 Z"></path></svg>
                                                             </i>
                                                         </button>
@@ -1141,9 +1123,9 @@ const Detaildealshock=()=>{
                                     <div className="with-assist">
                                         <div className="item-center page-pagination">
                                             <Pagination
-                                                classActive={`buttons active`}
-                                                classNormal={`buttons`}
-                                                classIcon={`buttons`}
+                                                classActive={`pager__page active`}
+                                                classNormal={`pager__page`}
+                                                classIcon={`pager__page`}
                                                 currentPage={currentPage.byproduct}
                                                 totalCount={Math.ceil(itemshop.byproduct_choice.length / Pagesize)}
                                                 Pagesize={Pagesize}

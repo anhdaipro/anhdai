@@ -212,7 +212,7 @@ const HomePageSeller=()=>{
                                                 <div data-v-17c34edb="" className="chart-legend">
                                                     {chart.datasets.map(item=>
                                                         <>
-                                                        <span data-v-17c34edb="" className="circle" style={{background: `${item.backgroundColor}`}}></span> 
+                                                        <span key={item.lable} data-v-17c34edb="" className="circle" style={{background: `${item.backgroundColor}`}}></span> 
                                                         <span data-v-17c34edb="">{item.label}</span>
                                                         </>
                                                     )}    

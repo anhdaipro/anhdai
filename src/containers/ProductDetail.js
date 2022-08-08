@@ -3,7 +3,7 @@ import {formatter,timecreate,timeago,
 import axios from 'axios';
 import React, {useState, useEffect,useRef, useCallback,useMemo} from 'react'
 import ReactDOM from 'react-dom'
-import {addToCartURL,productinfoURL,listThreadlURL,addToCartBatchURL} from "../urls"
+import {addToCartURL,productinfoURL,listThreadlURL,addToCartBatchURL, savevoucherURL} from "../urls"
 import Pagination from "../hocs/Pagination"
 import {
 FacebookShareButton,PinterestShareButton,FacebookMessengerShareButton,TwitterShareButton,
@@ -148,7 +148,6 @@ const ReviewItem=(props)=>{
         </div>
     )
 }
-
 
 const Itemdeal=(props)=>{
     const {setbyproduct,item,listsizedeal,listcolordeal,updatevariation,product}=props
@@ -309,8 +308,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
     showthreads,data_product,addcartitem,showmediaitem,user,id}) => {
     const [state, setState] = useState({request_report:false,list_host_sale:[],data:null,inventory:null,count_variation:0,quantity:1,review_choice:'all',
     color_id:0,size_id:0,variation_color:[],variation_size:[],page_count:1,rating:[],has_comment:0,
-    has_media:0,
-    rating_choice:[{review_rating:5},{review_rating:4},{review_rating:3},{review_rating:3},{review_rating:3}]});
+    has_media:0});
     const [waring, setWaring] = useState({warring:false})
     const [variation, setVariation] = useState({data:null,quantity:1})
     const [listreview,setReview]=useState(null)
@@ -329,6 +327,8 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
     const [listcolordeal,setListcolordeal]=useState([])
     const [listsizedeal,setListsizedeal]=useState([])
     const [promotion,setPromotion]=useState()
+    const [showvoucher,setShowvoucher]=useState(false)
+    const [vouchers,setVouchers]=useState([])
     const [time,setTime]=useState({hours:0,mins:0,seconds:0})
     useEffect(() => {
         if(data_product){
@@ -341,6 +341,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         setItemdeal({color_choice:color_choice,size_choice:size_choice})
         setState({...state,index_choice:index_choice,filechoice:list_media[0]})
         setListmedia(list_media)
+        setVouchers(data_product.vouchers)
         setData(data_product)
         if(data_product.flash_sale && new Date()>new Date(data_product.flash_sale.valid_from)){
             const time_end=data_product.flash_sale.valid_to
@@ -461,7 +462,6 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         e.target.classList.toggle('product-variation--selected')
         if(e.target.classList.contains('product-variation--selected')){
           setState({...state,size_id:item.id,variation_size:item.variation})
-          
         }
         else{
           setState({...state,size_id:0,variation_size:[]})
@@ -493,7 +493,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
           }
           else{
             setVariation({...variation,data:null})
-          }
+        }
     }
 
     const addtocart=(e)=>{
@@ -714,6 +714,20 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
             addcartitem({id:res.data.id,image:data.image,name:data.name,price:pricemain()*main_product.quantity})
         })
     }
+
+    const savevoucher=(e,voucher)=>{
+        if(voucher.exists){
+            navigate(`/search?promotionId=${voucher.id}&evcode=${voucher.code}`)
+        }
+        else{
+            axios.post(savevoucherURL,JSON.stringify({voucher_id:voucher.id}),headers)
+            .then(res=>{
+                setVouchers(current=>current.map(item=>{
+                    return({...item,exists:item.id==voucher.id?true:item.exists})
+                }))
+            })
+        }
+    }
     return(
     <div className="page-product">
         {data?
@@ -751,7 +765,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                 <div className={`${state.filechoice.typefile==='video'?'_24bhyl yA8B4u':'aGIJCo'}`}>
                                     {state.filechoice.typefile==='video'?'':<div className="_3rslob _1vc1W7" style={{backgroundImage: `url(${state.filechoice.file})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>}
                                 </div>
-                                {state.filechoice.typefile==='video' && state.finish?<svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon dBlJ2V"><g opacity=".54"><g><circle cx="7.5" cy="7.5" fill="#040000" r="7.3"></circle><path d="m7.5.5c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7m0-.5c-4.1 0-7.5 3.4-7.5 7.5s3.4 7.5 7.5 7.5 7.5-3.4 7.5-7.5-3.4-7.5-7.5-7.5z" fill="#ffffff"></path></g></g><path clip-rule="evenodd" d="m10.2 5.3c.5.7.8 1.4.8 2.2 0 1.9-1.6 3.5-3.5 3.5s-3.5-1.6-3.5-3.5 1.6-3.5 3.5-3.5v.5c-1.6 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3c0-.7-.2-1.3-.6-1.8-.1-.1-.1-.1-.1-.1-.1-.1-.1-.3 0-.4s.3-.1.4.1c0-.1 0 0 0 0z" fill="#ffffff" fillRule="evenodd"></path><path clip-rule="evenodd" d="m7.5 2.9c0-.1.1-.1.1-.1l1.4 1.5-1.4 1.4c0 .1-.1.1-.1 0z" fill="#ffffff" fillRule="evenodd"></path></svg>:''}
+                                {state.filechoice.typefile==='video' && state.finish?<svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon dBlJ2V"><g opacity=".54"><g><circle cx="7.5" cy="7.5" fill="#040000" r="7.3"></circle><path d="m7.5.5c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7m0-.5c-4.1 0-7.5 3.4-7.5 7.5s3.4 7.5 7.5 7.5 7.5-3.4 7.5-7.5-3.4-7.5-7.5-7.5z" fill="#ffffff"></path></g></g><path clipRule="evenodd" d="m10.2 5.3c.5.7.8 1.4.8 2.2 0 1.9-1.6 3.5-3.5 3.5s-3.5-1.6-3.5-3.5 1.6-3.5 3.5-3.5v.5c-1.6 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3c0-.7-.2-1.3-.6-1.8-.1-.1-.1-.1-.1-.1-.1-.1-.1-.3 0-.4s.3-.1.4.1c0-.1 0 0 0 0z" fill="#ffffff" fillRule="evenodd"></path><path clipRule="evenodd" d="m7.5 2.9c0-.1.1-.1.1-.1l1.4 1.5-1.4 1.4c0 .1-.1.1-.1 0z" fill="#ffffff" fillRule="evenodd"></path></svg>:''}
                             </div>
                         </div>
                         <div className="_2riwuv">
@@ -845,9 +859,9 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                         <div style={{marginTop:'10px'}} className="">
                             {data.flash_sale && new Date(data.flash_sale.valid_from)<=new Date()?
                             <div className="SwrRMG">
-                                <svg viewBox="0 0 108 21" height="21" width="108" class="flash-sale-logo flash-sale-logo--white"><g fill="currentColor" fillRule="evenodd"><path d="M0 16.195h3.402v-5.233h4.237V8H3.402V5.037h5.112V2.075H0zm29.784 0l-.855-2.962h-4.335l-.836 2.962H20.26l4.723-14.12h3.576l4.724 14.12zM26.791 5.294h-.04s-.31 1.54-.563 2.43l-.797 2.744h2.74l-.777-2.745c-.252-.889-.563-2.43-.563-2.43zm7.017 9.124s1.807 2.014 5.073 2.014c3.13 0 4.898-2.034 4.898-4.384 0-4.463-6.259-4.147-6.259-5.925 0-.79.778-1.106 1.477-1.106 1.672 0 3.071 1.245 3.071 1.245l1.439-2.824s-1.477-1.6-4.47-1.6c-2.76 0-4.918 1.718-4.918 4.325 0 4.345 6.258 4.285 6.258 5.964 0 .85-.758 1.126-1.457 1.126-1.75 0-3.324-1.462-3.324-1.462zm12.303 1.777h3.402v-5.53h5.054v5.53h3.401V2.075h-3.401v5.648h-5.054V2.075h-3.402zm18.64-1.678s1.692 1.915 4.763 1.915c2.877 0 4.548-1.876 4.548-4.107 0-4.483-6.492-3.871-6.492-6.36 0-.987.914-1.678 2.08-1.678 1.73 0 3.052 1.224 3.052 1.224l1.088-2.073s-1.4-1.501-4.12-1.501c-2.644 0-4.627 1.738-4.627 4.068 0 4.305 6.512 3.87 6.512 6.379 0 1.145-.952 1.698-2.002 1.698-1.944 0-3.44-1.48-3.44-1.48zm19.846 1.678l-1.166-3.594h-4.84l-1.166 3.594H74.84L79.7 2.174h2.623l4.86 14.021zM81.04 4.603h-.039s-.31 1.382-.583 2.172l-1.224 3.752h3.615l-1.224-3.752c-.253-.79-.545-2.172-.545-2.172zm7.911 11.592h8.475v-2.192H91.46V2.173H88.95zm10.477 0H108v-2.192h-6.064v-3.772h4.645V8.04h-4.645V4.366h5.753V2.174h-8.26zM14.255.808l6.142.163-3.391 5.698 3.87 1.086-8.028 12.437.642-8.42-3.613-1.025z"></path></g></svg>
-                                <svg height="20" viewBox="0 0 20 20" width="20" class="shopee-svg-icon +BapII"><g fill="none" fillRule="evenodd" stroke="#fff" strokeWidth="1.8" transform="translate(1 1)"><circle cx="9" cy="9" r="9"></circle><path d="m11.5639648 5.05283203v4.71571528l-2.72832027 1.57129639" strokeLinecap="round" stroke-linejoin="round" transform="matrix(-1 0 0 1 20.39961 0)"></path></g></svg>
-                                <div class="Suic9m">Kết thúc trong</div>
+                                <svg viewBox="0 0 108 21" height="21" width="108" className="flash-sale-logo flash-sale-logo--white"><g fill="currentColor" fillRule="evenodd"><path d="M0 16.195h3.402v-5.233h4.237V8H3.402V5.037h5.112V2.075H0zm29.784 0l-.855-2.962h-4.335l-.836 2.962H20.26l4.723-14.12h3.576l4.724 14.12zM26.791 5.294h-.04s-.31 1.54-.563 2.43l-.797 2.744h2.74l-.777-2.745c-.252-.889-.563-2.43-.563-2.43zm7.017 9.124s1.807 2.014 5.073 2.014c3.13 0 4.898-2.034 4.898-4.384 0-4.463-6.259-4.147-6.259-5.925 0-.79.778-1.106 1.477-1.106 1.672 0 3.071 1.245 3.071 1.245l1.439-2.824s-1.477-1.6-4.47-1.6c-2.76 0-4.918 1.718-4.918 4.325 0 4.345 6.258 4.285 6.258 5.964 0 .85-.758 1.126-1.457 1.126-1.75 0-3.324-1.462-3.324-1.462zm12.303 1.777h3.402v-5.53h5.054v5.53h3.401V2.075h-3.401v5.648h-5.054V2.075h-3.402zm18.64-1.678s1.692 1.915 4.763 1.915c2.877 0 4.548-1.876 4.548-4.107 0-4.483-6.492-3.871-6.492-6.36 0-.987.914-1.678 2.08-1.678 1.73 0 3.052 1.224 3.052 1.224l1.088-2.073s-1.4-1.501-4.12-1.501c-2.644 0-4.627 1.738-4.627 4.068 0 4.305 6.512 3.87 6.512 6.379 0 1.145-.952 1.698-2.002 1.698-1.944 0-3.44-1.48-3.44-1.48zm19.846 1.678l-1.166-3.594h-4.84l-1.166 3.594H74.84L79.7 2.174h2.623l4.86 14.021zM81.04 4.603h-.039s-.31 1.382-.583 2.172l-1.224 3.752h3.615l-1.224-3.752c-.253-.79-.545-2.172-.545-2.172zm7.911 11.592h8.475v-2.192H91.46V2.173H88.95zm10.477 0H108v-2.192h-6.064v-3.772h4.645V8.04h-4.645V4.366h5.753V2.174h-8.26zM14.255.808l6.142.163-3.391 5.698 3.87 1.086-8.028 12.437.642-8.42-3.613-1.025z"></path></g></svg>
+                                <svg height="20" viewBox="0 0 20 20" width="20" className="shopee-svg-icon +BapII"><g fill="none" fillRule="evenodd" stroke="#fff" strokeWidth="1.8" transform="translate(1 1)"><circle cx="9" cy="9" r="9"></circle><path d="m11.5639648 5.05283203v4.71571528l-2.72832027 1.57129639" strokeLinecap="round" stroke-linejoin="round" transform="matrix(-1 0 0 1 20.39961 0)"></path></g></svg>
+                                <div className="Suic9m">Kết thúc trong</div>
                                 
                                     
                                     <div className="countdown-timer">
@@ -902,89 +916,87 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                         </div>
                         <div className="_7c-I_e">
                             <div className="flex-col">
-                            {data.vouchers.length>0?
-                            <div className="item-center _3qYU_y discount-voucher">
-                                <div className="mini-vouchers item-center">
-                                <div className="mini-vouchers__label">Shop discount code</div>
-                                <div className="mini-vouchers__wrapper d-flex ">
-                                    <div className="mini-vouchers__vouchers d-flex">
-                                    {
-                                        data.vouchers.map(vocher=>
-                                        <div className="voucher-ticket--seller-mini-solid mini-voucher-with-popover">
-                                            <div className="item-center">
-                                            <span className="voucher-promo-value voucher-promo-value--absolute-value">{vocher.discount_type === '1'?`${vocher.percent}% Giảm`:`Giảm ₫${formatter.format(vocher.amount)}k`}</span>
+                                {vouchers.length>0?
+                                <div onMouseEnter={()=>setShowvoucher(true)} onMouseLeave={()=>setShowvoucher(false)} className="item-center _3qYU_y discount-voucher">
+                                    <div className="mini-vouchers item-center">
+                                        <div className="mini-vouchers__label">Shop discount code</div>
+                                        <div className="mini-vouchers__wrapper d-flex ">
+                                            <div className="mini-vouchers__vouchers d-flex">
+                                                {vouchers.map(voucher=>
+                                                <div key={voucher.id} className="voucher-ticket--seller-mini-solid mini-voucher-with-popover">
+                                                    <div className="item-center">
+                                                        <span className="voucher-promo-value voucher-promo-value--absolute-value">{voucher.discount_type === '1'?`${voucher.percent}% Giảm`:`Giảm ₫${formatter.format(voucher.amount)}k`}</span>
+                                                    </div>
+                                                </div>
+                                                )}
+                                                <div className="mini-vouchers__mask"></div>
                                             </div>
                                         </div>
-                                        )
-                                    }
-                                    <div className="mini-vouchers__mask"></div>
-                                    </div>
-                                </div>
-                                </div> 
-                                <div className="popover-dropdown filter">
-                                <div className="voucher-list">
-                                    <div>Shop discount code</div>
-                                    <div className="py-2">
-                                        Save more when applying Shop's discount code. 
-                                        Contact the Shop <br/> if there is a problem with the discount code created by the Shop itself.
-                                    </div>
-                                    <div className="item-col">
-                                        {data.vouchers.map(vocher=>
-                                        <div className="_1HdW_G">
-                                            <div className="_1k80K2 _2GgEho _2Jjc-J">
-                                                <div className="_3frbLs _2nXmFs">
-                                                    <div className="_33E3pD">
-                                                        <div className="_25_r8I">
-                                                            <div className="_3AmYHa _2ep7Ag _2GchKS" style={{backgroundImage: `url(&quot;https://cf.shopee.vn/file/e4a0ec8eed16d49f290516107a3791d7&quot;)`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="_2WQCW5">
-                                                        <div className="_1ds64- _2Jjc-J">
-                                                            <div className="mytS2m"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="Jyw0b0"></div>
-                                                </div>
-                                                <div className="FCu0cQ _2NW6mG">
-                                                    <div className="_16SUzs">
-                                                        <div className="_3eB1uG item-col">
-                                                            <div className="_1Hi5GR _11A33b">
-                                                                <div className="FOBwBB">
-                                                                    <div className="_6frbci _1VzsJ7">{vocher.discount_type === '1'?`Giảm ${vocher.percent}%`:`Giảm ₫${formatter.format(vocher.amount)}k`}</div>
-                                                                </div>
-                                                                <div className=" _3SkhRq">Đơn Tối Thiểu ₫{formatter.format(vocher.minimum_order_value/1000)}k <br/> Giảm tối đa ₫{formatter.format(vocher.max_price/1000)}k</div>
-                                                            </div>
-                                                            <div class>
-                                                                <span className="_5BU55m _2a2S8T">HSD: {timepromotion(vocher.valid_to)}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="bXdXbN">
-                                                        <div className="_3N_ktJ">
-                                                        <button type="button" className={`btn ${vocher?'trans':''} btn-solid-primary btn--s`} aria-disabled="false">{vocher?'Dùng ngay':'Lưu'}</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                    </div> 
+                                    {showvoucher?
+                                    <div className="popover-dropdown">
+                                        <div className="voucher-list">
+                                            <div>Shop discount code</div>
+                                            <div className="py-2">
+                                                Save more when applying Shop's discount code. 
+                                                Contact the Shop <br/> if there is a problem with the discount code created by the Shop itself.
                                             </div>
-                                        </div> 
-                                        )}
-                                    </div>
-                                    </div>
-                                </div>
+                                            <div className="item-col">
+                                                {vouchers.map(voucher=>
+                                                <div key={voucher.id} className="_1HdW_G">
+                                                    <div className="_1k80K2 _2GgEho _2Jjc-J">
+                                                        <div className="_3frbLs _2nXmFs">
+                                                            <div className="_33E3pD">
+                                                                <div className="_25_r8I">
+                                                                    <div className="_3AmYHa _2ep7Ag _2GchKS" style={{backgroundImage: `url(${shop.avatar})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="_2WQCW5">
+                                                                <div className="_1ds64- _2Jjc-J">
+                                                                    <div className="mytS2m"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="Jyw0b0"></div>
+                                                        </div>
+                                                        <div className="FCu0cQ _2NW6mG">
+                                                            <div className="_16SUzs">
+                                                                <div className="_3eB1uG item-col">
+                                                                    <div className="_1Hi5GR _11A33b">
+                                                                        <div className="FOBwBB">
+                                                                            <div className="_6frbci _1VzsJ7">{voucher.discount_type === '1'?`Giảm ${voucher.percent}%`:`Giảm ₫${formatter.format(voucher.amount)}k`}</div>
+                                                                        </div>
+                                                                        <div className=" _3SkhRq">Đơn Tối Thiểu ₫{formatter.format(voucher.minimum_order_value/1000)}k <br/> Giảm tối đa ₫{formatter.format(voucher.maximum_discount/1000)}k</div>
+                                                                    </div>
+                                                                    <div class>
+                                                                        <span className="_5BU55m _2a2S8T">HSD: {timepromotion(voucher.valid_to)}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="bXdXbN">
+                                                                <div className="_3N_ktJ">
+                                                                    <button onClick={e=>savevoucher(e,voucher)} type="button" className={`btn ${voucher.exists?'trans':''} btn-solid-primary btn--s`} aria-disabled="false">{voucher.exists?'Dùng ngay':'Lưu'}</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>:''}
                                 </div>
                                 :""}
                                 {promotion?
                                 <div className='item-center _3qYU_y'>
-                                <div className="koZBMj">Promotion combo</div>
-                                    <div className="mini-vouchers__wrapper d-flex flex-auto ">
-                                        <div className="mini-vouchers__vouchers d-flex flex-auto">
-                                        
-                                            <div className="voucher-ticket voucher-ticket--VN voucher-ticket--seller-mini-solid mini-voucher-with-popover">
-                                                <div className="item-center">
-                                                    <span className="voucher-promo-value voucher-promo-value--absolute-value">Buy {promotion.quantity_to_reduced} {promotion.combo_type === '1'?`& reduce ${promotion.discount_percent}%`:promotion.combo_type === '2'?`& reduce ₫${formatter.format(promotion.discount_price)}k`:`& only with ₫${formatter.format(promotion.price_special_sale)}k`}</span>
+                                    <div className="koZBMj">Promotion combo</div>
+                                        <div className="mini-vouchers__wrapper d-flex flex-auto ">
+                                            <div className="mini-vouchers__vouchers d-flex flex-auto">
+                                                <div className="voucher-ticket voucher-ticket--VN voucher-ticket--seller-mini-solid mini-voucher-with-popover">
+                                                    <div className="item-center">
+                                                        <span className="voucher-promo-value voucher-promo-value--absolute-value">Buy {promotion.quantity_to_reduced} {promotion.combo_type === '1'?`& reduce ${promotion.discount_percent}%`:promotion.combo_type === '2'?`& reduce ₫${formatter.format(promotion.discount_price)}k`:`& only with ₫${formatter.format(promotion.price_special_sale)}k`}</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        <div className="mini-vouchers__mask"></div>
+                                            <div className="mini-vouchers__mask"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -993,15 +1005,14 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                 <div className='item-center' >
                                     <div className="koZBMj">Shock deal</div>
                                     <div className="mini-vouchers__wrapper d-flex flex-auto ">
-                                    <div className="mini-vouchers__vouchers d-flex flex-auto">
-  
-                                        <div className=" voucher-ticket--seller-mini-solid mini-voucher-with-popover">
-                                            <div className="item-center">
-                                            <span className="voucher-promo-value voucher-promo-value--absolute-value">Buy with deal shock</span>
+                                        <div className="mini-vouchers__vouchers d-flex flex-auto">
+                                            <div className=" voucher-ticket--seller-mini-solid mini-voucher-with-popover">
+                                                <div className="item-center">
+                                                <span className="voucher-promo-value voucher-promo-value--absolute-value">Buy with deal shock</span>
+                                                </div>
                                             </div>
+                                            <div className="mini-vouchers__mask"></div>
                                         </div>
-                                        <div className="mini-vouchers__mask"></div>
-                                    </div>
                                     </div> 
                                 </div>
                                 :""}
@@ -1158,25 +1169,25 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                     </div>    
                 </section>:
                 <section className="lt31pc theme--ofs">
-                        <h3 class="_6WzJJS">Combo khuyến mãi
-                            <div class="cMyLWR e0VUM0">Mua {promotion.quantity_to_reduced} &amp; {promotion.combo_type=='3'?`chỉ với ${promotion.price_special_sale}`:`giảm ${promotion.combo_type=='1'?`${promotion.discount_percent}%`:`₫${formatter.format(promotion.discount_price)}`}`}</div>
+                        <h3 className="_6WzJJS">Combo khuyến mãi
+                            <div className="cMyLWR e0VUM0">Mua {promotion.quantity_to_reduced} &amp; {promotion.combo_type=='3'?`chỉ với ${promotion.price_special_sale}`:`giảm ${promotion.combo_type=='1'?`${promotion.discount_percent}%`:`₫${formatter.format(promotion.discount_price)}`}`}</div>
                             
-                            <Link class="YdRCuG _1ipus9" to={`/bundle-deal/${promotion.id}?fromItem=${data.id}`}>
-                                Xem tất cả<svg width="5" height="9" viewBox="0 0 5 9" fill="none" xmlns="http://www.w3.org/2000/svg" class="CRN1qh"><path d="M0.549805 0.705933L4.0498 4.18877L0.549805 7.68877" stroke="currentColor" strokeWidth="1.5"></path></svg>
+                            <Link className="YdRCuG _1ipus9" to={`/bundle-deal/${promotion.id}?fromItem=${data.id}`}>
+                                Xem tất cả<svg width="5" height="9" viewBox="0 0 5 9" fill="none" xmlns="http://www.w3.org/2000/svg" className="CRN1qh"><path d="M0.549805 0.705933L4.0498 4.18877L0.549805 7.68877" stroke="currentColor" strokeWidth="1.5"></path></svg>
                             </Link>
                         </h3>
                         <ul className="ADFE0a">
                             {promotion.products.map(item=>
-                            <li class="vDYt3H">
+                            <li className="vDYt3H">
                                 <a title={`${item.name}`} href="/product/182639888/9668689381">
-                                <div class="jwWEwt">
-                                    <div class="zLenew fj1aPh" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                                <div className="jwWEwt">
+                                    <div className="zLenew fj1aPh" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
                                     </div>
-                                    <p class="AZqucp efbOsy">
-                                        <div class="_6H32eD vmbY7Y">
-                                            <svg viewBox="0 0 24 11" class="svg-icon"><g fill="#fff" fillRule="evenodd"><path d="M19.615 7.143V1.805a.805.805 0 0 0-1.611 0v5.377H18c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm3 0V1.805a.805.805 0 0 0-1.611 0v5.377H21c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm-7.491-2.985c.01-.366.37-.726.813-.726.45 0 .814.37.814.742v5.058c0 .37-.364.73-.813.73-.395 0-.725-.278-.798-.598a3.166 3.166 0 0 1-1.964.68c-1.77 0-3.268-1.456-3.268-3.254 0-1.797 1.497-3.328 3.268-3.328a3.1 3.1 0 0 1 1.948.696zm-.146 2.594a1.8 1.8 0 1 0-3.6 0 1.8 1.8 0 1 0 3.6 0z"></path><path d="M.078 1.563A.733.733 0 0 1 .565.89c.423-.15.832.16 1.008.52.512 1.056 1.57 1.88 2.99 1.9s2.158-.85 2.71-1.882c.19-.356.626-.74 1.13-.537.342.138.477.4.472.65a.68.68 0 0 1 .004.08v7.63a.75.75 0 0 1-1.5 0V3.67c-.763.72-1.677 1.18-2.842 1.16a4.856 4.856 0 0 1-2.965-1.096V9.25a.75.75 0 0 1-1.5 0V1.648c0-.03.002-.057.005-.085z" fillRule="nonzero"></path></g></svg>
+                                    <p className="AZqucp efbOsy">
+                                        <div className="_6H32eD vmbY7Y">
+                                            <svg viewBox="0 0 24 11" className="svg-icon"><g fill="#fff" fillRule="evenodd"><path d="M19.615 7.143V1.805a.805.805 0 0 0-1.611 0v5.377H18c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm3 0V1.805a.805.805 0 0 0-1.611 0v5.377H21c0 1.438.634 2.36 1.902 2.77V9.95c.09.032.19.05.293.05.444 0 .805-.334.805-.746a.748.748 0 0 0-.498-.69v-.002c-.59-.22-.885-.694-.885-1.42h-.002zm-7.491-2.985c.01-.366.37-.726.813-.726.45 0 .814.37.814.742v5.058c0 .37-.364.73-.813.73-.395 0-.725-.278-.798-.598a3.166 3.166 0 0 1-1.964.68c-1.77 0-3.268-1.456-3.268-3.254 0-1.797 1.497-3.328 3.268-3.328a3.1 3.1 0 0 1 1.948.696zm-.146 2.594a1.8 1.8 0 1 0-3.6 0 1.8 1.8 0 1 0 3.6 0z"></path><path d="M.078 1.563A.733.733 0 0 1 .565.89c.423-.15.832.16 1.008.52.512 1.056 1.57 1.88 2.99 1.9s2.158-.85 2.71-1.882c.19-.356.626-.74 1.13-.537.342.138.477.4.472.65a.68.68 0 0 1 .004.08v7.63a.75.75 0 0 1-1.5 0V3.67c-.763.72-1.677 1.18-2.842 1.16a4.856 4.856 0 0 1-2.965-1.096V9.25a.75.75 0 0 1-1.5 0V1.648c0-.03.002-.057.005-.085z" fillRule="nonzero"></path></g></svg>
                                     </div>{item.name}</p>
-                                    <div class="mx6hDy">
+                                    <div className="mx6hDy">
                                         <del>₫{formatter.format((item.max_price+item.min_price)/2)}</del>
                                         <em>₫{formatter.format((item.max_price+item.min_price)*(1-item.percent_discount/100)/2)}</em>
                                     </div>
@@ -1294,20 +1305,20 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                 </div>
                 <div className="page-product__content--right">
                     <div className="display: contents">
-                        {data.vouchers.length>0?
+                        {vouchers.length>0?
                         <div className="product-shop-vouchers page-product__shop-voucher">
                             <div className="product-shop-vouchers__header">Mã giảm giá của Shop</div>
                             <div className="product-shop-vouchers__list" style={{maxHeight: '23.25rem'}}>
-                                {data.vouchers.map(vocher=>
+                                {vouchers.map(voucher=>
                                 <div className="_1v21H2 _3v4TxM">
                                     <div className="_5i0d1d O5jY-J _1HW0fp _143EYI">
                                         <div className="_2RHirG _3ovy3V _2PNEOW">
                                             <div className="_3bSUDv">
                                                 <div className="pbcBSR _2_kJZD">
                                                     <div className="_1PBA5q">
-                                                        <div className="_1ZB7C1 qEinNS">{vocher.discount_type === '1'?`Giảm ${vocher.percent}%`:`Giảm ₫${formatter.format(vocher.amount)}k`}</div>
+                                                        <div className="_1ZB7C1 qEinNS">{voucher.discount_type === '1'?`Giảm ${voucher.percent}%`:`Giảm ₫${formatter.format(voucher.amount)}k`}</div>
                                                     </div>
-                                                    <div className="_3wpzXq _2JzVpY">Đơn Tối Thiểu ₫{formatter.format(vocher.minimum_order_value/1000)}k <br/> Giảm tối đa ₫{formatter.format(vocher.max_price/1000)}k</div>
+                                                    <div className="_3wpzXq _2JzVpY">Đơn Tối Thiểu ₫{formatter.format(voucher.minimum_order_value/1000)}k <br/> Giảm tối đa ₫{formatter.format(voucher.max_price/1000)}k</div>
                                                 </div>
                                                 
                                                 <span className="_3WswQ9 _2IDlYp HO-RDa U0cGFA">
@@ -1316,7 +1327,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                                     </div>
                                                     <div className="D56q0_">
                                                         <span className="">Đã dùng 72%, </span>
-                                                        <span className="_2-v2uI">HSD: {timepromotion(vocher.valid_to)}</span>
+                                                        <span className="_2-v2uI">HSD: {timepromotion(voucher.valid_to)}</span>
                                                     </div>
                                                 </span>
                                             </div>

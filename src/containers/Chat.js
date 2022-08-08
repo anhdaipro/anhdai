@@ -133,9 +133,9 @@ const Shopmember=(props)=>{
                                     )}
                                     {loadingdata?<>
                                     {shop.list_items.length==0?
-                                    <div class="_3YurerlznH jHfK1c-Py0hqmZG0XqDnq">
-                                        <img src='https://res.cloudinary.com/dupep1afe/image/upload/v1657708116/download_5_jxvcq5.png' class="_1jxtCX6jiG"/>
-                                        <div class="_3l9IBXMpxr">Không có kết quả nào</div>
+                                    <div className="_3YurerlznH jHfK1c-Py0hqmZG0XqDnq">
+                                        <img src='https://res.cloudinary.com/dupep1afe/image/upload/v1657708116/download_5_jxvcq5.png' className="_1jxtCX6jiG"/>
+                                        <div className="_3l9IBXMpxr">Không có kết quả nào</div>
                                     </div>:''}</>:
                                     <div className="_3YurerlznH jHfK1c-Py0hqmZG0XqDnq">
                                         <div className="loading_item item-center">
@@ -163,7 +163,7 @@ const Shopmember=(props)=>{
                                             <div className="src-modules-order-index__avatar--3WmjS">
                                                 <div className="src-components-avatar-index__root--2xGjv undefined">
                                                     <i className=" _3kEAcT1Mk5 src-components-avatar-index__shop--1erCv">
-                                                        <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path fillRule="evenodd" clip-rule="evenodd" d="M1.438.5a.5.5 0 00-.485.382L.073 4.5A1.461 1.461 0 000 4.957C0 5.81.733 6.5 1.636 6.5a1.65 1.65 0 001.455-.835 1.65 1.65 0 001.454.835A1.65 1.65 0 006 5.665a1.65 1.65 0 001.455.835 1.65 1.65 0 001.454-.835 1.65 1.65 0 001.455.835C11.267 6.5 12 5.81 12 4.957c0-.102-.01-.201-.03-.298h.002L11.048.881A.5.5 0 0010.562.5H1.438zm8.926 6.98c.27 0 .532-.04.779-.114v3.277a1 1 0 01-1 1H1.857a1 1 0 01-1-1V7.366a2.704 2.704 0 001.5.017v2.76h7.286v-2.76c.23.063.473.097.72.097z"></path></svg>
+                                                        <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path fillRule="evenodd" clipRule="evenodd" d="M1.438.5a.5.5 0 00-.485.382L.073 4.5A1.461 1.461 0 000 4.957C0 5.81.733 6.5 1.636 6.5a1.65 1.65 0 001.455-.835 1.65 1.65 0 001.454.835A1.65 1.65 0 006 5.665a1.65 1.65 0 001.455.835 1.65 1.65 0 001.454-.835 1.65 1.65 0 001.455.835C11.267 6.5 12 5.81 12 4.957c0-.102-.01-.201-.03-.298h.002L11.048.881A.5.5 0 0010.562.5H1.438zm8.926 6.98c.27 0 .532-.04.779-.114v3.277a1 1 0 01-1 1H1.857a1 1 0 01-1-1V7.366a2.704 2.704 0 001.5.017v2.76h7.286v-2.76c.23.063.473.097.72.097z"></path></svg>
                                                     </i>
                                                 </div>
                                             </div>
@@ -193,11 +193,11 @@ const Shopmember=(props)=>{
                                             </div>:''}</>
                                         )}
                                         {order.cart_item.length>2?
-                                        <div onClick={(e)=>setshowallcart(e,order)} class="_1G14ELBfgOp33yi2WfA5WU">
-                                            <div class="_9vMeEtVFXFcu-y2a-vaI">{order.showall?'Thu nhỏ':'Xem tất cả'}</div>
-                                            <i class="_3kEAcT1Mk5 _3OohKJpPZFYR_L0v-dcZFV">
-                                                {order.showall?<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 13" class="chat-icon"><path d="M3.5 8.036h6.071a.5.5 0 00.354-.854L6.889 4.147a.5.5 0 00-.707 0L3.146 7.182a.5.5 0 00.354.854z"></path></svg>:
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" class="chat-icon"><path d="M2.5 4h6.071a.5.5 0 01.354.854L5.889 7.889a.5.5 0 01-.707 0L2.146 4.854A.5.5 0 012.5 4z"></path></svg>}
+                                        <div onClick={(e)=>setshowallcart(e,order)} className="_1G14ELBfgOp33yi2WfA5WU">
+                                            <div className="_9vMeEtVFXFcu-y2a-vaI">{order.showall?'Thu nhỏ':'Xem tất cả'}</div>
+                                            <i className="_3kEAcT1Mk5 _3OohKJpPZFYR_L0v-dcZFV">
+                                                {order.showall?<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 13" className="chat-icon"><path d="M3.5 8.036h6.071a.5.5 0 00.354-.854L6.889 4.147a.5.5 0 00-.707 0L3.146 7.182a.5.5 0 00.354.854z"></path></svg>:
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" className="chat-icon"><path d="M2.5 4h6.071a.5.5 0 01.354.854L5.889 7.889a.5.5 0 01-.707 0L2.146 4.854A.5.5 0 012.5 4z"></path></svg>}
                                             </i>
                                         </div>:''}
                                     </div>
@@ -211,9 +211,9 @@ const Shopmember=(props)=>{
                                     <div className="src-modules-order-index__cancel--O-khp">
                                         {order.canceled?'Hủy bởi bạn':''}
                                     </div>
-                                    <div class="_2W3Iet0mGFIq6IUDMQmvsO">
-                                        <div onClick={()=>window.open(`/user/purchase/order/${order.id}/?shopid=${order.shop_id}`, '_blank')} class="_3cCj5d3lfdLnipY98e6s-p">Chi Tiết</div>
-                                        <div onClick={(e)=>sendorder(e,order)} class="_3cCj5d3lfdLnipY98e6s-p ">Gửi</div>
+                                    <div className="_2W3Iet0mGFIq6IUDMQmvsO">
+                                        <div onClick={()=>window.open(`/user/purchase/order/${order.id}/?shopid=${order.shop_id}`, '_blank')} className="_3cCj5d3lfdLnipY98e6s-p">Chi Tiết</div>
+                                        <div onClick={(e)=>sendorder(e,order)} className="_3cCj5d3lfdLnipY98e6s-p ">Gửi</div>
                                     </div>
                                     
                                 </div>
@@ -917,10 +917,10 @@ const Message=(props)=>{
                                                             <img className="_3KQNXANNUSJKR1Z2adRPjF" src={file.media_preview} />
                                                             {file.filetype=="video"?
                                                             <i className="_3kEAcT1Mk5 _3Fs5Tyt_FBVBTwz60zkqsd">
-                                                                <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="17" cy="17" r="16.3333" fill="black" fill-opacity="0.5" stroke="white" strokeWidth="0.666667"></circle><path fillRule="evenodd" clip-rule="evenodd" d="M23.0444 16.2005C23.5778 16.6005 23.5778 17.4005 23.0444 17.8005L15.0444 23.8005C14.3852 24.2949 13.4444 23.8245 13.4444 23.0005L13.4444 11.0005C13.4444 10.1764 14.3852 9.70606 15.0444 10.2005L23.0444 16.2005Z" fill="white"></path></svg>
+                                                                <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="17" cy="17" r="16.3333" fill="black" fill-opacity="0.5" stroke="white" strokeWidth="0.666667"></circle><path fillRule="evenodd" clipRule="evenodd" d="M23.0444 16.2005C23.5778 16.6005 23.5778 17.4005 23.0444 17.8005L15.0444 23.8005C14.3852 24.2949 13.4444 23.8245 13.4444 23.0005L13.4444 11.0005C13.4444 10.1764 14.3852 9.70606 15.0444 10.2005L23.0444 16.2005Z" fill="white"></path></svg>
                                                             </i>:''}
                                                             <i onClick={()=>deletefile(file,i)} className="icon-chat-message-delete">
-                                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="#8EA4D1"></circle><path fillRule="evenodd" clip-rule="evenodd" d="M8 9.26316L10.7368 12L12 10.7368L9.26316 8L12 5.26316L10.7368 4L8 6.73684L5.26316 4L4 5.26316L6.73684 8L4 10.7368L5.26316 12L8 9.26316Z" fill="white"></path></svg>
+                                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="#8EA4D1"></circle><path fillRule="evenodd" clipRule="evenodd" d="M8 9.26316L10.7368 12L12 10.7368L9.26316 8L12 5.26316L10.7368 4L8 6.73684L5.26316 4L4 5.26316L6.73684 8L4 10.7368L5.26316 12L8 9.26316Z" fill="white"></path></svg>
                                                             </i>
                                                         </div>
                                                     )
@@ -929,7 +929,7 @@ const Message=(props)=>{
                                                     return(
                                                         <div className="item-center m7zwrmfr vbUibIOQCdVGpvTHR9QZ5 taijpn5t" key={i}>
                                                             <i onClick={()=>deletefile(file,i)} className="icon-chat-message-delete">
-                                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="#8EA4D1"></circle><path fillRule="evenodd" clip-rule="evenodd" d="M8 9.26316L10.7368 12L12 10.7368L9.26316 8L12 5.26316L10.7368 4L8 6.73684L5.26316 4L4 5.26316L6.73684 8L4 10.7368L5.26316 12L8 9.26316Z" fill="white"></path></svg>
+                                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="#8EA4D1"></circle><path fillRule="evenodd" clipRule="evenodd" d="M8 9.26316L10.7368 12L12 10.7368L9.26316 8L12 5.26316L10.7368 4L8 6.73684L5.26316 4L4 5.26316L6.73684 8L4 10.7368L5.26316 12L8 9.26316Z" fill="white"></path></svg>
                                                             </i>
                                                             <div className="s45kfl79 emlxlaya item-center">
                                                                 <i className="icon ">
@@ -1011,7 +1011,7 @@ const Message=(props)=>{
                                                         <div className="chat-message-image-preview-wrap">
                                                             <div className="chat-message-image-preview-pause">
                                                                 <div className="chat-message-image-preview-icon">
-                                                                    <svg viewBox="0 0 25 34" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clip-rule="evenodd" d="M0 2.79798C0 1.18996 1.8014 0.239405 3.12882 1.14699L23.9004 15.3489C25.062 16.1431 25.062 17.8567 23.9004 18.6509L3.12882 32.8529C1.8014 33.7605 0 32.8099 0 31.2019V2.79798Z" fill="white"></path></svg>
+                                                                    <svg viewBox="0 0 25 34" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M0 2.79798C0 1.18996 1.8014 0.239405 3.12882 1.14699L23.9004 15.3489C25.062 16.1431 25.062 17.8567 23.9004 18.6509L3.12882 32.8529C1.8014 33.7605 0 32.8099 0 31.2019V2.79798Z" fill="white"></path></svg>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1046,20 +1046,20 @@ const Message=(props)=>{
                                             </div>
                                         </div>: 
                                         <div className="xaMUYIRSRlS1WYaJbpOwG DAgS9n3scQ7kWR3b9O-Va _2IM8caVK5bv3GniwHQxIv4 _1-jFwlhhdMvfDXAJH72LUv">
-                                            <div class="x9sshLfmzEnXDsbF57Qmx _2j0RH_nXNLwh2Q73wyiUu7">
-                                                <div class="_3-nmomaD6LPerIxLhiPYxJ _3PPerJ_xDR4sC-MObqPua0">SẢN PHẨM</div>
-                                                <div class="_34yQfy01N86VpubvG6CS4a _2koJrpCamdLkmdKUGhwdKU">
-                                                    <div class="_2PjYtS6WFYVM7M2Q5IAr5U">
-                                                        <div class="_3-NQ41O_LLyQ367SS_0dcY UMm4MDR5mkB_ctVxJocZq">
+                                            <div className="x9sshLfmzEnXDsbF57Qmx _2j0RH_nXNLwh2Q73wyiUu7">
+                                                <div className="_3-nmomaD6LPerIxLhiPYxJ _3PPerJ_xDR4sC-MObqPua0">SẢN PHẨM</div>
+                                                <div className="_34yQfy01N86VpubvG6CS4a _2koJrpCamdLkmdKUGhwdKU">
+                                                    <div className="_2PjYtS6WFYVM7M2Q5IAr5U">
+                                                        <div className="_3-NQ41O_LLyQ367SS_0dcY UMm4MDR5mkB_ctVxJocZq">
                                                             <img alt="" src={message.message_product.image}/>
-                                                            <div class="xrgygwVVBiOr5X2mHjO92 _3I8LHfvixxTAYbK5RR8_SI"></div>
+                                                            <div className="xrgygwVVBiOr5X2mHjO92 _3I8LHfvixxTAYbK5RR8_SI"></div>
                                                         </div>
-                                                        <div class="MK4RAJcIfHxp1tEXQDzts ITzmll2K9ovLC9mx6zS62 _3T4Jgbn-JoFBpuheVCmlnh _1IsSL6qNYQwomYLW5H4pW1">
-                                                            <div class="_1zCv57JLI668_Ek5DSiDDH _3qYzFdZiOTp_Rfs0EvFcUZ undefined" title={`${message.message_product.name}`}>{message.message_product.name}</div>
-                                                            <div class="GIqgeOS-QZ5DGb-i8L8qg item-center _3cL3bjO1xbF4C-mj5bENVs iVpMx9O-viRKqBFvDuEO_ undefined _3OFGwHwOoNti2VXQOaGl2m">
+                                                        <div className="MK4RAJcIfHxp1tEXQDzts ITzmll2K9ovLC9mx6zS62 _3T4Jgbn-JoFBpuheVCmlnh _1IsSL6qNYQwomYLW5H4pW1">
+                                                            <div className="_1zCv57JLI668_Ek5DSiDDH _3qYzFdZiOTp_Rfs0EvFcUZ undefined" title={`${message.message_product.name}`}>{message.message_product.name}</div>
+                                                            <div className="GIqgeOS-QZ5DGb-i8L8qg item-center _3cL3bjO1xbF4C-mj5bENVs iVpMx9O-viRKqBFvDuEO_ undefined _3OFGwHwOoNti2VXQOaGl2m">
                                                                 {message.message_product.min_price==message.message_product.max_price?
-                                                                <span class="_1BDeEH9Fg1p0_-0lSNOrc0">₫{formatter.format(message.message_product.min_price*(1-message.message_product.percent_discount/100))}</span>:
-                                                                <div class="_3F2ZINemDNbvVrHyEorcG5"><span>₫{formatter.format(message.message_product.min_price*(1-message.message_product.percent_discount/100))}</span> - <span> ₫{formatter.format(message.message_product.max_price*(1-message.message_product.percent_discount/100))}</span></div>}
+                                                                <span className="_1BDeEH9Fg1p0_-0lSNOrc0">₫{formatter.format(message.message_product.min_price*(1-message.message_product.percent_discount/100))}</span>:
+                                                                <div className="_3F2ZINemDNbvVrHyEorcG5"><span>₫{formatter.format(message.message_product.min_price*(1-message.message_product.percent_discount/100))}</span> - <span> ₫{formatter.format(message.message_product.max_price*(1-message.message_product.percent_discount/100))}</span></div>}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1129,7 +1129,7 @@ const Message=(props)=>{
                                                     <input onChange={(e)=>previewFile(e)} accept="video/*,.flv,.3gp,.rm,.rmvb,.asf,.mp4,.webm" multiple={true} type="file" style={{display: 'none'}}/>
                                                     <div className="">
                                                         <i className="icon chat-inputfield-toolbar-index__video chat-inputfield-toolbar__label chat-inputfield-toolbar__inactive-label">
-                                                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path fillRule="evenodd" clip-rule="evenodd" d="M19.974 3h-16a1 1 0 00-1 1v16a1 1 0 001 1h16a1 1 0 001-1V4a1 1 0 00-1-1zm-15 16V5h14v14h-14z"></path><path d="M15.42 11.733a.3.3 0 010 .534L9.627 15.24a.3.3 0 01-.437-.267V9.027a.3.3 0 01.437-.267l5.793 2.973z"></path></svg>
+                                                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="chat-icon"><path fillRule="evenodd" clipRule="evenodd" d="M19.974 3h-16a1 1 0 00-1 1v16a1 1 0 001 1h16a1 1 0 001-1V4a1 1 0 00-1-1zm-15 16V5h14v14h-14z"></path><path d="M15.42 11.733a.3.3 0 010 .534L9.627 15.24a.3.3 0 01-.437-.267V9.027a.3.3 0 01.437-.267l5.793 2.973z"></path></svg>
                                                         </i>
                                                     </div>
                                                 </div>
@@ -1250,34 +1250,34 @@ const Message=(props)=>{
             showmoreitem={(e,name)=>showmoreitem(e,name)}
         />
         {showaction?
-            <div data-popper-reference-hidden="false" data-popper-escaped="false" data-popper-placement="bottom-start" class="_2QLhFk_X2O _1BzVU7fHvH" style={{position: 'absolute', inset: '0px auto auto 0px', transform: `translate(215px, 383px)`}}>
-                <div class="_15v99gbQSv">
-                    <div class="_3zpMyJKkl2WoOerymVZPuR">
-                        <div class="_32eIwz3LtMqgfk1YqB6IIN _18E_V1N5iaI_S92DHx8vqU">
-                            <div class="_3gUqnenePUrxbbMEeh9i4M">
-                                <div class="_2xGjvAuHdCo364lNgvhQYC undefined">
-                                    <div class="_29uoglXEwg_2RaVW0_CFBG">
+            <div data-popper-reference-hidden="false" data-popper-escaped="false" data-popper-placement="bottom-start" className="_2QLhFk_X2O _1BzVU7fHvH" style={{position: 'absolute', inset: '0px auto auto 0px', transform: `translate(215px, 383px)`}}>
+                <div className="_15v99gbQSv">
+                    <div className="_3zpMyJKkl2WoOerymVZPuR">
+                        <div className="_32eIwz3LtMqgfk1YqB6IIN _18E_V1N5iaI_S92DHx8vqU">
+                            <div className="_3gUqnenePUrxbbMEeh9i4M">
+                                <div className="_2xGjvAuHdCo364lNgvhQYC undefined">
+                                    <div className="_29uoglXEwg_2RaVW0_CFBG">
                                         <img alt="" src="https://cf.shopee.vn/file/abaee1d1cfd28d21dd4c67a2c7c0c218_tn"/>
-                                        <div class="_2Wkz3CDhCMDEZwE7G91OSy">
+                                        <div className="_2Wkz3CDhCMDEZwE7G91OSy">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="_1quVkM8A5NvTpdli3Wc-rj">
-                                <div title="ccutun" class="_1h02b9izN7ZJFXg60EFE8- _3hKrXgKJrf8GP0HSHSC9JA">ccutun</div>
+                            <div className="_1quVkM8A5NvTpdli3Wc-rj">
+                                <div title="ccutun" className="_1h02b9izN7ZJFXg60EFE8- _3hKrXgKJrf8GP0HSHSC9JA">ccutun</div>
                             </div>
                         </div>
-                        <div class="_39MlxwpZU6">
-                            <div class="_1DylYknmeT"></div>
-                            <div onClick={e=>navigate('/shop')} class="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
+                        <div className="_39MlxwpZU6">
+                            <div className="_1DylYknmeT"></div>
+                            <div onClick={e=>navigate('/shop')} className="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
                                 <div>Xem thông tin cá nhân</div>
                             </div>
-                            <div class="_1DylYknmeT"></div>
-                            <div onClick={(e)=>setactionconversations(e)} class="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
+                            <div className="_1DylYknmeT"></div>
+                            <div onClick={(e)=>setactionconversations(e)} className="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
                                 <div>Chặn người dùng</div>
                             </div>
-                            <div class="_1DylYknmeT"></div>
-                            <div onClick={(e)=>setactionconversations(e)} class="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
+                            <div className="_1DylYknmeT"></div>
+                            <div onClick={(e)=>setactionconversations(e)} className="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
                                 <div>Báo cáo</div>
                             </div>
                         </div>

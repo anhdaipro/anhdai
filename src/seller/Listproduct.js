@@ -141,12 +141,12 @@ const Listproduct=()=>{
                                 <div className="input-group_choice item-center">
                                     <div className="input-choice item-center" style={{width: '140px'}}>
                                         <div style={{width: '120px'}} >SKU sản phẩm</div>
-                                        <div className="selector__suffix">
+                                        <div className="">
                                             <i className="selector__suffix-icon icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,9.18933983 L4.03033009,5.21966991 C3.73743687,4.9267767 3.26256313,4.9267767 2.96966991,5.21966991 C2.6767767,5.51256313 2.6767767,5.98743687 2.96966991,6.28033009 L7.46966991,10.7803301 C7.76256313,11.0732233 8.23743687,11.0732233 8.53033009,10.7803301 L13.0303301,6.28033009 C13.3232233,5.98743687 13.3232233,5.51256313 13.0303301,5.21966991 C12.7374369,4.9267767 12.2625631,4.9267767 11.9696699,5.21966991 L8,9.18933983 Z"></path></svg></i>
                                         </div>
                                     </div>
                                     <div className="select__options">
-                                        <div className="p-1_2">
+                                        <div className="">
                                             <div className="variation-option">
                                                 Tên sản phẩm
                                             </div>
@@ -288,7 +288,7 @@ const Listproduct=()=>{
                                         <div className="input-group_choice item-center" >
                                             <div className="input-choice item-center" style={{width: '190px'}}>
                                                 <div style={{width: '160px'}}>Batch processing tools</div> 
-                                                <div className="selector__suffix">
+                                                <div className="">
                                                     <i className="selector__suffix-icon icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,9.18933983 L4.03033009,5.21966991 C3.73743687,4.9267767 3.26256313,4.9267767 2.96966991,5.21966991 C2.6767767,5.51256313 2.6767767,5.98743687 2.96966991,6.28033009 L7.46966991,10.7803301 C7.76256313,11.0732233 8.23743687,11.0732233 8.53033009,10.7803301 L13.0303301,6.28033009 C13.3232233,5.98743687 13.3232233,5.51256313 13.0303301,5.21966991 C12.7374369,4.9267767 12.2625631,4.9267767 11.9696699,5.21966991 L8,9.18933983 Z"></path></svg></i>
                                                 </div>
                                             </div>
@@ -403,7 +403,7 @@ const Listproduct=()=>{
                                                 {item.variations.map((variation,i)=>{
                                                     if(i<3){
                                                         return(
-                                                        <div className='item-center -item'>
+                                                        <div key={variation.variation_id} className='item-center -item'>
                                                             <div className="variation-sku">{variation.sku!=undefined?variation.sku:''}</div>
                                                             <div className="variation-item">{itemvariation(variation)}</div>
                                                             <div className="variation-price">{variation.price}</div>
@@ -414,7 +414,7 @@ const Listproduct=()=>{
                                                     } 
                                                     if(i>2 && item.show){
                                                         return(
-                                                            <div className='item-center -item'>
+                                                            <div key={variation.variation_id} className='item-center -item'>
                                                                 <div className="variation-sku">{variation.sku!=undefined?variation.sku:''}</div>
                                                                 <div className="variation-item">{itemvariation(variation)}</div>
                                                                 <div className="variation-price">{variation.price}</div>
@@ -468,9 +468,9 @@ const Listproduct=()=>{
                                     <div className="with-assist">
                                         <div className="item-center page-pagination">
                                             <Pagination
-                                                classActive={`buttons active`}
-                                                classNormal={`buttons`}
-                                                classIcon={`buttons`}
+                                                classActive={`pager__page active`}
+                                                classNormal={`pager__page`}
+                                                classIcon={`pager__page`}
                                                 currentPage={currentPage.page}
                                                 totalCount={Math.ceil(itemshop.count_product / currentPage.pagesize)}
                                                 Pagesize={currentPage.pagesize}

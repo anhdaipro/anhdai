@@ -276,7 +276,6 @@ export const partition=(array, n)=>{
   return array.length ? [array.splice(0, n)].concat(partition(array, n)) : [];
 }
 export const rating=(number,item)=>{
-  let result=[]
   if(item.review_rating>0){
     return Array(number).fill().map((_,k)=>{
       let int_start=item.review_rating
@@ -334,9 +333,17 @@ export const ratingitem=(number,item)=>{
           </div>)
         }
       })
-      }
-      return result
+    }
+  return result
 }
+export const choice_option=[{'name':'Tên chương trình',value:1},
+{'name':'Tên sản phẩm',value:2},
+{'name':'Mã sản phẩm',value:3}]
+export const today=new Date()
+export const yesterday=new Date(new Date().setDate(new Date().getDate() - 1))
+export const tomorow=new Date(new Date().setDate(new Date().getDate() + 1))
+export const lastweek=new Date(new Date().setDate(new Date().getDate() - 7))
+export const lastmonth=new Date(new Date().setDate(new Date().getDate() - 30))
 //user
 export const address_null={address:'',address_choice:'',default:null,name:'',phone_number:''}
 export const typeaddress=['Văn Phòng','Nhà Riêng']

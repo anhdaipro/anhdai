@@ -308,8 +308,8 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M8,1 C11.8659932,1 15,4.13400675 15,8 C15,11.8659932 11.8659932,15 8,15 C4.13400675,15 1,11.8659932 1,8 C1,4.13400675 4.13400675,1 8,1 Z M8.00070711,7.29218611 L5.87867966,5.17157288 C5.68341751,4.97631073 5.36683502,4.97631073 5.17157288,5.17157288 C4.99800652,5.34513923 4.97872137,5.61456363 5.11371742,5.80943177 L5.17157288,5.87867966 L7.29289322,8 L5.17157288,10.1213203 C4.97631073,10.3165825 4.97631073,10.633165 5.17157288,10.8284271 C5.34513923,11.0019935 5.61456363,11.0212786 5.80943177,10.8862826 L5.87867966,10.8284271 L8,8.70710678 L10.1213203,10.8284271 C10.3165825,11.0236893 10.633165,11.0236893 10.8284271,10.8284271 C11.0019935,10.6548608 11.0212786,10.3854364 10.8862826,10.1905682 L10.8284271,10.1213203 L8.70710678,8 L10.8284271,5.87867966 C11.0236893,5.68341751 11.0236893,5.36683502 10.8284271,5.17157288 C10.6548608,4.99800652 10.3854364,4.97872137 10.1905682,5.11371742 L10.1213203,5.17157288 L8.00070711,7.29218611 L5.87867966,5.17157288 L8.00070711,7.29218611 Z"></path></svg>
                                         </i>
                                     </div>
-                                    <div class="alert-content">
-                                        <div class="alert-title">
+                                    <div className="alert-content">
+                                        <div className="alert-title">
                                             Vòng quay may mắn yêu cầu ít nhất 5 giải thưởng. Vui lòng thêm giải thưởng để tạo trò chơi.
                                         </div> 
                                     </div>
@@ -322,7 +322,7 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
                                         </div>
                                         <div className="table__header-container" style={{position: 'sticky', top: '0px', zIndex: 2}}> 
                                         <div className="table__main-header">
-                                            <table cellspacing="0" cellpadding="0" border="0" className="table__header" style={{width: `1214px`}}>
+                                            <table cellSpacing="0" cellPadding="0" border="0" className="table__header" style={{width: `1214px`}}>
                                                 <colgroup>
                                                     <col width="318"/>
                                                     <col width="254"/>
@@ -332,22 +332,22 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
                                                 </colgroup>
                                                 <thead>
                                                     <tr>
-                                                        <th colspan="1" rowspan="1" className="">
+                                                        <th colSpan="1" rowSpan="1" className="">
                                                             <div className="table__cell first-cell">
                                                                 <span className="table__cell-label">Giải thưởng</span>
                                                             </div>
                                                         </th>
-                                                        <th colspan="1" rowspan="1" className="">
+                                                        <th colSpan="1" rowSpan="1" className="">
                                                             <div className="table__cell">
                                                                 <span className="table__cell-label">Mức giảm tối đa</span>
                                                             </div>
                                                         </th>
-                                                        <th colspan="1" rowspan="1" className="">
+                                                        <th colSpan="1" rowSpan="1" className="">
                                                             <div className="table__cell">
                                                                 <span className="table__cell-label">Giá trị đơn hàng tối thiểu</span>
                                                             </div>
                                                         </th>
-                                                        <th colspan="1" rowspan="1" className="">
+                                                        <th colSpan="1" rowSpan="1" className="">
                                                             <div className="table__cell">
                                                                 <span className="table__cell-label">
                                                                     <div data-v-1eec1518="" className="table-header">Số lượng Giải thưởng
@@ -369,7 +369,7 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
                                                                     </span>
                                                                 </div>
                                                             </th>
-                                                            <th colspan="1" rowspan="1" className="">
+                                                            <th colSpan="1" rowSpan="1" className="">
                                                                 <div className="table__cell last-cell">
                                                                     <span className="table__cell-label">Hoạt động</span>
                                                         
@@ -698,12 +698,12 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
                                                                                 </div>
                                                                             </div>
                                                                         </div>:
-                                                                        <div class="input currency-input">
-                                                                            <div class="input__inner input__inner--normal">
-                                                                                <div class="input__prefix">₫<span class="input__prefix-split">
+                                                                        <div className="input currency-input">
+                                                                            <div className="input__inner input__inner--normal">
+                                                                                <div className="input__prefix">₫<span className="input__prefix-split">
                                                                                     </span>
                                                                                 </div> 
-                                                                                <input value={awardchoice.amount} onChange={e=>setAwardchoice({...awardchoice,amount:!isNaN(e.target.value)?e.target.value:awardchoice.amount})} type="text" placeholder="Nhập vào" resize="vertical" rows="2" minrows="2" maxlength="13" restrictiontype="value" max="Infinity" min="-Infinity" class="input__input"/> 
+                                                                                <input value={awardchoice.amount} onChange={e=>setAwardchoice({...awardchoice,amount:!isNaN(e.target.value)?e.target.value:awardchoice.amount})} type="text" placeholder="Nhập vào" resize="vertical" rows="2" minrows="2" maxlength="13" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                             </div>
                                                                         </div>}
                                                                     </div>

@@ -56,7 +56,7 @@ const Listvoucher=()=>{
             if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listvoucher.length< count){
                 setLoading(false)
                 const res =await axios.get(`${listvouchershopURL}?&offset=${listvoucher.length}`,headers)
-                setVouchers(current=>[...current,...res.data.vouchers])
+                setVouchers(current=>[...current,...res.data.data])
                 setLoading(true)
             }
         })()
@@ -88,8 +88,8 @@ const Listvoucher=()=>{
                             </div>
                         </div> 
                         <div data-v-439649ed="" className="metrics-container">
-                            {stats.map(item=>
-                            <div data-v-439649ed="" className="metrics" style={{flex: '1 1 0%'}}>
+                            {stats.map((item,i)=>
+                            <div key={i} data-v-439649ed="" className="metrics" style={{flex: '1 1 0%'}}>
                                 <div data-v-439649ed="" className="metrics-title">
                                     <span data-v-439649ed="" className="metrics-name">{item.name}</span> 
                                     <div data-v-439649ed="" className="popover popover--light">
@@ -164,7 +164,7 @@ const Listvoucher=()=>{
                             <div data-v-439649ed="" className="table list-table">
                                 <div className="table__header-container" style={{position: 'sticky', top: '56px', zIndex: 2}}> 
                                     <div className="table__main-header">
-                                        <table cellspacing="0" cellpadding="0" border="0" className="table__header" style={{width: '1214px'}}>
+                                        <table cellSpacing="0" cellPadding="0" border="0" className="table__header" style={{width: '1214px'}}>
                                             <colgroup>
                                                 <col width="284"/>
                                                 <col width="186"/>
@@ -176,29 +176,29 @@ const Listvoucher=()=>{
                                             </colgroup>
                                             <thead>
                                                 <tr>
-                                                    <th colspan="1" rowspan="1" className="">
+                                                    <th colSpan="1" rowSpan="1" className="">
                                                         <div className="table__cell first-cell">
                                                             <span className="table__cell-label">Mã voucher
                                                                 <span data-v-6b00c90e="" className="vertical-separator"></span> Tên
                                                             </span>
                                                         </div>
                                                     </th>
-                                                    <th colspan="1" rowspan="1" className="">
+                                                    <th colSpan="1" rowSpan="1" className="">
                                                         <div className="table__cell">
                                                             <span className="table__cell-label">Loại mã</span>
                                                         </div>
                                                     </th>
-                                                    <th colspan="1" rowspan="1" className="">
+                                                    <th colSpan="1" rowSpan="1" className="">
                                                         <div className="table__cell">
                                                             <span className="table__cell-label">Giảm giá</span>
                                                         </div>
                                                     </th>
-                                                    <th colspan="1" rowspan="1" className="">
+                                                    <th colSpan="1" rowSpan="1" className="">
                                                         <div className="table__cell">
                                                             <span className="table__cell-label">Tổng số mã giảm giá có thể sử dụng</span>
                                                         </div>
                                                     </th>
-                                                    <th colspan="1" rowspan="1" className="">
+                                                    <th colSpan="1" rowSpan="1" className="">
                                                         <div className="table__cell">
                                                             <span className="table__cell-label">Đã dùng</span>
                                                             <div className="table__cell-actions">
@@ -214,14 +214,14 @@ const Listvoucher=()=>{
                                                             </div>
                                                         </div>
                                                     </th>
-                                                    <th colspan="1" rowspan="1" className="">
+                                                    <th colSpan="1" rowSpan="1" className="">
                                                         <div className="table__cell">
                                                             <span className="table__cell-label">Trạng thái 
                                                         <span data-v-6b00c90e="" className="vertical-separator"></span> 
                                                         <div data-v-6b00c90e="">Thời gian lưu Mã giảm giá</div>
                                                         </span></div>
                                                     </th>
-                                                    <th colspan="1" rowspan="1" className="">
+                                                    <th colSpan="1" rowSpan="1" className="">
                                                         <div className="table__cell last-cell"><span className="table__cell-label">Thao tác</span></div>
                                                     </th>
                                                 </tr>
@@ -250,7 +250,7 @@ const Listvoucher=()=>{
                                                             </colgroup>
                                                             <tbody>
                                                                 {listvoucher.map(voucher=>
-                                                                <tr className="table__row valign-top landing-row">
+                                                                <tr key={voucher.id} className="table__row valign-top landing-row">
                                                                     <td className="is-first">
                                                                         <div className="table__cell first-cell">
                                                                             <div data-v-6b00c90e="" className="promotion-info-style promotion-info-comp _2rZ--OSu2dBWc9zotVJ3vr">
@@ -354,10 +354,10 @@ const Listvoucher=()=>{
                                                         </div>
                                                     </div>
                                                     {count==0?
-                                                            <div class="table__empty">
-                                                                <div data-v-6b00c90e="" class="default-page list-no-result">
-                                                                    <i class="default-page__icon icon normal">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92 86"><g fill="none" fillRule="evenodd" transform="translate(-4 -4)"><rect width="96" height="96"></rect><ellipse cx="49" cy="85" fill="#F2F2F2" rx="45" ry="5"></ellipse><rect width="34" height="15" x="34.5" y="24.5" fill="#FAFAFA" stroke="#D8D8D8" rx="2" transform="rotate(30 51.5 32)"></rect><rect width="33" height="15" x="25.5" y="25.5" fill="#FAFAFA" stroke="#D8D8D8" rx="2" transform="rotate(15 42 33)"></rect><path fill="#FFF" stroke="#D8D8D8" d="M13.5,42.5164023 C17.4090159,42.7736953 20.5,46.0258787 20.5,50 C20.5,53.9741213 17.4090159,57.2263047 13.5,57.4835977 L13.5,73 C13.5,73.8284271 14.1715729,74.5 15,74.5 L83,74.5 C83.8284271,74.5 84.5,73.8284271 84.5,72.9999686 L84.5009752,57.483515 C84.3347628,57.4944876 84.1677086,57.5 84,57.5 C79.8578644,57.5 76.5,54.1421356 76.5,50 C76.5,45.8578644 79.8578644,42.5 84,42.5 C84.1677086,42.5 84.3347628,42.5055124 84.5009752,42.516485 L84.5,27 C84.5,26.1715729 83.8284271,25.5 83,25.5 L15,25.5 C14.1715729,25.5 13.5,26.1715729 13.5,27 L13.5,42.5164023 Z"></path><path fill="#D8D8D8" d="M71.5,59 C71.7761424,59 72,59.2238576 72,59.5 C72,59.7761424 71.7761424,60 71.5,60 L40.5,60 C40.2238576,60 40,59.7761424 40,59.5 C40,59.2238576 40.2238576,59 40.5,59 L71.5,59 Z M59.5,49 C59.7761424,49 60,49.2238576 60,49.5 C60,49.7761424 59.7761424,50 59.5,50 L40.5,50 C40.2238576,50 40,49.7761424 40,49.5 C40,49.2238576 40.2238576,49 40.5,49 L59.5,49 Z M71.5,39 C71.7761424,39 72,39.2238576 72,39.5 C72,39.7761424 71.7761424,40 71.5,40 L40.5,40 C40.2238576,40 40,39.7761424 40,39.5 C40,39.2238576 40.2238576,39 40.5,39 L71.5,39 Z"></path><line x1="28.5" x2="28.5" y1="26" y2="75" stroke="#D8D8D8" stroke-dasharray="4"></line><g fill="#D8D8D8" transform="translate(82.16 4.04)"><circle cx="10" cy="13" r="3" opacity=".5"></circle><circle cx="2" cy="9" r="2" opacity=".3"></circle><path d="M8.5,1 C7.67157288,1 7,1.67157288 7,2.5 C7,3.32842712 7.67157288,4 8.5,4 C9.32842712,4 10,3.32842712 10,2.5 C10,1.67157288 9.32842712,1 8.5,1 Z M8.5,7.10542736e-15 C9.88071187,7.10542736e-15 11,1.11928813 11,2.5 C11,3.88071187 9.88071187,5 8.5,5 C7.11928813,5 6,3.88071187 6,2.5 C6,1.11928813 7.11928813,7.10542736e-15 8.5,7.10542736e-15 Z" opacity=".3"></path></g></g></svg></i> <div class="default-page__content">
+                                                            <div className="table__empty">
+                                                                <div data-v-6b00c90e="" className="default-page list-no-result">
+                                                                    <i className="default-page__icon icon normal">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92 86"><g fill="none" fillRule="evenodd" transform="translate(-4 -4)"><rect width="96" height="96"></rect><ellipse cx="49" cy="85" fill="#F2F2F2" rx="45" ry="5"></ellipse><rect width="34" height="15" x="34.5" y="24.5" fill="#FAFAFA" stroke="#D8D8D8" rx="2" transform="rotate(30 51.5 32)"></rect><rect width="33" height="15" x="25.5" y="25.5" fill="#FAFAFA" stroke="#D8D8D8" rx="2" transform="rotate(15 42 33)"></rect><path fill="#FFF" stroke="#D8D8D8" d="M13.5,42.5164023 C17.4090159,42.7736953 20.5,46.0258787 20.5,50 C20.5,53.9741213 17.4090159,57.2263047 13.5,57.4835977 L13.5,73 C13.5,73.8284271 14.1715729,74.5 15,74.5 L83,74.5 C83.8284271,74.5 84.5,73.8284271 84.5,72.9999686 L84.5009752,57.483515 C84.3347628,57.4944876 84.1677086,57.5 84,57.5 C79.8578644,57.5 76.5,54.1421356 76.5,50 C76.5,45.8578644 79.8578644,42.5 84,42.5 C84.1677086,42.5 84.3347628,42.5055124 84.5009752,42.516485 L84.5,27 C84.5,26.1715729 83.8284271,25.5 83,25.5 L15,25.5 C14.1715729,25.5 13.5,26.1715729 13.5,27 L13.5,42.5164023 Z"></path><path fill="#D8D8D8" d="M71.5,59 C71.7761424,59 72,59.2238576 72,59.5 C72,59.7761424 71.7761424,60 71.5,60 L40.5,60 C40.2238576,60 40,59.7761424 40,59.5 C40,59.2238576 40.2238576,59 40.5,59 L71.5,59 Z M59.5,49 C59.7761424,49 60,49.2238576 60,49.5 C60,49.7761424 59.7761424,50 59.5,50 L40.5,50 C40.2238576,50 40,49.7761424 40,49.5 C40,49.2238576 40.2238576,49 40.5,49 L59.5,49 Z M71.5,39 C71.7761424,39 72,39.2238576 72,39.5 C72,39.7761424 71.7761424,40 71.5,40 L40.5,40 C40.2238576,40 40,39.7761424 40,39.5 C40,39.2238576 40.2238576,39 40.5,39 L71.5,39 Z"></path><line x1="28.5" x2="28.5" y1="26" y2="75" stroke="#D8D8D8" strokeDasharray="4"></line><g fill="#D8D8D8" transform="translate(82.16 4.04)"><circle cx="10" cy="13" r="3" opacity=".5"></circle><circle cx="2" cy="9" r="2" opacity=".3"></circle><path d="M8.5,1 C7.67157288,1 7,1.67157288 7,2.5 C7,3.32842712 7.67157288,4 8.5,4 C9.32842712,4 10,3.32842712 10,2.5 C10,1.67157288 9.32842712,1 8.5,1 Z M8.5,7.10542736e-15 C9.88071187,7.10542736e-15 11,1.11928813 11,2.5 C11,3.88071187 9.88071187,5 8.5,5 C7.11928813,5 6,3.88071187 6,2.5 C6,1.11928813 7.11928813,7.10542736e-15 8.5,7.10542736e-15 Z" opacity=".3"></path></g></g></svg></i> <div className="default-page__content">
                                                                         Không có Mã giảm giá nào
                                                                     </div>
                                                                 </div>

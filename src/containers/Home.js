@@ -252,19 +252,19 @@ const Itemflashsale =()=> {
                                                             </div>
                                                             
                                                             <div className="flash-sale-progress-bar__wrapper flash-sale-progress-bar__wrapper--home-page">
-                                                                <div class="HIIASx">
-                                                                    <div class="Ygavkn">{item.number_order/item.promotion_stock>0.8?'Sắp cháy hàng':`Đã bán ${item.number_order}`}</div>
-                                                                    <div class="NiQ2DI">
-                                                                        <div class="NwnNg9" style={{width: `${(1-(item.number_order/item.promotion_stock))*100}%`}}>
+                                                                <div className="HIIASx">
+                                                                    <div className="Ygavkn">{item.number_order/item.promotion_stock>0.8?'Sắp cháy hàng':`Đã bán ${item.number_order}`}</div>
+                                                                    <div className="NiQ2DI">
+                                                                        <div className="NwnNg9" style={{width: `${(1-(item.number_order/item.promotion_stock))*100}%`}}>
                                                                             
-                                                                            <div class="zYeAeX"></div>
+                                                                            <div className="zYeAeX"></div>
                                                                             
 
                                                                         </div>
                                                                        
                                                                     </div>
                                                                     {item.number_order/item.promotion_stock>0.5?
-                                                                        <div class="Xm0-Ex"></div>:''}
+                                                                        <div className="Xm0-Ex"></div>:''}
                                                                     
                                                                     
                                                                 </div>

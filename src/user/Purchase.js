@@ -111,17 +111,17 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
     }
     
     
-    const setshow = useCallback((es) => {
+    const setshow =(es) => {
         setShow(es);
-    }, [show]);
+    }
 
-    const setcancel= useCallback((es) => {
+    const setcancel= (es) => {
         setCancel(es);
-    }, [cancel]);
+    }
 
-    const setedit = useCallback((ed) => {
+    const setedit = (ed) => {
         setEdit(ed);
-    }, [edit]);
+    }
 
     const setcartitem = useCallback((or) => {
         setState({...state,cartitem:or});

@@ -1,10 +1,7 @@
-import axios from 'axios';
+
 import Navbar from "../Navbar"
-import { useParams,Link,useSearchParams } from "react-router-dom";
-import React, {useState,useEffect,useCallback,useRef, useMemo} from 'react'
-import {timeformat,timevalue,formatter,valid_to,safe_div} from "../../constants"
-import {dashboardURL,} from "../../urls"
-import { headers } from '../../actions/auth';
+import React, {useState,useEffect,useCallback} from 'react'
+import {safe_div} from "../../constants"
 import NavbarDashboard from './Navbardashboard';
 import Chartdata from './Chartdata';
   

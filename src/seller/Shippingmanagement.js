@@ -127,18 +127,18 @@ const Shippingmanagement=()=>{
                                                                         </div> 
                                                                         <div className="table__header-container"> 
                                                                             <div className="table__main-header">
-                                                                                <table data-v-1aa65c24="" cellspacing="0" cellpadding="0" border="0" className="table__header" style={{width: '398px'}}>
+                                                                                <table data-v-1aa65c24="" cellSpacing="0" cellPadding="0" border="0" className="table__header" style={{width: '398px'}}>
                                                                                     <colgroup data-v-1aa65c24="">
                                                                                         <col data-v-1aa65c24="" width="250"/><col data-v-1aa65c24="" width="148"/>
                                                                                     </colgroup>
                                                                                     <thead data-v-1aa65c24="">
                                                                                         <tr data-v-1aa65c24="">
-                                                                                            <th data-v-1aa65c24="" colspan="1" rowspan="1" className="">
+                                                                                            <th data-v-1aa65c24="" colSpan="1" rowSpan="1" className="">
                                                                                                 <div data-v-1aa65c24="" className="table__cell first-cell">
                                                                                                     <span data-v-1aa65c24="" className="table__cell-label">Tên báo cáo</span>
                                                                                                 </div>
                                                                                             </th>
-                                                                                            <th data-v-1aa65c24="" colspan="1" rowspan="1" className="">
+                                                                                            <th data-v-1aa65c24="" colSpan="1" rowSpan="1" className="">
                                                                                                 <div data-v-1aa65c24="" className="table__cell align-center last-cell">
                                                                                                     <span data-v-1aa65c24="" className="table__cell-label">Sửa thông tin</span>
                                                                                                 </div>
@@ -156,7 +156,7 @@ const Shippingmanagement=()=>{
                                                                                             <div data-v-1aa65c24="" className="scrollbar__thumb" style={{left: '0px', width: '0px'}}></div>
                                                                                         </div> 
                                                                                         <div className="scrollbar__content" style={{position: 'relative'}}>
-                                                                                            <table data-v-1aa65c24="" cellspacing="0" cellpadding="0" border="0" className="table__body" style={{width: '398px'}}>
+                                                                                            <table data-v-1aa65c24="" cellSpacing="0" cellPadding="0" border="0" className="table__body" style={{width: '398px'}}>
                                                                                                 <colgroup data-v-1aa65c24="">
                                                                                                     <col data-v-1aa65c24="" width="250"/>
                                                                                                     <col data-v-1aa65c24="" width="148"/>
