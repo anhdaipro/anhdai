@@ -88,7 +88,7 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
                         <div className="section-seller-overview-horizontal__leading-background-mask"></div>
                         <div className="section-seller-overview-horizontal__leading-content">
                             <div className="section-seller-overview-horizontal__seller-portrait _3G9pjm">
-                                <a className="section-seller-overview-horizontal__seller-portrait-link" href="/soahman">
+                                <Link className="section-seller-overview-horizontal__seller-portrait-link" to={data.url}>
                                     <div className="avatar _3aM_PS">
                                         <div className="avatar__placeholder">
                                             <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-headshot"><g><circle cx="7.5" cy="4.5" fill="none" r="3.8" stroke-miterlimit="10"></circle><path d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" strokeLinecap="round" stroke-miterlimit="10"></path></g></svg>
@@ -98,9 +98,9 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
                                     <div className="section-seller-overview-horizontal__preferred-badge-wrapper">
                                         <div className="_2vYHuP _3KOA3x _1Syx5m">Yêu thích</div>
                                     </div>
-                                </a>
+                                </Link>
                                 <div className="section-seller-overview-horizontal__portrait-info">
-                                    <h1 className="section-seller-overview-horizontal__portrait-name">soahman</h1>
+                                    <h1 className="section-seller-overview-horizontal__portrait-name">{data.name}</h1>
                                     <div className="section-seller-overview-horizontal__portrait-status">
                                         <div className="section-seller-overview-horizontal__active-time">Online 10 phút trước</div>
                                     </div>
@@ -133,38 +133,38 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
                                 </div>
                                 <div className="section-seller-overview__item-text">
                                     <div className="section-seller-overview__item-text-name">Sản phẩm:&nbsp;</div>
-                                <div className="section-seller-overview__item-text-value">{data.count_product}</div>
+                                    <div className="section-seller-overview__item-text-value">{data.count_product}</div>
+                                </div>
+                                <div className="section-seller-overview__item-text section-seller-overview__item-text--no-product">
+                                    <div className="section-seller-overview__item-text-value">44</div>
+                                    <div className="section-seller-overview__item-text-name">{data.count_product}</div>
+                                </div>
                             </div>
-                            <div className="section-seller-overview__item-text section-seller-overview__item-text--no-product">
-                                <div className="section-seller-overview__item-text-value">44</div>
-                                <div className="section-seller-overview__item-text-name">{data.count_product}</div>
+                            <div className="section-seller-overview__item">
+                                <div className="section-seller-overview__item-icon-wrapper">
+                                    <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon"><g><circle cx="7" cy="4.5" fill="none" r="3.8" stroke-miterlimit="10"></circle><line fill="none" strokeLinecap="round" stroke-miterlimit="10" x1="12" x2="12" y1="11.2" y2="14.2"></line><line fill="none" strokeLinecap="round" stroke-miterlimit="10" x1="10.5" x2="13.5" y1="12.8" y2="12.8"></line><path d="m1.5 13.8c0-3 2.5-5.5 5.5-5.5 1.5 0 2.9.6 3.9 1.6" fill="none" strokeLinecap="round" stroke-miterlimit="10"></path></g></svg>
+                                </div>
+                                <div className="section-seller-overview__item-text">
+                                    <div className="section-seller-overview__item-text-name">Đang Theo:&nbsp;</div>
+                                    <div className="section-seller-overview__item-text-value">{data.count_followings}</div>
+                                </div>
+                                <div className="section-seller-overview__item-text section-seller-overview__item-text--no-product">
+                                    <div className="section-seller-overview__item-text-value">{data.count_followings}</div>
+                                    <div className="section-seller-overview__item-text-name">Đang Theo</div>
+                                </div>
                             </div>
-                        </div>
-                        <div className="section-seller-overview__item">
-                            <div className="section-seller-overview__item-icon-wrapper">
-                                <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon"><g><circle cx="7" cy="4.5" fill="none" r="3.8" stroke-miterlimit="10"></circle><line fill="none" strokeLinecap="round" stroke-miterlimit="10" x1="12" x2="12" y1="11.2" y2="14.2"></line><line fill="none" strokeLinecap="round" stroke-miterlimit="10" x1="10.5" x2="13.5" y1="12.8" y2="12.8"></line><path d="m1.5 13.8c0-3 2.5-5.5 5.5-5.5 1.5 0 2.9.6 3.9 1.6" fill="none" strokeLinecap="round" stroke-miterlimit="10"></path></g></svg>
-                            </div>
+                            <div className="section-seller-overview__item">
+                                <div className="section-seller-overview__item-icon-wrapper">
+                                    <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon"><g><polygon fill="none" points="14 10.8 7 10.8 3 13.8 3 10.8 1 10.8 1 1.2 14 1.2" stroke-linejoin="round" stroke-miterlimit="10"></polygon><circle cx="4" cy="5.8" r="1" stroke="none"></circle><circle cx="7.5" cy="5.8" r="1" stroke="none"></circle><circle cx="11" cy="5.8" r="1" stroke="none"></circle></g></svg>
+                                </div>
                             <div className="section-seller-overview__item-text">
-                                <div className="section-seller-overview__item-text-name">Đang Theo:&nbsp;</div>
-                                <div className="section-seller-overview__item-text-value">{data.count_followings}</div>
+                                <div className="section-seller-overview__item-text-name">Tỉ lệ phản hồi Chat:&nbsp;</div>
+                                <div className="section-seller-overview__item-text-value">99% (trong vài giờ)
+                                    <div className="section-seller-overview__inline-icon section-seller-overview__inline-icon--help">
+                                        <svg width="10" height="10"><g fill="currentColor" fillRule="nonzero" color="currentColor" strokeWidth="0"><path d="M5 10A5 5 0 1 1 5 0a5 5 0 0 1 0 10zM5 .675a4.325 4.325 0 1 0 0 8.65 4.325 4.325 0 0 0 0-8.65z"></path><path d="M6.235 5.073c.334-.335.519-.79.514-1.264a1.715 1.715 0 0 0-.14-.684 1.814 1.814 0 0 0-.933-.951A1.623 1.623 0 0 0 5 2.03a1.66 1.66 0 0 0-.676.14 1.772 1.772 0 0 0-.934.948c-.093.219-.14.454-.138.691a.381.381 0 0 0 .106.276c.07.073.168.113.27.11a.37.37 0 0 0 .348-.235c.02-.047.031-.099.03-.15a1.006 1.006 0 0 1 .607-.933.954.954 0 0 1 .772.002 1.032 1.032 0 0 1 .61.93c.003.267-.1.525-.288.716l-.567.537c-.343.35-.514.746-.514 1.187a.37.37 0 0 0 .379.382c.1.002.195-.037.265-.108a.375.375 0 0 0 .106-.274c0-.232.097-.446.29-.642l.568-.534zM5 6.927a.491.491 0 0 0-.363.152.53.53 0 0 0 0 .74.508.508 0 0 0 .726 0 .53.53 0 0 0 0-.74A.491.491 0 0 0 5 6.927z"></path></g></svg>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="section-seller-overview__item-text section-seller-overview__item-text--no-product">
-                                <div className="section-seller-overview__item-text-value">{data.count_followings}</div>
-                                <div className="section-seller-overview__item-text-name">Đang Theo</div>
-                            </div>
-                        </div>
-                        <div className="section-seller-overview__item">
-                            <div className="section-seller-overview__item-icon-wrapper">
-                                <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon"><g><polygon fill="none" points="14 10.8 7 10.8 3 13.8 3 10.8 1 10.8 1 1.2 14 1.2" stroke-linejoin="round" stroke-miterlimit="10"></polygon><circle cx="4" cy="5.8" r="1" stroke="none"></circle><circle cx="7.5" cy="5.8" r="1" stroke="none"></circle><circle cx="11" cy="5.8" r="1" stroke="none"></circle></g></svg>
-                            </div>
-                        <div className="section-seller-overview__item-text">
-                            <div className="section-seller-overview__item-text-name">Tỉ lệ phản hồi Chat:&nbsp;</div>
-                            <div className="section-seller-overview__item-text-value">99% (trong vài giờ)
-                            <div className="section-seller-overview__inline-icon section-seller-overview__inline-icon--help">
-                                <svg width="10" height="10"><g fill="currentColor" fillRule="nonzero" color="currentColor" strokeWidth="0"><path d="M5 10A5 5 0 1 1 5 0a5 5 0 0 1 0 10zM5 .675a4.325 4.325 0 1 0 0 8.65 4.325 4.325 0 0 0 0-8.65z"></path><path d="M6.235 5.073c.334-.335.519-.79.514-1.264a1.715 1.715 0 0 0-.14-.684 1.814 1.814 0 0 0-.933-.951A1.623 1.623 0 0 0 5 2.03a1.66 1.66 0 0 0-.676.14 1.772 1.772 0 0 0-.934.948c-.093.219-.14.454-.138.691a.381.381 0 0 0 .106.276c.07.073.168.113.27.11a.37.37 0 0 0 .348-.235c.02-.047.031-.099.03-.15a1.006 1.006 0 0 1 .607-.933.954.954 0 0 1 .772.002 1.032 1.032 0 0 1 .61.93c.003.267-.1.525-.288.716l-.567.537c-.343.35-.514.746-.514 1.187a.37.37 0 0 0 .379.382c.1.002.195-.037.265-.108a.375.375 0 0 0 .106-.274c0-.232.097-.446.29-.642l.568-.534zM5 6.927a.491.491 0 0 0-.363.152.53.53 0 0 0 0 .74.508.508 0 0 0 .726 0 .53.53 0 0 0 0-.74A.491.491 0 0 0 5 6.927z"></path></g></svg>
-                            </div>
-                        </div>
-                        </div>
                             <div className="section-seller-overview__item-text section-seller-overview__item-text--no-product">
                                 <div className="section-seller-overview__item-text-value">99% (trong vài giờ)</div>
                                 <div className="section-seller-overview__item-text-name">Tỉ lệ phản hồi Chat</div>
@@ -219,8 +219,8 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
                             </div>
                             <div className="section-seller-overview__item-text">
                                 <div className="section-seller-overview__item-text-name">tham gia:&nbsp;</div>
-                                    <div className="section-seller-overview__item-text-value">{timeago(data.created)}</div>
-                                </div>
+                                <div className="section-seller-overview__item-text-value">{timeago(data.created)}</div>
+                            </div>
                             <div className="section-seller-overview__item-text section-seller-overview__item-text--no-product">
                                 <div className="section-seller-overview__item-text-value">{timeago(data.created)}</div>
                                 <div className="section-seller-overview__item-text-name">tham gia</div>
