@@ -406,18 +406,15 @@ const Detaildealshock=()=>{
     const setenableby=(e,variation,item)=>{
         const byproduct=item.variations.map(varia=>{
             if(varia.variation_id==variation.variation_id){
-                if(variation.percent_discount>0&& variation.percent_discount<100){
+                if((variation.percent_discount>0&&variation.percent_discount<100) || deal.shock_deal_type=='2'){
                     return({...varia,enable:!varia.enable,errow:false})
                 }
                 return({...varia,error:true})
             }
-            else{
-                return({...varia})
-            }
+            return({...varia})
         })
         item.variations=byproduct
         updatebyproduct(item)
-        
     }
 
     const setenabledbychoice=(e,value,keys_choice,value_choice)=>{
@@ -435,7 +432,6 @@ const Detaildealshock=()=>{
             })})
         })
     
-        
         setItem({...itemshop,[keys_choice]:list_byproduct})
     }
 
