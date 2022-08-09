@@ -424,7 +424,7 @@ const Detaildealshock=()=>{
         const list_byproduct=value_choice.map(byproduct=>{
             return({...byproduct,variations:byproduct.variations.map(variation=>{
                 if(byproduct.check){
-                    if(variation.percent_discount>0){
+                    if(variation.percent_discount>0 || deal.shock_deal_type=='2'){
                         return({...variation,enable:value,error:false})
                     }
                     else{
