@@ -92,7 +92,7 @@ const Addressuser = ({user}) =>{
         axios.post(updateAddressURL,form,headers)
         .then(res=>{
         })
-    }, [state,action]);
+    }, [state]);
 
     const setshow = useCallback((es) => {
         setShow(es);

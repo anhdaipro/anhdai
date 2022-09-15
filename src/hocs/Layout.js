@@ -16,6 +16,7 @@ const Layout = ({children,checkAuthenticated,user }) => {
             <div id="modal"></div>
             <Message
             />
+
            
             
         </>  
