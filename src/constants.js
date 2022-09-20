@@ -310,31 +310,15 @@ export function matchYoutubeUrl(url) {
   return false;
 }
 export const ratingitem=(number,item)=>{
-    let result=[]
     let int_start=item.review_rating
     let int_part = Math.trunc(int_start); // returns 3
     let float_part = Number((int_start-int_part).toFixed(2)); 
-    if(item.review_rating>0){
-      Array(number).fill().map((_,k)=>{
-      if(k<= Math.trunc(item.review_rating)){
-        result.push(
+    return Array(number).fill().map((_,k)=>
           <div className="rating-stars__star-wrapper">
-            <div className="rating-stars__lit" style={{width: '100%'}}>
+            <div className="rating-stars__lit" style={{width: `${k+1<= Math.trunc(int_start)?'100%':`${float_part*100}%`}`}}>
               <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__primary-star icon-rating-solid"><polygon points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" strokeLinecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polygon></svg></div><svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__hollow-star icon-rating"><polygon fill="none" points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" strokeLinecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polygon></svg>
-          </div>)
-          }
-      else{
-        result.push(
-          <div className="rating-stars__star-wrapper">
-            <div className="rating-stars__lit" style={{width: `${float_part*100}%`}}>
-            <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__primary-star icon-rating-solid"><polygon points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" strokeLinecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polygon></svg>
-            </div>
-            <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon rating-stars__hollow-star icon-rating"><polygon fill="none" points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4" strokeLinecap="round" stroke-linejoin="round" stroke-miterlimit="10"></polygon></svg>
-          </div>)
-        }
-      })
-    }
-  return result
+          </div>
+      )
 }
 export const choice_option=[{'name':'Tên chương trình',value:1},
 {'name':'Tên sản phẩm',value:2},
