@@ -34,7 +34,7 @@ const SlideshowGallery=({list_image,automatic,timeout})=>{
         <div className="stardust-carousel">
             {list_image.length>0?<>
             <div className="stardust-carousel__item-list-wrapper" style={{paddingTop: '29.5003%'}}>
-                <ul ref={parent} className="stardust-carousel__item-list" style={{width: `${100*list_image.length}%`, transition: `all ${slideIndex?500:0}ms ease`,
+                <ul ref={parent} className="stardust-carousel__item-list" style={{width: `${100*list_image.length}%`, transition: `all ${state.slideIndex?500:0}ms ease`,
                  transform: `translateX(-${state.slideIndex*(100/list_image.length)}%) translateX(0px)`}}>
                     {list_image.map(item=>
                     <li key={item.id} className="stardust-carousel__item" style={{width: `${100/list_image.length}%`}}>

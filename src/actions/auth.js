@@ -29,7 +29,7 @@ export const checkAuthenticated = () => async dispatch => {
             const res = await axios.get(user,{ 'headers': { Authorization:`JWT ${localStorage.token}` }})
             dispatch({
                  payload: res.data,
-                    type: AUTHENTICATED_SUCCESSa
+                    type: AUTHENTICATED_SUCCESS
             });
             localStorage.setItem('user',res.data.id);
         } catch (err) {
