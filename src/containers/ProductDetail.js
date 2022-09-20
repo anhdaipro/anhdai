@@ -61,7 +61,7 @@ const ReviewItem=(props)=>{
                 <div className="product-rating__author-name">{review.anonymous_review?review.user.substr(0,1)+hidestring(review.user)+review.user.substr(-1):review.user}</div>}
                 <div className="repeat-purchase-con">
                     <div className="product-rating__rating d-flex">
-                        {ratingitem(6,review)}
+                        {ratingitem(5,review)}
                     </div>
                 </div>
                 {itemvariation(review)!=''?<div className="y8ewrc">Phân loại hàng: {itemvariation(review)}</div>:''}
@@ -840,7 +840,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                 <div className="tuNfsN">
                                     <div className="rating-stars item-center">
                                         <div className="rating-stars__stars item-center">
-                                        {ratingitem(6,data)}
+                                        {ratingitem(5,data)}
                                         </div>
                                     </div>
                                 </div>  
