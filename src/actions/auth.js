@@ -187,7 +187,7 @@ export const login = (username, password) => async dispatch => {
             'Content-Type': 'application/json'
         }
     };
-    const data=validatEemail(username)?{username:username,password:password}:{email:username,password:password}
+    const data=!validatEemail(username)?{username:username,password:password}:{email:username,password:password}
     try {
         const res = await axios.post(loginURL,JSON.stringify(data), config);
 
