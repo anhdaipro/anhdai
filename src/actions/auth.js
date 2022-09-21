@@ -20,6 +20,7 @@ import {
 } from './types';
 import {createthreadURL, listThreadlURL,buyagainURL,loginURL, user} from "../urls"
 import axios from 'axios';
+import { validatEemail } from '../constants';
 const expirationDate = localStorage.getItem("expirationDate")
 export const expiry=new Date(expirationDate).getTime() - new Date().getTime()
 export const headers={'headers': localStorage.token!='null' && expiry>0?{ Authorization:`JWT ${localStorage.token}`,'Content-Type': 'application/json' }:{'Content-Type': 'application/json'}}
@@ -186,12 +187,9 @@ export const login = (username, password) => async dispatch => {
             'Content-Type': 'application/json'
         }
     };
-    let form=new FormData()
-    form.append('username',username)
-    form.append('password',password)
-    
+    const data=validatEemail(username)?{username:username,password:password}:{email:username,password:password}
     try {
-        const res = await axios.post(loginURL, form, config);
+        const res = await axios.post(loginURL,JSON.stringify(data), config);
 
         dispatch({
             type: LOGIN_SUCCESS,
