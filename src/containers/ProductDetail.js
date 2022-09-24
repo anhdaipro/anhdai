@@ -502,12 +502,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
             let variation_active=document.querySelectorAll('.product-variation--selected')
             if(variation_active.length===data.count_variation){
             setWaring({...waring,warring:false})
-            let form =new FormData()
-            if(variation.data){
-                form.append('id',variation.data.id)
-            }
-            form.append('item_id',data.id)
-            form.append('quantity',quantity) 
+            const data={item_id:data.id,quantity:quantity,id:variation.data.id}
             if(e.currentTarget.classList.contains('btn-tinted')){
                 const Divbox=()=>{
                 const [remove, setRemove] = useState({remove:false});
@@ -535,7 +530,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                 }
                
                 }
-                axios.post(addToCartURL,form,headers)
+                axios.post(addToCartURL,JSON.stringify(data),headers)
                 .then(res=>{
                     addcartitem(res.data)
                 })

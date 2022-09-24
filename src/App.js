@@ -77,6 +77,8 @@ import DetailFollowerOffer from './seller/promotions/DetailFollowerOffer'
 import NewFollowerOffer from './seller/promotions/NewFollowerOffer'
 import DashboardAward from './seller/dashboard/DashboardAward'
 import DashboardOffer from './seller/dashboard/DashboardOffer'
+import TopSearch from './containers/search/Topsearch'
+import Daily from './containers/search/Daily'
 
 const Appstore=()=>{
 return(
@@ -88,8 +90,11 @@ return(
                                         <Route exact path='/password/reset/confirm/:uid/:token'element={<ResetPasswordConfirm/>} />
                                         <Route path="*" element={<NoPage />} />
                                         <Route exact path="/game/:id" element={<Whell/>}/>
+                                        <Route exact path="/top_products" element={<TopSearch/>}/>
                                         <Route exact path="/calendar" element={<Calendar/>}/>
                                         <Route exact path='/search' element={<Searchitem/>} /> 
+                                        <Route exact path='/daily_discover' element={<Daily/>} /> 
+                                        <Route exact path="/" element={<Home/>}/>
                                         <Route  path='/buyer/login/otp' element={<Loginotp replace to="/" />} />
                                         <Route  path='/buyer/login' element={<Login replace to="/" />} />
                                         <Route  path='/buyer/signup' element={<Registeremail />} />

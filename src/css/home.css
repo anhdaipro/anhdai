@@ -3470,6 +3470,11 @@ margin-top:1.875rem;
     animation-duration: 600s;
     animation-iteration-count: infinite;
 }
+.icon-down-arrow-filled{
+    margin-left:4px;
+    width: 0.5rem;
+    vertical-align: text-bottom;
+}
 .countdown-timer__number__deca, .countdown-timer__number__hexa {
     display: inline-block;
     width: 9px;

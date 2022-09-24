@@ -6,6 +6,7 @@ import {ItemRecommend,topsearchURL,imagehomeURL,dashboardpromotionURL,listitemfl
 import { Link } from 'react-router-dom';
 import SlideshowGallery from "../hocs/Slideshow"
 import { headers } from '../actions/auth';
+import Dailyreacomment from './home/Dailyrecommend';
 
 const int = 2;
 class ImageHome extends React.Component {
@@ -471,59 +472,9 @@ export default class HomePage extends React.Component {
                                     <div className="stardust-tabs-panels"></div>
                                     <div className="stardust-tabs-panels">
                                         <section className="stardust-tabs-panels__panel">
-                                            <div className="_2O4FYU">
-                                                {
-                                                items.map(item=>
-                                                    <div className="_2x8AVA" key={item.id}>
-                                                        <Link to={`${item.url}?itemId=${item.id}`}>
-                                                            <div className="_1C-0ut _3GgDBN">
-                                                                <div className="_1gZS6z _1rL6dF">
-                                                                    <div className="_25_r8I ggJllv">
-                                                                        <img width="invalid-value" height="invalid-value" alt="Apple iPhone 12 Pro 128GB" className="_3-N5L6 _2GchKS" style={{objectFit: 'contain'}} src={item.image} />
-                                                                        <div className="_39tdMd">
-                                                                            <div className="T_lEwS _3MY8oD" style={{color:'rgb(208, 1, 27)'}}>
-                                                                                <div className="_1JD7ZJ"></div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className="_3nkDd7">
-                                                                            <div className="customized-overlay-image">
-                                                                                <img src="http://localhost:8000/media/my_web/5a304484b6abd4b950c84d8bc275897b.png" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="_2x8wqR">
-                                                                        <div className="_3GAFiR">
-                                                                            <div className="ZG__4J">
-                                                                                <div className="_10Wbs- _3IqNCf">{item.name}</div>
-                                                                            </div>
-                                                                            <div className="_11xQ9c">
-                                                                                {item.percent_discount>0?
-                                                                                <div className="_1PWkR nt-medium nt-foot _3nkRL" style={{color: 'rgb(246, 145, 19)'}}>
-                                                                                    <svg className="_2DRZW _2xFcL" viewBox="-0.5 -0.5 4 16"><path d="M4 0h-3q-1 0 -1 1a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3q0 1 1 1h3" strokeWidth="1" transform="" stroke="currentColor" fill="#f69113"></path></svg>
-                                                                                    <div className="_1FKkT _3Ao0A" style={{color:'white', backgroundColor: 'rgb(246, 145, 19)'}}>{item.percent_discount}% Giảm</div>
-                                                                                    <svg className="_2DRZW _2xFcL" viewBox="-0.5 -0.5 4 16"><path d="M4 0h-3q-1 0 -1 1a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3v0.333a1.2 1.5 0 0 1 0 3q0 1 1 1h3" strokeWidth="1" transform="rotate(180) translate(-3 -15)" stroke="currentColor" fill="#f69113"></path></svg>
-                                                                                </div>:""}
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className="_7rV1tW _3_FVSo">
-                                                                            <div className="zp9xm9 _2Dfuwn">
-                                                                                <span className="_3DgLDE">₫</span>
-                                                                                <span className="_19hRcI">{formatter.format((item.max_price+item.min_price)/2)}</span>
-                                                                            </div>
-                                                                            <div className="_1uq9fs _3yTzjb"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="item-card__hover-footer _2dFe5v">Tìm sản phẩm tương tự</div>
-                                                            </div>
-                                                        </Link>
-                                                    </div>
-                                                    )
-                                                }
-                                            </div>
-                                            <div className="_1AKybG">
-                                                <a className="btn-light btn-l btn--inline  _1J-Y2w" href="#">Xem thêm</a>
-                                            </div>
+                                            <Dailyreacomment
+                                            items={items}
+                                            />
                                         </section>
                                     </div>
                                 </div>
