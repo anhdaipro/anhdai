@@ -5,13 +5,6 @@ import User from "./User"
 import {profiledURL} from "../urls"
 import { headers,expiry } from '../actions/auth';
 
-console.log(new Date("July 21, 1983 01:15:00"))
-if(new Date("July 21, 1983 01:15:00")=='Invalid date'){
-    console.log('ị')
-}
-else{
-    console.log('aị')  
-}
 const Profile =()=>{
     const [state,setState]=useState({list_gender:['MALE','FEMALE','OTHER']})
     const[show,setShow]=useState({date:false,month:false,year:false})

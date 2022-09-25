@@ -6,13 +6,7 @@ import User from "./User"
 import { Navigate, useNavigate } from 'react-router';
 import { headers } from '../actions/auth';
 import {otpURL, profiledURL,} from "../urls"
-console.log(new Date("July 21, 1983 01:15:00"))
-if(new Date("July 21, 1983 01:15:00")=='Invalid date'){
-    console.log('ị')
-}
-else{
-    console.log('aị')  
-}
+
 const Phoneuser =()=>{
     const navigate=useNavigate()
     const [loading,setLoading]=useState(false)

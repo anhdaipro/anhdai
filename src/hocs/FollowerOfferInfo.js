@@ -52,7 +52,7 @@ const FollowerOfferInfo=({follower_offer_shop,url,loading_content})=>{
 
     const complete=()=>{
         if(follower_offer.offer_name==''){
-            console.log('lỗi')
+            return 
         }
         else{
             const data={...follower_offer,action:'submit'}

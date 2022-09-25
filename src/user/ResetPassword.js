@@ -31,15 +31,13 @@ const ResetPassword = ({match,reset_password,reset_password_confirm}) => {
         if(validatEemail(formData.email)){
             reset_password(email)
             setFormData({...formData,verify_email:true})
-            console.log('oooo')
         }
         else{  
             sendotp(e)
         }
         
     };
-    console.log(formData.email)
-    console.log(validatEemail(formData.email))
+   
     const verifypin=(e)=>{
         e.preventDefault();
         e.stopPropagation();
@@ -103,22 +101,19 @@ const ResetPassword = ({match,reset_password,reset_password_confirm}) => {
                     setError({...error,phone:true,email:false})
                 }
                 setError({...error,email:true,phone:false})   
-            }
-            
-            console.log(validatEemail(e.target.value))
-            
+            }   
     }
     
     window.onclick=(event)=>{
         if(isVietnamesePhoneNumber(formData.phone)){
-            setFormData({...formData,phone:`+84 ${(formData.phone).slice(-9)}`})
+            setFormData(prev=>{return{...formData,phone:`+84 ${(formData.phone).slice(-9)}`}})
         }
     }
     const showpass=(e,name,value)=>{
         e.preventDefault();
         setState({...state,[name]:!value})
     }
-    console.log(requestSent)
+   
     return(
        <div className="_1229NB">
            <nav className="_10Vl49">

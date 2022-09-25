@@ -120,14 +120,14 @@ const Checkout =({user,showchat})=>{
         setState({...state,address_chocie:state.address_choice})
     }
     
-    const setshow = useCallback((es) => {
+    const setshow = (es) => {
         setShow(es);
         if(es==false){
             setAddressChoice({city_choice:{'name':null,'matp':null,level:1},
             district_choice:{'name':null,'matp':null,level:2,'maqh':null},
             town_choice:{'name':null,'maqh':null,level:3},showcity:false})   
         }
-    }, [show]);
+    }
 
     const setcitychoice=useCallback((city)=>{
         setAddressChoice({...addresschoice,city_choice:{'name':city.name,'matp':city.matp,level:1},district_choice:{'name':null,'matp':null,level:2,'maqh':null},
@@ -165,7 +165,7 @@ const Checkout =({user,showchat})=>{
                 return({...address})
             }
         })
-        console.log(state.address_order)
+        
         const address_choice=state.address_order==null?data:state.address_choice
         setState({...state,list_addresses:list_addresses,address_choice: address_choice,address_order: address_choice})
         

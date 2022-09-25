@@ -72,7 +72,7 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
 
     const complete=()=>{
         if(voucher.name_of_the_discount_program=='' || voucher.code==''){
-            console.log('lỗi')
+            return
         }
         else{
             const datavoucher=voucher

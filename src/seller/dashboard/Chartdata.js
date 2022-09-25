@@ -118,8 +118,8 @@ const Chartdata=(props)=>{
                     },
                 }
             }
-        }),[listsum])
-    console.log(listsum)
+        }),[max,time])
+    
     const chart=useMemo(()=>{return{
             labels:labels,
             datasets: [
@@ -144,7 +144,7 @@ const Chartdata=(props)=>{
         ],
     }},[listsum,listcount,labels])
 
-    console.log(listhour)
+    
     const [loading,setLoading]=useState(false)
     
 
@@ -190,7 +190,6 @@ const Chartdata=(props)=>{
                 const listtimes=time=='currentday'?listhour:res.data.times
                 const listsumsdata=listtimes.map(item=>{
                     const sumitem=time=='year'?[...res.data.sum].find(datechoice=>new Date(datechoice.day).getMonth()==item):time=='currentday' || time=='day' || time=='yesterday'?res.data.sum.find(datechoice=>new Date(datechoice.day).getHours()==item):res.data.sum.find(datechoice=>new Date(datechoice.day).getDate()==item)
-                    console.log(sumitem)
                     const sum_default=res.data.times.find(date=>date==item)
                     return sumitem?sumitem.sum:sum_default|| sum_default==0?0:null
                 })
@@ -216,8 +215,6 @@ const Chartdata=(props)=>{
             }
         })()
     },[typeorder,time,timechoice])
-
-    console.log(listsum)
     const setshowtime=(item)=>{
         setState({...state,date_choice:item.time,hover:item.name})
         setDashboard({...dashboard,show_time:false})

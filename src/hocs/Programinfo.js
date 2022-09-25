@@ -168,7 +168,6 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
         .then(res=>{
             setLoading(true)
             const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
-           console.log('lllllllllllll')
             const byproduct=list_byproduct.map(item=>{
                     if(itemshop.byproduct_choice.some(by=>by.id==item.id)){
                         return({...item,check:true,disable:true})

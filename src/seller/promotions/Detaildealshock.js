@@ -300,10 +300,8 @@ const Detaildealshock=()=>{
 	
     const setbyproduct=(e,index,value,item)=>{
         let databyproduct=[...byproduct]
-       
         databyproduct.splice(index,1)
         databyproduct.splice(value,0,item)
-        console.log(index)
         setByproduct(databyproduct)
     }
 	//handle new item addition
@@ -321,8 +319,6 @@ const Detaildealshock=()=>{
     
     const setpageitem=(keys,list_itemchoice,page_current)=>{
         const page=list_itemchoice.length==0?1:page_current>=Math.ceil(list_itemchoice.length / Pagesize)?Math.ceil(list_itemchoice.length / Pagesize):page_current
-        console.log(page)
-        console.log(list_itemchoice.length)
         setCurrentPage({...currentPage,[keys]:page})
         handlePageChange(page,keys)
     }
@@ -457,7 +453,6 @@ const Detaildealshock=()=>{
     const settimechoice=(value,index,name)=>{
         const list_date=date.map((item,i)=>{
             if(i==index){
-                console.log(name)
                 return({...item,[name]:value})
             }
             return({...item})

@@ -215,7 +215,7 @@ const Dealshock = () => {
             }
         })()
     }
-    console.log(items)
+  
     const updatevariation=(e,itemchoice,color_id,size_id)=>{
         let url=new URL(addToCartBatchURL)
         let search_params=url.searchParams

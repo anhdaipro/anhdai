@@ -65,7 +65,6 @@ const Detailproduct=()=>{
     console.log(state.shipping_item)
     const setcategorychoice=(i,category)=>{
             setLevel(i+1)
-            console.log(i)
             const list_choices=state.list_choice.map((item,index)=>{
                 if(index==i){
                     return({...item,id:category.id,title:category.title,choice:category.choice})

@@ -611,7 +611,6 @@ class Cart extends React.Component{
     adjustitem(e,item,product,cartitemchoice,value){
         const dataitem=product=='byproduct'?{byproduct_id:item.id}:{cartitem_id:item.id}
         const data={...dataitem,quantity:value}
-        console.log(cartitemchoice)
         axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let data=rep.data

@@ -34,7 +34,7 @@ const Detailview = () => {
   useEffect(() => {
     (async () => {
         const searchparama=params
-        console.log(searchparama)
+       
         const url=params.get('itemId') && !params.get('categoryId')?axios.get(`${itemURL}?${params}`):axios.get(`${categoryURL}/${slug}`,headers)
         setChoice(choices)
         const res = await url
@@ -65,7 +65,6 @@ const Detailview = () => {
     setShow(e)
   }
   const showmediaitem=(file,listmedia)=>{
-    console.log(listmedia)
     const indexchoice=listmedia.indexOf(listmedia.find(item=>file.file===item.file))
     setState({...state,show_media:true,filechoice:file,listmedia:listmedia,indexchoice:indexchoice})
   }
@@ -111,7 +110,7 @@ const Detailview = () => {
   const setopenreport=(value)=>{
     setState({...state,show_report:value})
   }
-  console.log(data)
+
   return(
     <>
       <div id="main">
