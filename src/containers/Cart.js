@@ -569,21 +569,10 @@ class Cart extends React.Component{
 
     
     updatevariation(e,item,color_id,size_id,product,cartitemchoice){
-        let form=new FormData()
-        if(product=='mainproduct'){
-            form.append('cartitem_id',item.id)
-        }
-        else{
-            form.append('byproduct_id',item.id)
-        }
-        form.append('item_id',item.item_id)
-        if(color_id){
-            form.append('color_id',color_id)
-        }
-        if(size_id){
-            form.append('size_id',size_id)
-        }
-        axios.post(updatecartURL,form,headers)
+        const dataitem={item_id:item.item_id,color_id:color_id,size_id:size_id}
+        const datacartitem=roduct=='mainproduct'?{cartitem_id:item.id}:{byproduct_id:item.id}
+        const data={...dataitem,...datacartitem}
+        axios.post(updatecartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let result=rep.data
             const list_cartitem=product=='mainproduct'?this.state.list_cartitem.map(cartitem=>{
