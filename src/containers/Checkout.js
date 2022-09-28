@@ -31,6 +31,7 @@ const Checkout =({user,showchat})=>{
     'Paypal','Số dư TK Shopee','Payment on delivery'],
     method_choice:'Ví Điện tử',address_choice:null,address_order:null,list_addresses:[],show:false,show_message:false,
     show_message:false})
+    const [orders,setOrders]=useState([])
     const [address,setAddress]=useState({address_type:"S",address:'',address_choice:'',default:false,name:'',phone_number:''});
     const [show,setShow]=useState(false)
     const [city,setCity]=useState({list_city:[]})
@@ -67,10 +68,11 @@ const Checkout =({user,showchat})=>{
                 else{
                     createAddress()
                 }
-                setState({...state,orders:obj1.data,total_final:total_final,total:total,
+                setState({...state,total_final:total_final,total:total,
                     discount_promotion:discount_promotion,discount_voucher:discount_voucher,
                     address_order:address_order,fee_shipping:fee_shipping,address_choice:address_order
                 })
+                setOrders(obj1.data)
         })()
         
     }, []);
@@ -182,7 +184,14 @@ const Checkout =({user,showchat})=>{
         showchat(data)
         showthreads()
     }
-    
+    const settext=(e,orderchoice)=>{
+        setOrders(prev=>prev.map(order=>{
+            if(orderchoice.shop==order.shop){
+                return({...order,message:e.target.value})
+            }
+            return({...order})
+        }))
+    }
     return(
         <>
         <div id="main">
@@ -277,7 +286,7 @@ const Checkout =({user,showchat})=>{
                             </div>
                         </div>
                         <div>
-                            {state.orders.map(order=>
+                            {orders.map(order=>
                                 <div key={order.shop} className="jNDkp2">
                                     <div className="QjLA16">
                                         <div className="_2sALOn">
@@ -326,7 +335,7 @@ const Checkout =({user,showchat})=>{
                                                     <div className="_2RoXL2">
                                                         <div className="_2SbVjg _3FcjyB">
                                                             <div className="-MhUeb nVfi9v">
-                                                                <input className="_2bfjEn" type="text" placeholder="Lưu ý cho Người bán..." value=""/>
+                                                                <input onChange={(e)=>settext(e,order)} className="_2bfjEn" type="text" placeholder="Lưu ý cho Người bán..." value={order.message}/>
                                                             </div>
                                                         </div>
                                                     </div>
