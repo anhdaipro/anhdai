@@ -54,7 +54,8 @@ const Checkout =({user,showchat})=>{
                 let discount_promotion=0
                 let discount_voucher=0
                 let address_order=null
-                obj1.data.map(order=>{
+               
+                obj1.data.map((order)=>{
                     total_final+=order.total_final
                     total+=order.total
                     fee_shipping+=order.fee_shipping
@@ -68,10 +69,10 @@ const Checkout =({user,showchat})=>{
                 else{
                     createAddress()
                 }
-                setState({...state,total_final:total_final,total:total,
+                setState(prev=>{return{...prev,total_final:total_final,total:total,
                     discount_promotion:discount_promotion,discount_voucher:discount_voucher,
                     address_order:address_order,fee_shipping:fee_shipping,address_choice:address_order
-                })
+                }})
                 setOrders(obj1.data)
         })()
         

@@ -1,15 +1,12 @@
 
 import axios from 'axios';
 import Navbar from "./Navbar"
-import {formatter,ItemRecommend,itemvariation,rating,
-arraymove,} from "../constants"
-import {useNavigate , Link,useLocation, Navigate} from 'react-router-dom';
+import {formatter,itemvariation,rating} from "../constants"
+import {Link} from 'react-router-dom';
 import {updatecartURL,listThreadlURL,listorderURL,shoporderURL,cartURL,itemrecentlyURL,savevoucherURL} from "../urls"
 import Pagination from '../hocs/Pagination';
 import React, { useState,createRef,useEffect,useRef } from 'react';
 import { headers,expiry,showchat,showthreads} from '../actions/auth';
-import ReactDOM, { render } from 'react-dom'
-import Message from "./Chat"
 import { connect } from 'react-redux';
 let PageSize = 10;
 const Divbox=(props)=>{
@@ -201,7 +198,7 @@ const Iteminfo=(props)=>{
             <div className="item-check item-center">
                 {product=='mainproduct'?
                 <label className={`stardust-checkbox ${item.check?'stardust-checkbox--checked':''}`}>
-                    <input onChange={(e)=>checked(e,item)} type="checkbox" value={item.id} checked={item.check?true:false} className="stardust-checkbox__input" type="checkbox"/>
+                    <input onChange={(e)=>checked(e,item)} value={item.id} checked={item.check?true:false} className="stardust-checkbox__input" type="checkbox"/>
                     <div className="stardust-checkbox__box"></div>
                 </label>
                 :''}
@@ -279,7 +276,7 @@ const Iteminfo=(props)=>{
                                                 <button onClick={(e)=>{
                                                     updatevariation(e,item,state.color_id,state.size_id,product,cartitem)
                                                     setShow(false)
-                                                }} className={`${(item.count_variation==2 && state.color_id&&state.size_id && (item.size_value!=state.size_value ||item.color_value!=state.color_value))|| (item.count_variation==1 &&  (state.color_id && state.color_value!=item.color_value|| state.size_id && state.size_value!=item.size_value))?'':'disable'} button-solid button-solid--primary`}>Xác nhận</button>
+                                                }} className={`${(item.count_variation==2 && state.color_id && state.size_id && (item.size_value!=state.size_value ||item.color_value!=state.color_value))|| (item.count_variation==1 &&  ((state.color_id && state.color_value!=item.color_value)|| (state.size_id && state.size_value!=item.size_value)))?'':'disable'} button-solid button-solid--primary`}>Xác nhận</button>
                                             </div>
                                         </div>
                                     </div>
@@ -300,7 +297,7 @@ const Iteminfo=(props)=>{
                     <button onClick={(e)=>adjustitem(e,item,product,cartitem,item.quantity-1)} className={`minus-btn btn-adjust`}>
                         <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon "><polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon></svg>
                     </button>
-                    <input className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={item.quantity} />
+                    <input onChange={e=>adjustitem(e,item,product,cartitem,e.target.value)} className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={item.quantity} />
                     <button onClick={(e)=>adjustitem(e,item,product,cartitem,item.quantity+1)} className={`plus-btn btn-adjust ${item.inventory<=item.quantity?'disable':''}`}>
                         <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg>
                     </button>
@@ -435,25 +432,31 @@ class Cart extends React.Component{
                 axios.get(shoporderURL,headers),
                 axios.get(cartURL,headers),
             ])
-            
-            let count_order=0
-            let total=0
-            let discount_product=0
-            let discount_promotion=0
-            let discount_deal=0
-            let discount_voucher_shop=0
-            let count_cartitem=0
-            obj1.data.orders.map(order=>{
-                total+=order.total
-                discount_product+=order.discount_product
-                discount_promotion+=order.discount_promotion
-                discount_deal+=order.discount_deal
-                discount_voucher_shop+=order.discount_voucher_shop
-                count_order+=order.count
-                count_cartitem+=order.count_cartitem
+            console.log(obj1.data)
+            const total=obj1.data.reduce((total,order)=>{
+                return total+order.total
+            },0)
+            const discount_product=obj1.data.reduce((total,order)=>{
+                return total+order.discount_product
+            },0)
+            const discount_promotion=obj1.data.reduce((total,order)=>{
+                return total+order.discount_promotion
+            },0)
+            const discount_deal=obj1.data.reduce((total,order)=>{
+                return total+order.discount_deal
             })
+            const discount_voucher_shop=obj1.data.reduce((total,order)=>{
+                return total+order.discount_voucher_shop
+            },0)
+            const count_order=obj1.data.reduce((total,order)=>{
+                return total+order.count
+            },0)
+            const count_cartitem=obj1.data.reduce((total,order)=>{
+                return total+order.count_cartitem
+            },0)
+            
             const list_shop=obj2.data.map(shop=>{
-                let order=obj1.data.orders.find(order=>order.shop_id==shop.id)
+                let order=obj1.data.find(order=>order.shop_id==shop.id)
                 if(order&& order.shop_id==shop.id){
                     return({...shop,voucher:order.voucher,discount_voucher_shop:order.discount_voucher_shop,loading_voucher:true,show_voucher:false})
                 }
@@ -501,13 +504,11 @@ class Cart extends React.Component{
         const list_shop=this.state.list_shop.map(shop=>{
             return(shop.id)
         })
-        this.state.list_cartitem.map(item=>{
+        const datacart=this.state.list_cartitem.map(item=>{
             if(e.target.checked){
-                item.check=true
+                return({...item,check:true})
             }
-            else{
-                item.check=false
-            }
+            return({...item,check:false})
         })
 
         const list_checked=this.state.list_cartitem.map(item=>{
@@ -519,21 +520,20 @@ class Cart extends React.Component{
         .then(rep=>{
             let data=rep.data
             this.setState({...data,
-                list_cartitem:this.state.list_cartitem
+                list_cartitem:datacart
             })
         }) 
     }
     
     checkshop(e,shop){
-        this.state.list_cartitem.map(item=>{
+        const datacart=this.state.list_cartitem.map(item=>{
             if(item.shop_id==shop.id){
                 if(e.target.checked){
-                    item.check=true
+                    return({...item,check:true})
                 }
-                else{
-                    item.check=false
-                }
+                return({...item,check:false})
             }
+            return({...item})
         })
         const list_checked=this.state.list_cartitem.filter(item=>item.shop_id==shop.id).map(item=>{
             return(item.id)
@@ -544,7 +544,7 @@ class Cart extends React.Component{
         .then(rep=>{
             let data=rep.data
             this.setState({...data,
-                list_cartitem:this.state.list_cartitem
+                list_cartitem:datacart
             })
         }) 
     }
@@ -570,7 +570,7 @@ class Cart extends React.Component{
     
     updatevariation(e,item,color_id,size_id,product,cartitemchoice){
         const dataitem={item_id:item.item_id,color_id:color_id,size_id:size_id}
-        const datacartitem=roduct=='mainproduct'?{cartitem_id:item.id}:{byproduct_id:item.id}
+        const datacartitem=product=='mainproduct'?{cartitem_id:item.id}:{byproduct_id:item.id}
         const data={...dataitem,...datacartitem}
         axios.post(updatecartURL,JSON.stringify(data),headers)
         .then(rep=>{
@@ -661,7 +661,6 @@ class Cart extends React.Component{
         const data={voucher_id_remove:voucher.id,shop_id:[this.shopchoice().id]}
         axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
-            let data=rep.data
             const list_shop=this.state.list_shop.map(shop=>{
                 if(this.shopchoice().id==shop.id){
                     return({...shop,voucher:0,discount_voucher_shop:0,loading_voucher:false})
@@ -691,7 +690,7 @@ class Cart extends React.Component{
         this.setState({list_shop:list_shop})
         axios.post(savevoucherURL,JSON.stringify({voucher_id:voucher.id}),headers)
         .then(rep=>{
-            let data=rep.data
+           
         })
     }
     
@@ -764,7 +763,7 @@ class Cart extends React.Component{
                 })
             }
         }
-        let {count,count_order,total,discount_promotion,loading,count_cartitem,
+        let {count_order,total,discount_promotion,loading,
         discount_deal,discount_product,discount_voucher_shop,list_shop,
         warring,list_cartitem}=this.state
         return(
@@ -788,7 +787,7 @@ class Cart extends React.Component{
                                         </a>
                                     </div>
                                     <div className="cart-page-searchbar">
-                                        <div className="searchbar" role="combobox" aria-expanded="false" aria-owns="searchbar-listbox">
+                                        <div className="searchbar">
                                             <div className="searchbar__main">
                                                 <form role="search" className="searchbar-input" autoComplete="off">
                                                     <input aria-label="5 mã Freeship có sẵn trong ví" className="searchbar-input__input" maxLength="128" placeholder="5 mã Freeship có sẵn trong ví" autoComplete="off" aria-autocomplete="list" aria-controls="searchbar-listbox" value=""/>
@@ -966,7 +965,7 @@ class Cart extends React.Component{
                                         <div className=""><button className="clear-btn-style">Bỏ sản phẩm không hoạt động</button></div>
                                         <button className="clear-btn-style _2mPWt7">Lưu vào mục Đã thích</button>
                                         <div className="_2ntEgZ"></div>
-                                        {discount_product>0||discount_deal>0||discount_promotion>0||discount_voucher_shop>0 && this.state.show_order?
+                                        {(discount_product>0||discount_deal>0||discount_promotion>0||discount_voucher_shop>0) && this.state.show_order?
                                         <div className="stardust-popover" onMouseEnter={()=>this.setState({show_order:true})} onMouseLeave={()=>this.setState({show_order:false})}>
                                             <div className="stardust-popover__target">
                                                 <div className="_2BT_es">

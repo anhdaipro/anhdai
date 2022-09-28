@@ -20,7 +20,7 @@ const Phoneuser =()=>{
         .then(res=>{
           const data = res.data
           setLoading(true)
-          setformData({...formData,username:data.username,name:data.name,email:data.email,avatar:data.avatar}) 
+          setformData(prev=>{return{...prev,username:data.username,name:data.name,email:data.email,avatar:data.avatar}}) 
         })  
     },[])
     
@@ -110,7 +110,7 @@ const Phoneuser =()=>{
                                             <div className="_27CWkz">
                                                 <div className="d-flex _3hI1UC">
                                                     <div className="_33fyJV jz72G0">
-                                                        <input className="_3o3qNZ jz72G0" id="otp" type="text" placeholder="Mã xác minh" autocomplete="off" value=""/>
+                                                        <input className="_3o3qNZ jz72G0" onChange={e=>setformData({...formData,pin:e.target.value})} id="otp" type="text" placeholder="Mã xác minh" autocomplete="off" value=""/>
                                                     </div>
                                                     <button onClick={()=>sendotp()} className="OK6Cf4 _1Q85Vy" disabled={isVietnamesePhoneNumber(formData.phone)?false:true}>Gửi Mã xác minh</button>
                                                 </div>
