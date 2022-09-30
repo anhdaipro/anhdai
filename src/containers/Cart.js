@@ -444,7 +444,7 @@ class Cart extends React.Component{
             },0)
             const discount_deal=obj1.data.reduce((total,order)=>{
                 return total+order.discount_deal
-            })
+            },0)
             const discount_voucher_shop=obj1.data.reduce((total,order)=>{
                 return total+order.discount_voucher_shop
             },0)
