@@ -8,7 +8,7 @@ import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-
 import { GoogleLogin } from 'react-google-login';
 import {otpURL,verifyotpURL} from "../urls"
 let id=undefined
-console.log(isVietnamesePhoneNumber('03567855355'))
+
 const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
     const navigate=useNavigate();
     const [accountCreated, setAccountCreated] = useState(false);
