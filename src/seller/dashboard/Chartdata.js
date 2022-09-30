@@ -185,7 +185,7 @@ const Chartdata=(props)=>{
                 const res=await axios.get(`${urldata}?${search_params}`,headers)
                 setShow({...show,show:false,show_order:false})
                 setLoading(true)
-                const text_preview=time=='currentday' || time=='yesterday' || time=='day'?`So với ${time=='currentday'?`00 -- ${('0'+hours).slice(-2)}`:''} hôm qua`:time=='week'?'so với tuần trước':time=='week_before'?'so với 7 ngày trước':time=='month_before' ?'so với 30 ngày trước':time=='month'?'so với tháng trước':'so với năm trước'
+                const text_preview=time=='currentday' || time=='yesterday' || time=='day'?`So với ${time=='currentday'?`00:00 -- ${('0'+hours).slice(-2)}:00`:''} hôm qua`:time=='week'?'so với tuần trước':time=='week_before'?'so với 7 ngày trước':time=='month_before' ?'so với 30 ngày trước':time=='month'?'so với tháng trước':'so với năm trước'
                 setText(text_preview)
                 const listtimes=time=='currentday'?listhour:res.data.times
                 const listsumsdata=listtimes.map(item=>{
