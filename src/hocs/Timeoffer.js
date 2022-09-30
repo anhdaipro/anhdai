@@ -140,7 +140,7 @@ const Datepicker=(props)=>{
             </div>:""}
         </div>
         <>
-        {index==0?<div data-v-f6241660="" class="separator"><div data-v-f6241660="" class="separator-line"></div></div>:''}</>
+        {index==0?<div data-v-f6241660="" className="separator"><div data-v-f6241660="" className="separator-line"></div></div>:''}</>
     </>
     )
 }

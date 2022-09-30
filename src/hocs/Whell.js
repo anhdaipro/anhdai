@@ -78,7 +78,7 @@ const Whell=()=>{
                         
                 {listitem.map((item,index)=>
                 <div key={index} className="rule__content">
-                    <div class={`rule__color color-${index+1}`}>
+                    <div className={`rule__color color-${index+1}`}>
                     </div>
                     <div className="rule__text">
                         {item.name}
@@ -87,29 +87,29 @@ const Whell=()=>{
             </div>
             <div className="wheel">
             <div className="wheeldotsround">
-                            <div class={`wheeldots ${time==5?'active-dots':''}`}>
+                            <div className={`wheeldots ${time==5?'active-dots':''}`}>
                             </div>
-                            <div class={`wheeldots ${time==5?'active-dots':''}`}>
+                            <div className={`wheeldots ${time==5?'active-dots':''}`}>
                             </div>
-                            <div class={`wheeldots ${time==5?'active-dots':''}`}>
+                            <div className={`wheeldots ${time==5?'active-dots':''}`}>
                             </div>
-                            <div class={`wheeldots ${time==5?'active-dots':''}`}>
+                            <div className={`wheeldots ${time==5?'active-dots':''}`}>
                             </div>
-                            <div class={`wheeldots ${time==5?'active-dots':''}`}>
+                            <div className={`wheeldots ${time==5?'active-dots':''}`}>
                             </div>
-                            <div class={`wheeldots ${time==5?'active-dots':''}`}>
+                            <div className={`wheeldots ${time==5?'active-dots':''}`}>
                             </div>
-                            <div class={`wheeldots ${time==5?'active-dots':''}`}>
+                            <div className={`wheeldots ${time==5?'active-dots':''}`}>
                             </div>
-                            <div class={`wheeldots ${time==5?'active-dots':''}`}>
+                            <div className={`wheeldots ${time==5?'active-dots':''}`}>
                             </div>
-                            <div class={`wheeldots ${time==5?'active-dots':''}`}>
+                            <div className={`wheeldots ${time==5?'active-dots':''}`}>
                             </div>
-                            <div class={`wheeldots ${time==5?'active-dots':''}`}>
+                            <div className={`wheeldots ${time==5?'active-dots':''}`}>
                             </div>
-                            <div class={`wheeldots ${time==5?'active-dots':''}`}>
+                            <div className={`wheeldots ${time==5?'active-dots':''}`}>
                             </div>
-                            <div class={`wheeldots ${time==5?'active-dots':''}`}>
+                            <div className={`wheeldots ${time==5?'active-dots':''}`}>
                             </div>
                         </div>
                 <div className="wheel__inner" style={{transform: `rotate(${rotate}deg)`}}>

@@ -189,9 +189,9 @@ const ListAwardShop=()=>{
                                         <div data-v-40673d96="" data-v-771d39f6="" className="promotion-search">
                                             <div data-v-40673d96="" className="custom-input-group">
                                                 <div data-v-40673d96="" className="search-label">Tên chương trình</div> 
-                                                <div data-v-43e4333a="" class="input search-value-item" slot="append">
-                                                    <div class="input__inner input__inner--normal"> 
-                                                        <input type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" class="input__input"/> 
+                                                <div data-v-43e4333a="" className="input search-value-item" slot="append">
+                                                    <div className="input__inner input__inner--normal"> 
+                                                        <input type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                     </div>
                                                 </div>
                                             </div> 

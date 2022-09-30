@@ -478,7 +478,7 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
                                                                     </div>
                                                                 </div>
                                                                 <div className="d-flex item-center">
-                                                                    <div class='item-prices'>
+                                                                    <div className='item-prices'>
                                                                         ₫{formatter.format(item.min_price)} {item.min_price!=item.max_price?`- ${formatter.format(item.max_price)}`:''}
                                                                     </div>
                                                                     <div className="item-stocks">{item.total_inventory}</div>

@@ -178,28 +178,28 @@ const Address=({address,show,setshow,list_city,action,city_choice,district_choic
                                         <div className="df5pnf">
                                             <div className="_2-Gce8">
                                                 {state.administrative_units.map((unit,index)=>
-                                                    <div onClick={(e)=>setlevel(e,index)} className={`_26VoYO ${state.level==index+1?'_1xBdI3':''} ${index==0|| index==1&&city_choice.name!=null ||index==2 && city_choice.name!=null && district_choice.name!=null?'':'disable'}`}>{unit}</div>
+                                                    <div key={index} onClick={(e)=>setlevel(e,index)} className={`_26VoYO ${state.level==index+1?'_1xBdI3':''} ${index==0|| index==1&&city_choice.name!=null ||index==2 && city_choice.name!=null && district_choice.name!=null?'':'disable'}`}>{unit}</div>
                                                 )}
                                             </div>
                                             <div className="_1NCcLD">
                                                 {state.level==1?
                                                 <>
-                                                {list_city.map(city=>{
+                                                {list_city.map((city,i)=>{
                                                     if(city.level==1){
-                                                        return(<div onClick={(e)=>setcity(e,city)} className={`_8jiI7u ${city.name==city_choice.name?'_1xBdI3':''}`}>{city.name}</div>)
+                                                        return(<div key={i} onClick={(e)=>setcity(e,city)} className={`_8jiI7u ${city.name==city_choice.name?'_1xBdI3':''}`}>{city.name}</div>)
                                                     }
                                                 })}</>:
                                                 state.level==2?
                                                 <>
-                                                {list_city.map(city=>{
+                                                {list_city.map((city,i)=>{
                                                     if(city.level==2 && city.matp==city_choice.matp){
-                                                        return(<div onClick={(e)=>setdistrict(e,city)} className={`_8jiI7u ${city.name==district_choice.name?'_1xBdI3':''}`}>{city.name}</div>)
+                                                        return(<div key={i} onClick={(e)=>setdistrict(e,city)} className={`_8jiI7u ${city.name==district_choice.name?'_1xBdI3':''}`}>{city.name}</div>)
                                                     }
                                                 })}</>
                                                 :<>
-                                                {list_city.map(city=>{
+                                                {list_city.map((city,i)=>{
                                                     if(city.level==3 && city.maqh==district_choice.maqh){
-                                                        return(<div onClick={(e)=>settown(e,city)} className={`_8jiI7u ${city.name==town_choice.name?'_1xBdI3':''}`}>{city.name}</div>)
+                                                        return(<div key={i} onClick={(e)=>settown(e,city)} className={`_8jiI7u ${city.name==town_choice.name?'_1xBdI3':''}`}>{city.name}</div>)
                                                     }
                                                 })}
                                                 </>}
@@ -253,7 +253,7 @@ const Address=({address,show,setshow,list_city,action,city_choice,district_choic
                                 <div className="TVRZZP">Loại địa chỉ:</div>
                                 <div className="item-center">
                                     {typeaddress.map(item=>
-                                        <div onClick={()=>addressChoice(item)} className={`_39FXI4 ${address.address_choice==item?'_1L2D6W':''}`}>
+                                        <div key={item} onClick={()=>addressChoice(item)} className={`_39FXI4 ${address.address_choice==item?'_1L2D6W':''}`}>
                                             <span>{item}</span>
                                         </div>
                                     )}

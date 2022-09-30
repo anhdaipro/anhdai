@@ -213,8 +213,8 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                             </div>
                             <div className="_1aYDEh">
                                 <div className="_2MXg3O">
-                                    {category.map(item=>
-                                        <Link className="_2o2XQg" to={`/search?keyword=${item.title}`}>{item.title}</Link>
+                                    {category.map((item,i)=>
+                                        <Link key={i} className="_2o2XQg" to={`/search?keyword=${item.title}`}>{item.title}</Link>
                                     )}
                                     
                                 </div>

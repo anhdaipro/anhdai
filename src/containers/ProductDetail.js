@@ -40,7 +40,7 @@ const ReviewItem=(props)=>{
         setFile({width:e.currentTarget.naturalWidth,height:e.currentTarget.naturalHeight})
     }
     return(
-        <div className='product-rating'>
+        <div className='product-rating' key={review.id}>
         {review.shop!=''?
             <a className="product-rating__avatar" href="${reviews[i].url_shop}">
                 <div className="avatar">
@@ -733,7 +733,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                 {data.category.split('>').map((item,i)=>{
                     if(i<data.category.split('>').length-1){
                         return <> 
-                        <span className="_1w3mKA">{item}</span>
+                        <span key={i} className="_1w3mKA">{item}</span>
                         <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon _2m4lrt icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
                         </>
                     }
@@ -1055,7 +1055,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                         <label className="koZBMj">{data.colors[0].name}</label>
                                         <div className="variation-item item-center">
                                         {data.colors.map(item=>
-                                            <button onClick={(e)=>setcolor(e,item)} className={`product-variation${state.variation_size.length>0?`${item.variation.some(r=> state.variation_size.includes(r))?'':' disable'}`:''}${item.id===state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
+                                            <button key={item.id} onClick={(e)=>setcolor(e,item)} className={`product-variation${state.variation_size.length>0?`${item.variation.some(r=> state.variation_size.includes(r))?'':' disable'}`:''}${item.id===state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                             {state.color_id===item.id?
                                             <div className="product-variation__tick">
                                                 <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
@@ -1071,7 +1071,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                         <label className="koZBMj">{data.sizes[0].name}</label>
                                         <div className="variation-item item-center">
                                         {data.sizes.map(item=>
-                                            <button onClick={(e)=>setsize(e,item)} className={`product-variation${state.variation_color.length>0?`${item.variation.some(r=> state.variation_color.includes(r))?'':' disable'}`:''}${item.id===state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
+                                            <button key={item.id} onClick={(e)=>setsize(e,item)} className={`product-variation${state.variation_color.length>0?`${item.variation.some(r=> state.variation_color.includes(r))?'':' disable'}`:''}${item.id===state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                             {state.size_id===item.id?
                                             <div className="product-variation__tick">
                                                 <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
@@ -1172,8 +1172,8 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                             </Link>
                         </h3>
                         <ul className="ADFE0a">
-                            {promotion.products.map(item=>
-                            <li className="vDYt3H">
+                            {promotion.products.map((item,i)=>
+                            <li key={i} className="vDYt3H">
                                 <a title={`${item.name}`} href="/product/182639888/9668689381">
                                 <div className="jwWEwt">
                                     <div className="zLenew fj1aPh" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
@@ -1267,10 +1267,10 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                 {Object.keys(productdetail).map((item,i)=>{
                                 if(productdetail[item] && !item.includes('id')){
                                     return(
-                                    <div className="_1pEVDa">
+                                    <div key={i} className="_1pEVDa">
                                         <label className="_1A0RCW">{item}</label>
                                         <div>{productdetail[item]}</div>
-                                        </div>
+                                     </div>
                                     )
                                     }
                                 })}
@@ -1305,7 +1305,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                             <div className="product-shop-vouchers__header">Mã giảm giá của Shop</div>
                             <div className="product-shop-vouchers__list" style={{maxHeight: '23.25rem'}}>
                                 {vouchers.map(voucher=>
-                                <div className="_1v21H2 _3v4TxM">
+                                <div key={voucher.id} className="_1v21H2 _3v4TxM">
                                     <div className="_5i0d1d O5jY-J _1HW0fp _143EYI">
                                         <div className="_2RHirG _3ovy3V _2PNEOW">
                                             <div className="_3bSUDv">
@@ -1405,7 +1405,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                                 <ReviewItem
                                 review={review}
                                 user={user}
-                                
+                                key={review.id}
                                 setreport={(e,review)=>setreport(e,review)}
                                 showmedia={(e,item,review)=>showmedia(e,item,review)}
                                 setlikereview={(e,review)=>setlikereview(e,review)}

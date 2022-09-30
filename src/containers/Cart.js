@@ -36,8 +36,8 @@ const Divbox=(props)=>{
             }
         }
     }
-    const listvoucherapply=shop.listvoucher.filter(voucher=>shop.voucher==voucher.id)
-    const listvouchernotapply=shop.listvoucher.filter(voucher=>shop.voucher!=voucher.id)
+    const listvoucherapply=shop.listvoucher.filter(voucher=>shop.voucher===voucher.id)
+    const listvouchernotapply=shop.listvoucher.filter(voucher=>shop.voucher!==voucher.id)
     const listvoucher=[...listvoucherapply,...listvouchernotapply]
     return (
     <>
@@ -81,7 +81,7 @@ const Divbox=(props)=>{
                                 <div className="_1DXz_g">
                                     <div className="pbcBSR qGqBKE">
                                         <div className="_1PBA5q">
-                                            <div className="_247YiT qEinNS">{item.discount_type=='2'?`Giảm ₫${formatter.format(item.amount/1000)}k`:`Giảm ${item.percent}%`}</div>
+                                            <div className="_247YiT qEinNS">{item.discount_type==='2'?`Giảm ₫${formatter.format(item.amount/1000)}k`:`Giảm ${item.percent}%`}</div>
                                         </div>
                                         <div className="_1MSgem _2JzVpY">Đơn Tối Thiểu ₫{formatter.format(item.minimum_order_value/1000)}k</div>
                                     </div>
@@ -96,14 +96,14 @@ const Divbox=(props)=>{
                                         </div>
                                     </span>
                                 </div>
-                                {item.id==shop.voucher?'':
+                                {item.id===shop.voucher?'':
                                 !item.exists?
                                 <button onClick={()=>save_voucher(item)} type="button" className="btn btn--s btn--inline btn-solid-primary">Lưu</button>:
                                 <button onClick={()=>{apply_voucher(item)
                                     setShow(false)
-                                }} type="button" className={`btn btn--s btn--inline _19mZp5 ${list_cartitem.find(item=>item.shop_id==shop.id && item.check)?'':'disable'}`}>Áp dụng</button>}
+                                }} type="button" className={`btn btn--s btn--inline _19mZp5 ${list_cartitem.find(item=>item.shop_id===shop.id && item.check)?'':'disable'}`}>Áp dụng</button>}
                             </div>
-                            {item.id==shop.voucher?
+                            {item.id===shop.voucher?
                             <div onClick={()=>remove_voucher(item)} className="_1DC8ps">
                                 <svg fill="none" viewport="0 0 21 18" className="svg-icon icon-voucher-close"><path fillRule="evenodd" clipRule="evenodd" d="M.05.001C.016.33 0 .663 0 1v7c0 5.523 4.477 10 10 10h10V.001H.05z" fill="#000" fill-opacity=".26"></path><rect x="13.273" y="5" width="1.029" height="10.285" rx=".5" transform="rotate(45 13.273 5)" fill="#fff"></rect><rect x="6.727" y="5" width="10.285" height="1.029" rx=".5" transform="rotate(45 6.727 5)" fill="#fff"></rect></svg>
                             </div>:''}
@@ -167,8 +167,8 @@ const Iteminfo=(props)=>{
     }
    
     const  variation=(e)=>{
-        const size=item.sizes.find(size=>size.value==item.size_value)
-        const color=item.colors.find(color=>color.value==item.color_value)
+        const size=item.sizes.find(size=>size.value===item.size_value)
+        const color=item.colors.find(color=>color.value===item.color_value)
         setState({...state,size_id:size?size.id:null,color_id:color?color.id:null,color_value:item.color_value,
             size_value:item.size_value,
             variation_color:color?color.variation:[],variation_size:size?size.variation:[],count_variation:item.count_variation,product_id:item.product_id})
@@ -194,9 +194,9 @@ const Iteminfo=(props)=>{
         }
     }
     return(
-        <div key={item.id} className={`d-flex p-1 ${product=='mainproduct'?'':'_1ocTN'}`}>
+        <div className={`d-flex p-1 ${product==='mainproduct'?'':'_1ocTN'}`}>
             <div className="item-check item-center">
-                {product=='mainproduct'?
+                {product==='mainproduct'?
                 <label className={`stardust-checkbox ${item.check?'stardust-checkbox--checked':''}`}>
                     <input onChange={(e)=>checked(e,item)} value={item.id} checked={item.check?true:false} className="stardust-checkbox__input" type="checkbox"/>
                     <div className="stardust-checkbox__box"></div>
@@ -209,7 +209,7 @@ const Iteminfo=(props)=>{
                 </Link>
                 <div className="_3OrWGt">
                     <Link className="_2fQT1K" title={`${item.name}`} to={`${item.url}?itemId=${item.item_id}`}>
-                        {product=='byproduct'?<span className="Uow98x">Deal Sốc</span>:''}
+                        {product==='byproduct'?<span className="Uow98x">Deal Sốc</span>:''}
                        {item.name}
                     </Link>
                         <div className="_2o95Vf" style={{backgroundImage: `url(https://cf.shopee.vn/file/bce88a398239da749aa0cb149eafe579)`}}></div>
@@ -247,8 +247,8 @@ const Iteminfo=(props)=>{
                                             <div className="_3gvvQI">
                                                 <div className="_3_Bulc">{item.colors[0].name}:</div>
                                                 {item.colors.map(item=>
-                                                    <button key={item.id} onClick={(e)=>setcolor(e,item)} className={`product-variation${state.variation_size.length>0?`${item.variation.some(r=> state.variation_size.includes(r))?'':' disable'}`:''}${item.id==state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
-                                                        {state.color_id==item.id?
+                                                    <button key={item.id} onClick={(e)=>setcolor(e,item)} className={`product-variation${state.variation_size.length>0?`${item.variation.some(r=> state.variation_size.includes(r))?'':' disable'}`:''}${item.id===state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
+                                                        {state.color_id===item.id?
                                                         <div className="product-variation__tick">
                                                         <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
                                                         </div>
@@ -261,8 +261,8 @@ const Iteminfo=(props)=>{
                                             <div className="_3gvvQI">
                                                 <div className="_3_Bulc">{item.sizes[0].name}:</div>
                                                 {item.sizes.map(item=>
-                                                    <button key={item.id} onClick={(e)=>setsize(e,item)} className={`product-variation${state.variation_color.length>0?`${item.variation.some(r=> state.variation_color.includes(r))?'':' disable'}`:''}${item.id==state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
-                                                        {state.size_id==item.id?
+                                                    <button key={item.id} onClick={(e)=>setsize(e,item)} className={`product-variation${state.variation_color.length>0?`${item.variation.some(r=> state.variation_color.includes(r))?'':' disable'}`:''}${item.id===state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
+                                                        {state.size_id===item.id?
                                                         <div className="product-variation__tick">
                                                             <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
                                                         </div>
@@ -276,7 +276,7 @@ const Iteminfo=(props)=>{
                                                 <button onClick={(e)=>{
                                                     updatevariation(e,item,state.color_id,state.size_id,product,cartitem)
                                                     setShow(false)
-                                                }} className={`${(item.count_variation==2 && state.color_id && state.size_id && (item.size_value!=state.size_value ||item.color_value!=state.color_value))|| (item.count_variation==1 &&  ((state.color_id && state.color_value!=item.color_value)|| (state.size_id && state.size_value!=item.size_value)))?'':'disable'} button-solid button-solid--primary`}>Xác nhận</button>
+                                                }} className={`${(item.count_variation===2 && state.color_id && state.size_id && (item.size_value!==state.size_value ||item.color_value!==state.color_value))|| (item.count_variation===1 &&  ((state.color_id && state.color_value!==item.color_value)|| (state.size_id && state.size_value!==item.size_value)))?'':'disable'} button-solid button-solid--primary`}>Xác nhận</button>
                                             </div>
                                         </div>
                                     </div>
@@ -420,7 +420,7 @@ class Cart extends React.Component{
     
     voucherapply = createRef();
     componentDidMount(){
-        if(expiry<=0 || localStorage.token=='null'){
+        if(expiry<=0 || !localStorage){
             window.location.href=`/buyer/login?next=${window.location}`
         }
         (async () => {
@@ -456,8 +456,8 @@ class Cart extends React.Component{
             },0)
             
             const list_shop=obj2.data.map(shop=>{
-                let order=obj1.data.find(order=>order.shop_id==shop.id)
-                if(order&& order.shop_id==shop.id){
+                let order=obj1.data.find(order=>order.shop_id===shop.id)
+                if(order&& order.shop_id===shop.id){
                     return({...shop,voucher:order.voucher,discount_voucher_shop:order.discount_voucher_shop,loading_voucher:true,show_voucher:false})
                 }
                 return({...shop,show_voucher:false})
@@ -487,7 +487,7 @@ class Cart extends React.Component{
 
     addItem=()=>{
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-            if(clientHeight + scrollTop == scrollHeight && this.state.list_item_recommend.length==0){
+            if(clientHeight + scrollTop === scrollHeight && this.state.list_item_recommend.length===0){
                 (async () => {
                     try {
                         const res = await axios.get(itemrecentlyURL,headers)
@@ -527,7 +527,7 @@ class Cart extends React.Component{
     
     checkshop(e,shop){
         const datacart=this.state.list_cartitem.map(item=>{
-            if(item.shop_id==shop.id){
+            if(item.shop_id===shop.id){
                 if(e.target.checked){
                     return({...item,check:true})
                 }
@@ -535,7 +535,7 @@ class Cart extends React.Component{
             }
             return({...item})
         })
-        const list_checked=this.state.list_cartitem.filter(item=>item.shop_id==shop.id).map(item=>{
+        const list_checked=this.state.list_cartitem.filter(item=>item.shop_id===shop.id).map(item=>{
             return(item.id)
         })
         const data_check=e.target.checked?{id_checked:list_checked}:{id_check:list_checked}
@@ -553,7 +553,7 @@ class Cart extends React.Component{
     checked(e,item){ 
         const data_check=item.check?{id_check:[item.id]}:{id_checked:[item.id]}
         const list_cartitem=this.state.list_cartitem.map(cartitem=>{
-            if(item.id==cartitem.id){
+            if(item.id===cartitem.id){
                 return({...cartitem,check:!cartitem.check})
             }
             return({...cartitem})
@@ -570,21 +570,21 @@ class Cart extends React.Component{
     
     updatevariation(e,item,color_id,size_id,product,cartitemchoice){
         const dataitem={item_id:item.item_id,color_id:color_id,size_id:size_id}
-        const datacartitem=product=='mainproduct'?{cartitem_id:item.id}:{byproduct_id:item.id}
+        const datacartitem=product==='mainproduct'?{cartitem_id:item.id}:{byproduct_id:item.id}
         const data={...dataitem,...datacartitem}
         axios.post(updatecartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let result=rep.data
-            const list_cartitem=product=='mainproduct'?this.state.list_cartitem.map(cartitem=>{
-                if(item.id==cartitem.id){
+            const list_cartitem=product==='mainproduct'?this.state.list_cartitem.map(cartitem=>{
+                if(item.id===cartitem.id){
                     return({...cartitem,...result.item})
                 }
                 return({...cartitem})
             }):
             this.state.list_cartitem.map(cartitem=>{
-                if(cartitemchoice.id==cartitem.id){
+                if(cartitemchoice.id===cartitem.id){
                     return({...cartitem,byproducts:cartitem.byproducts.map(byproduct=>{
-                    if(byproduct.id==item.id){
+                    if(byproduct.id===item.id){
                         return({...byproduct,...result.item})
                     }
                     return({...byproduct})
@@ -598,20 +598,20 @@ class Cart extends React.Component{
 
    
     adjustitem(e,item,product,cartitemchoice,value){
-        const dataitem=product=='byproduct'?{byproduct_id:item.id}:{cartitem_id:item.id}
+        const dataitem=product==='byproduct'?{byproduct_id:item.id}:{cartitem_id:item.id}
         const data={...dataitem,quantity:value}
         axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             let data=rep.data
-            const list_cartitem=product=='mainproduct'?this.state.list_cartitem.map(cartitem=>{
-                if(item.id==cartitem.id){
+            const list_cartitem=product==='mainproduct'?this.state.list_cartitem.map(cartitem=>{
+                if(item.id===cartitem.id){
                     return({...cartitem,quantity:value})
                 }
                 return({...cartitem})
             }):this.state.list_cartitem.map(cartitem=>{
-                if(cartitemchoice.id==cartitem.id){
+                if(cartitemchoice.id===cartitem.id){
                     return({...cartitem,byproducts:cartitem.byproducts.map(by=>{
-                    if(by.id==item.id){
+                    if(by.id===item.id){
                         return({...by,quantity:value})
                     }
                     return({...by})
@@ -628,16 +628,16 @@ class Cart extends React.Component{
     
 
     removeitem(e,itemchoice,product,cartitemchoice){
-        const data=product=='byproduct'?{byproduct_id_delete:itemchoice.id}:{cartitem_id_delete:itemchoice.id}
+        const data=product==='byproduct'?{byproduct_id_delete:itemchoice.id}:{cartitem_id_delete:itemchoice.id}
         axios.post(cartURL,JSON.stringify(data),headers)
         .then(resp => {
         let data=resp.data
-        const list_cartitem=product=='byproduct'?this.state.list_cartitem.map(cartitem=>{
-            if(cartitem.id==cartitemchoice.id){
-                return({...cartitem,byproducts:cartitem.byproducts.filter(byproduct=>itemchoice.id!=byproduct.id)})
+        const list_cartitem=product==='byproduct'?this.state.list_cartitem.map(cartitem=>{
+            if(cartitem.id===cartitemchoice.id){
+                return({...cartitem,byproducts:cartitem.byproducts.filter(byproduct=>itemchoice.id!==byproduct.id)})
             }
             return ({...cartitem})
-        }):this.state.list_cartitem.filter(item=>item.id!=itemchoice.id)
+        }):this.state.list_cartitem.filter(item=>item.id!==itemchoice.id)
         this.setState({list_cartitem:list_cartitem,...data})
         })
     }
@@ -648,7 +648,7 @@ class Cart extends React.Component{
         .then(rep=>{
             let data=rep.data
             const list_shop=this.state.list_shop.map(shop=>{
-                if(this.shopchoice().id==shop.id){
+                if(this.shopchoice().id===shop.id){
                     return({...shop,voucher:voucher.id,show_voucher:false,loading_voucher:true,discount_voucher_shop:data.discount_voucher_shop})
                 }
                 return({...shop})
@@ -662,7 +662,7 @@ class Cart extends React.Component{
         axios.post(cartURL,JSON.stringify(data),headers)
         .then(rep=>{
             const list_shop=this.state.list_shop.map(shop=>{
-                if(this.shopchoice().id==shop.id){
+                if(this.shopchoice().id===shop.id){
                     return({...shop,voucher:0,discount_voucher_shop:0,loading_voucher:false})
                 }
                 return({...shop})
@@ -677,9 +677,9 @@ class Cart extends React.Component{
 
     save_voucher(voucher){
         const list_shop=this.state.list_shop.map(shop=>{
-            if(this.shopchoice().id==shop.id){
+            if(this.shopchoice().id===shop.id){
                 return({...shop,listvoucher:shop.listvoucher.map(item=>{
-                    if(item.id==voucher.id){
+                    if(item.id===voucher.id){
                         return({...item,exists:true})
                     }
                     return({...item})
@@ -696,7 +696,7 @@ class Cart extends React.Component{
     
     add_voucher(e,shopchoice){
         const list_shop=this.state.list_shop.map(shop=>{
-            if(shop.id==shopchoice.id){
+            if(shop.id===shopchoice.id){
                 return({...shop,show_voucher:true})
             }
             return({...shop})
@@ -746,7 +746,7 @@ class Cart extends React.Component{
       }
 
     item_promotion=(shop)=>{
-        return this.state.list_cartitem.find(cartitem=>cartitem.promotion && shop.id==cartitem.shop_id)
+        return this.state.list_cartitem.find(cartitem=>cartitem.promotion && shop.id===cartitem.shop_id)
     }
     render(){
         const {showchat,user,showthreads}=this.props
@@ -822,12 +822,12 @@ class Cart extends React.Component{
                                     </div>
                                     {
                                         this.state.list_shop.map((shop,index)=><>
-                                            {list_cartitem.some(cartitem=>cartitem.shop_id==shop.id)?
+                                            {list_cartitem.some(cartitem=>cartitem.shop_id===shop.id)?
                                             <div className="order-total-shop" key={shop.id}>
                                                 <div className="item-center shop-info _3ApheT">
                                                     <div className="item-check">
-                                                        <label className={`stardust-checkbox ${list_cartitem.some(item => !item.check && item.shop_id==shop.id)?'':'stardust-checkbox--checked'}`}>
-                                                            <input onChange={(e)=>this.checkshop(e,shop)} checked={list_cartitem.some(item => !item.check&&item.shop_id==shop.id)?false:true} className="stardust-checkbox__input" type="checkbox"/>
+                                                        <label className={`stardust-checkbox ${list_cartitem.some(item => !item.check && item.shop_id===shop.id)?'':'stardust-checkbox--checked'}`}>
+                                                            <input onChange={(e)=>this.checkshop(e,shop)} checked={list_cartitem.some(item => !item.check&&item.shop_id===shop.id)?false:true} className="stardust-checkbox__input" type="checkbox"/>
                                                             <div className="stardust-checkbox__box"></div>
                                                         </label>
                                                     </div>
@@ -841,32 +841,33 @@ class Cart extends React.Component{
                                                         <div className="shop-item-order">
                                                             <div className="shop-discount">
                                                                 <span className="_319wph">Combo khuyến mãi</span>
-                                                                <span className="discount-title">Buy {this.item_promotion(shop).promotion.quantity_to_reduced} more {this.item_promotion(shop).promotion.combo_type=='1'?` (will be reduced ${this.item_promotion(shop).promotion.discount_percent}%)`:this.item_promotion(shop).promotion.combo_type=='2'?` (will be reduced ₫${formatter.format(this.item_promotion(shop).promotion.discount_price)}`:` (only with ₫${formatter.format(this.item_promotion(shop).promotion.price_special_sale)}`}</span>
+                                                                <span className="discount-title">Buy {this.item_promotion(shop).promotion.quantity_to_reduced} more {this.item_promotion(shop).promotion.combo_type==='1'?` (will be reduced ${this.item_promotion(shop).promotion.discount_percent}%)`:this.item_promotion(shop).promotion.combo_type==='2'?` (will be reduced ₫${formatter.format(this.item_promotion(shop).promotion.discount_price)}`:` (only with ₫${formatter.format(this.item_promotion(shop).promotion.price_special_sale)}`}</span>
                                                                     <span className="add-byproduct">
                                                                         <Link to={`/bundle-deal/${this.item_promotion(shop).promotion.id}`}>Add
                                                                             <svg viewBox="0 0 12 12" fill="none" width="12" height="12" color="#ee4d2d" className="_1KsfYG"><path fillRule="evenodd" clipRule="evenodd" d="M9.293 6L4.146.854l.708-.708L10 5.293a1 1 0 010 1.414l-5.146 5.147-.708-.707L9.293 6z" fill="currentColor"></path></svg>
                                                                         </Link>
                                                                     </span>
                                                                 </div>
-                                                                {list_cartitem.filter(cartitem=>cartitem.promotion && cartitem.shop_id==shop.id).map((item,i)=>
+                                                                {list_cartitem.filter(cartitem=>cartitem.promotion && cartitem.shop_id===shop.id).map((item,i)=>
                                                                 <Iteminfo
                                                                     item={item}
                                                                     adjustitem={(e,item,product,cartitem,value)=>this.adjustitem(e,item,product,cartitem,value)}
                                                                     removeitem={(e,item,product,cartitem)=>this.removeitem(e,item,product,cartitem)}
                                                                     checked={(e,item)=>this.checked(e,item)}
                                                                     product={'mainproduct'}
+                                                                    key={item.id}
                                                                     list_cartitem={list_cartitem}
                                                                     updatevariation={(e,item,color_id,size_id,product,cartitemchoice)=>this.updatevariation(e,item,color_id,size_id,product,cartitemchoice)}
                                                                 />  
                                                             )}
                                                         </div>
                                                     :''}
-                                                    {list_cartitem.filter(cartitem=>!cartitem.promotion &&shop.id==cartitem.shop_id).map((cartitem,i)=>
+                                                    {list_cartitem.filter(cartitem=>!cartitem.promotion &&shop.id===cartitem.shop_id).map((cartitem,i)=>
                                                         <div key={cartitem.id} className="shop-item-order">
                                                             {cartitem.shock_deal?
                                                                 <div className="shop-discount">
-                                                                    <span className="_319wph">{cartitem.shock_deal.shock_deal_type=='1'?'Deal sốc':'Mua kèm'}</span>
-                                                                    <span className="discount-title">{cartitem.shock_deal.shock_deal_type=='1'?'Mua kèm deal độc quyền':'Mua nhiều hơn ₫99.000 và nhận được 1 quà tặng'}</span>
+                                                                    <span className="_319wph">{cartitem.shock_deal.shock_deal_type==='1'?'Deal sốc':'Mua kèm'}</span>
+                                                                    <span className="discount-title">{cartitem.shock_deal.shock_deal_type==='1'?'Mua kèm deal độc quyền':'Mua nhiều hơn ₫99.000 và nhận được 1 quà tặng'}</span>
                                                                         <span className="add-byproduct">
                                                                             <Link onClick={(e)=>addealshock(e,cartitem)} to={`/addon-deal-selection/${cartitem.shock_deal.id}/${cartitem.product_id}`}>{cartitem.deal_shock_id?'Edit':'Add'}
                                                                                 <svg viewBox="0 0 12 12" fill="none" width="12" height="12" color="#ee4d2d" className="_1KsfYG"><path fillRule="evenodd" clipRule="evenodd" d="M9.293 6L4.146.854l.708-.708L10 5.293a1 1 0 010 1.414l-5.146 5.147-.708-.707L9.293 6z" fill="currentColor"></path></svg>
@@ -878,6 +879,7 @@ class Cart extends React.Component{
                                                                 item={cartitem}
                                                                 product={'mainproduct'}
                                                                 list_cartitem={list_cartitem}
+                                                                key={cartitem.id}
                                                                 adjustitem={(e,item,product,cartitem,value)=>this.adjustitem(e,item,product,cartitem,value)}
                                                                 removeitem={(e,item,product)=>this.removeitem(e,item,product)}
                                                                 checked={(e,item)=>this.checked(e,item)}
@@ -887,6 +889,7 @@ class Cart extends React.Component{
                                                                 {cartitem.byproducts.map((item,j)=> 
                                                                     <Iteminfo
                                                                     item={item}
+                                                                    key={item.id}
                                                                     shop={shop}
                                                                     cartitem={cartitem}
                                                                     product={'byproduct'}
@@ -906,7 +909,7 @@ class Cart extends React.Component{
                                                 <div className="_2KyioW">
                                                     <svg fill="none" viewBox="0 -2 23 22" className="svg-icon _195k0Z icon-voucher-line"><g filter="url(#voucher-filter0_d)"><mask id="a" fill="#fff"><path fillRule="evenodd" clipRule="evenodd" d="M1 2h18v2.32a1.5 1.5 0 000 2.75v.65a1.5 1.5 0 000 2.75v.65a1.5 1.5 0 000 2.75V16H1v-2.12a1.5 1.5 0 000-2.75v-.65a1.5 1.5 0 000-2.75v-.65a1.5 1.5 0 000-2.75V2z"></path></mask><path d="M19 2h1V1h-1v1zM1 2V1H0v1h1zm18 2.32l.4.92.6-.26v-.66h-1zm0 2.75h1v-.65l-.6-.26-.4.91zm0 .65l.4.92.6-.26v-.66h-1zm0 2.75h1v-.65l-.6-.26-.4.91zm0 .65l.4.92.6-.26v-.66h-1zm0 2.75h1v-.65l-.6-.26-.4.91zM19 16v1h1v-1h-1zM1 16H0v1h1v-1zm0-2.12l-.4-.92-.6.26v.66h1zm0-2.75H0v.65l.6.26.4-.91zm0-.65l-.4-.92-.6.26v.66h1zm0-2.75H0v.65l.6.26.4-.91zm0-.65l-.4-.92-.6.26v.66h1zm0-2.75H0v.65l.6.26.4-.91zM19 1H1v2h18V1zm1 3.32V2h-2v2.32h2zm-.9 1.38c0-.2.12-.38.3-.46l-.8-1.83a2.5 2.5 0 00-1.5 2.29h2zm.3.46a.5.5 0 01-.3-.46h-2c0 1.03.62 1.9 1.5 2.3l.8-1.84zm.6 1.56v-.65h-2v.65h2zm-.9 1.38c0-.2.12-.38.3-.46l-.8-1.83a2.5 2.5 0 00-1.5 2.29h2zm.3.46a.5.5 0 01-.3-.46h-2c0 1.03.62 1.9 1.5 2.3l.8-1.84zm.6 1.56v-.65h-2v.65h2zm-.9 1.38c0-.2.12-.38.3-.46l-.8-1.83a2.5 2.5 0 00-1.5 2.29h2zm.3.46a.5.5 0 01-.3-.46h-2c0 1.03.62 1.9 1.5 2.3l.8-1.84zM20 16v-2.13h-2V16h2zM1 17h18v-2H1v2zm-1-3.12V16h2v-2.12H0zm1.4.91a2.5 2.5 0 001.5-2.29h-2a.5.5 0 01-.3.46l.8 1.83zm1.5-2.29a2.5 2.5 0 00-1.5-2.3l-.8 1.84c.18.08.3.26.3.46h2zM0 10.48v.65h2v-.65H0zM.9 9.1a.5.5 0 01-.3.46l.8 1.83A2.5 2.5 0 002.9 9.1h-2zm-.3-.46c.18.08.3.26.3.46h2a2.5 2.5 0 00-1.5-2.3L.6 8.65zM0 7.08v.65h2v-.65H0zM.9 5.7a.5.5 0 01-.3.46l.8 1.83A2.5 2.5 0 002.9 5.7h-2zm-.3-.46c.18.08.3.26.3.46h2a2.5 2.5 0 00-1.5-2.3L.6 5.25zM0 2v2.33h2V2H0z" mask="url(#a)"></path></g><path clipRule="evenodd" d="M6.49 14.18h.86v-1.6h-.86v1.6zM6.49 11.18h.86v-1.6h-.86v1.6zM6.49 8.18h.86v-1.6h-.86v1.6zM6.49 5.18h.86v-1.6h-.86v1.6z"></path><defs><filter id="voucher-filter0_d" x="0" y="1" width="20" height="16" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="BackgroundImageFix"></feFlood><feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset></feOffset><feGaussianBlur stdDeviation=".5"></feGaussianBlur><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.09 0"></feColorMatrix><feBlend in2="BackgroundImageFix" result="effect1_dropShadow"></feBlend><feBlend in="SourceGraphic" in2="effect1_dropShadow" result="shape"></feBlend></filter></defs></svg>
                                                     <div className="_3AO0Qs">
-                                                        <div className="_3jzcVN">{shop.discount_voucher_shop>0 && shop.loading_voucher?`Shop Voucher giảm ₫${formatter.format(shop.discount_voucher_shop)}`:shop.discount_voucher_shop==0 && shop.loading_voucher?`Shop Voucher giảm đến 10%`:'Dang tai...'}</div>
+                                                        <div className="_3jzcVN">{shop.discount_voucher_shop>0 && shop.loading_voucher?`Shop Voucher giảm ₫${formatter.format(shop.discount_voucher_shop)}`:shop.discount_voucher_shop===0 && shop.loading_voucher?`Shop Voucher giảm đến 10%`:'Dang tai...'}</div>
                                                         <div className="_2HbD-j">Mới</div>
                                                         <div ref={this.voucherapply} className="jYNW8J" onClick={(e)=>this.add_voucher(e,shop,list_shop)} style={{position: 'relative'}}>
                                                             <div className="sCcysm">Xem thêm voucher</div>

@@ -118,7 +118,7 @@ const Phoneuser =()=>{
                                         </div>
                                         <div className="item-center _3Dzoss">
                                             <div className="_27CWkz">
-                                                <button onClick={()=>saveinfo()} type="button" class={`btn btn-solid-primary btn--m btn--inline ${formData.verify?'':'disable'} _2i9kda`} aria-disabled="true">Xác nhận</button>
+                                                <button onClick={()=>saveinfo()} type="button" className={`btn btn-solid-primary btn--m btn--inline ${formData.verify?'':'disable'} _2i9kda`} aria-disabled="true">Xác nhận</button>
                                             </div>
                                         </div>
                                     </form>

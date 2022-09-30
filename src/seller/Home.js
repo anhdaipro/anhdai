@@ -210,11 +210,11 @@ const HomePageSeller=()=>{
                                             </div>
                                                 <div data-v-17c34edb="" className="chart-footer">
                                                 <div data-v-17c34edb="" className="chart-legend">
-                                                    {chart.datasets.map(item=>
-                                                        <>
+                                                    {chart.datasets.map((item,i)=>
+                                                        <span key={i}>
                                                         <span key={item.lable} data-v-17c34edb="" className="circle" style={{background: `${item.backgroundColor}`}}></span> 
                                                         <span data-v-17c34edb="">{item.label}</span>
-                                                        </>
+                                                        </span>
                                                     )}    
                                                 </div>
                                             </div>
@@ -306,7 +306,7 @@ const HomePageSeller=()=>{
                                 <div>🔥 CHÚ Ý VỀ HOẠT ĐỘNG BUFF CHỈ SỐ ẢO</div>
                                 <div>Anhdai nghiêm cấm mọi hoạt động buff chỉ số ảo nhằm đảm bảo trải nghiệm mua sắm cho khách hàng. Xem chi tiết TẠI ĐÂY👉</div>
                                 <div className="mt-1_2">Mới · 15 Tháng 10 2021</div>
-                                <div class='item-center'>
+                                <div className='item-center'>
                                     <div className="mini-vouchers__label">Mã giảm giá của Shop</div>
                                     <div className="mini-vouchers__wrapper d-flex flex-auto flex-no-overflow">
                                         <div className="mini-vouchers__vouchers d-flex flex-auto flex-no-overflow">

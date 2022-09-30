@@ -10,7 +10,7 @@ import {localhost,checkoutURL,threadlURL,savevoucherURL,updateAddressURL,cityLis
 const Infoitem=(props)=>{
     const {item}=props
     return(
-        <div key={item.id} className="_3HkBPE _Fqc2-">
+        <div className="_3HkBPE _Fqc2-">
             <div className="_1ASQkt _2rJzUE">
                 <img className="_1Qtf1H" src={item.image} width="40" height="40"/>
                 <span className="_11r44J">
@@ -288,7 +288,7 @@ const Checkout =({user,showchat})=>{
                         </div>
                         <div>
                             {orders.map(order=>
-                                <div key={order.shop} className="jNDkp2">
+                                <div key={order.id} className="jNDkp2">
                                     <div className="QjLA16">
                                         <div className="_2sALOn">
                                             <div className="_127ZmV _3QG1FZ">
@@ -320,9 +320,11 @@ const Checkout =({user,showchat})=>{
                                                 
                                                 <Infoitem
                                                     item={cartitem}
+                                                    key={cartitem.id}
                                                 />
                                                 {cartitem.byproducts.map(byproduct=>
                                                     <Infoitem
+                                                        key={byproduct.id}
                                                         item={byproduct}
                                                     />
                                                 )}
