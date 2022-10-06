@@ -102,7 +102,7 @@ const Listdealshop=()=>{
        
         params.set('choice',choice)
         const res =await axios.get(`${listAddonshopURL}?${params}`,headers)
-        setDeal(current=>[...res.data.data])
+        setDeal([...res.data.data])
         setCount(res.data.count)
         setLoading(true)
     })()
@@ -243,8 +243,7 @@ const Listdealshop=()=>{
                                                 </div>
                                                
                                                 <Daterange
-                                                setDaychoice={data=>setDaychoice(data)}
-                                                    
+                                                setDaychoice={data=>setDaychoice(data)}   
                                                 daychoice={daychoice}
                                                 setcount={data=>setCount(data)}
                                                 setdata={data=>setDeal(data)}

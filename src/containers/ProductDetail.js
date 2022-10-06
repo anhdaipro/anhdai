@@ -41,24 +41,26 @@ const ReviewItem=(props)=>{
     }
     return(
         <div className='product-rating' key={review.id}>
-        {review.shop!=''?
-            <a className="product-rating__avatar" href="${reviews[i].url_shop}">
+        {review.shop?
+            <Link className="product-rating__avatar" to={review.shop}>
                 <div className="avatar">
                     <div className="avatar__placeholder">
                         <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-headshot"><g><circle cx="7.5" cy="4.5" fill="none" r="3.8" stroke-miterlimit="10"></circle><path d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" strokeLinecap="round" stroke-miterlimit="10"></path></g></svg>
                     </div>
+                    <img class="avatar__img" src={review.user.avatar}/>
                 </div>
-            </a>:
+            </Link>:
             <div className="avatar">
                 <div className="avatar__placeholder">
                     <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon icon-headshot"><g><circle cx="7.5" cy="4.5" fill="none" r="3.8" stroke-miterlimit="10"></circle><path d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" strokeLinecap="round" stroke-miterlimit="10"></path></g></svg>
                 </div>
+                <img class="avatar__img" src={review.user.avatar} />
             </div>}
             <div className="product-rating__main">
-                {review.shop!=''?
-                <a className="product-rating__author-name" href={review.url_shop}>{review.anonymous_review?review.user.substr(0,1)+hidestring(review.user)+review.user.substr(-1):review.user}</a>
+                {review.shop?
+                <Link className="product-rating__author-name" to={review.shop}>{review.anonymous_review?review.user.username.substr(0,1)+hidestring(review.user.username)+review.user.username.substr(-1):review.user.username}</Link>
                 :
-                <div className="product-rating__author-name">{review.anonymous_review?review.user.substr(0,1)+hidestring(review.user)+review.user.substr(-1):review.user}</div>}
+                <div className="product-rating__author-name">{review.anonymous_review?review.user.username.substr(0,1)+hidestring(review.user.username)+review.user.username.substr(-1):review.user.username}</div>}
                 <div className="repeat-purchase-con">
                     <div className="product-rating__rating d-flex">
                         {ratingitem(5,review)}
@@ -122,7 +124,7 @@ const ReviewItem=(props)=>{
                 <div className="product-rating__time">{timecreate(review.created)}</div>
                 <div className="product-rating__actions item-spaces">
                     <div className='d-flex'>
-                        <div onClick={(e)=>setlikereview(e,review)} className={`product-rating__like-button ${user&&review.user_like.some(item=>item==user.id)?'product-rating__like-button--liked':''}`}>
+                        <div onClick={(e)=>setlikereview(e,review)} className={`product-rating__like-button ${review.liked?'product-rating__like-button--liked':''}`}>
                             <svg width="14px" height="13px" viewBox="0 0 14 13" version="1.1" xmlns="http://www.w3.org/2000/svg"><defs></defs><g stroke="none" strokeWidth="1" fillRule="evenodd"><g id="Product-Ratings-Working" transform="translate(-245.000000, -855.000000)" fillRule="nonzero"><g transform="translate(155.000000, 92.000000)"><g transform="translate(40.000000, 184.000000)"><g transform="translate(0.000000, 326.000000)"><g transform="translate(50.000000, 253.000000)"><g><path d="M0,12.7272727 L2.54545455,12.7272727 L2.54545455,5.09090909 L0,5.09090909 L0,12.7272727 Z M14,5.72727273 C14,5.02727273 13.4272727,4.45454545 12.7272727,4.45454545 L8.71818182,4.45454545 L9.35454545,1.52727273 L9.35454545,1.33636364 C9.35454545,1.08181818 9.22727273,0.827272727 9.1,0.636363636 L8.4,0 L4.2,4.2 C3.94545455,4.39090909 3.81818182,4.70909091 3.81818182,5.09090909 L3.81818182,11.4545455 C3.81818182,12.1545455 4.39090909,12.7272727 5.09090909,12.7272727 L10.8181818,12.7272727 C11.3272727,12.7272727 11.7727273,12.4090909 11.9636364,11.9636364 L13.8727273,7.44545455 C13.9363636,7.31818182 13.9363636,7.12727273 13.9363636,7 L13.9363636,5.72727273 L14,5.72727273 C14,5.79090909 14,5.72727273 14,5.72727273 Z"></path></g></g></g></g></g></g></g></svg>
                         </div>
                         <div className="product-rating__like-count">{review.num_like==0?'hữu ích':review.num_like}</div>
@@ -515,12 +517,12 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                     <div className="action-toast">
                     <div className="toast">
                         <div className="toast__container">
-                        <div className="toast__icon">
-                            <div className="action-toast__icon">
-                            <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
+                            <div className="toast__icon">
+                                <div className="action-toast__icon">
+                                    <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
+                                </div>
                             </div>
-                        </div>
-                        <div className="toast__text">Sản phẩm đã được thêm vào Giỏ hàng</div>
+                            <div className="toast__text">Sản phẩm đã được thêm vào Giỏ hàng</div>
                         </div>
                     </div>
                     </div>
@@ -575,11 +577,11 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
             .then(res=>{
             const list_review=listreview.map(item=>{
                 if(review.id==item.id){
-                    if(item.user_like.some(item=>item==user.id)){
-                        return({...item,user_like:item.user_like.filter(item=>item!=user.id),num_like:res.data.num_like_review})
+                    if(item.liked){
+                        return({...item,liked:false,num_like:res.data.num_like_review})
                     }
                     else{
-                    return({...item,user_like:[...item.user_like,user.id],num_like:res.data.num_like_review})
+                    return({...item,liked:true,num_like:res.data.num_like_review})
                     }
                 }
                 return ({...item})
