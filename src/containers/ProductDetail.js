@@ -3,7 +3,7 @@ import {formatter,timecreate,timeago,
 import axios from 'axios';
 import React, {useState, useEffect,useRef, useCallback,useMemo} from 'react'
 import ReactDOM from 'react-dom'
-import {addToCartURL,productinfoURL,listThreadlURL,addToCartBatchURL, savevoucherURL} from "../urls"
+import {addToCartURL,productinfoURL,listThreadlURL,addToCartBatchURL, savevoucherURL, reviewURL} from "../urls"
 import Pagination from "../hocs/Pagination"
 import {
 FacebookShareButton,PinterestShareButton,FacebookMessengerShareButton,TwitterShareButton,
@@ -571,9 +571,9 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
   
     const setlikereview=(e,review)=>{
         let form=new FormData()
-        form.append('review_id',review.id)
+        form.append('action','like')
         if(localStorage.token!='null' && expiry>0){
-            axios.post(productinfoURL,form,headers)
+            axios.post(`${reviewURL}/${review.id}`,form,headers)
             .then(res=>{
             const list_review=listreview.map(item=>{
                 if(review.id==item.id){
