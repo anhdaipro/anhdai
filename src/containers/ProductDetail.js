@@ -127,7 +127,7 @@ const ReviewItem=(props)=>{
                         <div onClick={(e)=>setlikereview(e,review)} className={`product-rating__like-button ${review.liked?'product-rating__like-button--liked':''}`}>
                             <svg width="14px" height="13px" viewBox="0 0 14 13" version="1.1" xmlns="http://www.w3.org/2000/svg"><defs></defs><g stroke="none" strokeWidth="1" fillRule="evenodd"><g id="Product-Ratings-Working" transform="translate(-245.000000, -855.000000)" fillRule="nonzero"><g transform="translate(155.000000, 92.000000)"><g transform="translate(40.000000, 184.000000)"><g transform="translate(0.000000, 326.000000)"><g transform="translate(50.000000, 253.000000)"><g><path d="M0,12.7272727 L2.54545455,12.7272727 L2.54545455,5.09090909 L0,5.09090909 L0,12.7272727 Z M14,5.72727273 C14,5.02727273 13.4272727,4.45454545 12.7272727,4.45454545 L8.71818182,4.45454545 L9.35454545,1.52727273 L9.35454545,1.33636364 C9.35454545,1.08181818 9.22727273,0.827272727 9.1,0.636363636 L8.4,0 L4.2,4.2 C3.94545455,4.39090909 3.81818182,4.70909091 3.81818182,5.09090909 L3.81818182,11.4545455 C3.81818182,12.1545455 4.39090909,12.7272727 5.09090909,12.7272727 L10.8181818,12.7272727 C11.3272727,12.7272727 11.7727273,12.4090909 11.9636364,11.9636364 L13.8727273,7.44545455 C13.9363636,7.31818182 13.9363636,7.12727273 13.9363636,7 L13.9363636,5.72727273 L14,5.72727273 C14,5.79090909 14,5.72727273 14,5.72727273 Z"></path></g></g></g></g></g></g></g></svg>
                         </div>
-                        <div className="product-rating__like-count">{review.num_like==0?'hữu ích':review.num_like}</div>
+                        <div className="product-rating__like-count">{review.num_liked==0?'hữu ích':review.num_liked}</div>
                     </div>
                     <div className='d-flex'>
                         <div className="product-rating__report-menu-button">
@@ -552,9 +552,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
             form.append('item_id',data.id)
             axios.post(`${productinfoURL}/${id}`,form,headers)
             .then(res=>{
-            data.num_like_item=res.data.num_like_item
-            data.like_item=res.data.like_item
-            setState({...state,data:data})
+            setData({...data,...res.data})
             })
         }
         else{
@@ -578,10 +576,10 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
             const list_review=listreview.map(item=>{
                 if(review.id==item.id){
                     if(item.liked){
-                        return({...item,liked:false,num_like:res.data.num_like_review})
+                        return({...item,liked:false,num_liked:res.data.num_liked})
                     }
                     else{
-                    return({...item,liked:true,num_like:res.data.num_like_review})
+                    return({...item,liked:true,num_liked:res.data.num_liked})
                     }
                 }
                 return ({...item})
@@ -818,8 +816,8 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                             </TwitterShareButton>
                         </div>
                         <div className="item-center _3nBAy8">
-                            <svg onClick={()=>setlike()} width="24" height="20" className="ELoIiZ like-product"><path d="M19.469 1.262c-5.284-1.53-7.47 4.142-7.47 4.142S9.815-.269 4.532 1.262C-1.937 3.138.44 13.832 12 19.333c11.559-5.501 13.938-16.195 7.469-18.07z" stroke="#FF424F" strokeWidth="1.5" fill={data.like_item?'#FF424F':'none'} fillRule="evenodd" strokeLinejoin="round"></path></svg>
-                            <div className="pl-1_2 number_like">Đã thích ({data.num_like_item})</div>
+                            <svg onClick={()=>setlike()} width="24" height="20" className="ELoIiZ like-product"><path d="M19.469 1.262c-5.284-1.53-7.47 4.142-7.47 4.142S9.815-.269 4.532 1.262C-1.937 3.138.44 13.832 12 19.333c11.559-5.501 13.938-16.195 7.469-18.07z" stroke="#FF424F" strokeWidth="1.5" fill={data.like?'#FF424F':'none'} fillRule="evenodd" strokeLinejoin="round"></path></svg>
+                            <div className="pl-1_2 number_like">Đã thích ({data.num_like})</div>
                         </div>
                     </div> 
                 </div>
