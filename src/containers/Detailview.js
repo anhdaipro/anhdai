@@ -35,11 +35,11 @@ const Detailview = () => {
     (async () => {
         const searchparama=params
        
-        const url=params.get('itemId') && !params.get('categoryId')?axios.get(`${itemURL}?${params}`):axios.get(`${categoryURL}/${slug}`,headers)
+        const url=params.get('itemId') && !params.get('categoryId')?axios.get(`${itemURL}?${params}`,headers):axios.get(`${categoryURL}/${slug}`,headers)
         setChoice(choices)
         const res = await url
         setData(res.data)
-        
+        console.log(headers)
         if (choices=='product'){
           setProduct_id(res.data.id)
           setCategory_id()

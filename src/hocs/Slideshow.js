@@ -6,11 +6,11 @@ const SlideshowGallery=({list_image,automatic,timeout})=>{
     const parent=useRef()
     useEffect(() => {
         if (automatic && list_image.length>0) {
-            const timer = setTimeout(function() {
+            const timer = setInterval(function() {
                 setState({slideIndex:getNewSlideIndex(state.slideIndex+1)})
             }, parseInt(timeout));
             
-            return ()=> clearTimeout(timer)
+            return ()=> clearInterval(timer)
           }
     },[state])
     

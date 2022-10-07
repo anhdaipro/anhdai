@@ -435,7 +435,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
         if(clientHeight + scrollTop === scrollHeight){
             if(!listreview){
-                axios.get(`${productinfoURL}/${id}?choice=review`)
+                axios.get(`${productinfoURL}/${id}?choice=review`,headers)
                 .then(res=>{
                     let data=res.data
                     const list_reviews=data.reviews.map(item=>{
@@ -596,7 +596,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         (async()=>{
             if(indextype){
             setPage(1)
-            const res = await axios.get(`${productinfoURL}/${data.id}?choice=review&${[typereview.name]}=${typereview.value}`)
+            const res = await axios.get(`${productinfoURL}/${data.id}?choice=review&${[typereview.name]}=${typereview.value}`,headers)
             let data=res.data
             setReview(data.reviews)
             setState({...state,review_choice:typereview.value,page_count:data.page_count,rating:data.rating,has_comment:data.has_comment,has_media:data.has_media})
