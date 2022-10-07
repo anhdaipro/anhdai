@@ -35,7 +35,7 @@ class ImageHome extends React.Component {
                 {this.state.loading?
                 <div className="full-home-banners">
                     <SlideshowGallery
-                        list_image={this.state.items}
+                        slides={this.state.items}
                         automatic={true}
                         timeout={`2500`}
                         dot={true}

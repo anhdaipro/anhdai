@@ -73,7 +73,7 @@ const Categorydetail = ({data,category_id}) => {
             <div className="containers category-banners">
                 <div style={{width:'100%'}}>
                     <SlideshowGallery
-                        list_image={data.image_home}
+                        slides={data.image_home}
                         automatic={true}
                         timeout={`2500`}
                         dot={true}
