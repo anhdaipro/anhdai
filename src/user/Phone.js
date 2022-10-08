@@ -26,12 +26,10 @@ const Phoneuser =()=>{
     
     const sendotp=(e)=>{
         e.preventDefault();
-        let form=new FormData()
-        form.append('phone',`+84 ${(formData.phone).slice(-9)}`)
         setShow(true)
         let time=60
         setState({...state,time:time})
-        axios.post(otpURL,form)
+        axios.post(otpURL,JSON.stringify({phone:`+84 ${(formData.phone).slice(-9)}`}))
         .then(res=>{
             setformData({...formData,id:res.data.id})
             const countDown = setInterval(() => {
@@ -48,9 +46,7 @@ const Phoneuser =()=>{
     }
 
     const saveinfo=()=>{
-        let form=new FormData()
-        form.append('phone',formData.phone)
-        axios.post(profiledURL,form,headers)
+        axios.post(profiledURL,JSON.stringify({phone:formData.phone}),headers)
         .then(res=>{
             navigate('user/account/password')
         })

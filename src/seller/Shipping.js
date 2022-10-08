@@ -22,8 +22,6 @@ const Shipping=()=>{
     }, []);
 
     const setenable=(keys,value,itemchoice)=>{
-        const form=new FormData()
-        form.append('id',itemchoice.id)
         const list_shipping=value.map(item=>{
             if(itemchoice.id==item.id){
             return({...item,enable:!item.enable})
@@ -31,7 +29,7 @@ const Shipping=()=>{
             return({...item})
         })
         setData({...data,[keys]:list_shipping})
-        axios.post(listshippingURL,form,headers)
+        axios.post(listshippingURL,JSON.stringify({id:itemchoice.id}),headers)
         .then(res=>{
 
         })

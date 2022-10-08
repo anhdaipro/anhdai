@@ -40,12 +40,11 @@ const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
     const sendotp=(e)=>{
         e.preventDefault();
         e.stopPropagation()
-        let form=new FormData()
-        form.append('phone',`+84 ${(formData.phone).slice(-9)}`)
         
+        const data={phone:`+84 ${(formData.phone).slice(-9)}`}
         let time=60
         setState({...state,time:time})
-        axios.post(otpURL,form)
+        axios.post(otpURL,JSON.stringify(data))
         .then(res=>{
             setShow(true)
             id=res.data.id
@@ -79,10 +78,8 @@ const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
             }
         };
         setTimeout(() => {
-            let form=new FormData()
-            form.append('token',localStorage.access_token)
         
-            axios.post('https://anhdai.herokuapp.com/api/v4/login',form, config)
+            axios.post('https://anhdai.herokuapp.com/api/v4/login',JSON.stringify({token:localStorage.access_token}), config)
             .then(res=>{
             const token = res.data.access;
             localStorage.setItem('token',token);
@@ -105,9 +102,7 @@ const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
             }
         };
         setTimeout(() => {
-            let form=new FormData()
-            form.append('token',localStorage.access_token)
-            axios.post('https://anhdai.herokuapp.com/api/v4/login', form, config)
+            axios.post('https://anhdai.herokuapp.com/api/v4/login',JSON.stringify({token:localStorage.access_token}), config)
             .then(res=>{
                 const token = res.data.access;
                 localStorage.setItem('token',token);
@@ -125,11 +120,8 @@ const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
     const setpassword=(e)=>{
         e.preventDefault();
         e.stopPropagation()
-        let form=new FormData()
-        form.append('id',id)
-        form.append('pin',formData.pin)
-        form.append('phone',`+84 ${(formData.phone).slice(-9)}`)
-        axios.post(verifyotpURL,form)
+        const data={phone:`+84 ${(formData.phone).slice(-9)}`,id:id,pin:formData.pin}
+        axios.post(verifyotpURL,JSON.stringify(data))
         .then(res=>{
             let data=res.data
             setFormData({...formData,...data})

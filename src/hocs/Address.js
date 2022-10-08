@@ -13,21 +13,9 @@ const Address=({address,show,setshow,list_city,action,city_choice,district_choic
     const [errow,setErrow]=useState({name:'',phone_number:'',address:'',city:''})
     const parentref=useRef()
     function createAddress(){
-        let form=new FormData()
-        form.append('name',address.name)
-        form.append('phone_number',address.phone_number)   
-        form.append('default',address.default)
-        form.append('city',city_choice.name)
-        form.append('district',district_choice.name)
-        form.append('town',town_choice.name)
-        form.append('address',address.address)
-        form.append('address_choice',address.address_choice)
-        form.append('address_type','S')
-        if(address.id!=undefined){
-            form.append('id',address.id)
-            form.append('update','update')
-        }
-        axios.post(updateAddressURL,form,headers)
+        const data={...address,address_type:'S',city:city_choice.name,action:address.id?'update':'default',
+        district:district_choice.name,town:town_choice.name}
+        axios.post(updateAddressURL,JSON.stringify(data),headers)
         .then(res=>{
             let data=res.data
             setlistaddress(data)

@@ -19,7 +19,7 @@ const Registeremail = ({googleLogin,facebookLogin,signup,isAuthenticated}) => {
     const [state,setState]=useState({showpass:false,showrepass:false,show:false})
     const [accountCreated, setAccountCreated] = useState(false);
     let navigate = useNavigate();
-    const { username,email, password,phone } = formData;
+    const { username,email, password,phone,otp } = formData;
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
     const onSubmit = e => {
         let form= new FormData(e.target)
@@ -60,9 +60,7 @@ const Registeremail = ({googleLogin,facebookLogin,signup,isAuthenticated}) => {
             }
         };
         setTimeout(() => {
-            let form=new FormData()
-            form.append('token',localStorage.access_token)
-            axios.post('https://anhdai.herokuapp.com/api/v4/login',form, config)
+            axios.post('https://anhdai.herokuapp.com/api/v4/login',JSON.stringify({token:localStorage.access_token}), config)
             .then(res=>{
             const token = res.data.access;
             localStorage.setItem('token',token);
@@ -85,9 +83,8 @@ const Registeremail = ({googleLogin,facebookLogin,signup,isAuthenticated}) => {
             }
         };
         setTimeout(() => {
-            let form=new FormData()
-            form.append('token',localStorage.access_token)
-            axios.post('https://anhdai.herokuapp.com/api/v4/login', form, config)
+ 
+            axios.post('https://anhdai.herokuapp.com/api/v4/login',JSON.stringify({token:localStorage.access_token}), config)
             .then(res=>{
                 const token = res.data.access;
                 localStorage.setItem('token',token);
@@ -112,11 +109,9 @@ const Registeremail = ({googleLogin,facebookLogin,signup,isAuthenticated}) => {
     const verifyotp=()=>{
         
         (async () => {
-            let form=new FormData()
-            form.append('otp',formData.otp)
-            form.append('email',formData.email)
+            const data={otp:otp,email:email}
             try {
-                const res=await axios.post(verifyemailURL,form,headers)
+                const res=await axios.post(verifyemailURL,JSON.stringify(data),headers)
                 setState({...state,show:false,verify:res.data.verify})
                 if(res.data.verify){
                     signup(username,email,password,phone)

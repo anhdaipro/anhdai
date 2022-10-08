@@ -26,11 +26,9 @@ const Loginotp = ({ loginotp, isAuthenticated}) => {
         
         (async () => {
             try {
-                let form=new FormData()
-                form.append('id',formData.id)
-                form.append('pin',formData.pin)
-                form.append('phone',`+84 ${formData.phone.slice(-9)}`)
-                const res = await axios.post(verifyotpURL,form)
+            
+                const data={id:formData.id,pin:formData.pin,phone:`+84 ${formData.phone.slice(-9)}`}
+                const res = await axios.post(verifyotpURL,JSON.stringify(data))
                     setFormData({...formData,...res.data})
                     if(res.data.user_id!=undefined){
                     loginotp(res.data.user_id)
@@ -78,10 +76,8 @@ const Loginotp = ({ loginotp, isAuthenticated}) => {
             }
         };
         setTimeout(() => {
-            let form=new FormData()
-            form.append('token',localStorage.access_token)
-        
-            axios.post('https://anhdai.herokuapp.com/api/v4/login',form, config)
+            
+            axios.post('https://anhdai.herokuapp.com/api/v4/login',JSON.stringify({token:localStorage.access_token}), config)
             .then(res=>{
             const token = res.data.access;
             localStorage.setItem('token',token);
@@ -105,9 +101,7 @@ const Loginotp = ({ loginotp, isAuthenticated}) => {
             }
         };
         setTimeout(() => {
-            let form=new FormData()
-            form.append('token',localStorage.access_token)
-            axios.post('https://anhdai.herokuapp.com/api/v4/login', form, config)
+            axios.post('https://anhdai.herokuapp.com/api/v4/login',JSON.stringify({token:localStorage.access_token}), config)
             .then(res=>{
                 const token = res.data.access;
                 localStorage.setItem('token',token);
@@ -125,13 +119,11 @@ const Loginotp = ({ loginotp, isAuthenticated}) => {
 
     const sendotp=(e)=>{
         e.preventDefault();
-        let form=new FormData()
-        form.append('phone',`+84 ${(formData.phone).slice(-9)}`)
-        form.append('login',true)
+        const data={phone:`+84 ${(formData.phone).slice(-9)}`,login:true}
         setShow(true)
         let time=60
         setState({...state,time:time})
-        axios.post(otpURL,form)
+        axios.post(otpURL,JSON.stringify(data))
         .then(res=>{
             setFormData({...formData,id:res.data.id})
             const countDown = setInterval(() => {

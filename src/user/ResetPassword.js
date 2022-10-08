@@ -41,12 +41,8 @@ const ResetPassword = ({match,reset_password,reset_password_confirm}) => {
     const verifypin=(e)=>{
         e.preventDefault();
         e.stopPropagation();
-        let form=new FormData()
-        form.append('id',formData.id)
-        form.append('pin',formData.pin)
-        form.append('reset',formData.reset)
-        form.append('phone',`+84 ${(formData.phone).slice(-9)}`)
-        axios.post(verifyotpURL,form)
+        const data={phone:`+84 ${(formData.phone).slice(-9)}`,reset:formData.reset,id:formData.id,pin:formData.pin}
+        axios.post(verifyotpURL,JSON.stringify(data))
         .then(res=>{
             setFormData({...formData,verify:res.data.verify,token:res.data.token,uidb64:res.data.uidb64})
             setState({...state,error_pin:res.data.verify?false:true})
@@ -63,12 +59,10 @@ const ResetPassword = ({match,reset_password,reset_password_confirm}) => {
     }
     const sendotp=(e)=>{
         e.preventDefault();
-        let form=new FormData()
-        form.append('phone',`+84 ${(formData.phone).slice(-9)}`)
-        form.append('reset',formData.reset)
+        const data={phone:`+84 ${(formData.phone).slice(-9)}`,reset:formData.reset}
         let time=60
         setState({...state,time:time})
-        axios.post(otpURL,form)
+        axios.post(otpURL,JSON.stringify(data))
         .then(res=>{
             setShow(true)
             setFormData({...formData,id:res.data.id})

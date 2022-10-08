@@ -79,10 +79,8 @@ const Checkout =({user,showchat})=>{
     }, []);
     
     function checkout(e){
-            let form=new FormData()
-            form.append('id',state.address_order.id)
-            form.append('payment_choice',state.method_choice)
-            axios.post(checkoutURL,form,headers)
+        const data={id:state.address_order.id,payment_choice:state.method_choice}
+        axios.post(checkoutURL,JSON.stringify(data),headers)
             .then(res=>{ 
                 if(state.method_choice=='Payment on delivery'){
                 navigate("/user/purchase")

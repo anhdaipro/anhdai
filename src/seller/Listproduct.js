@@ -81,14 +81,9 @@ const Listproduct=()=>{
     }
 
     const deleteitemchoice=(e)=>{
-        let form=new FormData()
-        itemshop.pageitem.map(item=>{
-            if(item.check){
-                form.append('item_id',item.id)
-            }
-        })
+        const data={items:itemshop.pageitem.filter(item=>item.check)}
         const pageitem=itemshop.pageitem.filter(item=>!item.check)
-        axios.post(productshopURL,form,headers)
+        axios.post(productshopURL,JSON.stringify(data),headers)
         .then(res=>{
             let data=res.data
             setLoading(true)

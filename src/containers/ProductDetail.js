@@ -548,9 +548,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
 
     const setlike=()=>{
         if(localStorage.token!='null' && expiry>0){
-            let form=new FormData()
-            form.append('item_id',data.id)
-            axios.post(`${productinfoURL}/${id}`,form,headers)
+            axios.post(`${productinfoURL}/${id}`,JSON.stringify({action:'like'}),headers)
             .then(res=>{
             setData({...data,...res.data})
             })
@@ -568,10 +566,8 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
     }
   
     const setlikereview=(e,review)=>{
-        let form=new FormData()
-        form.append('action','like')
         if(localStorage.token!='null' && expiry>0){
-            axios.post(`${reviewURL}/${review.id}`,form,headers)
+            axios.post(`${reviewURL}/${review.id}`,JSON.stringify({action:'like'}),headers)
             .then(res=>{
             const list_review=listreview.map(item=>{
                 if(review.id==item.id){

@@ -128,11 +128,9 @@ export const loginotp = (user_id) => async dispatch =>{
             'Content-Type': 'application/json'
         }
     };
-    let form=new FormData()
-    form.append('user_id',user_id)
-    
+   
     try {
-        const res = await axios.post('https://anhdai.herokuapp.com/api/v4/login', form, config);
+        const res = await axios.post('https://anhdai.herokuapp.com/api/v4/login', JSON.stringify({user_id:user_id}), config);
 
         dispatch({
             type: LOGIN_SUCCESS,

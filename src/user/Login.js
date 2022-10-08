@@ -58,10 +58,10 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
                 }
             };
             setTimeout(() => {
-                let form=new FormData()
-                form.append('token',localStorage.access_token)
+                
+                const data={token:localStorage.access_token}
             
-                axios.post('https://anhdai.herokuapp.com/api/v4/login',form, config)
+                axios.post('https://anhdai.herokuapp.com/api/v4/login',JSON.stringify(data), config)
                 .then(res=>{
                 const token = res.data.access;
                 localStorage.setItem('token',token);
@@ -80,9 +80,9 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
             }
         };
         setTimeout(() => {
-            let form=new FormData()
-            form.append('token',localStorage.access_token)
-            axios.post('https://anhdai.herokuapp.com/api/v4/login', form, config)
+            
+            const data={token:localStorage.access_token}
+            axios.post('https://anhdai.herokuapp.com/api/v4/login', JSON.stringify(data), config)
             .then(res=>{
                 const token = res.data.access;
                 localStorage.setItem('token',token);

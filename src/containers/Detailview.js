@@ -82,13 +82,12 @@ const Detailview = () => {
     setReviewchoice(review)
   }
   const setsubmitreport=(e)=>{
-    let form=new FormData()
     setState({...state,report_complete:false})
-    form.append('review_id',reviewchoice.id)
-    form.append('reason',state.report_reson)
-    form.append('reason',state.report_reson==7?state.text_report:state.report_reson)
+    const data={review_id:reviewchoice.id,
+    reason:state.report_reson,
+    reason:state.report_reson==7?state.text_report:state.report_reson}
     if(localStorage.token!='null' &&expiry>0){
-      axios.post(productinfoURL,form,headers)
+      axios.post(productinfoURL,JSON.stringify(data),headers)
       .then(res=>{
         setState({...state,show_report:false,report_complete:true})
       })

@@ -85,10 +85,10 @@ export default function Payment() {
                                 }}
                                 onApprove={(data, actions) =>{
                                     return actions.order.capture().then(function (details) {
-                                        let form=new FormData()
-                                        form.append('payID',details.purchase_units[0].payments.captures[0].id)
+                                        
+                                        const form={payID:details.purchase_units[0].payments.captures[0].id}
                                     
-                                        axios.post(paymentURL,form,headers)
+                                        axios.post(paymentURL,JSON.stringify(form),headers)
                                         .then(res=>{
                                             
                                         })

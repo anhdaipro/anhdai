@@ -60,9 +60,7 @@ const Addressuser = ({user}) =>{
     }
 
     function setdefault(e,address){
-        let form=new FormData()
-        form.append('default',true)
-        form.append('id',address.id)
+        const data={default:true,id:address.id}
         const list_addresses=state.list_addresses.map(item=>{
             if(item.id==address.id){
                 return ({...item,default:true})
@@ -72,7 +70,7 @@ const Addressuser = ({user}) =>{
             }
         })
         setState({...state,list_addresses:list_addresses})
-        axios.post(updateAddressURL,form,headers)
+        axios.post(updateAddressURL,JSON.stringify(data),headers)
         .then(res=>{
         })   
     }
@@ -83,13 +81,11 @@ const Addressuser = ({user}) =>{
     }
 
     const deleteAddress=useCallback((address)=>{
-        let form=new FormData()
-        form.append('delete',true)
-        form.append('id',address.id)
+        const data={'delete':true,id:address.id}
         const list_addresses=state.list_addresses.filter(item=>item.id!=address.id)
         setState({...state,list_addresses:list_addresses})
         setAction(false)
-        axios.post(updateAddressURL,form,headers)
+        axios.post(updateAddressURL,JSON.stringify(data),headers)
         .then(res=>{
         })
     }, [state]);
