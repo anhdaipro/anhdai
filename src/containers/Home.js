@@ -110,7 +110,7 @@ class ImageHome extends React.Component {
                         <Background>
                             <Image image={item.image}></Image>
                         </Background>
-                    <Name>{item.name}</Name>
+                        <Name>{item.name}</Name>
                     </div>
                 </Link>
                 )}
@@ -370,10 +370,6 @@ const Itemflashsale =()=> {
 export default class HomePage extends React.Component {
     state={items:[],item_common:[],list_trend_search:[],list_top_search:[],showimage:true,from_index:0}
     componentDidMount() {  
-        axios.get(`${dashboardpromotionURL}?time=currentday&choice=combo`,headers)
-        .then(res=>{
-
-        })
         document.addEventListener('scroll',this.addItem)
         return () => {
             document.removeEventListener('scroll', this.addItem)
