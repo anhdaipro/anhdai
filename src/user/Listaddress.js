@@ -60,7 +60,7 @@ const Addressuser = ({user}) =>{
     }
 
     function setdefault(e,address){
-        const data={default:true,id:address.id}
+        const data={action:'default',id:address.id}
         const list_addresses=state.list_addresses.map(item=>{
             if(item.id==address.id){
                 return ({...item,default:true})
@@ -81,7 +81,7 @@ const Addressuser = ({user}) =>{
     }
 
     const deleteAddress=useCallback((address)=>{
-        const data={'delete':true,id:address.id}
+        const data={action:'delete',id:address.id}
         const list_addresses=state.list_addresses.filter(item=>item.id!=address.id)
         setState({...state,list_addresses:list_addresses})
         setAction(false)

@@ -7,7 +7,56 @@ import { Link } from 'react-router-dom';
 import SlideshowGallery from "../hocs/Slideshow"
 import { headers } from '../actions/auth';
 import Dailyreacomment from './home/Dailyrecommend';
-
+import styled from "styled-components"
+const ListItem=styled.div`
+    display: flex;
+    justify-content: space-around;
+    background-color: #fff;
+    width: 1200px;
+    margin: 10px auto 0;
+    min-height: 108px;
+`
+const Item=styled.div`
+width: 100px;
+`
+const Background=styled.div`
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin: 18px auto 8px;
+`
+const Image=styled.div`
+    background-image: url(${props=>props.image});
+    background-size: contain;
+    height:100%;
+    background-repeat: no-repeat;
+`
+const Name=styled.div`
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: .8125rem;
+    max-width: 150px;
+    margin-bottom: 8px;
+    word-wrap: break-word;
+    overflow: hidden;
+    line-height: .875rem;
+    color: #222;
+    letter-spacing: 0;
+    text-align: center;
+`
+const listitem=[
+    {name:'Khung giờ săn sale',image:'https://cf.shopee.vn/file/46a2a2c810622f314d78455da5e5d926_xhdpi'},
+    {name:'Gì Cũng Rẻ - Mua Là Freeship',image:'https://cf.shopee.vn/file/b3535d7e56c58c4ebe9a87672d38cc5e_xhdpi'},
+    {name:'Flash Sale',image:'https://cf.shopee.vn/file/93acaac785c19b09180b01cc34a4c17e_xhdpi'},
+    {name:'Thứ 4 Freeship - x4 Ưu Đãi',image:'https://cf.shopee.vn/file/a8d76bca057ba0b117dcf8e1ef068d16_xhdpi'},
+    {name:'Bắt Trend - Giá Sốc',image:'https://cf.shopee.vn/file/1975fb1af4ae3c22878d04f6f440b6f9_xhdpi'},
+    {name:'Hoàn Xu Xtra Từ 100K',image:'https://cf.shopee.vn/file/21a4856d1fecd4eda143748661315dba_xhdpi'},
+    {name:'Hàng Hiệu Giá Tốt',image:'https://cf.shopee.vn/file/8d6d5ee795e7675fed39d31ba04c3b92_xhdpi'},
+    {name:'Hàng Quốc Tế',image:'https://cf.shopee.vn/file/a08ab28962514a626195ef0415411585_xhdpi'},
+    {name:'Nạp thẻ & Dịch vụ',image:'https://cf.shopee.vn/file/9df57ba80ca225e67c08a8a0d8cc7b85_xhdpi'}
+]
 const int = 2;
 class ImageHome extends React.Component {
     constructor(props) {
@@ -54,6 +103,19 @@ class ImageHome extends React.Component {
                     </Link>
                 </div>
             </div>
+            <ListItem>
+                {listitem.map((item,i)=>
+                <Link to='/ggg'>
+                    <div style={{width:'100px'}}>
+                        <Background>
+                            <Image image={item.image}></Image>
+                        </Background>
+                    <Name>{item.name}</Name>
+                    </div>
+                </Link>
+                )}
+                
+            </ListItem>
         </div>
       )
     }
@@ -267,7 +329,7 @@ const Itemflashsale =()=> {
                                                                     {item.number_order/item.promotion_stock>0.5?
                                                                         <div className="Xm0-Ex"></div>:''}
                                                                     
-                                                                    
+                            
                                                                 </div>
                                                             </div>
                                                         </div>

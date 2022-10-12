@@ -63,17 +63,12 @@ const SlideshowGallery=({slides,automatic})=>{
         autoPlayRef.current();
         setState(prev=>{return{...prev,transition:500}})
     }
-
-    
     const interval = setInterval(play, timeout);
-
     return () => {
         clearInterval(interval);
-        
     };
   }, [activeSlide])
 
-  
 
   const throttleArrows = () => {
     setState({...state, transitioning: true })
@@ -87,29 +82,10 @@ const SlideshowGallery=({slides,automatic})=>{
     setState(prev=>{return{
       ...prev,
       transition:500,
-      activeSlide:activeSlide==_slides.length-1?0: activeSlide + 1
+      activeSlide:activeSlide==slides.length-1?0: activeSlide + 1
     }})
-   
-    settime(activeSlide==_slides.length-1?0:3000)
-    
-    
   }
 
-  useEffect(() => {
-     if(activeSlide === _slides.length-1){
-        setState(prev=>{return{
-            ...prev,
-            activeSlide:1,transition:0
-        }})
-        
-     }
-     if(activeSlide === 0){
-        setState(prev=>{return{
-            ...prev,
-            activeSlide:slides.length,transition:500
-        }})
-     }
-  }, [activeSlide])
   const prevSlide = () => {
     setState({
       ...state,
@@ -128,10 +104,10 @@ const SlideshowGallery=({slides,automatic})=>{
         <div className="stardust-carousel">
             {slides.length>0?<>
             <div  className="stardust-carousel__item-list-wrapper" style={{paddingTop: '29.5003%'}}>
-                <ul ref={sliderRef}  className="stardust-carousel__item-list" style={{width: `${100*_slides.length}%`, transition: `ease ${state.transition}ms`,
-                 transform: `translate3d(${-(activeSlide+1)*(100/_slides.length)}%, 0, 0)`}}>
-                    {_slides.map((item,i)=>
-                    <li key={i} className="stardust-carousel__item" style={{width: `${100/_slides.length}%`}}>
+                <ul ref={sliderRef}  className="stardust-carousel__item-list" style={{width: `${100*slides.length}%`, transition: `ease ${state.transition}ms`,
+                 transform: `translate3d(${-(activeSlide)*(100/slides.length)}%, 0, 0)`}}>
+                    {slides.map((item,i)=>
+                    <li key={i} className="stardust-carousel__item" style={{width: `${100/slides.length}%`}}>
                         <div className="stardust-carousel__item-inner-wrapper">
                             <Link className="full-home-banners__banner-image" to={item.url_field}>
                                 <div className="_3XtrnR full-home-banners__light-background">
@@ -147,7 +123,7 @@ const SlideshowGallery=({slides,automatic})=>{
             <div onClick={nextSlide} className="stardust-carousel__arrow stardust-carousel__arrow--type-1 stardust-carousel__arrow--next"><svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" role="img" className="stardust-icon stardust-icon-arrow-right-bold"><path stroke="none" d="m11.1 9.9l-9-9-2.2 2.2 8 7.9-8 7.9 2.2 2.1 9-9 1-1z"></path></svg></div>
             <div className="stardust-carousel__dots">
                 {Array(slides.length).fill().map((_, i) => 
-                    <div key={i} onClick={()=>setState({...state,activeSlide:i,transition:500})} className={`stardust-carousel__dot ${i==activeSlide || (i==0&&activeSlide==slides.length)?'stardust-carousel__dot--active':''}`}></div>
+                    <div key={i} onClick={()=>setState({...state,activeSlide:i,transition:500})} className={`stardust-carousel__dot ${i==activeSlide?'stardust-carousel__dot--active':''}`}></div>
                 )}
             </div></>:
             ''}
