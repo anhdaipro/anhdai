@@ -114,8 +114,7 @@ font-size: .625rem;
 overflow:hidden;
 svg{
     color: #ffce3d;
-    stroke: #ffce3d;
-    
+    stroke: #ffce3d;  
 }
 `
 const StyleSection=styled.section`

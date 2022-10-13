@@ -49,7 +49,6 @@ const Profile =()=>{
     }
     const saveinfo=()=>{
         let form=new FormData()
-        
         Object.keys(formData).map(item=>{
             form.append(item,formData[item])
         })

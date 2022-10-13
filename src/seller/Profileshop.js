@@ -455,7 +455,7 @@ const Profileshop=({user})=>{
                     <div className="modal__body" style={{position: 'relative'}}>
                       <div data-v-abd46a46="" className="d-flex url-input-modal__content">
                         <div onMouseLeave={()=>setData({...data,show_close:false})} onMouseEnter={()=>setData({...data,show_close:data.url_video!=null&&data.url_video.trim()!=''?true:false})} data-v-abd46a46="" className="input url-input">
-                          <div class={`input__inner input__inner--normal ${data.error!=undefined &&data.error?'error':''}`}> 
+                          <div className={`input__inner input__inner--normal ${data.error!=undefined &&data.error?'error':''}`}> 
                             <input value={data.url_video} onChange={(e)=>setData({...data,url_video:e.target.value})} type="text" placeholder="https://" clearable="true" resize="vertical" rows="2" minrows="2" maxlength="1000" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                             <div onClick={()=>setData({...data,url_video:''})} className="input__suffix" >
                               <i className="input__clear-btn icon" style={{visibility:data.show_close?'':'hidden'}}>

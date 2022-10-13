@@ -406,7 +406,7 @@ export default class HomePage extends React.Component {
         return (
             <>
                 <div id="main">
-                    <div className="top">
+                    <div className="top top--sticky">
                         <Navbar/>
                     </div>
                     <div className="home-page">
