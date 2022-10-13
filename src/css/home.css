@@ -3483,6 +3483,20 @@ margin-top:1.875rem;
     transition: 1s ease transform;
 
 }
+.navbar-with-more-menu__wrapper {
+    display: flex;
+    box-shadow: 0 1px 1px 0 rgb(0 0 0 / 5%);
+}
+.navbar-with-more-menu__items {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+.navbar-with-more-menu__item span {
+    padding: 14px 10px;
+    flex-grow: 1;
+    text-align: center;
+}
 .top--sticky {
     position: fixed;
     top: 0;
@@ -4575,9 +4589,7 @@ margin-top: 5rem;
     top:100%;
     right:0;
 }
-.container-wrapper {
-    min-width: 1200px;
-}
+
 .header-with-search-wrapper {
     background: transparent;
     box-shadow: 0 1px 1px 0 rgb(0 0 0 / 5%);

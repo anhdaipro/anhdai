@@ -1,4 +1,4 @@
-import {rating_choice} from "../constants"
+import {rating_choice,partition} from "../constants"
 import Itemsearch from "./Listitem"
 import React, {useState, useEffect,useRef} from 'react'
 import SlideshowGallery from "../hocs/Slideshow"
@@ -6,7 +6,100 @@ import axios from "axios"
 import {useNavigate , Link,useLocation, Navigate,useParams,useSearchParams} from 'react-router-dom';
 import { headers } from "../actions/auth";
 import { categoryinfoURL, searchURL } from "../urls";
+import Shopmall from "./home/Shopmall"
+import styled from "styled-components"
 let PageSize=30
+const int=2
+const shopmall=[
+    {image:'https://cf.shopee.vn/file/513f589c10254512669d3d8b50a6dea7'},
+    {image:'https://cf.shopee.vn/file/5c1936f863ed34b0e77299b2dbb96365'},
+    {image:'https://cf.shopee.vn/file/d1aa441638492fb588741d01af604811'},
+    {image:'https://cf.shopee.vn/file/513f589c10254512669d3d8b50a6dea7'},
+    {image:'https://cf.shopee.vn/file/5c1936f863ed34b0e77299b2dbb96365'},
+    {image:'https://cf.shopee.vn/file/d1aa441638492fb588741d01af604811'},
+    {image:'https://cf.shopee.vn/file/513f589c10254512669d3d8b50a6dea7'},
+    {image:'https://cf.shopee.vn/file/5c1936f863ed34b0e77299b2dbb96365'},
+    {image:'https://cf.shopee.vn/file/d1aa441638492fb588741d01af604811'},
+    {image:'https://cf.shopee.vn/file/513f589c10254512669d3d8b50a6dea7'},
+    {image:'https://cf.shopee.vn/file/5c1936f863ed34b0e77299b2dbb96365'},
+    {image:'https://cf.shopee.vn/file/d1aa441638492fb588741d01af604811'},
+    {image:'https://cf.shopee.vn/file/513f589c10254512669d3d8b50a6dea7'},
+    {image:'https://cf.shopee.vn/file/5c1936f863ed34b0e77299b2dbb96365'},
+    {image:'https://cf.shopee.vn/file/d1aa441638492fb588741d01af604811'},
+    {image:'https://cf.shopee.vn/file/5c1936f863ed34b0e77299b2dbb96365'},
+    {image:'https://cf.shopee.vn/file/d1aa441638492fb588741d01af604811'},
+    {image:'https://cf.shopee.vn/file/5c1936f863ed34b0e77299b2dbb96365'},
+    {image:'https://cf.shopee.vn/file/d1aa441638492fb588741d01af604811'},
+    {image:'https://cf.shopee.vn/file/5c1936f863ed34b0e77299b2dbb96365'},
+    {image:'https://cf.shopee.vn/file/513f589c10254512669d3d8b50a6dea7'},
+    {image:'https://cf.shopee.vn/file/5c1936f863ed34b0e77299b2dbb96365'},
+    {image:'https://cf.shopee.vn/file/d1aa441638492fb588741d01af604811'}
+    ]
+    const shoptrend=[
+        {name:'FREESHIP & HOÀN XU XTRA',image:'https://cf.shopee.vn/file/3854ad0615cfa2d15eb06a446816465d'},
+        {name:'Shop xu hướng',image:'https://cf.shopee.vn/file/f05c3231cb59b6d0c233db3ea7a30b8f'},
+        {name:'FREESHIP & HOÀN XU XTRA',image:'https://cf.shopee.vn/file/3854ad0615cfa2d15eb06a446816465d'},
+        {name:'Shop xu hướng',image:'https://cf.shopee.vn/file/f05c3231cb59b6d0c233db3ea7a30b8f'},
+        {name:'FREESHIP & HOÀN XU XTRA',image:'https://cf.shopee.vn/file/3854ad0615cfa2d15eb06a446816465d'},
+        {name:'Shop xu hướng',image:'https://cf.shopee.vn/file/f05c3231cb59b6d0c233db3ea7a30b8f'},
+        
+    ]
+    const itemtop=[
+        {name:'SOFT BOY - ÁO HOODIE',image:'https://cf.shopee.vn/file/14a549d1dcd55c645bf30778cb67b4ee'},
+        {name:'E-BOY - ÁO SƠ MI DÀI TAY',image:'https://cf.shopee.vn/file/aea452a1197040405efd12e508d74d41'},
+        {name:'SOFT BOY - ÁO HOODIE',image:'https://cf.shopee.vn/file/14a549d1dcd55c645bf30778cb67b4ee'},
+        {name:'SOFT BOY - ÁO HOODIE',image:'https://cf.shopee.vn/file/14a549d1dcd55c645bf30778cb67b4ee'},
+        {name:'SOFT BOY - ÁO HOODIE',image:'https://cf.shopee.vn/file/14a549d1dcd55c645bf30778cb67b4ee'},
+        
+    ]
+const StyleText=styled.div`
+    
+    font-weight: 400;
+    margin-right: 5px;
+    text-transform: capitalize;
+    font-size:1rem;
+    color:${props=>props.primary?'#ee4d2d':'rgba(0, 0, 0, 0.26)'}
+`
+const Itemname=styled.div`
+    margin-bottom: 0.625rem;
+    text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 1rem;
+    white-space: nowrap;
+    line-height: 1.5625rem;
+    height: 1.5625rem;
+`
+const ImageBackground=styled.div`
+    background-size: cover;
+    background-image:url(${props=>props.image});
+    background-repeat: no-repeat;
+    width: 100%;
+    padding-top: 100%;
+
+`
+const Flexcenter=styled.div`
+    display:flex;
+    align-items: center;
+    justify-content: center;
+`
+const Item=styled.div`
+box-shadow: rgb(0 0 0 / 5%) 0px 1px 1px 0px;
+    border-radius: 0.125rem;
+    overflow: hidden;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgba(0, 0, 0, 0.09);
+    margin: 0px 0.25rem;
+    position: relative;
+&:hover{
+    box-shadow: rgb(0 0 0 / 5%) 4px 8px 8px 4px;
+    transform:translateY(-1px)
+}
+`
+const Boxitem=styled.div`
+padding: 0px 0.9375rem;
+margin:0.625rem 0
+`
 const Categorydetail = ({data,category_id}) => {
     const {slug}=useParams();
     const [FormData,setFormData]=useState({minPrice:null,maxPrice:null})
@@ -16,13 +109,14 @@ const Categorydetail = ({data,category_id}) => {
     const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
     const search=Object.fromEntries([...params])
     const [listitem,setListitem]=useState()
-    const[type,setType]=useState()
+    const[shopmalls,setShopmall]=useState([])
     const[page_count]=useState(1)
     useEffect(()=>{
         (async()=>{
             if(category_id){
                 const res =await axios.get(`${categoryinfoURL}?category_id=${category_id}`,headers)
                 setCategory(res.data)
+                setShopmall(partition(shopmall, int).map(subarray => subarray))
             }
         })()
     },[category_id])
@@ -76,15 +170,21 @@ const Categorydetail = ({data,category_id}) => {
                         slides={data.image_home}
                         automatic={true}
                         timeout={`2500`}
+                        top={29.5003}
                         dot={true}
                     />
                 </div>
             </div>
-            {/*
             <div className="containers _3wA4TW">
+                <Shopmall 
+                num_display={6}
+                width={1200}
+                categories={shopmalls}/>
+            </div>
+            <div className="containers">
                 <div className="ofs-carousel">
                     <div className="ofs-carousel__header">
-                        <Link className="ofs-carousel__header-left ofs-carousel__header-left--clickable" to="/mall/Thời-Trang-Nam-cat.11035567">Anhdai Mall</Link>
+                        <div>SIÊU SHOP THỊNH HÀNH - BUNG DEAL SIÊU PHẨM</div>
                         <Link className="ofs-carousel__header-right" to="/mall/brands/11035567">
                             <div className="ofs-page__section-header-see-all item-center">Xem tất cả
                                 <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
@@ -94,32 +194,26 @@ const Categorydetail = ({data,category_id}) => {
                     <div className="ofs-carousel__items">
                         <div className="image-carousel">
                             <div className="image-carousel__item-list-wrapper">
-                                <ul className="image-carousel__item-list" style={{width: '200%', transform: 'translate(0px, 0px)', transition: 'all 500ms ease 0s'}}>
-                                    <li className="image-carousel__item" style={{padding: '0px',width: '16.6667%'}}>
-                                        <div className="ofs-carousel__column ofs-carousel__column--two-row">
-                                            <div className="ofs-carousel__item">
-                                                <Link className="ofs-carousel__shop-cover-image" to="/sp.btw2">
-                                                    <div className="_25_r8I">
-                                                        <div className="ofs-carousel__cover-image _2GchKS" style={{backgroundImage:`url(&quot;https://cf.shopee.vn/file/267d8d4a6f5cf38e471fcb2a4b2e7584&quot;)`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
-                                                    </div>
-                                                </Link>
-                                            </div>
-                                            <div className="ofs-carousel__item">
-                                                <Link className="ofs-carousel__shop-cover-image" to="/coolmate.vn">
-                                                    <div className="_25_r8I">
-                                                        <div className="ofs-carousel__cover-image _2GchKS" style={{backgroundImage: `url(&quot;https://cf.shopee.vn/file/63072c90d0ed6f1acdbc301f4e35f890&quot;)`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
-                                                    </div>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </li>
+                                <ul className="image-carousel__item-list" style={{width: '100%', transform: 'translate(0px, 0px)', transition: 'all 500ms ease 0s'}}>
+                                    {shoptrend.map((item,i)=>
+                                    <li className="image-carousel__item"  key={i} style={{width:`${100/(shoptrend.length)}%`}}>
+                                        <Item>
+                                            <Link className="ofs-carousel__shop-cover-image" to="/sp.btw2">
+                                                <div style={{position:'relative'}}>
+                                                    <ImageBackground image={item.image}/>
+                                                    <Boxitem>
+                                                        <Itemname>{item.name}</Itemname>
+                                                        <Flexcenter>
+                                                            <StyleText>Từ </StyleText>
+                                                            <StyleText primary>₫13.900</StyleText>
+                                                        </Flexcenter>       
+                                                    </Boxitem>
+                                                </div>
+                                            </Link>
+                                        </Item>
+                                    </li>   
+                                    )}                          
                                 </ul>
-                            </div>
-                            <div className="carousel-arrow carousel-arrow--prev carousel-arrow--hint carousel-arrow--hidden" role="button" tabIndex="0" style={{opacity: 1, visibility: 'hidden', transform: 'translateX(calc(-50% + 0px))'}}>
-                                <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
-                            </div>
-                            <div className="carousel-arrow carousel-arrow--next carousel-arrow--hint" role="button" tabIndex="0" style={{opacity: 1, visibility: 'visible', transform: 'translateX(calc(50% - 0px))'}}>
-                                <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
                             </div>
                         </div>
                     </div>
@@ -128,7 +222,7 @@ const Categorydetail = ({data,category_id}) => {
             <div className="containers _3wA4TW">
                 <div className="ofs-carousel">
                     <div className="ofs-carousel__header">
-                        <Link className="ofs-carousel__header-left ofs-carousel__header-left--clickable" to="/mall/Thời-Trang-Nam-cat.11035567">Anhdai Mall</Link>
+                        <div>KIỂU CÁCH THỊNH HÀNH - DIỆN BẢNH MẶC SANG</div>
                         <Link className="ofs-carousel__header-right" to="/mall/brands/11035567">
                             <div className="ofs-page__section-header-see-all item-center">Xem tất cả
                                 <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
@@ -138,37 +232,31 @@ const Categorydetail = ({data,category_id}) => {
                     <div className="ofs-carousel__items">
                         <div className="image-carousel">
                             <div className="image-carousel__item-list-wrapper">
-                                <ul className="image-carousel__item-list" style={{width: '200%', transform: 'translate(0px, 0px)', transition: 'all 500ms ease 0s'}}>
-                                    <li className="image-carousel__item" style={{padding: '0px',width: '16.6667%'}}>
-                                        <div className="ofs-carousel__column ofs-carousel__column--two-row">
-                                            <div className="ofs-carousel__item">
-                                                <Link className="ofs-carousel__shop-cover-image" to="/sp.btw2">
-                                                    <div className="_25_r8I">
-                                                        <div className="ofs-carousel__cover-image _2GchKS" style={{backgroundImage: `url(&quot;https://cf.shopee.vn/file/267d8d4a6f5cf38e471fcb2a4b2e7584&quot;)`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
-                                                    </div>
-                                                </Link>
-                                            </div>
-                                            <div className="ofs-carousel__item">
-                                                <Link className="ofs-carousel__shop-cover-image" to="/coolmate.vn">
-                                                    <div className="_25_r8I">
-                                                        <div className="ofs-carousel__cover-image _2GchKS" style={{backgroundImage: `url(&quot;https://cf.shopee.vn/file/63072c90d0ed6f1acdbc301f4e35f890&quot;)`, backgroundSize: 'contain',backgroundRepeat: 'no-repeat'}}></div>
-                                                    </div>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </li>                             
+                                <ul className="image-carousel__item-list" style={{width: '100%', transform: 'translate(0px, 0px)', transition: 'all 500ms ease 0s'}}>
+                                    {itemtop.map((item,i)=>
+                                    <li className="image-carousel__item"  key={i} style={{width:`${100/(itemtop.length)}%`}}>
+                                        <Item>
+                                            <Link className="ofs-carousel__shop-cover-image" to="/sp.btw2">
+                                                <div style={{position:'relative'}}>
+                                                    <ImageBackground image={item.image}/>
+                                                    <Boxitem>
+                                                        <Itemname>{item.name}</Itemname>
+                                                        <Flexcenter>
+                                                            <StyleText>Từ </StyleText>
+                                                            <StyleText primary>₫13.900</StyleText>
+                                                        </Flexcenter>       
+                                                    </Boxitem>
+                                                </div>
+                                            </Link>
+                                        </Item>
+                                    </li>   
+                                    )}                          
                                 </ul>
-                            </div>
-                            <div className="carousel-arrow carousel-arrow--prev carousel-arrow--hint carousel-arrow--hidden" role="button" tabIndex="0" style={{opacity: 1, visibility: 'hidden', transform: 'translateX(calc(-50% + 0px))'}}>
-                                <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
-                            </div>
-                            <div className="carousel-arrow carousel-arrow--next carousel-arrow--hint" role="button" tabIndex="0" style={{opacity: 1, visibility: 'visible', transform: 'translateX(calc(50% - 0px))'}}>
-                                <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>*/}
+            </div>
             {data?
             <div className="d-flex mt-2 containers">
                 <div className="filter-panel">

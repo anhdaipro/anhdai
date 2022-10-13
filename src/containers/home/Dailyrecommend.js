@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const ListItem=styled.div`
 display:flex;
 flex-wrap:wrap;
-margin: 0 -0.375rem 6.25rem;
+margin: 0 -0.375rem 1.5rem;
 `
 const Item=styled.div`
 width:16.6667%;
@@ -145,6 +145,13 @@ background-color: rgb(242, 82, 32);
     border-left: 3px solid transparent;
 }
 `
+const Btnpage=styled(Link)`
+width: 24.375rem;
+margin: 0.625rem auto 0;
+display:flex;
+align-items:center;
+justify-content:center
+`
 const Dailyreacomment=(props)=>{
     const {items}=props
     return(
@@ -179,6 +186,8 @@ const Dailyreacomment=(props)=>{
                         </Item>
                         )}
                     </ListItem>
+                    <div className="item-center"><Btnpage to="/daily_discover?pageNumber=2" className='btn-light btn-l'>Xem tất cả</Btnpage></div>
+                    
                 </StyleSection>
     )
 }

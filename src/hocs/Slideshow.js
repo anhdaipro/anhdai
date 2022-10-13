@@ -1,7 +1,7 @@
 import React,{useEffect,useState,useRef} from 'react';
 import ReactDOM from 'react-dom';
 import {Link} from "react-router-dom"
-const SlideshowGallery=({slides,automatic})=>{
+const SlideshowGallery=({slides,automatic,top})=>{
     const firstSlide = slides[0]
     const secondSlide = slides[1]
     const lastSlide = slides[slides.length - 1]
@@ -103,7 +103,7 @@ const SlideshowGallery=({slides,automatic})=>{
     return(
         <div className="stardust-carousel">
             {slides.length>0?<>
-            <div  className="stardust-carousel__item-list-wrapper" style={{paddingTop: '29.5003%'}}>
+            <div  className="stardust-carousel__item-list-wrapper" style={{paddingTop: `${top}%`}}>
                 <ul ref={sliderRef}  className="stardust-carousel__item-list" style={{width: `${100*slides.length}%`, transition: `ease ${state.transition}ms`,
                  transform: `translate3d(${-(activeSlide)*(100/slides.length)}%, 0, 0)`}}>
                     {slides.map((item,i)=>
@@ -111,7 +111,7 @@ const SlideshowGallery=({slides,automatic})=>{
                         <div className="stardust-carousel__item-inner-wrapper">
                             <Link className="full-home-banners__banner-image" to={item.url_field}>
                                 <div className="_3XtrnR full-home-banners__light-background">
-                                    <div className="full-home-banners__main-banner-image nO87xn" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}></div>
+                                    <div className="full-home-banners__main-banner-image nO87xn" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat',paddingTop:`${top}%`}}></div>
                                 </div>
                             </Link>
                         </div>

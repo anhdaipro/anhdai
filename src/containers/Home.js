@@ -8,6 +8,7 @@ import SlideshowGallery from "../hocs/Slideshow"
 import { headers } from '../actions/auth';
 import Dailyreacomment from './home/Dailyrecommend';
 import styled from "styled-components"
+import Brand from './home/Brand';
 const ListItem=styled.div`
     display: flex;
     justify-content: space-around;
@@ -18,6 +19,16 @@ const ListItem=styled.div`
 `
 const Item=styled.div`
 width: 100px;
+`
+
+const Header=styled.div`
+    display: flex;
+    align-items:center;
+    background: #fff;
+    height: 3.75rem;
+    justify-content: center;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    padding: 0 1.25rem;
 `
 const Background=styled.div`
     width: 45px;
@@ -45,6 +56,14 @@ const Name=styled.div`
     color: #222;
     letter-spacing: 0;
     text-align: center;
+`
+const ImageBackground=styled.div`
+    background-size: cover;
+    background-image:url(${props=>props.image});
+    background-repeat: no-repeat;
+    width: 100%;
+    padding-top: 100%;
+
 `
 const listitem=[
     {name:'Khung giờ săn sale',image:'https://cf.shopee.vn/file/46a2a2c810622f314d78455da5e5d926_xhdpi'},
@@ -84,8 +103,9 @@ class ImageHome extends React.Component {
                 {this.state.loading?
                 <div className="full-home-banners">
                     <SlideshowGallery
-                        slides={this.state.items}
+                        slides={items}
                         automatic={true}
+                        top={29.5003}
                         timeout={`2500`}
                         dot={true}
                     />
@@ -105,7 +125,7 @@ class ImageHome extends React.Component {
             </div>
             <ListItem>
                 {listitem.map((item,i)=>
-                <Link to='/ggg'>
+                <Link key={i} to='/ggg'>
                     <div style={{width:'100px'}}>
                         <Background>
                             <Image image={item.image}></Image>
@@ -124,6 +144,7 @@ class ImageHome extends React.Component {
 class Category extends React.Component {
     state = {
         transform: 'translate(0px, 0px)',
+        translateY:0,
         error: null,
         categories:[],
         loading:false
@@ -140,22 +161,16 @@ class Category extends React.Component {
       });
     }
     
-    prevSlide =(e)=>{
-        e.currentTarget.nextElementSibling.style.visibility='visible'
-        e.currentTarget.style.visibility='hidden'
-        this.setState({transform: 'translate(0px, 0px)'});
-    }
-    nextSlide = (e) =>{
-        e.currentTarget.previousElementSibling.style.visibility='visible'
-        e.currentTarget.style.visibility='hidden'
-        this.setState({transform: 'translate(-360px, 0px)'});
-        
-    }
     render() {
-    const {categories,transform}=this.state
-        const remove=(e)=>{
-            var array = [...this.state.categories]
-            var index = array.indexOf(e.target.value)
+        const {categories,transform,translateY}=this.state
+        const {num_display,width}=this.props
+            const remove=(e)=>{
+                var array = [...this.state.categories]
+                var index = array.indexOf(e.target.value)
+            }
+        const widthcate=categories.length/num_display
+        const settransform=(value)=>{
+            this.setState({translateY: value<=0?0:value>=widthcate-1?widthcate-1:value})
         }
         return (
             <div className="section-category-list">
@@ -165,10 +180,10 @@ class Category extends React.Component {
                 
                 <div className="image-carousel">
                     <div className="image-carousel__item-list-wrapper">
-                        <ul className="image-carousel__item-list" style={{width: '130%', transform: transform, transition: 'all 500ms ease 0s'}}>
+                        <ul className="image-carousel__item-list" style={{width: `${categories.length*100/num_display}%`, transform: `translate(-${translateY*width}px, 0px)`, transition: 'all 500ms ease 0s'}}>
                            {
                             categories.map((item,i)=>
-                                <li className="image-carousel__item" key={i}>
+                                <li className="image-carousel__item" key={i} style={{width:`${100/num_display}%`}}>
                                     <div className="home-category-list__group">
                                         {
                                         item.map(category=>
@@ -191,10 +206,10 @@ class Category extends React.Component {
                             )}
                         </ul>
                     </div>
-                    <div onClick={this.prevSlide} className="carousel-arrow carousel-arrow--hint carousel-arrow--prev" role="button" tabIndex="0" style={{opacity: 1, visibility: 'hidden', transform: 'translateX(calc(-50% + 0px))'}}>
-                        <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
+                    <div onClick={()=>settransform(translateY-1)} className={`carousel-arrow carousel-arrow--prev carousel-arrow--hint ${translateY==0?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
+                            <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
                     </div>
-                    <div onClick={this.nextSlide} className="carousel-arrow carousel-arrow--hint carousel-arrow--next carousel-arrow--hidden" role="button" tabIndex="0" style={{opacity: 1, visibility: 'visible', transform: 'translateX(calc(50% - 0px))'}}>
+                    <div onClick={()=>settransform(translateY+1)}  className={`carousel-arrow carousel-arrow--next carousel-arrow--hint ${translateY==(categories.length/num_display)?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==widthcate-1?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
                         <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
                     </div>
                 </div>
@@ -203,10 +218,12 @@ class Category extends React.Component {
     }
 }
   
-const Itemflashsale =()=> {
+const Itemflashsale =(props)=> {
     const [state,setState]=useState({items:[],time_end:new Date(),transform:'translate(0px, 0px)',loading:false })
     const [time,setTime]=useState({hours:0,mins:0,seconds:0})
-    const[dx,setDx]=useState(0)
+    const [translateY,settranslateY]=useState(0)
+    const{num_display,width}=props
+    
     useEffect(() => {
         const getJournal = async () => {
         await axios.get(listitemflashsalelURL,headers)
@@ -234,9 +251,7 @@ const Itemflashsale =()=> {
     },[])
 
     
-    const setSlide = (value) =>{
-        setDx(value)
-    }
+    
     const number=(number,value)=>{
         return Array(number).fill().map((_,i)=>
             <div key={i} style={{color:'#fff'}} className="countdown-timer__number__item">
@@ -245,6 +260,10 @@ const Itemflashsale =()=> {
         )
     }
     const { items,transform,id} = state;
+    const widthcate=items.length/num_display
+    const settransform=(value)=>{
+        settranslateY(value<=0?0:value>=widthcate-1?widthcate-1:value)
+    }
         return (
             <>
             {state.loading && items.length>0?
@@ -293,10 +312,10 @@ const Itemflashsale =()=> {
                     <div className="header-section__content">
                         <div className="image-carousel">
                             <div className="image-carousel__item-list-wrapper">                      
-                                <ul style={{width: "266.667%",transform:`translate(${-dx}px, 0px)`,transition: "all 500ms ease 0s"}}>
+                                <ul className="image-carousel__item-list" style={{width: `${items.length*100/num_display}%`, transform: `translate(-${translateY*1200}px, 0px)`, transition: 'all 500ms ease 0s'}}>
                                     {
                                     items.map(item =>
-                                        <li key={item.id} className="image-carousel__item" style={{width: "200px"}}>
+                                        <li key={item.id} className="image-carousel__item" style={{width:`${100/num_display}%`}}>
                                             <div className="flash-sale-item-card flash-sale-item-card--home-page">
                                                 <Link className="flash-sale-item-card-link" to={`/flash_sale?fromItem=${item.id}&promotionId=${id}`}>
                                                     <div className="flash-sale-item-card__image flash-sale-item-card__image--home-page">
@@ -318,18 +337,13 @@ const Itemflashsale =()=> {
                                                                 <div className="HIIASx">
                                                                     <div className="Ygavkn">{item.number_order/item.promotion_stock>0.8?'Sắp cháy hàng':`Đã bán ${item.number_order}`}</div>
                                                                     <div className="NiQ2DI">
-                                                                        <div className="NwnNg9" style={{width: `${(1-(item.number_order/item.promotion_stock))*100}%`}}>
-                                                                            
+                                                                        <div className="NwnNg9" style={{width: `${(1-(item.number_order/item.promotion_stock))*100}%`}}> 
                                                                             <div className="zYeAeX"></div>
-                                                                            
-
                                                                         </div>
                                                                        
                                                                     </div>
                                                                     {item.number_order/item.promotion_stock>0.5?
                                                                         <div className="Xm0-Ex"></div>:''}
-                                                                    
-                            
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -352,10 +366,10 @@ const Itemflashsale =()=> {
                                         }
                                     </ul>
                                 </div>
-                                <div onClick={()=>setSlide(dx-1000)} className="carousel-arrow carousel-arrow--hint carousel-arrow--prev  carousel-arrow--hidden" role="button" tabIndex={0} style={{opacity: '1', visibility: `${dx==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
+                                <div onClick={()=>settransform(translateY-1)} className={`carousel-arrow carousel-arrow--prev carousel-arrow--hint ${translateY==0?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
                                     <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
                                 </div>
-                                <div onClick={()=>setSlide(dx+1000)} className="carousel-arrow carousel-arrow--hint carousel-arrow--next" role="button" tabIndex={0} style={{opacity: '1',visibility: `${dx==2000?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
+                                <div onClick={()=>settransform(translateY+1)}  className={`carousel-arrow carousel-arrow--next carousel-arrow--hint ${translateY==widthcate-1?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==widthcate-1?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
                                     <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
                                 </div>
                             </div>
@@ -368,8 +382,9 @@ const Itemflashsale =()=> {
 
 
 export default class HomePage extends React.Component {
-    state={items:[],item_common:[],list_trend_search:[],list_top_search:[],showimage:true,from_index:0}
+    state={items:[],item_common:[],list_trend_search:[],list_top_search:[],showimage:true,from_index:0,categories:[]}
     componentDidMount() {  
+        
         document.addEventListener('scroll',this.addItem)
         return () => {
             document.removeEventListener('scroll', this.addItem)
@@ -402,7 +417,7 @@ export default class HomePage extends React.Component {
         this.setState({from_index:from_index})
     }
     render() {
-        const {items}=this.state
+        const {items,categories}=this.state
         return (
             <>
                 <div id="main">
@@ -412,8 +427,14 @@ export default class HomePage extends React.Component {
                     <div className="home-page" style={{marginTop:'7.375rem'}}>
                         <div className="containers">
                         <ImageHome/>
-                            <Category/>
-                            <Itemflashsale/>
+                            <Category
+                            width={1200}
+                            num_display={10}
+                            />
+                            <Itemflashsale
+                            width={1200}
+                            num_display={10}
+                            />
                             <div className="section-trending-search-list">
                                 <div className="header-section header-section--simple">
                                     <div className="header-section__header item-center">
@@ -445,8 +466,8 @@ export default class HomePage extends React.Component {
                                     </div> 
                                 </div>
                             </div>
-                            {/* THIS ONE IS A VALID COMMENT 
-                            <div className="header-section c14g1H header-section--simple">
+                            
+                            <div className="header-section header-section--simple">
                                 <div className="header-section__header item-center">
                                     <div className="header-section__header__title">
                                         <span className="_1HWfeJ">Tìm kiếm hàng đầu</span>
@@ -456,6 +477,50 @@ export default class HomePage extends React.Component {
                                             <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
                                         </button>
                                     </a>
+                                </div>
+                                <div class="homepage-mall-section">
+                                    <div class="header-section header-section--simple">
+                                        <Header>
+                                            <div class="header-section__header__title">
+                                                <div class="_9FdTU0 item-center">
+                                                    <a class="ecCXWo usxt6W" href="/mall">Shopee Mall</a>
+                                                    <div class="_5Ru4Na item-center">
+                                                        <div class="LetK2C">
+                                                            <img class="a8XyX2" src="https://deo.shopeemobile.com/shopee/pcmall-live-sg/homepage/6c502a2641457578b0d5f5153b53dd5d.png"/>
+                                                            7 ngày miễn phí trả hàng
+                                                        </div>
+                                                        <div class="LetK2C">
+                                                            <img class="a8XyX2" src="https://deo.shopeemobile.com/shopee/pcmall-live-sg/homepage/511aca04cc3ba9234ab0e4fcf20768a2.png"/>
+                                                            Hàng chính hãng 100%
+                                                        </div>
+                                                        <div class="LetK2C">
+                                                            <img class="a8XyX2" src="https://deo.shopeemobile.com/shopee/pcmall-live-sg/homepage/16ead7e0a68c3cff9f32910e4be08122.png"/>
+                                                            Miễn phí vận chuyển
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="header-section__header-link">
+                                                <button class="button-no-outline">
+                                                    <a class="QRUn3m" href="/mall">
+                                                        <div class="_3cpToV item-center">Xem tất cả
+                                                            <div class="_0P+BHf">
+                                                                <svg enable-background="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" class="svg-icon icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </button>
+                                            </div>
+                                        </Header>
+                                        <div class="header-section__content">
+                                            
+                                            <Brand
+                                            width={800}
+                                            num_display={4}
+                                            />
+                                            
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="header-section__content">
                                     <div className="stardust-carousel">
@@ -484,7 +549,7 @@ export default class HomePage extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-                            </div>*/}
+                            </div>
                             <div className="section-recommend-products-wrapper">
                                 <div className="_25hUNg"></div>
                             </div>
@@ -533,6 +598,7 @@ export default class HomePage extends React.Component {
                                             <Dailyreacomment
                                             items={items}
                                             />
+                                            
                                         </section>
                                     </div>
                                 </div>

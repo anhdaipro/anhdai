@@ -414,7 +414,7 @@ class Cart extends React.Component{
     constructor(props) {
     super(props);
     this.state = {name:'',list_item_recommend:[],loading_item:false,page_no:1,items:[],
-        shopchoice:null,show_thread:false,list_shop:[],
+        shopchoice:null,show_thread:false,list_shop:[],keyword:'',
         threadchoice:null,threads:[],messages:[],list_threads:[],user:null,show_message:false,error:false}
     }
     
@@ -763,7 +763,7 @@ class Cart extends React.Component{
                 })
             }
         }
-        let {count_order,total,discount_promotion,loading,
+        let {count_order,total,discount_promotion,loading,keyword,show_order,
         discount_deal,discount_product,discount_voucher_shop,list_shop,
         warring,list_cartitem}=this.state
         return(
@@ -776,8 +776,8 @@ class Cart extends React.Component{
                     </div>
                     {loading?
                     <div className="_164M6a">
-                        <div className="cart-page-header-wrapper">
-                            <div className="container">
+                        <div className="cart-page-header-wrapper container-wrapper">
+                            <div className="containers">
                                 <div className="item-center">
                                     <div className="cart-page-header">
                                         <a className="cart-page-logo" href="/">
@@ -790,7 +790,7 @@ class Cart extends React.Component{
                                         <div className="searchbar">
                                             <div className="searchbar__main">
                                                 <form role="search" className="searchbar-input" autoComplete="off">
-                                                    <input aria-label="5 mã Freeship có sẵn trong ví" className="searchbar-input__input" maxLength="128" placeholder="5 mã Freeship có sẵn trong ví" autoComplete="off" aria-autocomplete="list" aria-controls="searchbar-listbox" value=""/>
+                                                    <input aria-label="5 mã Freeship có sẵn trong ví" className="searchbar-input__input" maxLength="128" placeholder="5 mã Freeship có sẵn trong ví" autoComplete="off" aria-autocomplete="list" aria-controls="searchbar-listbox" value={keyword}/>
                                                 </form>
                                             </div>
                                             <button type="button" className="btn btn-solid-primary btn--s btn--inline searchbar__search-button">
@@ -821,9 +821,9 @@ class Cart extends React.Component{
                                         <div className="item-action">Action</div>    
                                     </div>
                                     {
-                                        this.state.list_shop.map((shop,index)=><>
+                                        list_shop.map((shop,index)=><div key={shop.id}>
                                             {list_cartitem.some(cartitem=>cartitem.shop_id===shop.id)?
-                                            <div className="order-total-shop" key={shop.id}>
+                                            <div className="order-total-shop">
                                                 <div className="item-center shop-info _3ApheT">
                                                     <div className="item-check">
                                                         <label className={`stardust-checkbox ${list_cartitem.some(item => !item.check && item.shop_id===shop.id)?'':'stardust-checkbox--checked'}`}>
@@ -855,7 +855,7 @@ class Cart extends React.Component{
                                                                     removeitem={(e,item,product,cartitem)=>this.removeitem(e,item,product,cartitem)}
                                                                     checked={(e,item)=>this.checked(e,item)}
                                                                     product={'mainproduct'}
-                                                                    key={item.id}
+                                                                    key={`cartitem_${item.id}`}
                                                                     list_cartitem={list_cartitem}
                                                                     updatevariation={(e,item,color_id,size_id,product,cartitemchoice)=>this.updatevariation(e,item,color_id,size_id,product,cartitemchoice)}
                                                                 />  
@@ -863,7 +863,7 @@ class Cart extends React.Component{
                                                         </div>
                                                     :''}
                                                     {list_cartitem.filter(cartitem=>!cartitem.promotion &&shop.id===cartitem.shop_id).map((cartitem,i)=>
-                                                        <div key={cartitem.id} className="shop-item-order">
+                                                        <div key={`cartitem_${cartitem.id}`} className="shop-item-order">
                                                             {cartitem.shock_deal?
                                                                 <div className="shop-discount">
                                                                     <span className="_319wph">{cartitem.shock_deal.shock_deal_type==='1'?'Deal sốc':'Mua kèm'}</span>
@@ -879,7 +879,7 @@ class Cart extends React.Component{
                                                                 item={cartitem}
                                                                 product={'mainproduct'}
                                                                 list_cartitem={list_cartitem}
-                                                                key={cartitem.id}
+                                                                key={`cartitem_${cartitem.id}`}
                                                                 adjustitem={(e,item,product,cartitem,value)=>this.adjustitem(e,item,product,cartitem,value)}
                                                                 removeitem={(e,item,product)=>this.removeitem(e,item,product)}
                                                                 checked={(e,item)=>this.checked(e,item)}
@@ -889,7 +889,7 @@ class Cart extends React.Component{
                                                                 {cartitem.byproducts.map((item,j)=> 
                                                                     <Iteminfo
                                                                     item={item}
-                                                                    key={item.id}
+                                                                    key={`byproduct_${item.id}`}
                                                                     shop={shop}
                                                                     cartitem={cartitem}
                                                                     product={'byproduct'}
@@ -918,19 +918,19 @@ class Cart extends React.Component{
                                                 </div>
                                                 :''}
                                                 <div className="_1UHCH_">
-                                                    <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon _2MyMZE icon-free-shipping-line"><g><line fill="none" strokeLinejoin="round" strokeiterlimit="10" x1="8.6" x2="4.2" y1="9.8" y2="9.8"></line><circle cx="3" cy="11.2" fill="none" r="2" strokeIterlimit="10"></circle><circle cx="10" cy="11.2" fill="none" r="2" strokeiterlimit="10"></circle><line fill="none" strokeiterlimit="10" x1="10.5" x2="14.4" y1="7.3" y2="7.3"></line><polyline fill="none" points="1.5 9.8 .5 9.8 .5 1.8 10 1.8 10 9.1" strokeLinejoin="round" strokeiterlimit="10"></polyline><polyline fill="none" points="9.9 3.8 14 3.8 14.5 10.2 11.9 10.2" strokeLinejoin="round" strokeiterlimit="10"></polyline></g></svg>
+                                                    <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon _2MyMZE icon-free-shipping-line"><g><line fill="none" strokeLinejoin="round" strokeiterlimit="10" x1="8.6" x2="4.2" y1="9.8" y2="9.8"></line><circle cx="3" cy="11.2" fill="none" r="2" strokeiterlimit="10"></circle><circle cx="10" cy="11.2" fill="none" r="2" strokeiterlimit="10"></circle><line fill="none" strokeiterlimit="10" x1="10.5" x2="14.4" y1="7.3" y2="7.3"></line><polyline fill="none" points="1.5 9.8 .5 9.8 .5 1.8 10 1.8 10 9.1" strokeLinejoin="round" strokeiterlimit="10"></polyline><polyline fill="none" points="9.9 3.8 14 3.8 14.5 10.2 11.9 10.2" strokeLinejoin="round" strokeiterlimit="10"></polyline></g></svg>
                                                     <div className="UNDzvL">Giảm ₫15.000 phí vận chuyển đơn tối thiểu ₫50.000; Giảm ₫70.000 phí vận chuyển đơn tối thiểu ₫300.000</div><div className="drawer" id="pc-drawer-id-0" tabIndex="0">
                                                         <span className="_3xILt1"> Tìm hiểu thêm </span>
                                                     </div>
                                                 </div>
                                             </div>:''}
-                                        </>
+                                        </div>
                                         ) 
                                     }
                                 </div>  
                                 <div className="_2jol0L _3GVi82">
                                     <div className="_2gJN5P _1vM5hW">
-                                        <svg fill="none" viewBox="0 -2 23 22" className="svg-icon icon-voucher-line"><g filter="url(#voucher-filter0_d)"><mask id="a" fill="#fff"><path fillRule="evenodd" clipRule="evenodd" d="M1 2h18v2.32a1.5 1.5 0 000 2.75v.65a1.5 1.5 0 000 2.75v.65a1.5 1.5 0 000 2.75V16H1v-2.12a1.5 1.5 0 000-2.75v-.65a1.5 1.5 0 000-2.75v-.65a1.5 1.5 0 000-2.75V2z"></path></mask><path d="M19 2h1V1h-1v1zM1 2V1H0v1h1zm18 2.32l.4.92.6-.26v-.66h-1zm0 2.75h1v-.65l-.6-.26-.4.91zm0 .65l.4.92.6-.26v-.66h-1zm0 2.75h1v-.65l-.6-.26-.4.91zm0 .65l.4.92.6-.26v-.66h-1zm0 2.75h1v-.65l-.6-.26-.4.91zM19 16v1h1v-1h-1zM1 16H0v1h1v-1zm0-2.12l-.4-.92-.6.26v.66h1zm0-2.75H0v.65l.6.26.4-.91zm0-.65l-.4-.92-.6.26v.66h1zm0-2.75H0v.65l.6.26.4-.91zm0-.65l-.4-.92-.6.26v.66h1zm0-2.75H0v.65l.6.26.4-.91zM19 1H1v2h18V1zm1 3.32V2h-2v2.32h2zm-.9 1.38c0-.2.12-.38.3-.46l-.8-1.83a2.5 2.5 0 00-1.5 2.29h2zm.3.46a.5.5 0 01-.3-.46h-2c0 1.03.62 1.9 1.5 2.3l.8-1.84zm.6 1.56v-.65h-2v.65h2zm-.9 1.38c0-.2.12-.38.3-.46l-.8-1.83a2.5 2.5 0 00-1.5 2.29h2zm.3.46a.5.5 0 01-.3-.46h-2c0 1.03.62 1.9 1.5 2.3l.8-1.84zm.6 1.56v-.65h-2v.65h2zm-.9 1.38c0-.2.12-.38.3-.46l-.8-1.83a2.5 2.5 0 00-1.5 2.29h2zm.3.46a.5.5 0 01-.3-.46h-2c0 1.03.62 1.9 1.5 2.3l.8-1.84zM20 16v-2.13h-2V16h2zM1 17h18v-2H1v2zm-1-3.12V16h2v-2.12H0zm1.4.91a2.5 2.5 0 001.5-2.29h-2a.5.5 0 01-.3.46l.8 1.83zm1.5-2.29a2.5 2.5 0 00-1.5-2.3l-.8 1.84c.18.08.3.26.3.46h2zM0 10.48v.65h2v-.65H0zM.9 9.1a.5.5 0 01-.3.46l.8 1.83A2.5 2.5 0 002.9 9.1h-2zm-.3-.46c.18.08.3.26.3.46h2a2.5 2.5 0 00-1.5-2.3L.6 8.65zM0 7.08v.65h2v-.65H0zM.9 5.7a.5.5 0 01-.3.46l.8 1.83A2.5 2.5 0 002.9 5.7h-2zm-.3-.46c.18.08.3.26.3.46h2a2.5 2.5 0 00-1.5-2.3L.6 5.25zM0 2v2.33h2V2H0z" mask="url(#a)"></path></g><path clipRule="evenodd" d="M6.49 14.18h.86v-1.6h-.86v1.6zM6.49 11.18h.86v-1.6h-.86v1.6zM6.49 8.18h.86v-1.6h-.86v1.6zM6.49 5.18h.86v-1.6h-.86v1.6z"></path><defs><filter id="voucher-filter0_d" x="0" y="1" width="20" height="16" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood><feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset></feOffset><feGaussianBlur stdDeviation=".5"></feGaussianBlur><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.09 0"></feColorMatrix><feBlend in2="BackgroundImageFix" result="effect1_dropShadow"></feBlend><feBlend in="SourceGraphic" in2="effect1_dropShadow" result="shape"></feBlend></filter></defs></svg>
+                                        <svg fill="none" viewBox="0 -2 23 22" className="svg-icon icon-voucher-line"><g filter="url(#voucher-filter0_d)"><mask id="a" fill="#fff"><path fillRule="evenodd" clipRule="evenodd" d="M1 2h18v2.32a1.5 1.5 0 000 2.75v.65a1.5 1.5 0 000 2.75v.65a1.5 1.5 0 000 2.75V16H1v-2.12a1.5 1.5 0 000-2.75v-.65a1.5 1.5 0 000-2.75v-.65a1.5 1.5 0 000-2.75V2z"></path></mask><path d="M19 2h1V1h-1v1zM1 2V1H0v1h1zm18 2.32l.4.92.6-.26v-.66h-1zm0 2.75h1v-.65l-.6-.26-.4.91zm0 .65l.4.92.6-.26v-.66h-1zm0 2.75h1v-.65l-.6-.26-.4.91zm0 .65l.4.92.6-.26v-.66h-1zm0 2.75h1v-.65l-.6-.26-.4.91zM19 16v1h1v-1h-1zM1 16H0v1h1v-1zm0-2.12l-.4-.92-.6.26v.66h1zm0-2.75H0v.65l.6.26.4-.91zm0-.65l-.4-.92-.6.26v.66h1zm0-2.75H0v.65l.6.26.4-.91zm0-.65l-.4-.92-.6.26v.66h1zm0-2.75H0v.65l.6.26.4-.91zM19 1H1v2h18V1zm1 3.32V2h-2v2.32h2zm-.9 1.38c0-.2.12-.38.3-.46l-.8-1.83a2.5 2.5 0 00-1.5 2.29h2zm.3.46a.5.5 0 01-.3-.46h-2c0 1.03.62 1.9 1.5 2.3l.8-1.84zm.6 1.56v-.65h-2v.65h2zm-.9 1.38c0-.2.12-.38.3-.46l-.8-1.83a2.5 2.5 0 00-1.5 2.29h2zm.3.46a.5.5 0 01-.3-.46h-2c0 1.03.62 1.9 1.5 2.3l.8-1.84zm.6 1.56v-.65h-2v.65h2zm-.9 1.38c0-.2.12-.38.3-.46l-.8-1.83a2.5 2.5 0 00-1.5 2.29h2zm.3.46a.5.5 0 01-.3-.46h-2c0 1.03.62 1.9 1.5 2.3l.8-1.84zM20 16v-2.13h-2V16h2zM1 17h18v-2H1v2zm-1-3.12V16h2v-2.12H0zm1.4.91a2.5 2.5 0 001.5-2.29h-2a.5.5 0 01-.3.46l.8 1.83zm1.5-2.29a2.5 2.5 0 00-1.5-2.3l-.8 1.84c.18.08.3.26.3.46h2zM0 10.48v.65h2v-.65H0zM.9 9.1a.5.5 0 01-.3.46l.8 1.83A2.5 2.5 0 002.9 9.1h-2zm-.3-.46c.18.08.3.26.3.46h2a2.5 2.5 0 00-1.5-2.3L.6 8.65zM0 7.08v.65h2v-.65H0zM.9 5.7a.5.5 0 01-.3.46l.8 1.83A2.5 2.5 0 002.9 5.7h-2zm-.3-.46c.18.08.3.26.3.46h2a2.5 2.5 0 00-1.5-2.3L.6 5.25zM0 2v2.33h2V2H0z" mask="url(#a)"></path></g><path clipRule="evenodd" d="M6.49 14.18h.86v-1.6h-.86v1.6zM6.49 11.18h.86v-1.6h-.86v1.6zM6.49 8.18h.86v-1.6h-.86v1.6zM6.49 5.18h.86v-1.6h-.86v1.6z"></path><defs><filter id="voucher-filter0_d" x="0" y="1" width="20" height="16" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="BackgroundImageFix"></feFlood><feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset></feOffset><feGaussianBlur stdDeviation=".5"></feGaussianBlur><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.09 0"></feColorMatrix><feBlend in2="BackgroundImageFix" result="effect1_dropShadow"></feBlend><feBlend in="SourceGraphic" in2="effect1_dropShadow" result="shape"></feBlend></filter></defs></svg>
                                         <div className="_2YRnUZ">Anhdai Voucher</div>
                                         <div className="_4WXRJn"></div>
                                         <span className="_3fKJp8">Chọn hoặc nhập mã</span>
@@ -984,7 +984,7 @@ class Cart extends React.Component{
                                                     <div className="_1TwgPm">Tiết kiệm<span className="_2e4fz5">₫{formatter.format(discount_product+discount_voucher_shop+discount_promotion+discount_deal)}k</span></div>
                                                 </div>
                                             </div>
-                                            {this.state.show_order?
+                                            {show_order?
                                                 <div className="stardust-popover__popover stardust-popover__popover--show" style={{top:'-312px',right:'0',transformOrigin:'441.758px bottom'}}>
                                                     <div className="stardust-popover__arrow" style={{bottom: '-19px', left: '441.758px', transform: 'translate(-6px, -100%)', borderTop: '10px solid rgb(255, 255, 255)', borderLeft: '0px solid transparent', borderRight: '0px solid transparent'}}>
                                                         <div className="stardust-popover__arrow--inner" style={{borderTop: '16px solid rgb(255, 255, 255)', borderLeft: '12px solid transparent', borderRight: '12px solid transparent', top: '-10px'}}></div>
