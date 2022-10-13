@@ -409,7 +409,7 @@ export default class HomePage extends React.Component {
                     <div className="top top--sticky">
                         <Navbar/>
                     </div>
-                    <div className="home-page">
+                    <div className="home-page" style={{marginTop:'7.375rem'}}>
                         <div className="containers">
                         <ImageHome/>
                             <Category/>
