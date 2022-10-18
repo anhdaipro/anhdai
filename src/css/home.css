@@ -4594,6 +4594,22 @@ margin-top: 5rem;
     background: transparent;
     box-shadow: 0 1px 1px 0 rgb(0 0 0 / 5%);
 }
+.shop-page__section-title {
+    flex: 1 1 100%;
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 0.625rem;
+}
+.shop-page__vouchers .image-carousel__item-list {
+    align-items: stretch;
+    padding-left: 1.25rem;
+}
+.shop-page__vouchers .image-carousel {
+    width: calc(100% + 3.75rem);
+    margin: 0 -1.875rem;
+}
 .header-with-search-wrapper {
     box-shadow: 0 0.0625rem 0.15625rem rgb(0 0 0 / 5%);
     box-sizing: border-box;

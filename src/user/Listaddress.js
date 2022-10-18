@@ -158,10 +158,11 @@ const Addressuser = ({user}) =>{
                     <Navbar/>
                 </div>
                 <div className="containers _1QwuCJ">
+                    {user?
                     <User
                     username={user.username}
                     image={user.avatar}
-                    />
+                    />:''}
                     <div className="_3D9BVC">
                         <div className="h4QDlo" role="main">
                             <div className="my-address-tab">

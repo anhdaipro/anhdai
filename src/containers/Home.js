@@ -17,8 +17,15 @@ const ListItem=styled.div`
     margin: 10px auto 0;
     min-height: 108px;
 `
-const Item=styled.div`
-width: 100px;
+const StyleLink=styled(Link)`
+    display: block;
+    text-decoration: none;
+    color: #d0011b;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 1.0625rem;
+    line-height: 1.0625rem;
+    align-self: center;
 `
 
 const Header=styled.div`
@@ -42,6 +49,10 @@ const Image=styled.div`
     height:100%;
     background-repeat: no-repeat;
 `
+const Image1=styled.img`
+width:17px;height:17px;
+margin-right:4px
+`
 const Name=styled.div`
     display: -webkit-box;
     text-overflow: ellipsis;
@@ -56,6 +67,15 @@ const Name=styled.div`
     color: #222;
     letter-spacing: 0;
     text-align: center;
+`
+const Stylediv=styled.div`
+flex: 1;
+    font-weight: 400;
+    text-transform: capitalize;
+    margin-left: 15px;
+    padding-left: 15px;
+    border-left: 1px solid #d8d8d8;
+    display: flex;
 `
 const ImageBackground=styled.div`
     background-size: cover;
@@ -172,6 +192,7 @@ class Category extends React.Component {
         const settransform=(value)=>{
             this.setState({translateY: value<=0?0:value>=widthcate-1?widthcate-1:value})
         }
+        const dx=parseInt(num_display)/num_display
         return (
             <div className="section-category-list">
                 <div className="header-section__header item-center">
@@ -206,10 +227,10 @@ class Category extends React.Component {
                             )}
                         </ul>
                     </div>
-                    <div onClick={()=>settransform(translateY-1)} className={`carousel-arrow carousel-arrow--prev carousel-arrow--hint ${translateY==0?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
+                    <div onClick={()=>settransform(translateY-dx)} className={`carousel-arrow carousel-arrow--prev carousel-arrow--hint ${translateY==0?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
                             <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
                     </div>
-                    <div onClick={()=>settransform(translateY+1)}  className={`carousel-arrow carousel-arrow--next carousel-arrow--hint ${translateY==(categories.length/num_display)?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==widthcate-1?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
+                    <div onClick={()=>settransform(translateY+dx)}  className={`carousel-arrow carousel-arrow--next carousel-arrow--hint ${translateY==(categories.length/num_display)?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==widthcate-1?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
                         <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
                     </div>
                 </div>
@@ -264,6 +285,7 @@ const Itemflashsale =(props)=> {
     const settransform=(value)=>{
         settranslateY(value<=0?0:value>=widthcate-1?widthcate-1:value)
     }
+    const dx=parseInt(num_display)/num_display
         return (
             <>
             {state.loading && items.length>0?
@@ -366,10 +388,10 @@ const Itemflashsale =(props)=> {
                                         }
                                     </ul>
                                 </div>
-                                <div onClick={()=>settransform(translateY-1)} className={`carousel-arrow carousel-arrow--prev carousel-arrow--hint ${translateY==0?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
+                                <div onClick={()=>settransform(translateY-dx)} className={`carousel-arrow carousel-arrow--prev carousel-arrow--hint ${translateY==0?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
                                     <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
                                 </div>
-                                <div onClick={()=>settransform(translateY+1)}  className={`carousel-arrow carousel-arrow--next carousel-arrow--hint ${translateY==widthcate-1?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==widthcate-1?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
+                                <div onClick={()=>settransform(translateY+dx)}  className={`carousel-arrow carousel-arrow--next carousel-arrow--hint ${translateY==widthcate-1?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==widthcate-1?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
                                     <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
                                 </div>
                             </div>
@@ -483,21 +505,21 @@ export default class HomePage extends React.Component {
                                         <Header>
                                             <div class="header-section__header__title">
                                                 <div class="_9FdTU0 item-center">
-                                                    <a class="ecCXWo usxt6W" href="/mall">Shopee Mall</a>
-                                                    <div class="_5Ru4Na item-center">
-                                                        <div class="LetK2C">
-                                                            <img class="a8XyX2" src="https://deo.shopeemobile.com/shopee/pcmall-live-sg/homepage/6c502a2641457578b0d5f5153b53dd5d.png"/>
+                                                    <StyleLink to="/mall">Shopee Mall</StyleLink>
+                                                    <Stylediv>
+                                                        <div class="item-center mr-1">
+                                                            <Image1 class="a8XyX2" src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/homepage/6c502a2641457578b0d5f5153b53dd5d.png"/>
                                                             7 ngày miễn phí trả hàng
                                                         </div>
-                                                        <div class="LetK2C">
-                                                            <img class="a8XyX2" src="https://deo.shopeemobile.com/shopee/pcmall-live-sg/homepage/511aca04cc3ba9234ab0e4fcf20768a2.png"/>
+                                                        <div class="item-center mr-1">
+                                                            <Image1 class="a8XyX2" src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/homepage/511aca04cc3ba9234ab0e4fcf20768a2.png"/>
                                                             Hàng chính hãng 100%
                                                         </div>
-                                                        <div class="LetK2C">
-                                                            <img class="a8XyX2" src="https://deo.shopeemobile.com/shopee/pcmall-live-sg/homepage/16ead7e0a68c3cff9f32910e4be08122.png"/>
+                                                        <div class="item-center mr-1">
+                                                            <Image1 class="a8XyX2" src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/homepage/16ead7e0a68c3cff9f32910e4be08122.png"/>
                                                             Miễn phí vận chuyển
                                                         </div>
-                                                    </div>
+                                                    </Stylediv>
                                                 </div>
                                             </div>
                                             <div class="header-section__header-link">

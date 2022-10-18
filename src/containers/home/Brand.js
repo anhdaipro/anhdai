@@ -59,8 +59,8 @@ const Brand=(props)=>{
     const settransform=(value)=>{
         settranslateY(value<=0?0:value>=widthcate-1?widthcate-1:value)
     }
-    console.log(Math.ceil((categories.length/num_display)-1))
-    console.log(translateY)
+  
+    const dx=parseInt(num_display)/num_display
     return(
                 <>
                     <Contentslide>
@@ -95,10 +95,10 @@ const Brand=(props)=>{
                                     </li>)}
                                 </ul>
                             </div>
-                            <div onClick={()=>settransform(translateY-1)} className={`carousel-arrow carousel-arrow--prev carousel-arrow--hint ${translateY==0?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
+                            <div onClick={()=>settransform(translateY-dx)} className={`carousel-arrow carousel-arrow--prev carousel-arrow--hint ${translateY==0?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
                                 <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
                             </div>
-                            <div onClick={()=>settransform(translateY+1)}  className={`carousel-arrow carousel-arrow--next carousel-arrow--hint ${translateY==Math.ceil(categories.length/num_display)?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==widthcate-1?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
+                            <div onClick={()=>settransform(translateY+dx)}  className={`carousel-arrow carousel-arrow--next carousel-arrow--hint ${translateY==Math.ceil(categories.length/num_display)?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==widthcate-1?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
                                 <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
                             </div>
                         </div>

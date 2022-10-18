@@ -6,6 +6,121 @@ import Itemsearch from "./Listitem"
 import {connect} from "react-redux"
 import {shopinfoURL,searchURL,searchshopURL} from "../urls"
 import { expiry, headers,showchat, showthreads } from "../actions/auth";
+import styled from "styled-components"
+import Shopvoycher from "./home/Shopvoucher";
+const Flex=styled.div`
+display:flex;
+`
+const Flexcolumn=styled(Flex)`
+flex-direction:collumn
+`
+const Flexcenter=styled(Flex)`
+    align-items: center;
+    justify-content: center;
+`
+const ContentInfo=styled.span`
+margin: 0.3125rem 0.3125rem 0 0;
+text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+`
+const Boxvoucher=styled(Flex)`
+    box-shadow: 0.125rem 0.125rem 0.3125rem rgb(0 0 0 / 7%);
+    padding: 0;
+    width: 100%;
+    height: 6.75rem;
+    position:relative;
+    border-radius: 0.125rem;
+    overflow: visible;
+`
+const Iteminfo=styled(Flex)`
+    flex-direction: column;
+    position: relative;
+    justify-content:center;
+    flex:1;
+    max-width: 100%;
+    height: 100%;
+    padding-right: 0.1875rem;
+`
+
+const Styletext=styled.div`
+color: #d0011b;
+font-size: ${props=>props.size}rem;
+line-height: ${props=>props.primary?1.25:1}rem;
+font-weight: 500;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+`
+const Percentuse=styled.div`
+    width: 100%;
+    height: 0.25rem;
+    background: rgba(0,0,0,.09);
+    border-radius: 0.25rem;
+    overflow: hidden;
+`
+const Boxcontent=styled(Flexcenter)`
+    background: #fff4f4;
+    border: 1px solid #f8d0d3;
+    padding: 0 0 0 0.4375rem;
+    flex:1;
+    position: relative;
+    border-left: 0 solid transparent;
+`
+const Dot=styled.div`
+position:absolute;
+height:100%;
+width:1px;
+right:0;
+border-left: 1px dotted #e8e8e8;
+`
+const Infomore=styled.div`
+margin-top:0.25rem
+`
+const StyleDiv= styled(Flexcenter)`
+    border-top: 1px solid #f8d0d3;
+    border-bottom: 1px solid #f8d0d3;
+    position: relative;
+    min-width: 0.3125rem;
+    background: linear-gradient(90deg,transparent 0,transparent 0.25rem,#fff4f4 0);
+    margin-left: 1px;
+    border-radius: 0.1875rem 0 0 0.1875rem;
+`
+const StyleDiv2= styled.div`
+    background: radial-gradient(circle at 0 0.375rem,transparent 0,rgba(0,0,0,.03) 0.1875rem,#f8d0d3 0,#f8d0d3 0.25rem,#fff4f4 0);
+    background-size: 0.25rem 0.625rem;
+    background-repeat: repeat-y;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0.25rem;
+    height: 100%;
+`
+const StyleDiv1= styled.div`
+    top: 0;
+    left: 0;
+    width: 0.3125rem;
+    position: absolute;
+    height: 100%;`
+const ContentWrap=styled.div`
+background-color: #fff;
+    padding: 1.25rem 1.875rem;
+    margin-top:1.5rem
+`
+const StyleDiv3= styled.div`
+    top: 0;
+    left: 0;
+    background: repeating-linear-gradient(#f8d0d3,#f8d0d3 0.1875rem,transparent 0,transparent 0.625rem);
+    background-size: 1px 0.625rem;
+    width:1px;
+    position: absolute;
+    height: 100%;`
+const Styletext1=styled.span`
+    color: ${props=>props.primary?'#ff424f':'rgba(0,0,0,.54)'};
+    font-weight: 400;
+    font-size:0.625rem;
+`
+const listvoucher=[1,2,3,4,5,6,7]
 const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) => {
     const [state, setState] = useState(null)
     const {slug}=useParams()
@@ -251,52 +366,15 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
                 </div>
             </div>
             <div className="containers">
-                <div className="shop-page__section shop-page__vouchers">
+                <ContentWrap className="shop-page__vouchers">
                     <h3 className="shop-page__section-title">Mã giảm giá của Shop</h3>
-                    <div className="image-carousel">
-                        <div className="image-carousel__item-list-wrapper">
-                            <ul className="image-carousel__item-list" style={{width: '100%', transform: 'translate(0px, 0px)'}}>
-                                <li className="image-carousel__item" style={{padding: '0px 8px', width: '28.5714%'}}>
-                                    <div className="_2e7Dvi">
-                                        <div className="_2OWU3q r7z3g7 _2xeaDh">
-                                            <div className="_8C6jYD _2zbr2s U_IV4f">
-                                                <div className="_4nIo2l">
-                                                    <div className="_3l46nX _2xeaDh">
-                                                        <div className="D39R0J"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="uRSBSy _3RVYCx U_IV4f">
-                                                <div className="B8Mos-">
-                                                    <div className="lU-GLL">
-                                                        <div className="_26xIz2 _2IVkpm _1tmNHL">
-                                                            <div className="S9wWIB">
-                                                                <div className="MpE9sV _37mvuv">Giảm ₫2k</div>
-                                                            </div>
-                                                            <div className="_3tlKS6 _1K7Xn9">Đơn Tối Thiểu ₫180k</div>
-                                                        </div>
-                                                        <div></div>
-                                                        <span className="_30O3Fu _31nfeF _2hA3Ad _16MNlJ">
-                                                            <div className="Kvz1on">
-                                                                <span className="_3BDy3u _2GsQaz">HSD: 28.05.2022</span>
-                                                            </div>
-                                                        </span>
-                                                        <div className="BFhH9V"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="_7ojJBF">
-                                                    <div className="_1b3q1K">
-                                                        <button type="button" className="btn btn-solid-primary btn--s btn--inline _2juLw1 _2H9aBl D_d49Y" aria-disabled="false">Lưu</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                    
+                    <Shopvoycher
+                    categories={listvoucher}
+                    num_display={3.5}
+                    width={1200-30}
+                    />
+                </ContentWrap>
                 <div className="shop-decoration">
                     <div className="_1Z4Xy3">
                         <div className="shop-collection-view">
