@@ -42,7 +42,7 @@ const Addressuser = ({user}) =>{
         const city_choice=city.list_city.find(item=>item.name==address.city && item.level==1)    
         const district_choice=city.list_city.find(item=>item.name==address.district && item.matp==city_choice.matp && item.level==2)
         const town_choice=city.list_city.find(item=>item.name==address.town && item.maqh==district_choice.maqh && item.level==3)
-        setAddressChoice({city_choice:{name:address.city,matp:city_choice.matp,level:1},district_choice:{name:address.district,matp:district_choice.matp,level:2,maqh:district_choice.maqh},town_choice:{name:address.town,maqh:town_choice.maqh,level:3}})
+        setAddressChoice(prev=>{return{...prev,city_choice:{name:address.city,matp:city_choice.matp,level:1},district_choice:{name:address.district,matp:district_choice.matp,level:2,maqh:district_choice.maqh},town_choice:{name:address.town,maqh:town_choice.maqh,level:3}}})
         setAddress(address)
     }
 
