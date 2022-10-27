@@ -86,6 +86,8 @@ const ImageBackground=styled.div`
 
 `
 const listitem=[
+    {name:'Shopee food',image:'https://cf.shopee.vn/file/46a2a2c810622f314d78455da5e5d926_xhdpi'},
+    {name:'Săn thưởng 100K xu',image:'https://cf.shopee.vn/file/46a2a2c810622f314d78455da5e5d926_xhdpi'},
     {name:'Khung giờ săn sale',image:'https://cf.shopee.vn/file/46a2a2c810622f314d78455da5e5d926_xhdpi'},
     {name:'Gì Cũng Rẻ - Mua Là Freeship',image:'https://cf.shopee.vn/file/b3535d7e56c58c4ebe9a87672d38cc5e_xhdpi'},
     {name:'Flash Sale',image:'https://cf.shopee.vn/file/93acaac785c19b09180b01cc34a4c17e_xhdpi'},

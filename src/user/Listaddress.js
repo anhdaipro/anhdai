@@ -131,15 +131,14 @@ const Addressuser = ({user}) =>{
     }, [state]);
 
     const setlistaddress=useCallback((data) => {
-        state.list_addresses.push(data)
-        const list_addresses=state.list_addresses.map(address=>{
+        const list_addresses=data.id?state.list_addresses.map(address=>{
             if(data.default && data.id!=address.id){
                 return({...address,default:false})
             }
             else{
                 return({...address})
             }
-        })
+        }):[...state.list_addresses,data]
         
         setState({...state,list_addresses:list_addresses})
     }, [state]);

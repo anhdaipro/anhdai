@@ -93,19 +93,29 @@ const Detaildealshock=()=>{
         })
     }
 
-    const addbyproduct=(e)=>{
+    const addbyproduct=  async (e)=>{
         setShow({...show,byproduct:true,items:false})
-        axios.get(`${newdealURL}?byproducts=true&deal_id=${id}`,headers)
-        .then(res=>{
+        if(itemshop.byproduct.length==0){
+            const res = await axios.get(`${newdealURL}?byproducts=true&deal_id=${id}`,headers)
             const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
             const byproduct=list_byproduct.map(item=>{
                 if(itemshop.byproduct_choice.some(by=>by.id==item.id)){
-                    return({...item,check:true,disable})
+                    return({...item,check:true,disable:true})
                 }
-                    return({...item,check:false})
+                return({...item,check:false})
             }) 
             setItem({...itemshop,itemshops:res.data,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
-        })
+        }
+        else{
+            const list_byproduct=itemshop.byproduct.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
+            const byproduct=list_byproduct.map(item=>{
+                if(itemshop.byproduct_choice.some(by=>by.id==item.id)){
+                    return({...item,check:true,disable:true})
+                }
+                return({...item,check:false})
+            }) 
+            setItem({...itemshop,itemshops:res.data,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
+        }
     }
 
     const setcheckitem=(item,product,keys)=>{

@@ -7,8 +7,7 @@ import {address_null,typeaddress,} from "../constants"
 import { headers } from '../actions/auth';
 const Address=({address,show,setshow,list_city,action,city_choice,district_choice,town_choice,setlistaddress,
     setcitychoice,setdistrictchoice,settownchoice,clearaddress,setformdata,addressChoice,
-    defaultaddress,deleteAddress
-})=>{
+    defaultaddress,deleteAddress})=>{
     const [state, setState] = useState({loading:false,showcity:false,change:false,level:1,administrative_units:['Tỉnh/Thành phố','Quận/Huyện','Phường/Xã'], message:'',errors: {},address_chocie:''})
     const [errow,setErrow]=useState({name:'',phone_number:'',address:'',city:''})
     const parentref=useRef()
@@ -85,8 +84,6 @@ const Address=({address,show,setshow,list_city,action,city_choice,district_choic
         setState({...state,change:true,level:2})
     }
 
-
-
     function setdistrict(e,city){
         e.stopPropagation()
         setdistrictchoice(city)
@@ -98,10 +95,12 @@ const Address=({address,show,setshow,list_city,action,city_choice,district_choic
         settownchoice(city)
         setState({...state,change:false,level:1,showcity:false})
     }
+
     function clearAddress(){
         setState({...state,change:false,level:1})
         clearaddress()
     }
+
     function setlevel(e,index){
         e.stopPropagation()
         setState({...state,level:index+1})

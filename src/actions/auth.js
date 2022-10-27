@@ -24,6 +24,7 @@ import { validatEemail } from '../constants';
 const expirationDate = localStorage.getItem("expirationDate")
 export const expiry=new Date(expirationDate).getTime() - new Date().getTime()
 export const headers={'headers': localStorage.token!='null' && expiry>0?{ Authorization:`JWT ${localStorage.token}`,'Content-Type': 'application/json' }:{'Content-Type': 'application/json'}}
+
 export const checkAuthenticated = () => async dispatch => {
     if (localStorage.getItem('access')) {
         try {

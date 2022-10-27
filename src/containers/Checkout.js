@@ -157,15 +157,14 @@ const Checkout =({user,showchat})=>{
     }
 
     const setlistaddress=useCallback((data) => {
-        console.log(data)
-        const list_addresses=state.list_addresses.map(address=>{
+        const list_addresses=data.id?state.list_addresses.map(address=>{
             if(data.default && data.id!=address.id){
                 return({...address,default:false})
             }
             else{
                 return({...address})
             }
-        })
+        }):[...state.list_addresses,data]
         
         const address_choice=state.address_order==null?data:state.address_choice
         setState({...state,list_addresses:list_addresses,address_choice: address_choice,address_order: address_choice})

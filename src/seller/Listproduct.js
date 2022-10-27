@@ -11,7 +11,30 @@ const Listproduct=()=>{
     const [state,setState]=useState({show:false})
     const [itemshop,setItem]=useState({pageitem:[],page_count:1,count_product:1})
     const [loading,setLoading]=useState(false)
+    const [show,setShow]=useState(false)
+    const [showbatch,setShowbactch]=useState(false)
+    const parentref=useRef()
+    const toolsref=useRef()
     const [currentPage, setCurrentPage] = useState({page:1,pagesize:12});
+    useEffect(()=>{
+        document.addEventListener('click',handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    },[])
+    const handleClick = (event) => {
+        const { target } = event
+        if(parentref.current){
+            if (!parentref.current.contains(target)) {
+                setShow(false)
+            }
+        }
+        if(toolsref.current){
+            if (!toolsref.current.contains(target)) {
+                setShowbatch(false)
+            }
+        }
+    }
     useEffect(() => {
         const getJournal = async () => {
             await axios(productshopURL,headers)
@@ -133,13 +156,14 @@ const Listproduct=()=>{
                     <div className="product-filter-card pl-1">
                         <div className="d-flex item_info">
                             <div className=" item-center input-group">
-                                <div className="input-group_choice item-center">
+                                <div ref={parentref} onClick={()=>setShow(!show)} className="input-group_choice item-center">
                                     <div className="input-choice item-center" style={{width: '140px'}}>
                                         <div style={{width: '120px'}} >SKU sản phẩm</div>
                                         <div className="">
                                             <i className="selector__suffix-icon icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,9.18933983 L4.03033009,5.21966991 C3.73743687,4.9267767 3.26256313,4.9267767 2.96966991,5.21966991 C2.6767767,5.51256313 2.6767767,5.98743687 2.96966991,6.28033009 L7.46966991,10.7803301 C7.76256313,11.0732233 8.23743687,11.0732233 8.53033009,10.7803301 L13.0303301,6.28033009 C13.3232233,5.98743687 13.3232233,5.51256313 13.0303301,5.21966991 C12.7374369,4.9267767 12.2625631,4.9267767 11.9696699,5.21966991 L8,9.18933983 Z"></path></svg></i>
                                         </div>
                                     </div>
+                                    {show?
                                     <div className="select__options">
                                         <div className="">
                                             <div className="variation-option">
@@ -158,7 +182,7 @@ const Listproduct=()=>{
                                                 Mã sản phẩm
                                             </div>
                                         </div>
-                                    </div> 
+                                    </div> :''}
                                 </div>
                                 <div className="input-inner item-center">
                                     <input type="text" className="form-selects"  placeholder="Enter"/>
@@ -280,13 +304,14 @@ const Listproduct=()=>{
                                                 <span className="ml-1_2">Add one product</span>  
                                             </button>
                                         </div>
-                                        <div className="input-group_choice item-center" >
+                                        <div ref={toolsref} onClick={()=>setShowbactch(!showbatch)} className="input-group_choice item-center" >
                                             <div className="input-choice item-center" style={{width: '190px'}}>
                                                 <div style={{width: '160px'}}>Batch processing tools</div> 
                                                 <div className="">
                                                     <i className="selector__suffix-icon icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,9.18933983 L4.03033009,5.21966991 C3.73743687,4.9267767 3.26256313,4.9267767 2.96966991,5.21966991 C2.6767767,5.51256313 2.6767767,5.98743687 2.96966991,6.28033009 L7.46966991,10.7803301 C7.76256313,11.0732233 8.23743687,11.0732233 8.53033009,10.7803301 L13.0303301,6.28033009 C13.3232233,5.98743687 13.3232233,5.51256313 13.0303301,5.21966991 C12.7374369,4.9267767 12.2625631,4.9267767 11.9696699,5.21966991 L8,9.18933983 Z"></path></svg></i>
                                                 </div>
                                             </div>
+                                            {showbatch?
                                             <div className="select__options" >
                                                 <div className="p-1">
                                                     <div className="dropdown-items" style={{maxWidth: '440px'}}>
@@ -301,7 +326,7 @@ const Listproduct=()=>{
                                                         </li>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div>:''}
                                         </div>
                                     </div>
                                 </div>

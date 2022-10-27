@@ -175,7 +175,7 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
                      return({...item,check:false})
                 })
                 
-            setItem({...itemshop,itemshops:res.data,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
+            setItem({...itemshop,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
         })
     }
     

@@ -182,7 +182,7 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
             })
         }  
         else{
-            const items=itemshop.itemshops.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
+            const items=itemshop.items.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
             const list_items=items.map(item=>{
                 if(itemshop.items_choice.some(product=>product.id==item.id)){
                     return({...item,check:true,disable:true})
