@@ -104,7 +104,7 @@ const Detaildealshock=()=>{
                 }
                 return({...item,check:false})
             }) 
-            setItem({...itemshop,itemshops:res.data,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
+            setItem({...itemshop,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
         }
         else{
             const list_byproduct=itemshop.byproduct.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
@@ -114,7 +114,7 @@ const Detaildealshock=()=>{
                 }
                 return({...item,check:false})
             }) 
-            setItem({...itemshop,itemshops:res.data,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
+            setItem({...itemshop,byproduct:byproduct,page_count_by:Math.ceil(byproduct.length / Pagesize)})  
         }
     }
 

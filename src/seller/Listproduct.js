@@ -12,7 +12,7 @@ const Listproduct=()=>{
     const [itemshop,setItem]=useState({pageitem:[],page_count:1,count_product:1})
     const [loading,setLoading]=useState(false)
     const [show,setShow]=useState(false)
-    const [showbatch,setShowbactch]=useState(false)
+    const [showbatch,setShowbatch]=useState(false)
     const parentref=useRef()
     const toolsref=useRef()
     const [currentPage, setCurrentPage] = useState({page:1,pagesize:12});
@@ -304,7 +304,7 @@ const Listproduct=()=>{
                                                 <span className="ml-1_2">Add one product</span>  
                                             </button>
                                         </div>
-                                        <div ref={toolsref} onClick={()=>setShowbactch(!showbatch)} className="input-group_choice item-center" >
+                                        <div ref={toolsref} onClick={()=>setShowbatch(!showbatch)} className="input-group_choice item-center" >
                                             <div className="input-choice item-center" style={{width: '190px'}}>
                                                 <div style={{width: '160px'}}>Batch processing tools</div> 
                                                 <div className="">
