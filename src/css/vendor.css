@@ -2071,6 +2071,7 @@ border-color:#b7b7b7 ;
 .form-input{
   padding: 4px 8px;
   border-radius: 5px;
+  width:100%;
 }
 .select__options{
 padding:8px 0
