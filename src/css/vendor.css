@@ -1225,6 +1225,17 @@ border: 1px solid var(--border-color);
 .logistics-item .drop-down svg{
 transform: rotate(90deg);
 }
+.logistics-item.logistics-item-ui-t3 .expend-button.is-expend svg {
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+.editable-field__edit .icon {
+    fill: #000;
+    margin-top: 1px;
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+}
 .logistics-item .shipping-s{
 display: block;
 }
@@ -7142,6 +7153,8 @@ cursor: pointer;
 
 .inline-list-item{
   display: inline-flex;
+  align-items:center;
+  margin-right:8px
 }
 
 .price[data-v-4f5fa871] {
