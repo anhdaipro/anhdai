@@ -5,9 +5,9 @@ import ReactDOM, { render } from 'react-dom'
 import Timeoffer from "./Timeoffer"
 import React, {useState,useEffect,useCallback,useRef,useMemo} from 'react'
 import Pagination from "./Pagination"
-import {formatter,discount_type,valid_from,valid_to,time_end,timevalue, award_type} from "../constants"
+import {formatter,discount_type,valid_from,valid_to,time_end,timevalue, award_type,timesubmit} from "../constants"
 import { headers } from '../actions/auth';
-import { awardshopURL, newshop_awardURL } from '../urls';
+import { awardshopURL, newAwardshopURL, newshop_awardURL,detailAwardshopURL } from '../urls';
 import Productoffer from '../seller/promotions/Productoffer';
 let Pagesize=5
 const list_awards_default=[
@@ -15,7 +15,7 @@ const list_awards_default=[
     {value:2,minimum_order_value:15000,maximum_discount:'',quantity:2,amount:1000,percent:'',discount_type:'2',type_award:'1',type_voucher:'Offer'},
     {value:3,minimum_order_value:15000,maximum_discount:'',quantity:2,amount:800,percent:'',discount_type:'2',type_award:'1',type_voucher:'Offer'},
 ]
-const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_shop_award})=>{
+const ShopAwardInfo=(props)=>{
     const [shop_award,setShopaward]=useState({game_name:'',valid_from:valid_from.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     valid_to:valid_to.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     })
@@ -29,28 +29,37 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
     const [awardchoice,setAwardchoice]=useState()
     const [requestedit,setEditaward]=useState(false)
     const {id}=useParams()
-    
+    const edit=id?true:false
+    const url=id?`${detailAwardshopURL}/${id}`:newAwardshopURL
     useEffect(() => {
-        if(data_shop_award){
-        setShopaward(data_shop_award)
-        setLoading(loading_content)
-        setListaward(list_award_shop)
-        setTime_end(data_shop_award.valid_to)
-        setTime_start(data_shop_award.valid_from)
+        (async () => {
+            if(id){
+            const res = await axios(url,headers)
+            const data=res.data
+            setShopaward({game_name:data.game_name,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)})
+            setTime_end(timesubmit(data.valid_to))
+            setTime_start(timesubmit(data.valid_from))
+            setLoading(true)
+            const list_awards=data.list_awards.map(item=>{
+                return({...item,value:item.id})
+            })
+            setListaward(list_awards)
         }
-      }, [loading_content,data_shop_award,list_award_shop]);
-   
-
-      const setdatevalid=(index,date)=>{
+        else{
+            setLoading(true)
+        }
+        })();
+    }, [id])
+    
+    const setdatevalid=(index,date)=>{
         const dateshop_award=date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date.hours).slice(-2)+':'+("0"+date.minutes).slice(-2)
         const datadate=index==0?{valid_from:dateshop_award,valid_to:shop_award.valid_to}:{valid_to:dateshop_award,valid_from:shop_award.valid_from}
         setShopaward({...shop_award,...datadate})
-        
-            const data={action:'checkitem',...datadate}
-            axios.post(url_shop_award,JSON.stringify(data),headers)
-            .then(res=>{
-                const data=res.data.sameitem   
-            })
+        const data={action:'checkitem',...datadate}
+        axios.post(url,JSON.stringify(data),headers)
+        .then(res=>{
+            const data=res.data.sameitem   
+        })
     }
 
     const budgets=useMemo(()=>{
@@ -69,7 +78,7 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
     const complete=()=>{
         const datashop_award={valid_from:shop_award.valid_from,valid_to:shop_award.valid_to,game_name:shop_award.game_name}
         const data={...datashop_award,action:'submit',list_award:listaward}
-        axios.post(url_shop_award,JSON.stringify(data),headers)
+        axios.post(url,JSON.stringify(data),headers)
         .then(res=>{
             if(!res.data.error){
                 const countDown = setInterval(() => {
@@ -450,7 +459,7 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
                                                                         <td className="">
                                                                             <div className="table__cell">
                                                                                 <div data-v-1eec1518="" className="input quantity-input number-input number-input--normal number-input--no-suffix">
-                                                                                    <div className="input__inner input__inner--normal"> 
+                                                                                    <div className="input__inner input__inner--normal    item-center"> 
                                                                                         <input type="text" value={item.quantity} onChange={e=>setlistaward(e,item,'quantity',isNaN(e.target.value)?item.quantity:e.target.value)} placeholder="0" resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                                         <div className="input__suffix">
                                                                                             <div className="number-input__controls">
@@ -689,7 +698,7 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
                                                                         {awardchoice.discount_type=='1'?
                                                                         <div className="input discount-input" placeholder="Nhập giá trị lớn hơn 1%">
                                                                             
-                                                                            <div className="input__inner input__inner--normal"> 
+                                                                            <div className="input__inner input__inner--normal    item-center"> 
                                                                                 <input value={awardchoice.percent} onChange={(e)=>setAwardchoice({...awardchoice,percent:isNaN(e.target.value)?awardchoice.percent:e.target.value})} type="text" placeholder="Nhập giá trị lớn hơn 1%" resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                                 
                                                                                 <div className="input__suffix">
@@ -699,7 +708,7 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
                                                                             </div>
                                                                         </div>:
                                                                         <div className="input currency-input">
-                                                                            <div className="input__inner input__inner--normal">
+                                                                            <div className="input__inner input__inner--normal    item-center">
                                                                                 <div className="input__prefix">₫<span className="input__prefix-split">
                                                                                     </span>
                                                                                 </div> 
@@ -738,7 +747,7 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
                                                                         
                                                                         <div className="input currency-input max-voucher-amount">
                                                                             
-                                                                            <div className="input__inner input__inner--normal">
+                                                                            <div className="input__inner input__inner--normal    item-center">
                                                                                 
                                                                                 <div className="input__prefix">₫
                                                                                     <span className="input__prefix-split">
@@ -765,7 +774,7 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
                                                         
                                                         <div className="input currency-input minimum-basket-input">
                                                             
-                                                            <div className="input__inner input__inner--normal">
+                                                            <div className="input__inner input__inner--normal    item-center">
                                                                 
                                                                 <div className="input__prefix">₫
                                                                     <span className="input__prefix-split">
@@ -787,7 +796,7 @@ const ShopAwardInfo=({loading_content,edit,list_award_shop,data_shop_award,url_s
                                                         
                                                         <div className="input">
                                                             
-                                                            <div className="input__inner input__inner--normal"> 
+                                                            <div className="input__inner input__inner--normal    item-center"> 
                                                                 <input onChange={(e)=>setAwardchoice({...awardchoice,quantity:isNaN(e.target.value)?awardchoice.quantity:e.target.value})} type="text" placeholder="Nhập vào" resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                             </div>
                                                         </div>

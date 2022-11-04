@@ -5,7 +5,7 @@ import React, {useState,useEffect,useCallback,useRef} from 'react'
 import {formatter,itemvariation,time_end,timevalue} from "../constants"
 
 import { headers } from '../actions/auth';
-import { newflashsaleURL } from '../urls';
+import { detailflashsaleURL, newflashsaleURL } from '../urls';
 import { useParams } from 'react-router';
 import Productoffer from '../seller/promotions/Productoffer';
 const Pagesize=10
@@ -21,7 +21,7 @@ const list_fram_time_choice=[ {name:'00:00:00 - 00:02:00',hour:0,minutes:0,hour_
 {name:'22:00:00 - 00:00:00',hour:22,minutes:0,hour_to:23,minutes_to:59}]
 const today=new Date()
 const nextweek=new Date(new Date().setDate(new Date().getDate() + 7))
-const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_content})=>{
+const Flashsaleinfo=(props)=>{
     const [flashsale,setFlashsale]=useState({time:null,hour:null,minutes:null,minutes_to:null,
         hour_to:null
     })
@@ -41,11 +41,35 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
     const [sameitem,setSameitem]=useState(false)
     const [duplicate,setDuplicate]=useState(false)
     const {id}=useParams()
+    const url_flashsale=id?detailflashsaleURL+id:newflashsaleURL
     useEffect(() => {
-        setFlashsale(flashsale_shop)
-        setLoading(loading_content)
-        setItem(item_flashsale)
-      }, [loading_content,item_flashsale,flashsale_shop]);
+        (async () => {
+            if(id){
+                const res = await axios(detailflashsaleURL+id,headers)
+                const  data=res.data
+                setFlashsale({time:new Date(data.valid_from),hour:new Date(data.valid_from).getHours(),minutes:new Date(data.valid_from).getMinutes(),
+                    hour_to:new Date(data.valid_to).getHours(),minutes_to:new Date(data.valid_to).getMinutes()})
+                setDates({...date,time:new Date(data.valid_from),hour:new Date(data.valid_from).getHours(),minutes:new Date(data.valid_from).getMinutes(),
+                hour_to:new Date(data.valid_to).getHours(),minutes_to:new Date(data.valid_to).getMinutes()})
+                const variations=data.variations.map(variation=>{
+                    return {...variation,
+                        percent_discount:(variation.price-parseInt(variation.promotion_price))*100/variation.price,
+                        promotion_price:parseInt(variation.promotion_price)}
+                })
+                const list_products=data.products.map(product=>{
+                    return({...product,check:false,user_item_limit:variations.find(variation=>variation.user_item_limit)?variations.find(variation=>variation.user_item_limit).user_item_limit:'',
+                    variations:variations.filter(variation=>variation.item_id==product.id)})
+                })
+                setLoading(true)
+                setItem({...itemshop,byproduct_choice:list_products,
+                page_count_by:Math.ceil(list_products.length / Pagesize)})
+            }
+            else{
+                setLoading(true)
+            }
+          })();
+    }, [id]);
+    
     const valid_from=`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour).slice(-2)}:${('0'+date.minutes).slice(-2)}`
     const valid_to=`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour_to).slice(-2)}:${('0'+date.minutes_to).slice(-2)}`
 
@@ -468,7 +492,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
             <div id="app">
             <Navbar/>
             <div data-v-39395675="" className="wrapper">
-                <div className="wrapper-content">
+                {loading && (<div className="wrapper-content">
                     <div className="shop-flash-sale-detail-page">
                         <div data-v-4ad61259="" data-v-1503608e="" className="page-header">
                             <div data-v-4ad61259="" className="page-header-info">
@@ -801,7 +825,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
                                                                     </div> 
                                                                     <span className="split">or</span> 
                                                                     <div className="input discount-input" size="normal" placeholder=" ">
-                                                                        <div className="input__inner input__inner--normal">
+                                                                        <div className="input__inner input__inner--normal    item-center">
                                                                             <input type="text" onChange={(e)=>setdiscount(e,'percent_discount',variation,item)} value={variation.percent_discount>0?('0'+variation.percent_discount).slice(-2):'0'} placeholder=" " size="normal" resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                             <div className="input__suffix"><span className="input__suffix-split"></span>%GIẢM</div>
                                                                         </div>
@@ -860,7 +884,7 @@ const Flashsaleinfo=({url_flashsale,item_flashsale,flashsale_shop,loading_conten
                             </div>
                         </div>  
                     </div>
-                </div>
+                </div>)}
             </div>
             </div>
             <div id="modal">

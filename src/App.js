@@ -25,24 +25,16 @@ import "./css/vendor.css"
 import "./css/dashboard.css"
 import "./css/chat.css"
 import './css/slideshow.css'
-import Newvoucher from "./seller/promotions/Newvoucher"
+
 import { Provider } from 'react-redux'
 import store  from "./store"
 import Dealshock from './containers/Dealshock'
 import Newdealshock from "./seller/promotions/Newdealshock"
-import Newflashsale from "./seller/promotions/Newflashsale"
-import Newprogram from "./seller/promotions/Newprogram"
 import Orderuser from "./user/Order"
 import Shipping from "./seller/Shipping"
-import Newpromotion from "./seller/promotions/Newpromotion"
 import Detaildealshock from  "./seller/promotions/Detaildealshock"
-import Detailpromotion from  "./seller/promotions/Detailpromotion"
-import Detailvoucher from "./seller/promotions/Detailvoucher"
-import Detailprogram from "./seller/promotions/Detailprogram"
 import Listproduct from "./seller/Listproduct"
-import Detailflashsale from "./seller/promotions/Detailflashsale"
 import Dashboard from "./seller/dashboard/Dashboard"
-import Newproduct from "./seller/Newproduct"
 import Detailproduct from "./seller/Detailproduct"
 import Listvoucher from "./seller/promotions/Listvoucher"
 import Listcomboshop from "./seller/promotions/Listpromotion"
@@ -70,15 +62,17 @@ import DashboardPromotion from './seller/dashboard/DashboardPromotion'
 import Calendar from './hocs/Calendar'
 import Whell from "./hocs/Whell"
 import ListAwardShop from './seller/promotions/ListAwardShop'
-import NewShopAward from './seller/promotions/NewShopAward'
-import DetailShopAward from './seller/promotions/DetailShopAward'
 import ListFollowerOffer from './seller/promotions/ListFolloweOffer'
-import DetailFollowerOffer from './seller/promotions/DetailFollowerOffer'
-import NewFollowerOffer from './seller/promotions/NewFollowerOffer'
 import DashboardAward from './seller/dashboard/DashboardAward'
 import DashboardOffer from './seller/dashboard/DashboardOffer'
 import TopSearch from './containers/search/Topsearch'
 import Daily from './containers/search/Daily'
+import Voucherinfo from './hocs/Voucherinfo'
+import Flashsaleinfo from './hocs/Flashsaleinfo'
+import Programinfo from './hocs/Programinfo'
+import FollowerOfferInfo from './hocs/FollowerOfferInfo'
+import ShopAwardInfo from './hocs/ShopAwardInfo'
+import Promotioninfo from './hocs/Promotioninfo'
 
 const Appstore=()=>{
 return(
@@ -118,29 +112,29 @@ return(
                                         <Route  path='/vendor' element={<HomePageSeller/>} />
                                         <Route  path='/vendor/onboarding' element={<Welcomeseller/>} />
                                         <Route  path='/vendor/onboarding/form' element={<Newshop/>} />
-                                        <Route exact path='/vendor/product/new' element={<Newproduct/>} /> 
+                                        <Route exact path='/vendor/product/new' element={<Detailproduct/>} /> 
                                         <Route exact path='/vendor/marketing' element={<Marketing/>} /> 
                                         <Route exact path='/vendor/product/:id' element={<Detailproduct/>} /> 
                                         <Route exact path='/marketing/vouchers/list' element={<Listvoucher/>} /> 
-                                        <Route exact path='/marketing/vouchers/new' element={<Newvoucher/>} /> 
-                                        <Route exact path='/marketing/vouchers/:id' element={<Detailvoucher/>} /> 
+                                        <Route exact path='/marketing/vouchers/new' element={<Voucherinfo/>} /> 
+                                        <Route exact path='/marketing/vouchers/:id' element={<Voucherinfo/>} /> 
                                         <Route exact path='/marketing/add-on-deal/:id' element={<Detaildealshock/>} /> 
                                         <Route exact path='/marketing/add-on-deal/new' element={<Newdealshock/>} /> 
                                         <Route exact path='/marketing/add-on-deal/list' element={<Listdealshop/>} /> 
-                                        <Route exact path='/marketing/bundle/new' element={<Newpromotion/>} /> 
-                                        <Route exact path='/marketing/bundle/:id' element={<Detailpromotion/>} /> 
+                                        <Route exact path='/marketing/bundle/new' element={<Promotioninfo/>} /> 
+                                        <Route exact path='/marketing/bundle/:id' element={<Promotioninfo/>} /> 
                                         <Route exact path='/marketing/bundle/list' element={<Listcomboshop/>} /> 
                                         <Route path="/marketing/shop-game/list" element={<ListAwardShop />} />
-                                        <Route path="/marketing/shop-game/create" element={<NewShopAward />} />
-                                        <Route path="/marketing/shop-game/:id" element={<DetailShopAward />} />
+                                        <Route path="/marketing/shop-game/create" element={<ShopAwardInfo />} />
+                                        <Route path="/marketing/shop-game/:id" element={<ShopAwardInfo />} />
                                         <Route path="/marketing/follow-prize/list" element={<ListFollowerOffer />} />
-                                        <Route path="/marketing/follow-prize/create" element={<NewFollowerOffer />} />
-                                        <Route path="/marketing/follow-prize/:id" element={<DetailFollowerOffer />} />
-                                        <Route exact path='/marketing/discount/create' element={<Newprogram/>} /> 
-                                        <Route exact path='/marketing/discount/:id' element={<Detailprogram/>} />
+                                        <Route path="/marketing/follow-prize/create" element={<FollowerOfferInfo />} />
+                                        <Route path="/marketing/follow-prize/:id" element={<FollowerOfferInfo />} />
+                                        <Route exact path='/marketing/discount/create' element={<Programinfo/>} /> 
+                                        <Route exact path='/marketing/discount/:id' element={<Programinfo/>} />
                                         <Route exact path='/marketing/discount/list' element={<Listdiscountshop/>} />  
-                                        <Route exact path='/marketing/flash-sale/new' element={<Newflashsale/>} /> 
-                                        <Route exact path='/marketing/flash-sale/:id' element={<Detailflashsale/>} /> 
+                                        <Route exact path='/marketing/flash-sale/new' element={<Flashsaleinfo/>} /> 
+                                        <Route exact path='/marketing/flash-sale/:id' element={<Flashsaleinfo/>} /> 
                                         <Route exact path='/marketing/shop-flash-sale/list' element={<Listflashseleshop/>} /> 
                                         <Route exact path='/sale/order' element={<Shippingmanagement/>} /> 
                                         <Route exact path='/vendor/product/list' element={<Listproduct/>} /> 

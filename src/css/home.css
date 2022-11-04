@@ -6732,12 +6732,6 @@ border-color: orange;
 		width:296px;
 	}
 	
-.variation-item,.shipping-item{
-	flex-basis: 32.1875rem;
-    max-width: 32.1875rem;
-    flex-wrap: wrap;
-}
-
 .product-variation:focus{
 	box-shadow: none;
 

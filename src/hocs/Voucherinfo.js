@@ -1,16 +1,16 @@
 import axios from 'axios';
 import Navbar from "../seller/Navbar"
 import Timeoffer from "./Timeoffer"
-import {Link,useNavigate} from 'react-router-dom'
+import {Link,useNavigate, useParams} from 'react-router-dom'
 import Productoffer from "../seller/promotions/Productoffer"
 import React, {useState,useEffect,useCallback,memo,useMemo} from 'react'
 import Pagination from "./Pagination"
-import {vouchershopURL} from "../urls"
-import {formatter,valid_from,valid_to,time_end,timevalue} from "../constants"
+import {detailvoucherURL, vouchershopURL} from "../urls"
+import {formatter,valid_from,valid_to,time_end,timevalue,timesubmit} from "../constants"
 import {headers} from "../actions/auth"
 let Pagesize=5
-const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=>{
-    const navite=useNavigate();
+const Voucherinfo=(props)=>{
+    const navigate=useNavigate();
     const [state,setState]=useState({timeSecond:5,code_type:[{image:'http://localhost:8000/media/my_web/shop.png',value:'All',name:"All product"},
         {image:'http://localhost:8000/media/my_web/product.png',value:'Product',name:"Product"}],
         discount_type:[{value:'1',name:"Percent"},{value:'2',name:"Amount"}],voucher_type:[
@@ -32,15 +32,27 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
     const [loading,setLoading]=useState(false)
     const [timeend,setTime_end]=useState(()=>time_end.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
     const [timestart,setTime_start]=useState(()=>new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
+    const {id}=useParams()
+    console.log(id)
+    const edit =id?true:false
+    const url_voucher=id?detailvoucherURL+id:vouchershopURL
     useEffect(() => {
-        if(voucher_shop){
-        setItem(itemvoucher)
-        setVoucher(voucher_shop)
-        setLoading(loading_content)
-        setTime_end(voucher_shop.valid_to)
-        setTime_start(voucher_shop.valid_from)
-        }
-      }, [voucher_shop,itemvoucher]);
+        (async () => {
+            if(id){
+                const res = await axios(url_voucher,headers)
+                const data=res.data
+                const limit=data.maximum_discount==null?'U':'L'
+                setVoucher({...data,limit:limit,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)})
+                setLoading(true)
+                setTime_end(timesubmit(data.valid_to))
+                setTime_start(timesubmit(data.valid_from))
+                setItem({...itemshop,items_choice:data.products,page_count_main:Math.ceil(data.products.length / Pagesize)})
+            }
+            else{
+                setLoading(true)
+            }
+        })();
+    }, [id]);
     
     const currentitemPage=useMemo(()=>{
         const firstPageIndex = (currentPage.items - 1) * Pagesize;
@@ -69,6 +81,7 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
     const setform=(e)=>{
         setVoucher({...voucher,[e.target.name]:e.target.value})
     }
+    
 
     const complete=()=>{
         if(voucher.name_of_the_discount_program=='' || voucher.code==''){
@@ -86,10 +99,10 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
                 if (state.timeSecond <= 0) {
                     clearInterval(countDown)
                     setState({...state,complete:false})
-                    navite('/marketing/vouchers/list')
+                    navigate('/marketing/vouchers/list')
                 }
             }, 1000);
-            axios.post(vouchershopURL,JSON.stringify(data),headers)
+            axios.post(url_voucher,JSON.stringify(data),headers)
             .then(res=>{
                 
             })
@@ -197,13 +210,13 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
         setVoucher({...voucher,discount_type:item.value})
         setState({...state,open_discount:false})
     }
-   
+   console.log(voucher)
     return(
         <>
             <div id="app">
                 <Navbar/>
                 <div className="wrapper">
-                    <div className="content-wrapper">
+                    {loading &&(<div className="content-wrapper">
                         <div className="banner">
                             Tạo mã giảm giá mới
                         </div>
@@ -313,7 +326,7 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
                                                                 <span className="input-group__append">
                                                                     <div className="discount-amount-wrapper _2a1tAIRs54WPp0HU8eeDzK">
                                                                         <div className="input currency-input">
-                                                                            <div className="input__inner input__inner--normal">
+                                                                            <div className="input__inner input__inner--normal    item-center">
                                                                                 {voucher.discount_type=="2"?
                                                                                 <>
                                                                                 <div className="input__prefix">₫
@@ -378,7 +391,7 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
                                                     <div className="form-item__control">
                                                         <div className="form-item__content">
                                                             <div className="input currency-input max-voucher-amount">
-                                                                <div className="input__inner input__inner--normal">
+                                                                <div className="input__inner input__inner--normal    item-center">
                                                                     <div className="input__prefix">
                                                                         ₫<span className="input__prefix-split"></span>
                                                                     </div> 
@@ -524,7 +537,7 @@ const Voucherinfo=({itemvoucher,edit,voucher_shop,url_voucher,loading_content})=
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>)}
                 </div>
             </div>
             <div id="modal">

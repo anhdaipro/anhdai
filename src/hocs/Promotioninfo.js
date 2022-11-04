@@ -5,13 +5,13 @@ import ReactDOM, { render } from 'react-dom'
 import Timeoffer from "./Timeoffer"
 import React, {useState,useEffect,useCallback,useRef,memo,useMemo} from 'react'
 import Pagination from "./Pagination"
-import {newcomboURL,} from "../urls"
+import {detailcomboURL, newcomboURL,} from "../urls"
 import {formatter,timesubmit,combo_type,valid_from,valid_to,time_end} from "../constants"
 import { headers } from '../actions/auth';
 import {debounce} from 'lodash'
 import Productoffer from '../seller/promotions/Productoffer';
 let Pagesize=5
-const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_combo})=>{
+const Promotioninfo=(props)=>{
     const navite=useNavigate()
     const {id}=useParams()
     const [timeend,setTime_end]=useState(()=>time_end.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
@@ -33,16 +33,28 @@ const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_com
     const [duplicate,setDuplicate]=useState(false)
     const list_enable_on=itemshop.items_choice.filter(item=>item.enable)
     const item_unvalid=list_enable_on.some(item=>sameitem.some(product=>product==item.id))
-    
+    const url_combo=id?detailcomboURL+id:newcomboURL
+    const edit=id?true:false
     useEffect(() => {
-        if(combo_shop && item_combo){
-        setLoading(loading_content)
-        setCombo(combo_shop)
-        setItem(item_combo)
-        setTime_end(combo_shop.valid_to)
-        setTime_start(combo_shop.valid_from)
-        }
-      }, [loading_content,item_combo,combo_shop]);
+        (async () => {
+            if(id){
+                const res=await axios(url_combo,headers)
+                const data=res.data
+                setCombo({...data,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)}) 
+                setLoading(true)
+                const list_products=data.products.map(item=>{
+                    return({...item,enable:true,check:false})
+                })
+                setTime_end(timesubmit(data.valid_to))
+                setTime_start(timesubmit(data.valid_from))
+                setItem({...itemshop,items_choice:list_products,page_count_main:Math.ceil(list_products.length / Pagesize)})
+            }
+            else{
+                setLoading(true)
+            }
+        })();
+    }, [id])
+
     
     
     const currentitemPage=useMemo(()=>{
@@ -253,7 +265,7 @@ const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_com
             <div id="app">
             <Navbar/>
             <div data-v-39395675="" className="wrapper">
-                <div className="wrapper-content">
+                {loading && (<div className="wrapper-content">
                     <div className="bundle-info-container">
                         <div className="bundle-info card">
                             <h4>info basic</h4>
@@ -310,7 +322,7 @@ const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_com
                                                                         <div className="form-item__control">
                                                                             <div className="form-item__content">
                                                                                 <div data-v-539aa17b="" className="input">
-                                                                                    <div className="input__inner input__inner--normal">
+                                                                                    <div className="input__inner input__inner--normal    item-center">
                                                                                         <input onChange={(e)=>setform('quantity_to_reduced',isNaN(e.target.value)?combo.quantity_to_reduced:e.target.value)}  value={combo.quantity_to_reduced} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" maxLength="9" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/>
                                                                                     </div>
                                                                                 </div>
@@ -322,7 +334,7 @@ const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_com
                                                                         <div className="form-item__control">
                                                                             <div className="form-item__content">
                                                                                 <div data-v-539aa17b="" className="input discount-input" placeholder=" ">
-                                                                                    <div className="input__inner input__inner--normal">
+                                                                                    <div className="input__inner input__inner--normal    item-center">
                                                                                         {combos.value=='1'?<>
                                                                                         <input name='discount_percent' value={combo.discount_percent} onChange={(e)=>setform('discount_percent',isNaN(e.target.value)?combo.discount_percent:e.target.value)} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                                         <div className="input__suffix">
@@ -532,7 +544,7 @@ const Promotioninfo=({combo_shop,edit,item_combo,loading_content,disable,url_com
                             </div>
                         </div>
                     </div>  
-                </div>
+                </div>)}
             </div>
             </div>
             <div id="modal">

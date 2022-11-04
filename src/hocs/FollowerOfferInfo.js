@@ -1,12 +1,14 @@
 import axios from 'axios';
 import Navbar from "../seller/Navbar"
 import Timeoffer from "./Timeoffer"
-import {Link,useNavigate} from 'react-router-dom'
+import {Link,useNavigate,useParams} from 'react-router-dom'
 import React, {useState,useEffect,useCallback,memo,useMemo} from 'react'
-import {formatter,valid_from,valid_to,time_end,timevalue} from "../constants"
+import {formatter,valid_from,valid_to,time_end,timesubmit} from "../constants"
 import {headers} from "../actions/auth"
+import { newFollowOffershopURL,detailFollowOffershopURL } from '../urls';
+
 let Pagesize=5
-const FollowerOfferInfo=({follower_offer_shop,url,loading_content})=>{
+const FollowerOfferInfo=(props)=>{
     const navite=useNavigate();
     const [state,setState]=useState({timeSecond:5,code_type:[{image:'http://localhost:8000/media/my_web/shop.png',value:'All',name:"All product"},
         {image:'http://localhost:8000/media/my_web/product.png',value:'Product',name:"Product"}],
@@ -26,15 +28,25 @@ const FollowerOfferInfo=({follower_offer_shop,url,loading_content})=>{
     const [loading,setLoading]=useState(false)
     const [timeend,setTime_end]=useState(()=>time_end.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
     const [timestart,setTime_start]=useState(()=>new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
+    const {id}=useParams()
+    const edit=id?true:false
+    const url=id?`${detailFollowOffershopURL}/${id}`:newFollowOffershopURL
     useEffect(() => {
-        if(follower_offer_shop){
-        setFolloweroffer(follower_offer_shop)
-        setLoading(loading_content)
-        setTime_end(follower_offer_shop.valid_to)
-        setTime_start(follower_offer_shop.valid_from)
-        }
-      }, [follower_offer_shop,loading_content]);
-    
+        (async () => {
+            if(id){
+                const res = await axios(url,headers)
+                const data=res.data
+                const limit=data.maximum_discount==null?'U':'L'
+                setFolloweroffer({...data,limit:limit,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)})
+                setLoading(true)
+                setTime_end(timesubmit(data.valid_to))
+                setTime_start(timesubmit(data.valid_from))
+            }
+            else{
+                setLoading(true)
+            }
+          })();
+    }, [id])
     
     const opendiscount=(e)=>{
         setState({...state,open_discount:!state.open_discount})
@@ -93,7 +105,7 @@ const FollowerOfferInfo=({follower_offer_shop,url,loading_content})=>{
             <div id="app">
                 <Navbar/>
                 <div className="wrapper">
-                    <div className="content-wrapper">
+                    {loading && (<div className="content-wrapper">
                         <div className="banner">
                             Tạo mã giảm giá mới
                         </div>
@@ -121,8 +133,9 @@ const FollowerOfferInfo=({follower_offer_shop,url,loading_content})=>{
                                                 <label for="" className="form-item__label">Thời gian lưu Ưu Đãi Follower</label>
                                                 <Timeoffer
                                                     data={follower_offer}
-                                                    time_end={timevalue(time_end)}
                                                     time_start={timestart}
+                                                    time_end={timeend}
+                                                    edit={edit}
                                                     setdatevalid={(index,date)=>setdatevalid(index,date)}
                                                  
                                                 />
@@ -195,7 +208,7 @@ const FollowerOfferInfo=({follower_offer_shop,url,loading_content})=>{
                                                                 <span className="input-group__append">
                                                                     <div className="discount-amount-wrapper _2a1tAIRs54WPp0HU8eeDzK">
                                                                         <div className="input currency-input">
-                                                                            <div className="input__inner input__inner--normal">
+                                                                            <div className="input__inner input__inner--normal    item-center">
                                                                                 {follower_offer.discount_type=="2"?
                                                                                 <>
                                                                                 <div className="input__prefix">₫
@@ -260,7 +273,7 @@ const FollowerOfferInfo=({follower_offer_shop,url,loading_content})=>{
                                                     <div className="form-item__control">
                                                         <div className="form-item__content">
                                                             <div className="input currency-input max-voucher-amount">
-                                                                <div className="input__inner input__inner--normal">
+                                                                <div className="input__inner input__inner--normal    item-center">
                                                                     <div className="input__prefix">
                                                                         ₫<span className="input__prefix-split"></span>
                                                                     </div> 
@@ -326,7 +339,7 @@ const FollowerOfferInfo=({follower_offer_shop,url,loading_content})=>{
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>)}
                 </div>
             </div>
             <div id="modal">

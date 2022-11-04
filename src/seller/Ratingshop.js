@@ -120,7 +120,7 @@ const Ratingshop=()=>{
                                                     <div className="form-item__control">
                                                         <div className="form-item__content">
                                                             <div data-v-e373b4b6="" className="input">
-                                                                <div className="input__inner input__inner--normal"> 
+                                                                <div className="input__inner input__inner--normal    item-center"> 
                                                                     <input type="text" placeholder="Nhập tên sản phẩm" resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                 </div>
                                                             </div>
@@ -132,7 +132,7 @@ const Ratingshop=()=>{
                                                     <div className="form-item__control">
                                                         <div className="form-item__content">
                                                             <div data-v-e373b4b6="" className="input">
-                                                                <div className="input__inner input__inner--normal"> 
+                                                                <div className="input__inner input__inner--normal    item-center"> 
                                                                     <input type="text" placeholder="Nhập tên Phân loại hàng" resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                 </div>
                                                             </div>
@@ -144,7 +144,7 @@ const Ratingshop=()=>{
                                                     <div className="form-item__control">
                                                         <div className="form-item__content">
                                                             <div data-v-e373b4b6="" className="input">
-                                                                <div className="input__inner input__inner--normal"> 
+                                                                <div className="input__inner input__inner--normal    item-center"> 
                                                                     <input type="text" placeholder="Nhập tên đăng nhập" resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                 </div>
                                                             </div>
@@ -377,7 +377,7 @@ const Ratingshop=()=>{
                                     <div className="mb-1">{review_choice.info_more}</div>
                                     
                                     <div data-v-59a709f0="" className="input input__area desc-input">
-                                        <textarea onChange={e=>setState({...state,text:e.target.value})} value={state.text} type="textarea" placeholder="Nhập phản hồi của bạn tại đây" resize="vertical" rows="2" minrows="5" maxlength="500" restrictiontype="input" showwordlimit="true" max="Infinity" min="-Infinity" className="input__inner input__inner--normal" style={{resize: 'vertical', minHeight: '98px'}}></textarea>
+                                        <textarea onChange={e=>setState({...state,text:e.target.value})} value={state.text} type="textarea" placeholder="Nhập phản hồi của bạn tại đây" resize="vertical" rows="2" minrows="5" maxlength="500" restrictiontype="input" showwordlimit="true" max="Infinity" min="-Infinity" className="input__inner input__inner--normal    item-center" style={{resize: 'vertical', minHeight: '98px'}}></textarea>
                                         <span className="input__count">{state.text!=null?state.text.trim().length:0}/500</span>
                                     </div>
                                 </div>

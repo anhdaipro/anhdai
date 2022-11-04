@@ -7,7 +7,7 @@ import React, {useState,useEffect,useCallback,useRef,useMemo} from 'react'
 import Pagination from "./Pagination"
 import {formatter,itemvariation,limit_choice,timesubmit,valid_from,valid_to,time_end,timevalue} from "../constants"
 import { headers } from '../actions/auth';
-import { newprogramURL } from '../urls';
+import { newprogramURL,detailprogramURL } from '../urls';
 import Productoffer from '../seller/promotions/Productoffer';
 let Pagesize=5
 const Limit=(props)=>{
@@ -74,7 +74,7 @@ const Limit=(props)=>{
                 {item.limit?
                 <span className="input-group__append">
                     <div data-v-0d5f8626="" className="input" style={{width: '60px'}}>
-                        <div className="input__inner input__inner--normal"> 
+                        <div className="input__inner input__inner--normal    item-center"> 
                             <input value={keys=='user_item_limit'?item.user_item_limit:item.promotion_stock} onChange={(e)=>setlimit(e,item,name,keys=='user_item_limit'?'user_item_limit':'promotion_stock',e.target.value)} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                         </div>
                     </div>
@@ -84,7 +84,7 @@ const Limit=(props)=>{
     )
 }
 
-const Programinfo=({loading_content,item_program,edit,program_shop,url_program})=>{
+const Programinfo=(props)=>{
     const [program,setProgram]=useState({name_program:'',valid_from:valid_from.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     valid_to:valid_to.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     })
@@ -101,17 +101,37 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
     const [sameitem,setSameitem]=useState([])
     const [duplicate,setDuplicate]=useState(false)
     const {id}=useParams()
-    
+    const url_program=id?detailprogramURL+id:newprogramURL
+    const edit=id?true:false
     useEffect(() => {
-        if(program_shop){
-        setProgram(program_shop)
-        setLoading(loading_content)
-        setItem(item_program)
-        setTime_end(program_shop.valid_to)
-        setTime_start(program_shop.valid_from)
-        }
-      }, [loading_content,item_program,program_shop]);
-   
+        (async () => {
+            if(id){
+                const res = await axios(detailprogramURL+id,headers)
+            // <-- passed to API URL
+                const data=res.data
+                setProgram({...data,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)})
+                setLoading(true)
+                const variations=data.variations.map(variation=>{
+                    return {...variation,limit:variation.promotion_stock>0?true:false,
+                        percent_discount:(variation.price-parseInt(variation.promotion_price))*100/variation.price,
+                        promotion_price:parseInt(variation.promotion_price)}
+                })
+                setTime_end(timesubmit(data.valid_to))
+                setTime_start(timesubmit(data.valid_from))
+                const list_products=data.products.map(product=>{
+                    return({...product,check:false,user_item_limit:variations.find(variation=>variation.user_item_limit)?variations.find(variation=>variation.user_item_limit).user_item_limit:'',
+                    limit:variations.some(variation=>variation.user_item_limit)?true:false,variations:variations.filter(variation=>variation.item_id==product.id)})
+                })
+                setItem({...itemshop,byproduct_choice:list_products,
+                page_count_by:Math.ceil(list_products.length / Pagesize)})
+            }
+            else{
+                setLoading(true)
+            }
+        })();
+    }, [id]);
+
+    
     const byproductPage=useMemo(()=>{
         const firstpagebyproductIndex=(currentPage.byproduct - 1) * Pagesize;
         const lastPagebyproductIndex = firstpagebyproductIndex + Pagesize;
@@ -469,7 +489,7 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
             <div id="app">
             <Navbar/>
             <div data-v-39395675="" className="wrapper">
-                <div className="wrapper-content">
+                {loading && (<div className="wrapper-content">
                     <div className="bundle-info-container">
                         <h2 className=" p-2">New progrram</h2>
                         <div className="bundle-info card">
@@ -707,7 +727,7 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
                                                                     </div> 
                                                                     <span className="split">or</span> 
                                                                     <div className={`input currency-input ${variation.enable?'':'disable'}`} size="normal" placeholder=" ">
-                                                                        <div className="input__inner input__inner--normal">
+                                                                        <div className="input__inner input__inner--normal    item-center">
                                                                             <input type="text" onChange={(e)=>setdiscount(e,'percent_discount',variation,item)} value={variation.percent_discount>0?('0'+variation.percent_discount).slice(-2):'0'} placeholder=" " size="normal" resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                             <div className="input__suffix"><span className="input__suffix-split"></span>%GIẢM</div>
                                                                         </div>
@@ -795,7 +815,7 @@ const Programinfo=({loading_content,item_program,edit,program_shop,url_program})
                                     </div>
                         </div>
                     </div>  
-                </div>
+                </div>)}
             </div>
             </div>
             <div id="modal">

@@ -107,6 +107,7 @@ export const listordersellerURL=`${localhost}${apivendorURL}/shop/order`
 export const shopratingURL=`${localhost}${apivendorURL}/shop/rating`;
 export const productshopURL=`${localhost}${apivendorURL}/product/list`;
 export const listProductshopURL=`${localhost}${apivendorURL}/product`
+export const createvariationURL=`${localhost}${apivendorURL}/variation/create`
 export const newproductURL=`${localhost}${apivendorURL}/product/category`
 export const detailproductURL=`${localhost}${apivendorURL}/product/`
 

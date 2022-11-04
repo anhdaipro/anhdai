@@ -1,7 +1,7 @@
 import Sidebamenu from "./Sidebar-menu"
 import axios from 'axios';
 import Navbar from "./Navbar"
-import { useParams,Link } from "react-router-dom";
+import { useParams,Link, Navigate, useNavigate } from "react-router-dom";
 import React, {useState,useEffect,useCallback,useRef} from 'react'
 import {itemvariation,pagesize} from "../constants"
 import Pagination from "../hocs/Pagination"
@@ -15,6 +15,7 @@ const Listproduct=()=>{
     const [showbatch,setShowbatch]=useState(false)
     const parentref=useRef()
     const toolsref=useRef()
+    const navigation=useNavigate()
     const [currentPage, setCurrentPage] = useState({page:1,pagesize:12});
     useEffect(()=>{
         document.addEventListener('click',handleClick)
@@ -458,7 +459,7 @@ const Listproduct=()=>{
                                                 </div>:''}
                                             </div>
                                             <div className='table-edit'>
-                                                <button type="button" className="button-link mb-1">
+                                                <button onClick={()=>navigation(`/vendor/product/${item.id}`)} type="button" className="button-link mb-1">
                                                     <span>Modify</span>
                                                 </button>
                                                 <div className="dropdown dropdown">
