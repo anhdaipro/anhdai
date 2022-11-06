@@ -514,6 +514,8 @@ const Programinfo=(props)=>{
                                         <div className="flex-col">
                                             <Timeoffer
                                             data={program}
+                                            valid_from={program.valid_from}
+                                            valid_to={program.valid_to}
                                             time_start={timestart}
                                             time_end={timeend}
                                             setdatevalid={(index,date)=>setdatevalid(index,date)}

@@ -292,6 +292,8 @@ const Promotioninfo=(props)=>{
                                             time_end={timeend}
                                             time_start={timestart}
                                             data={combo}
+                                            valid_from={combo.valid_from}
+                                            valid_to={combo.valid_to}
                                             setdatevalid={(index,date)=>setdatevalid(index,date)}
                                             />
                                             <div className="info_more">

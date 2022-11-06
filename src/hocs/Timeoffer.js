@@ -6,14 +6,14 @@ import Calendar from './Calendar';
 const scrollToRef = (ref) => window.scrollTo(50, ref.current.offsetTop)   
 
 const Datepicker=(props)=>{
-    const {item,index,setdatevalid,time,edit,data,time_start,time_end}=props
+    const {item,index,setdatevalid,time,edit,time_start,time_end,valid_from,valid_to}=props
     const [show,setShow]=useState(false)
     const [date,setDate]=useState(()=>{return{time:new Date(),hours:new Date().getHours(),minutes:new Date().getMinutes()}})
     useEffect(()=>{
         if(time){
-            setDate({...date,time:time,error:!edit && (new Date(time).getTime()+1000*60<new Date().getTime() || new Date(data.valid_to).getTime()<new Date(data.valid_from).getTime()+3600*1000)?index==0 && new Date(time)<new Date()-1000*60?true:index==1&&new Date(data.valid_to).getTime()<new Date(data.valid_from).getTime()+3600*1000?true:false:false,hours:time.getHours(),minutes:time.getMinutes()})
+        setDate({...date,time:time,error:!edit && (new Date(time).getTime()+1000*60<new Date().getTime() || new Date(valid_to).getTime()<new Date(valid_from).getTime()+3600*1000)?index==0 && new Date(time)<new Date()-1000*60?true:index==1&&new Date(valid_to).getTime()<new Date(valid_from).getTime()+3600*1000?true:false:false,hours:time.getHours(),minutes:time.getMinutes()})
         }
-    },[time,data])
+    },[time,valid_to,valid_from])
     const hours=(number)=>{
         return Array(number).fill().map((_,i)=>
             <li key={i} name={i} className={`${date.hours==i?'selected':''}`} onClick={(e)=>setDate({...date,hours:i})}>{('0'+i).slice(-2)}</li>
@@ -25,8 +25,8 @@ const Datepicker=(props)=>{
     let scrollminutes = useRef();
     useEffect(()=>{
         if(show){
-        scrollhours.current.scrollTop=date.hours*32
-        scrollminutes.current.scrollTop=date.minutes*32
+            scrollhours.current.scrollTop=date.hours*32
+            scrollminutes.current.scrollTop=date.minutes*32
         }
     },[scrollhours,scrollminutes,show,date])
     const parent=useRef()
@@ -41,7 +41,6 @@ const Datepicker=(props)=>{
         return Array(number).fill().map((_,i)=>
             <li key={i} className={`${date.minutes==i?'selected':''}`} onClick={(e)=>setDate({...date,minutes:i})}>{('0'+i).slice(-2)}</li>
         )
-       
     }
 
     useEffect(() => {
@@ -49,12 +48,13 @@ const Datepicker=(props)=>{
         return () => {
             document.removeEventListener('click', handleClick)
         }
-    }, [])
+    }, [time])
     const handleClick = (event) => {
         const { target } = event
         if(parent.current!=null){
             if (!parent.current.contains(target)) {
                 setShow(false)
+                setDate({...date,time:time,error:!edit && (new Date(time).getTime()+1000*60<new Date().getTime() || new Date(valid_to).getTime()<new Date(valid_from).getTime()+3600*1000)?index==0 && new Date(time)<new Date()-1000*60?true:index==1&&new Date(valid_to).getTime()<new Date(valid_from).getTime()+3600*1000?true:false:false,hours:time.getHours(),minutes:time.getMinutes()})
             }
         }
     }
@@ -74,7 +74,7 @@ const Datepicker=(props)=>{
                     <div className="d-flex date_picker-date">
                         <Calendar
                             onChange={value=>setDate({...date,time:value})}
-                            value={date.time}
+                            value={time}
                             time_start={time_start}
                             time_end={time_end}
                             choice={'day'}
@@ -144,32 +144,34 @@ const Datepicker=(props)=>{
     </>
     )
 }
-const Timeoffer=({data,setdatevalid,edit,time_end,time_start})=>{
+
+const Timeoffer=({setdatevalid,edit,time_end,time_start,valid_from,valid_to})=>{
     const [date,setDate]=useState(()=>[{time:new Date(),show:false,hours:new Date().getHours(),minutes:new Date().getMinutes()}
     ,{time:new Date(),show:false,hours:new Date().getHours()+1,minutes:new Date().getMinutes()}])
     useEffect(()=>{
-        if(data){
-            setDate([{time:new Date(data.valid_from),show:false,hours:new Date(data.valid_from).getHours(),minutes:new Date(data.valid_from).getMinutes()}
-            ,{time:new Date(data.valid_to),show:false,hours:new Date(data.valid_to).getHours(),minutes:new Date(data.valid_to).getMinutes()}])
+        if(valid_from&& valid_to){
+            setDate([{time:new Date(valid_from),show:false,hours:new Date(valid_from).getHours(),minutes:new Date(valid_from).getMinutes()}
+            ,{time:new Date(valid_to),show:false,hours:new Date(valid_to).getHours(),minutes:new Date(valid_to).getMinutes()}])
         }
-    },[data])
+    },[valid_from,valid_to])
     
     
 
     return(
         <div>
-            {data?
+            {valid_from && valid_to?
             <div className="form-item_control">
                 {date.map((item,index)=>
                     <Datepicker
                     item={item}
                     index={index}
                     edit={edit}
-                    data={data}
+                    valid_from={valid_from}
+                    valid_to={valid_to}
                     listdate={date}
                     time_end={time_end}
                     time_start={time_start}
-                    time={index==0?new Date(data.valid_from):new Date(data.valid_to)}
+                    time={index==0?new Date(valid_from):new Date(valid_to)}
                     setdatevalid={(index,date)=>setdatevalid(index,date)}
                     />  
                 )}     

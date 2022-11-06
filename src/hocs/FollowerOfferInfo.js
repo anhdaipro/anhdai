@@ -133,6 +133,8 @@ const FollowerOfferInfo=(props)=>{
                                                 <label for="" className="form-item__label">Thời gian lưu Ưu Đãi Follower</label>
                                                 <Timeoffer
                                                     data={follower_offer}
+                                                    valid_from={follower_offer.valid_from}
+                                                    valid_to={follower_offer.valid_to}
                                                     time_start={timestart}
                                                     time_end={timeend}
                                                     edit={edit}

@@ -272,6 +272,8 @@ const Voucherinfo=(props)=>{
                                                 <Timeoffer
                                                    edit={edit}
                                                     data={voucher}
+                                                    valid_from={voucher.valid_from}
+                                                    valid_to={voucher.valid_to}
                                                     time_end={timevalue(time_end)}
                                                     time_start={timestart}
                                                     setdatevalid={(index,date)=>setdatevalid(index,date)}

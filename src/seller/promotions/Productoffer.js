@@ -92,6 +92,7 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
             </div>
         )
     }
+    console.log('og')
     return(
         <>
         {show?

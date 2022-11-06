@@ -418,8 +418,8 @@ const Message=(props)=>{
 
     useEffect(() => {
         socket.current=io.connect('https://anhdai12345.herokuapp.com/');
-        socket.current.on('message',data=>{
-            console.log(data)
+        socket.current.on('message',({data})=>{
+            
             if(data.typing || data.typing==""){
                 if(data.typing==""){
                     setTyping({typing:false})
@@ -434,10 +434,12 @@ const Message=(props)=>{
             else{
                 setTyping({typing:false})
                 if(thread.id==data.thread_id){
+                    console.log(data)
                     setListmessages(current=>[...current,...data.message])
                 }
+                console.log(thread.id)
                 setTyping({typing:false,send_to:data.send_to})
-                
+                console.log(data.thread_id)
                 setThreads(current=>current.map(thread=>{
                     if(data.thread_id==thread.id){
                     return({...thread,message_last:data.message[data.message.length-1],members:thread.members.map(member=>{
@@ -655,18 +657,16 @@ const Message=(props)=>{
     }
 
     const listdate=()=>{
-        let list_days_unique=[]
-        let list_days=[]
         const list_day=list_messages.map(message=>{
             return(("0" + new Date(message.date_created).getDate()).slice(-2) + "-" + ("0"+(new Date(message.date_created).getMonth()+1)).slice(-2) + "-" +
             new Date(message.date_created).getFullYear())
         })
-        for(let j=0;j<list_day.length;j++){
-            if(list_days[list_day[j]]) continue;
-            list_days[list_day[j]] = true;
-            list_days_unique.push(j)
-        }
-        return list_days_unique
+        return list_day.reduce((arr,obj)=>{
+            if(!arr.includes(obj)){
+                arr.push(obj)
+            }
+            return arr
+        },[])
     }
     
     let list_file=[]

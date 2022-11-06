@@ -7156,9 +7156,75 @@ cursor: pointer;
   align-items:center;
   margin-right:8px
 }
+.select__filter{
+  margin:12px 12px 8px
+}
+.option-add {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    background: #fff;
+    -webkit-box-shadow: inset 0 1px 0 0 #e5e5e5;
+    box-shadow: inset 0 1px 0 0 #e5e5e5;
+}
+.option-add__text {
+    display: inline-flex;
 
+    align-items: center;
+    width: 100%;
+    padding: 12px;
+    cursor: pointer;
+}
 .price[data-v-4f5fa871] {
   display: inline;
+}
+.option-add__text .add-icon {
+    width: 16px;
+    height: 16px;
+    fill: #2673dd;
+}
+.option-add__text .label {
+    height: 16px;
+    padding-left: 4px;
+    font-weight:500;
+    font-size: 14px;
+    line-height: 16px;
+    color: #2673dd;
+}
+.option-add__input {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    width: inherit;
+    padding: 8px 12px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.option-add__input .input {
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    margin-right: 4px;
+}
+.input__inner--small {
+    height: 24px;
+    padding: 0 8px;
+    font-size: 12px;
+}
+.input__inner--small .input__input {
+    height: 22px;
+    font-size: 12px;
+}
+.option-add__add-confirm-icon,.option-add__add-close-icon{
+    box-sizing:border-box;
+    border-radius: 4px;
+    border: 1px solid #e5e5e5;
+    flex-grow: 0;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    padding: 3px;
+    margin-left: 4px;
 }
 .editable-field__edit[data-v-5e61e860] {
   margin-left: 0.5em;

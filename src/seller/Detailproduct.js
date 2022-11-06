@@ -10,6 +10,7 @@ import styled from "styled-components"
 import { v4 as uuid } from 'uuid';
 import { headers } from '../actions/auth';
 import Navbar from "./Navbar"
+import Dropmenu from './products/Dropmenu'
 const ContentLeft=styled.div`
 display:flex;
 flex-direction:column
@@ -98,6 +99,7 @@ const price_ship={
         
     ]
 }
+const list_status=[{name:'Mới',value:'1',default:true},{name:'Đã sử dụng',value:'2',default:true}]
 const Detailproduct=()=>{
     const [state,setState]=useState({imageDestination: "",preview:false,order_before:true,list_choice:[],list_color:[],list_size:[],
     classify1:'',classify2:'',preview_video:false,play:false,list_media:[],
@@ -111,10 +113,43 @@ const Detailproduct=()=>{
     const [list_category,setListcategory]=useState([])
     const [show,setShow]=useState(false)
     const [buymore,setBuymore]=useState([])
+    const [brands,setBrands]=useState([
+        {value:'1',name:'No brand'},
+        {value:'2',name:'AAA JEANS'},
+        {value:'3',name:'ADAM STORE'},
+        {value:'4',name:'ADDICTED'},
+        {value:'5',name:'AFS Jeep'},
+        {value:'6',name:'AGUYN'},
+        {value:'7',name:'AIRism'},
+        {value:'8',name:'AKUBA'},
+        {value:'9',name:'AKYOO'},
+        {value:'10',name:'ALEGO'},
+        {value:'11',name:'ALIEN SPORTS'},
+        {value:'12',name:'ALIGRO'},
+        {value:'13',name:'ALOHA'},
+        {value:'14',name:'AMANDA'},
+        {value:'15',name:'AMANO'},
+        {value:'16',name:'AMERICAN RAG'},
+        {value:'17',name:'AMERICUS'},
+        {value:'18',name:'AMIRI'},
+        {value:'19',name:'AMIRO'},
+        {value:'20',name:'ANDREW CHRISTIAN'},
+        {value:'21',name:'ANH THO LEATHER'},
+        {value:'22',name:'ANN CHERY'},
+        {value:'23',name:'ANTELO'},
+        {value:'24',name:'ARENO'},
+        {value:'25',name:'ASRV'},
+        {value:'26',name:'ATS'},
+        {value:'27',name:'AVIANO'},
+        {value:'28',name:'Alan Walker'},
+        {value:'29',name:'Alpha'},
+        {value:'30',name:'Alpha Industries'},
+        
+    ])
     const videoref=useRef();
-    const [detail,setDetail]=useState({brand:'No brand'})
+    const [detail,setDetail]=useState({brand:'1'})
     const [shipping,setShipping]=useState([])
-    const [formData,setformData]=useState({name:'',description:'',height:'',length:'',weight:null,price:'',inventory:'',sku_classify:'',width:'',sku_classify:''})
+    const [formData,setformData]=useState({status:'1',name:'',description:'',height:'',length:'',weight:null,price:'',inventory:'',sku_classify:'',width:'',sku_classify:''})
     const [previewimage, setPreviewimage] = useState({zoom:0.5,rotate:0,scaleX:1,scaleY:1});
     const [filechoice,setFilechoice]=useState()
     const [cropper, setCropper] = useState()
@@ -614,12 +649,12 @@ console.log(shipping)
         
         const files=list_media.map(item=>item.id)
         const buymorediscounts_remain=buymore.filter(item=>!isNaN(item.id)).map(item=>item.id)
-        const variations=variations.length>0?variations.map(variation=>{
+        const datavariations=variations.length>0?variations.map(variation=>{
             return({...variation,color_id:res.data.colors.find(color=>color.value==variation.color_value)?res.data.colors.find(color=>color.value==variation.color_value).id:null,size_id:res.data.sizes.find(size=>size.value==variation.size_value)?res.data.sizes.find(size=>size.value==variation.size_value).id:null})
         }):[{color_id:null,size_id:null,price:formData,sku_classify:formData.sku_classify,inventory:formData.inventory}]
         const variations_remain=variations.filter(item=>!isNaN(item.variation_id)).map(item=>item.variation_id)
         const formdata={action:'update',variations_remain:variations_remain,buymorediscounts_remain:buymorediscounts_remain,
-        variations:variations,files:files,buymorediscounts:buymore,category_id:category.id,method:shippings,...detail,...formData}
+        variations:datavariations,files:files,buymorediscounts:buymore,category_id:category.id,method:shippings,...detail,...formData}
         const url=id?detailproductURL+id:newproductURL      
         const res1 =await axios.post(url,JSON.stringify(formdata),headers)
         
@@ -998,30 +1033,18 @@ console.log(shipping)
                                                     <div className="attribute-select-item">
                                                         <div className="grid edit-row">
                                                             <div data-v-9a4c8da0="" className="edit-label edit-title">
-                                                                
-                                                                    <div data-v-1af24323="" data-v-9a4c8da0="" className="mandatory">
-                                                                        <span data-v-1af24323="" className="mandatory-icon">*</span>
-                                                                    </div>Thương hiệu                                                       
-                                                            
+                                                                <div data-v-1af24323="" data-v-9a4c8da0="" className="mandatory">
+                                                                    <span data-v-1af24323="" className="mandatory-icon">*</span>
+                                                                </div>Thương hiệu                                                       
                                                             </div>
                                                             <div data-v-a3311712="" className="edit-input edit-text">
-                                                                <div data-v-5bb79eae="" data-v-9a4c8da0="" className="popover-wrap attribute-text" data-v-a3311712="">
-                                                                    <div className="select" data-v-5bb79eae="">
-                                                                        <div className="dropdown select-popover" max-width="292">
-                                                                            <div tabIndex="0" className="selector item-space selector--large"> 
-                                                                                <div className="selector__inner placeholder line-clamp--1"> Vui lòng chọn</div> 
-                                                                                <div className="selector__suffix">  
-                                                                                    <i className="selector__suffix-icon icon">
-                                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,9.18933983 L4.03033009,5.21966991 C3.73743687,4.9267767 3.26256313,4.9267767 2.96966991,5.21966991 C2.6767767,5.51256313 2.6767767,5.98743687 2.96966991,6.28033009 L7.46966991,10.7803301 C7.76256313,11.0732233 8.23743687,11.0732233 8.53033009,10.7803301 L13.0303301,6.28033009 C13.3232233,5.98743687 13.3232233,5.51256313 13.0303301,5.21966991 C12.7374369,4.9267767 12.2625631,4.9267767 11.9696699,5.21966991 L8,9.18933983 Z"></path></svg>
-                                                                                    </i>
-                                                                                </div>
-                                                                            </div>  
-                                                                            <div className="popper popover adv-select-popover select-popover-content" style={{display: 'none'}}>
-                                                                                <ul className="dropdown-menu" style={{maxWidth: '440px'}}></ul>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div> 
-                                                                </div> 
+                                                                <Dropmenu
+                                                                    choice={detail.brand}
+                                                                    data={brands}
+                                                                    showsearch
+                                                                    setchoice={data=>setDetail({...detail,brand:data})}
+
+                                                                />
                                                             </div>
                                                         </div>  
                                                     </div>
@@ -1848,35 +1871,11 @@ console.log(shipping)
                                                 <span data-v-708e34e0="">Status</span>
                                             </div>
                                             <div className='edit-text-mini'>
-                                                <div data-v-5bb79eae="" data-v-708e34e0="" className="popover-wrap">
-                                                    <div data-v-708e34e0="" className="select" data-v-5bb79eae="">
-                                                        <div tabIndex="0" className="selector item-space selector--large"> 
-                                                            <div className="selector__inner line-clamp--1">Mới</div> 
-                                                            <div className="selector__suffix"> 
-                                                                <i className="selector__suffix-icon icon">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,9.18933983 L4.03033009,5.21966991 C3.73743687,4.9267767 3.26256313,4.9267767 2.96966991,5.21966991 C2.6767767,5.51256313 2.6767767,5.98743687 2.96966991,6.28033009 L7.46966991,10.7803301 C7.76256313,11.0732233 8.23743687,11.0732233 8.53033009,10.7803301 L13.0303301,6.28033009 C13.3232233,5.98743687 13.3232233,5.51256313 13.0303301,5.21966991 C12.7374369,4.9267767 12.2625631,4.9267767 11.9696699,5.21966991 L8,9.18933983 Z"></path></svg>
-                                                                </i>
-                                                            </div>
-                                                        </div> 
-                                                        <div className="popper" style={{position: 'absolute', zIndex: 1, willChange: 'top, left', transformOrigin: 'left top', top: '3840px', left: '206px', display: 'none'}} x-placement="bottom-start"> 
-                                                            <div className="select__menu" style={{maxWidth: '440px', maxHeight: '218px', minWidth: '440px'}}>
-                                                                <div className="scrollbar">
-                                                                    <div className="scrollbar__wrapper">
-                                                                        <div className="scrollbar__bar vertical">
-                                                                            <div className="scrollbar__thumb" style={{top: '0px', height: '0px'}}></div>
-                                                                        </div>  
-                                                                        <div className="scrollbar__content" style={{position: 'relative'}}>
-                                                                            <div className="select__options">
-                                                                                <div data-v-708e34e0="" className="option selected">Mới</div>
-                                                                                <div data-v-708e34e0="" className="option">Đã sử dụng</div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div> 
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <Dropmenu
+                                                    choice={formData.status}
+                                                    data={list_status}
+                                                    setchoice={data=>setformData({...formData,status:data})}
+                                                />
                                             </div>    
                                         </div>
                                         <div className="edit-row d-flex">

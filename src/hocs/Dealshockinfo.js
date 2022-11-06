@@ -41,6 +41,8 @@ const Dealshockinfo=({deal,setform,editdeal,disable,setdealtype,edit,state,setda
                             <Timeoffer
                             state={state}
                             data={deal}
+                            valid_from={deal.valid_from}
+                            valid_to={deal.valid_to}
                             selectRange={true}
                             time_end={time_end}
                             time_start={time_start}

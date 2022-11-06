@@ -207,6 +207,8 @@ const ShopAwardInfo=(props)=>{
                                         <div className="flex-col">
                                             <Timeoffer
                                             data={shop_award}
+                                            valid_from={shop_award.valid_from}
+                                            valid_to={shop_award.valid_to}
                                             time_start={timestart}
                                             time_end={timeend}
                                             setdatevalid={(index,date)=>setdatevalid(index,date)}
