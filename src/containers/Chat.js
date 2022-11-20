@@ -418,17 +418,16 @@ const Message=(props)=>{
 
     useEffect(() => {
         socket.current=io.connect('https://anhdai12345.herokuapp.com/');
-        socket.current.on('message',({data})=>{
-            
+        socket.current.on('message',({data})=>{ 
             if(data.typing || data.typing==""){
                 if(data.typing==""){
                     setTyping({typing:false})
                 }
                 else{
-                setTyping({typing:true})
-                if(thread.id==data.thread_id){
-                    setReceiver(data.receiver)
-                }
+                    setTyping({typing:true})
+                    if(thread.id==data.thread_id){
+                        setReceiver(data.receiver)
+                    }
                 }
             }
             else{
@@ -437,9 +436,7 @@ const Message=(props)=>{
                     console.log(data)
                     setListmessages(current=>[...current,...data.message])
                 }
-                console.log(thread.id)
                 setTyping({typing:false,send_to:data.send_to})
-                console.log(data.thread_id)
                 setThreads(current=>current.map(thread=>{
                     if(data.thread_id==thread.id){
                     return({...thread,message_last:data.message[data.message.length-1],members:thread.members.map(member=>{

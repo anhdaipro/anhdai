@@ -20,7 +20,6 @@ const Marketing=()=>{
    {name:'Chương Trình Của Shop',info:'Công cụ tăng đơn hàng bằng cách tạo chương trình giảm giá',url:'/marketing/vouchers',new:false},
    {name:'Combo Khuyến Mãi',info:'Tạo Combo Khuyến Mãi để tăng giá trị đơn hàng trên mỗi Người mua',url:'/marketing/vouchers',new:false}]})
    const [loading,setLoading]=useState(true)
-   const navite=useNavigate()
     return(
         <>
             <div id="app">
@@ -133,7 +132,7 @@ const Marketing=()=>{
                                             <div data-v-cf2572e4="" data-v-28c1a2fc="" className="sub-title">Tăng doanh số bằng các Công cụ Marketing</div> 
                                             <div data-v-cf2572e4="" data-v-28c1a2fc="" className="marketing-cards">
                                             {state.promotion_activities.map(item=>
-                                            <div onClick={()=>navite(item.url)} data-v-1dc6fe85="" data-v-cf2572e4="" className="marketing-card" data-v-28c1a2fc="">
+                                            <div onClick={()=>window.open(item.url)} data-v-1dc6fe85="" data-v-cf2572e4="" className="marketing-card" data-v-28c1a2fc="">
                                                 <div data-v-1dc6fe85="" className="icon-wrapper promotion-activities">
                                                     {item.new?
                                                     <div data-v-1dc6fe85="" className="ribbon badge-x">
@@ -157,7 +156,7 @@ const Marketing=()=>{
                                             <div data-v-cf2572e4="" data-v-28c1a2fc="" className="sub-title">Tiếp cận với nhiều người mua hơn</div> 
                                             <div data-v-cf2572e4="" data-v-28c1a2fc="" className="marketing-cards">
                                             {state.buyer_engagement.map(item=>
-                                                <div onClick={()=>navite(item.url)} data-v-1dc6fe85="" data-v-cf2572e4="" className="marketing-card" data-v-28c1a2fc="">
+                                                <div onClick={()=>window.open(item.url)} data-v-1dc6fe85="" data-v-cf2572e4="" className="marketing-card" data-v-28c1a2fc="">
                                                     <div data-v-1dc6fe85="" className="icon-wrapper buyer-engagement">
                                                         {item.new?
                                                         <div data-v-1dc6fe85="" className="ribbon badge-x"> 
@@ -183,7 +182,7 @@ const Marketing=()=>{
                                             <div data-v-cf2572e4="" data-v-28c1a2fc="" className="marketing-cards">
                                                 {state.increase_traffic.map(item=>
                                             
-                                                <div onClick={()=>navite(item.url)} data-v-1dc6fe85="" data-v-cf2572e4="" className="marketing-card" data-v-28c1a2fc="">
+                                                <div onClick={()=>window.open(item.url)} data-v-1dc6fe85="" data-v-cf2572e4="" className="marketing-card" data-v-28c1a2fc="">
                                                     <div data-v-1dc6fe85="" className="icon-wrapper increase-traffic">
                                                         {item.new?
                                                         <div data-v-1dc6fe85="" className="ribbon badge-x"> 

@@ -15,6 +15,7 @@ const Shipping=()=>{
            // <-- passed to API URL
             .then(res=>{
                 setData(groupBy(res.data.list_shipping,'method'))
+                
                 setLoading(true)
           })
         }

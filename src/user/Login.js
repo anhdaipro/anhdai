@@ -5,11 +5,22 @@ import { login,facebookLogin,googleLogin, expiry } from '../actions/auth';
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
+import { gapi } from "gapi-script";
 const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
     const [formData, setFormData] = useState({
         username: '',
         password: '' 
     });
+    useEffect(() => {
+        function start() {
+          gapi.client.init({
+            clientId: "487987454497-pgoqpfq7s8tp7icr8c3c7pqm7mvmulbp.apps.googleusercontent.com",
+            scope: 'email',
+          });
+        }
+    
+        gapi.load('client:auth2', start);
+      }, []);
     const [state,setState]=useState({showpass:false,showrepass:false,error_login:0})
     const [logingoogle,setLogingoogle]=useState(false)
     let navigate = useNavigate();

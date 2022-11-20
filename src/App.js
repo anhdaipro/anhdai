@@ -1,6 +1,23 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { BrowserRouter,Routes, Route } from 'react-router-dom'
+import './css/main.css';
+import "./css/user.css"
+import './css/base.css';
+import './css/home.css';
+import "./css/vendor.css"
+import "./css/dashboard.css"
+import "./css/chat.css"
+import './css/slideshow.css'
+import { Provider } from 'react-redux'
+import store  from "./store"
+
+
+
+
+
+
+
+
 import Home from "./containers/Home"
 import Login from "./user/Login"
 import Addressuser from "./user/Listaddress"
@@ -17,17 +34,6 @@ import ResetPassword from './user/ResetPassword';
 import ResetPasswordConfirm from './user/ResetPasswordConfirm';
 import Signup from './user/Signup';
 import Registeremail from "./user/Registeremail"
-import './css/main.css';
-import "./css/user.css"
-import './css/base.css';
-import './css/home.css';
-import "./css/vendor.css"
-import "./css/dashboard.css"
-import "./css/chat.css"
-import './css/slideshow.css'
-
-import { Provider } from 'react-redux'
-import store  from "./store"
 import Dealshock from './containers/Dealshock'
 import Newdealshock from "./seller/promotions/Newdealshock"
 import Orderuser from "./user/Order"

@@ -716,7 +716,7 @@
   -moz-transition: opacity 0.6s ease;
   -o-transition: opacity 0.6s ease;
 }
-.stardust-carousel__dot--active{
+.stardust-carousel__dot.active{
   border-color:#ee4d2d;
   background: #ee4d2d;
   opacity: 1;

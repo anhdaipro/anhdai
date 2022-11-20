@@ -3,7 +3,7 @@ import Navbar from "../seller/Navbar"
 import {Link,useNavigate,useParams} from 'react-router-dom'
 import ReactDOM, { render } from 'react-dom'
 import Timeoffer from "./Timeoffer"
-import React, {useState,useEffect,useCallback,useRef,memo,useMemo} from 'react'
+import React, {useState,useEffect,useCallback,useTransition,memo,useMemo} from 'react'
 import Pagination from "./Pagination"
 import {detailcomboURL, newcomboURL,} from "../urls"
 import {formatter,timesubmit,combo_type,valid_from,valid_to,time_end} from "../constants"
@@ -22,6 +22,7 @@ const Promotioninfo=(props)=>{
         valid_from:valid_from.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
         valid_to:valid_to.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     }})
+    const [isPending, startTransition] = useTransition()
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
     const [state,setState]=useState({timeSecond:5,complete:false,page_input:1,combo_type:[{name:'Giảm giá theo %',value:'1'},
         {name:'Giảm giá theo số tiền',value:'2'},{name:'Giảm giá đặc biệt',value:'3'}]})

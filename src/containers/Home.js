@@ -9,6 +9,7 @@ import { headers } from '../actions/auth';
 import Dailyreacomment from './home/Dailyrecommend';
 import styled from "styled-components"
 import Brand from './home/Brand';
+
 const ListItem=styled.div`
     display: flex;
     justify-content: space-around;
@@ -124,6 +125,7 @@ class ImageHome extends React.Component {
             <div className="containers d-flex">
                 {this.state.loading?
                 <div className="full-home-banners">
+                    
                     <SlideshowGallery
                         slides={items}
                         automatic={true}

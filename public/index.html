@@ -41,3 +41,83 @@
     -->
   </body>
 </html>
+{Object.keys(shipping).map(key=>
+  <div className="logistics-item logistics-item-ui-t3">{/*add logistics-item  transform: svg rotate(90deg)*/}
+      <div className="optional-item d-flex">
+          <div onClick={(e)=>setshow()} className="expend-button">
+              <i className="icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M9.18933983,8 L5.21966991,11.9696699 C4.9267767,12.2625631 4.9267767,12.7374369 5.21966991,13.0303301 C5.51256313,13.3232233 5.98743687,13.3232233 6.28033009,13.0303301 L10.7803301,8.53033009 C11.0732233,8.23743687 11.0732233,7.76256313 10.7803301,7.46966991 L6.28033009,2.96966991 C5.98743687,2.6767767 5.51256313,2.6767767 5.21966991,2.96966991 C4.9267767,3.26256313 4.9267767,3.73743687 5.21966991,4.03033009 L9.18933983,8 Z"></path></svg>
+              </i>
+          </div>
+          <div className="item-center col--grow">
+              <div className="col logistics-item-name text-overflow">{key}</div>
+              <div data-v-5e61e860="" className="col ml-1_2 logistics-item-limit"></div>
+              <div className="logistics-item-label">
+                  Anhdai VẬN CHUYỂN
+              </div>
+          </div>
+          <div className="d-flex ">
+          <div data-v-5e61e860="" className="inline-list-item">
+              {formData.weight==null?
+              <span data-v-5e61e860="" className="error-message">Đơn vị vận chuyển không được hỗ trợ.</span>:
+              <>
+              <div data-v-4f5fa871="" data-v-5e61e860="" className="price">₫{price_ship[key].find(item=>item.weight_from<=formData.weight && item.weight_to>formData.weight).price}</div> 
+              <div data-v-5e61e860="" className="editable-field__edit">
+                  <i data-v-5e61e860="" className="icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 528.899 528.899"><path d="M328.883 89.125l107.59 107.589-272.34 272.34L56.604 361.465l272.279-272.34zm189.23-25.948l-47.981-47.981c-18.543-18.543-48.653-18.543-67.259 0l-45.961 45.961 107.59 107.59 53.611-53.611c14.382-14.383 14.382-37.577 0-51.959zM.3 512.69c-1.958 8.812 5.998 16.708 14.811 14.565l119.891-29.069L27.473 390.597.3 512.69z"></path></svg>
+                  </i>
+              </div>
+              </>}
+              <div data-v-5e61e860="" className="modals">
+                  <div className="modal__mask" style={{display: 'none', zIndex: 1000004}}>
+                      <div className="modal__container">
+                          <div className="modal__box" style={{display: 'none'}}>
+                              <div className="modal__content modal__content--large">
+                                  <form data-v-5e61e860="" autocomplete="off" className="form editable-field__form form--label-right">
+                                      <h4 data-v-5e61e860="">Đơn vị vận chuyển: Nhanh</h4> 
+                                      <div data-v-5e61e860="" className="grid row">
+                                          <div data-v-5e61e860="" className="shipping-fee-edit-wrapper">
+                                              <div data-v-4f5fa871="" data-v-5e61e860="" className="price popover-shipping-fee">
+
+                                              </div> 
+                                              <div data-v-5e61e860="" className="popover-shipping-fee__desc">Phí vận chuyển tạm tính (dựa trên khối lượng sản phẩm là 2600g, kích thước đóng gói 22cm * 3cm * 22cm)</div>
+                                          </div>
+                                      </div>  
+                                      <div data-v-5e61e860="" className="row setting-panel-item-actions">
+                                          <button data-v-5e61e860="" type="button" className="button button--normal">
+                                              <span>Hủy</span></button> 
+                                              <div data-v-5e61e860="" className="popover popover--light">
+                                                  <div className="popover__ref">
+                                                      <button data-v-5e61e860="" type="button" className="button button--primary button--normal"><span>
+                                                          Áp dụng
+                                                          </span>
+                                                      </button>
+                                                  </div> 
+                                                  <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
+                                                      <div className="popover__content">Không thể chỉnh sửa phương thức vận chuyển sau khi thiết lập chương trình Mua Kèm Deal Sốc cho sản phẩm này.</div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </form>    
+                                  </div> 
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div className={`switch_box ${formData.weight==null?'disable':''}`}>
+                  <input onChange={()=>setshipping(key)} type="checkbox" disabled={formData.weight==null?true:false} name="check"  checked={state.shipping_item.some(item=>item.enable && item.method==key)?true:false} className="switch_1"/>
+              </div>
+          </div>
+      </div> 
+      <div data-v-5e61e860="" style={{display:`${state.show_shipping?'none':''}`}}>
+          {shipping[key].map(item=>
+          <div data-v-5e61e860="" className="actual-channel">
+              <span data-v-5e61e860="">{item.unit}
+                  <span data-v-5e61e860="" className="logistics-item-limit">(Tối đa {item.allowable_volume}g)</span>
+              </span> 
+          </div>
+          )}
+      </div>
+  </div>
+  )}
