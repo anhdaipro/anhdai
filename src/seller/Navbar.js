@@ -11,17 +11,13 @@ const Navbar = ({ logout, isAuthenticated,user }) => {
     let navigate = useNavigate();
     useEffect(() => {
         const info= async () =>{
-            if(expiry<=0 || localStorage.token=='null'){
+            if(expiry<=0 && !localStorage.token){
                 window.location.href="/vendor/login"
             }
             await axios.get(infosellerURL,headers)
             .then(res=>{
                 setState({...state,username:res.data.name,avatar:res.data.avatar})
-                if(res.data.user_type!="S"){
-                    setTimeout(()=>{
-                        navigate('/vendor/onboarding')
-                    },1000)  
-                }
+                
             })
         }
         info();
