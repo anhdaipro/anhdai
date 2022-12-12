@@ -7,6 +7,7 @@ import {isVietnamesePhoneNumber,generateString,validatePassword} from "../consta
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import { GoogleLogin } from 'react-google-login';
 import {otpURL,verifyotpURL} from "../urls"
+import { gapi } from "gapi-script";
 let id=undefined
 
 const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
@@ -23,6 +24,16 @@ const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
         pin:'',
         verify:false
     });
+    useEffect(() => {
+        function start() {
+          gapi.client.init({
+            clientId: "456152692700-qape5ita2bvpgdb8rpnb5bkltg8mhpus.apps.googleusercontent.com",
+            scope: 'email',
+          });
+        }
+    
+        gapi.load('client:auth2', start);
+      }, []);
     const [state,setState]=useState({time:60,error:true,showpass:false,showrepass:false,style:{backgroundImage: `url(&quot;https://cf.shopee.vn/file/5569eb9dc7e09e2dbed5315b8f2ea8ba&quot;)`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center center'}})
     const { username, email, password,phone } = formData;
 
@@ -196,7 +207,7 @@ const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
                                             </button>)}
                                         />
                                         <GoogleLogin
-                                            clientId="487987454497-pgoqpfq7s8tp7icr8c3c7pqm7mvmulbp.apps.googleusercontent.com"
+                                            clientId="456152692700-qape5ita2bvpgdb8rpnb5bkltg8mhpus.apps.googleusercontent.com"
                                             buttonText="Google"
                                             onSuccess={responseGoogle}
                                             onFailure={responseGoogle}
