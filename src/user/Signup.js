@@ -8,6 +8,7 @@ import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-
 import { GoogleLogin } from 'react-google-login';
 import {loginURL, otpURL,verifyotpURL} from "../urls"
 import { gapi } from "gapi-script";
+import { GOOGLE_AUTH_SUCCESS } from '../actions/types';
 let id=undefined
 
 const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
@@ -82,28 +83,25 @@ const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
     }
     
     const responseGoogle = (res) => {
-        googleLogin(res.accessToken);
+        const res=await axios.post('https://web-production-d411.up.railway.app/api-auth/convert-token', {
+		    token: res.accessToken,
+            backend: "google-oauth2",
+            grant_type: "convert_token",
+            client_id: "456152692700-qape5ita2bvpgdb8rpnb5bkltg8mhpus.apps.googleusercontent.com",
+            client_secret: "zg1qSsLmVaKs9d4XLcG3LXPk7p61jdU5k0LEepWyGwrokIuEmlgXxANZPTl32vLZK55XDS2LZAcrhOjDK2wZjsvbAsBW4tybAR6EVXbbsQMs8OpxCNHT4GU8FCRjiJt8",
+		})
+        dispatch({
+            type: GOOGLE_AUTH_SUCCESS,
+            payload: res.data
+        });
         const config = {
             headers: {
                 'Content-Type': 'application/json'
             }
         };
-        setTimeout(() => {
-        
-            axios.post(loginURL,JSON.stringify({token:localStorage.access_token}), config)
-            .then(res=>{
-            const token = res.data.access;
-            localStorage.setItem('token',token);
-            const search = window.location.search;
-                const params = new URLSearchParams(search);
-                if(params.get('next')){
-                    window.location.href=params.get('next')
-                }
-                else{
-                    window.location.href='/'
-                }
-            })
-        }, 100);
+        const res1= await axios.post(loginURL,JSON.stringify({token:res.data.access_token}), config)
+        const token = res1.data.access;
+        localStorage.setItem('token',token);
       }
     function responseFb(response) {
         facebookLogin(response.accessToken);

@@ -60,29 +60,32 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
     
     console.log(localStorage.token)
      
-     const responseGoogle = (res) => {
+    const responseGoogle = async (res) => {
          
-            googleLogin(res.accessToken);
+        const res=await axios.post('https://web-production-d411.up.railway.app/api-auth/convert-token', {
+		    token: res.accessToken,
+            backend: "google-oauth2",
+            grant_type: "convert_token",
+            client_id: "456152692700-qape5ita2bvpgdb8rpnb5bkltg8mhpus.apps.googleusercontent.com",
+            client_secret: "zg1qSsLmVaKs9d4XLcG3LXPk7p61jdU5k0LEepWyGwrokIuEmlgXxANZPTl32vLZK55XDS2LZAcrhOjDK2wZjsvbAsBW4tybAR6EVXbbsQMs8OpxCNHT4GU8FCRjiJt8",
+		})
+        dispatch({
+            type: GOOGLE_AUTH_SUCCESS,
+            payload: res.data
+        });
+        localStorage.setItem('access_token', res.data.access_token);
+		localStorage.setItem('refresh_token', res.data.refresh_token);
             console.log(expiry)
             const config = {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             };
-            setTimeout(() => {
-                
-                const data={token:localStorage.access_token}
             
-                axios.post(loginURL,JSON.stringify(data), config)
-                .then(res=>{
-                const token = res.data.access;
-                localStorage.setItem('token',token);
-               
-                   
-                    
-                })
-            }, 100);
-        
+        const data={token:localStorage.access_token}
+        const res1= await axios.post(loginURL,JSON.stringify(data), config)
+        const token = res1.data.access;
+        localStorage.setItem('token',token);  
     }
     const  responseFb=(response)=> {
         facebookLogin(response.accessToken);
