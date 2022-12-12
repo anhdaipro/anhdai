@@ -6,6 +6,7 @@ import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
 import { gapi } from "gapi-script";
+import { loginURL } from '../urls';
 const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
     const [formData, setFormData] = useState({
         username: '',
@@ -72,7 +73,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
                 
                 const data={token:localStorage.access_token}
             
-                axios.post('https://anhdai.herokuapp.com/api/v4/login',JSON.stringify(data), config)
+                axios.post(loginURL,JSON.stringify(data), config)
                 .then(res=>{
                 const token = res.data.access;
                 localStorage.setItem('token',token);
@@ -93,7 +94,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
         setTimeout(() => {
             
             const data={token:localStorage.access_token}
-            axios.post('https://anhdai.herokuapp.com/api/v4/login', JSON.stringify(data), config)
+            axios.post(loginURL, JSON.stringify(data), config)
             .then(res=>{
                 const token = res.data.access;
                 localStorage.setItem('token',token);

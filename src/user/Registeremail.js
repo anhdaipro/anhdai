@@ -7,7 +7,7 @@ import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
 import { headers } from '../actions/auth';
-import {registeremailURL,verifyemailURL} from "../urls"
+import {loginURL, registeremailURL,verifyemailURL} from "../urls"
 const Registeremail = ({googleLogin,facebookLogin,signup,isAuthenticated}) => {
     const [formData, setFormData] = useState({
         username: null,
@@ -43,7 +43,7 @@ const Registeremail = ({googleLogin,facebookLogin,signup,isAuthenticated}) => {
     
     const continueWithFacebook = async () => {
         try {
-            const res = await axios.get(`https://anhdai.herokuapp.com/auth/o/facebook/?redirect_uri=http://localhost:3000/facebook`)
+            const res = await axios.get(`https://web-production-d411.up.railway.app/auth/o/facebook/?redirect_uri=http://localhost:3000/facebook`)
 
             window.location.replace(res.data.authorization_url);
         } catch (err) {
@@ -60,7 +60,7 @@ const Registeremail = ({googleLogin,facebookLogin,signup,isAuthenticated}) => {
             }
         };
         setTimeout(() => {
-            axios.post('https://anhdai.herokuapp.com/api/v4/login',JSON.stringify({token:localStorage.access_token}), config)
+            axios.post(loginURL,JSON.stringify({token:localStorage.access_token}), config)
             .then(res=>{
             const token = res.data.access;
             localStorage.setItem('token',token);
@@ -84,7 +84,7 @@ const Registeremail = ({googleLogin,facebookLogin,signup,isAuthenticated}) => {
         };
         setTimeout(() => {
  
-            axios.post('https://anhdai.herokuapp.com/api/v4/login',JSON.stringify({token:localStorage.access_token}), config)
+            axios.post(loginURL,JSON.stringify({token:localStorage.access_token}), config)
             .then(res=>{
                 const token = res.data.access;
                 localStorage.setItem('token',token);

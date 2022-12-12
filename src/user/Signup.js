@@ -6,7 +6,7 @@ import axios from 'axios';
 import {isVietnamesePhoneNumber,generateString,validatePassword} from "../constants"
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import { GoogleLogin } from 'react-google-login';
-import {otpURL,verifyotpURL} from "../urls"
+import {loginURL, otpURL,verifyotpURL} from "../urls"
 import { gapi } from "gapi-script";
 let id=undefined
 
@@ -90,7 +90,7 @@ const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
         };
         setTimeout(() => {
         
-            axios.post('https://anhdai.herokuapp.com/api/v4/login',JSON.stringify({token:localStorage.access_token}), config)
+            axios.post(loginURL,JSON.stringify({token:localStorage.access_token}), config)
             .then(res=>{
             const token = res.data.access;
             localStorage.setItem('token',token);
@@ -113,7 +113,7 @@ const Signup = ({ signup, isAuthenticated,googleLogin,facebookLogin }) => {
             }
         };
         setTimeout(() => {
-            axios.post('https://anhdai.herokuapp.com/api/v4/login',JSON.stringify({token:localStorage.access_token}), config)
+            axios.post(loginURL,JSON.stringify({token:localStorage.access_token}), config)
             .then(res=>{
                 const token = res.data.access;
                 localStorage.setItem('token',token);
