@@ -14,7 +14,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
     useEffect(() => {
         function start() {
           gapi.client.init({
-            clientId: "487987454497-pgoqpfq7s8tp7icr8c3c7pqm7mvmulbp.apps.googleusercontent.com",
+            clientId: "456152692700-qape5ita2bvpgdb8rpnb5bkltg8mhpus.apps.googleusercontent.com",
             scope: 'email',
           });
         }
@@ -181,7 +181,7 @@ const Login = ({ login, isAuthenticated,googleLogin,facebookLogin}) => {
                                      />
                                    
                                     <GoogleLogin
-                                        clientId="487987454497-pgoqpfq7s8tp7icr8c3c7pqm7mvmulbp.apps.googleusercontent.com"
+                                        clientId="456152692700-qape5ita2bvpgdb8rpnb5bkltg8mhpus.apps.googleusercontent.com"
                                         onSuccess={responseGoogle}
                                         onFailure={responseGoogle}
                                         
