@@ -166,7 +166,7 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
             setShow(true)
         })
     }
-    if(expiry<=0 || localStorage.token=='null'){
+    if(expiry<=0 || !localStorage.token){
         window.location.href="/buyer/login"
     }
     const review=(e,order)=>{

@@ -82,7 +82,7 @@ const Detailview = () => {
     const data={review_id:reviewchoice.id,
     reason:state.report_reson,
     reason:state.report_reson==7?state.text_report:state.report_reson}
-    if(localStorage.token!='null' &&expiry>0){
+    if(localStorage.token &&expiry>0){
       axios.post(productinfoURL,JSON.stringify(data),headers)
       .then(res=>{
         setState({...state,show_report:false,report_complete:true})

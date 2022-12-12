@@ -174,7 +174,7 @@ const Newshop=()=>{
     const setshow=(value)=>{
         setShow(value)
     }
-    if(localStorage.token=='null' || expiry<0){
+    if(!localStorage.token || expiry<0){
         window.location.href="/vendor/login"
     }
     console.log(address)

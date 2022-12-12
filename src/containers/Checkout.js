@@ -38,7 +38,7 @@ const Checkout =({user,showchat})=>{
     const [addresschoice,setAddressChoice]=useState({city_choice:{'name':null,'matp':null,level:1},
     district_choice:{'name':null,'matp':null,level:2,'maqh':null},
     town_choice:{'name':null,'maqh':null,level:3},showcity:false})
-    if(expiry<=0 || localStorage.token=='null'){
+    if(expiry<=0 || !localStorage.token){
         window.location.href="/buyer/login"
     }
     const navigate=useNavigate()

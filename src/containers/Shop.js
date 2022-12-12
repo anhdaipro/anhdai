@@ -178,7 +178,7 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
 
     const setfollow=e=>{
         e.preventDefault();
-        if(localStorage.token!='null' && expiry>0){
+        if(localStorage.token && expiry>0){
             const form={shop_id:data.id}
             axios.post(shopinfoURL,JSON.stringify(form),headers)
             .then(res=>{

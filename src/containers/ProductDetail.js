@@ -500,7 +500,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
 
     const addtocart=(e)=>{
         e.stopPropagation()
-        if (localStorage.token!='null' && expiry>0){
+        if (localStorage.token && expiry>0){
             let variation_active=document.querySelectorAll('.product-variation--selected')
             if(variation_active.length===data.count_variation){
             setWaring({...waring,warring:false})
@@ -547,7 +547,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
     }
 
     const setlike=()=>{
-        if(localStorage.token!='null' && expiry>0){
+        if(localStorage.token && expiry>0){
             axios.post(`${productinfoURL}/${id}`,JSON.stringify({action:'like'}),headers)
             .then(res=>{
             setData({...data,...res.data})
@@ -566,7 +566,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
     }
   
     const setlikereview=(e,review)=>{
-        if(localStorage.token!='null' && expiry>0){
+        if(localStorage.token&& expiry>0){
             axios.post(`${reviewURL}/${review.id}`,JSON.stringify({action:'like'}),headers)
             .then(res=>{
             const list_review=listreview.map(item=>{

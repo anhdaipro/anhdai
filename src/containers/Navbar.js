@@ -22,7 +22,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     },[data])
     
     useEffect(() =>  {
-        if(expiry>0 && localStorage.token!=='null'){
+        if(expiry>0 && localStorage.token){
             (async () => {
                 try {
                     await isAuthenticated

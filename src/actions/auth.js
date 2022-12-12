@@ -38,7 +38,8 @@ export const checkAuthenticated = () => async dispatch => {
             dispatch({
                 type: AUTHENTICATED_FAIL
             });
-            localStorage.user=null
+            localStorage.removeItem('user')
+           
         }
 
     } else {
@@ -274,7 +275,7 @@ export const reset_password_confirm = (uidb64, token, password) => async dispatc
 };
 
 export const logout = () => dispatch => {
-    localStorage.token=null
+    localStorage.removeItem('token')
     dispatch({
         type: LOGOUT
     });
