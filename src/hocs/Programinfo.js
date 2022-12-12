@@ -455,7 +455,7 @@ const Programinfo=(props)=>{
                 const datavariation= obj.variations.map(variation=>{
                     return({promotion_price:variation.promotion_price,id:variation.id,
                     enable:variation.enable,promotion_price_after_tax:variation.promotion_price,
-                    variation_id:variation.variation_id,item_id:variation.item_id,
+                    variation_id:variation.variation_id,item_id:variation.item_id,percent_discount:variation.percent_discount,
                     promotion_stock:variation.promotion_stock?variation.promotion_stock:variation.inventory,
                     user_item_limit:obj.user_item_limit?obj.user_item_limit:0})
                 })

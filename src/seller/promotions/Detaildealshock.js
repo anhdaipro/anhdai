@@ -248,7 +248,7 @@ const Detaildealshock=()=>{
                 const discount_model_list=list_enable_byproduct_on.reduce((arr,obj,i)=>{
                     const datavariation= obj.variations.map(variation=>{
                         return({promotion_price:deal.shock_deal_type=='2'?variation.price:variation.promotion_price,id:variation.id,
-                        variation_id:variation.variation_id,item_id:variation.item_id,
+                        variation_id:variation.variation_id,item_id:variation.item_id,percent_discount:deal.shock_deal_type=='2'?100:variation.percent_discount,
                         user_item_limit:obj.user_item_limit?obj.user_item_limit:0,enable:variation.enable})
                     })
                     return [...arr,...datavariation]

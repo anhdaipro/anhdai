@@ -456,7 +456,7 @@ const Flashsaleinfo=(props)=>{
             const discount_model_list=itemshop.byproduct_choice.reduce((arr,obj,i)=>{
                 const datavariation= obj.variations.map(variation=>{
                     return({promotion_price:variation.promotion_price,id:variation.id,
-                        enable:variation.enable,
+                        enable:variation.enable,percent_discount:variation.percent_discount,
                         variation_id:variation.variation_id,item_id:variation.item_id,
                         promotion_stock:variation.promotion_stock?variation.promotion_stock:variation.inventory,
                         user_item_limit:obj.user_item_limit?obj.user_item_limit:0})
