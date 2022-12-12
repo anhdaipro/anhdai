@@ -86,10 +86,7 @@ export const responseGoogle = (response) => async dispatch => {
         client_id: "456152692700-qape5ita2bvpgdb8rpnb5bkltg8mhpus.apps.googleusercontent.com",
         client_secret: "zg1qSsLmVaKs9d4XLcG3LXPk7p61jdU5k0LEepWyGwrokIuEmlgXxANZPTl32vLZK55XDS2LZAcrhOjDK2wZjsvbAsBW4tybAR6EVXbbsQMs8OpxCNHT4GU8FCRjiJt8",
     })
-    dispatch({
-        type: GOOGLE_AUTH_SUCCESS,
-        payload: res.data
-    });
+    
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -98,6 +95,10 @@ export const responseGoogle = (response) => async dispatch => {
     const res1= await axios.post(loginURL,JSON.stringify({token:res.data.access_token}), config)
     const token = res1.data.access;
     localStorage.setItem('token',token);
+    dispatch({
+        type: GOOGLE_AUTH_SUCCESS,
+        payload: res.data
+    });
 }
 
 
@@ -110,10 +111,7 @@ export const responseFb = (accessToken) => async dispatch =>{
         client_id: "Ae9Jn7CtA9wrHFvOdTtsFHyzp2iJOxAHDr2VE4Kb",
         client_secret: "zg1qSsLmVaKs9d4XLcG3LXPk7p61jdU5k0LEepWyGwrokIuEmlgXxANZPTl32vLZK55XDS2LZAcrhOjDK2wZjsvbAsBW4tybAR6EVXbbsQMs8OpxCNHT4GU8FCRjiJt8",
         })
-        dispatch({
-            type: FACEBOOK_AUTH_SUCCESS,
-            payload: res.data
-        });
+        
         const config = {
             headers: {
                 'Content-Type': 'application/json'
@@ -122,6 +120,10 @@ export const responseFb = (accessToken) => async dispatch =>{
         const res1= await axios.post(loginURL,JSON.stringify({token:res.data.access_token}), config)
         const token = res1.data.access;
         localStorage.setItem('token',token);
+        dispatch({
+            type: FACEBOOK_AUTH_SUCCESS,
+            payload: res.data
+        });
     }
     catch (err) {
         dispatch({
