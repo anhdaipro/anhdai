@@ -95,6 +95,7 @@ export const responseGoogle = (response) => async dispatch => {
     const res1= await axios.post(loginURL,JSON.stringify({token:res.data.access_token}), config)
     const token = res1.data.access;
     localStorage.setItem('token',token);
+	window.location.href="/"
     dispatch({
         type: GOOGLE_AUTH_SUCCESS,
         payload: res.data
@@ -124,6 +125,7 @@ export const responseFb = (accessToken) => async dispatch =>{
             type: FACEBOOK_AUTH_SUCCESS,
             payload: res.data
         });
+	window.location.href="/"
     }
     catch (err) {
         dispatch({
