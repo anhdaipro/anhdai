@@ -22,7 +22,6 @@ const Detailview = () => {
   value:6},{name:'Vi phạm khác',value:7}])
   const [state, setState] = useState({report_complete:false,report_reson:null,text_report:'',show_report:false,show_thread:false,show_message:false,show_media:false});
   const [reviewchoice,setReviewchoice]=useState(null)
-  const [show,setShow]=useState(false)
   const [choice,setChoice]=useState()
   const [cartitem,setCartitem]=useState()
   const [shop_id,setShop_id]=useState()
@@ -61,9 +60,6 @@ const Detailview = () => {
   },[slug,params])
 
 
-  const setshow=(e)=>{
-    setShow(e)
-  }
   const showmediaitem=(file,listmedia)=>{
     const indexchoice=listmedia.indexOf(listmedia.find(item=>file.file===item.file))
     setState({...state,show_media:true,filechoice:file,listmedia:listmedia,indexchoice:indexchoice})
@@ -135,7 +131,7 @@ const Detailview = () => {
             data_product={data}
             id={product_id}
             report_complete={state.report_complete}
-            setshow={e=>setshow(e)}
+            
             showmediaitem={(item,listitems)=>showmediaitem(item,listitems)}
             addcartitem={data=>addcartitem(data)}
             setreport={(e,review)=>setreport(e,review)}
@@ -146,7 +142,7 @@ const Detailview = () => {
           <Shopinfo
             data={data}
             shop_id={shop_id}
-            setshow={(e)=>setshow(e)}
+            
             setsearchcategory={(name,value)=>setsearchcategory(name,value)}
         />
         :''}
