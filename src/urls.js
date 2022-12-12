@@ -1,4 +1,4 @@
-export const localhost = "https://anhdai.herokuapp.com";
+export const localhost = "https://web-production-d411.up.railway.app";
 const apiURL = "/api/v4";
 export const endpoint = `${localhost}${apiURL}`;
 export const refreshtokenURL=`${localhost}${apiURL}/refresh/token`
