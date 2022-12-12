@@ -1,14 +1,14 @@
 import React, { useState,useEffect } from 'react';
 import {useNavigate , Link} from 'react-router-dom';
 import { connect } from 'react-redux';
-import { login,facebookLogin,responseGoogle } from '../actions/auth';
+import { login,responseFb,responseGoogle } from '../actions/auth';
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
 import { gapi } from "gapi-script";
 import { loginURL } from '../urls';
 import { GOOGLE_AUTH_SUCCESS } from '../actions/types';
-const Login = ({ login, isAuthenticated,responseGoogle,facebookLogin}) => {
+const Login = ({ login, isAuthenticated,responseGoogle,responseFb}) => {
     const [formData, setFormData] = useState({
         username: '',
         password: '' 
@@ -61,32 +61,6 @@ const Login = ({ login, isAuthenticated,responseGoogle,facebookLogin}) => {
     
     console.log(localStorage.token)
      
-    const  responseFb=(response)=> {
-        facebookLogin(response.accessToken);
-        const config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        setTimeout(() => {
-            
-            const data={token:localStorage.access_token}
-            axios.post(loginURL, JSON.stringify(data), config)
-            .then(res=>{
-                const token = res.data.access;
-                localStorage.setItem('token',token);
-                const search = window.location.search;
-                const params = new URLSearchParams(search);
-                if(params.get('next')){
-                    window.location.href=params.get('next')
-                }
-                else{
-                    window.location.href='/'
-        }
-            })
-        }, 1000);
-    }
-
     return(  
         <>
         <div className="login-user">
@@ -200,4 +174,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated
 });
   
-export default connect(mapStateToProps, { login,facebookLogin,responseGoogle })(Login);
+export default connect(mapStateToProps, { login,responseFb,responseGoogle })(Login);

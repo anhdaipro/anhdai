@@ -1,7 +1,7 @@
 import React, { useState ,useEffect} from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { signup,facebookLogin ,responseGoogle} from '../actions/auth';
+import { signup,responseFb ,responseGoogle} from '../actions/auth';
 import axios from 'axios';
 import {isVietnamesePhoneNumber,generateString,validatePassword} from "../constants"
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
@@ -11,7 +11,7 @@ import { gapi } from "gapi-script";
 import { GOOGLE_AUTH_SUCCESS } from '../actions/types';
 let id=undefined
 
-const Signup = ({ signup, isAuthenticated,responseGoogle,facebookLogin }) => {
+const Signup = ({ signup, isAuthenticated,responseGoogle,responseFb }) => {
     const navigate=useNavigate();
     const [accountCreated, setAccountCreated] = useState(false);
     const[show,setShow]=useState(false);
@@ -82,30 +82,6 @@ const Signup = ({ signup, isAuthenticated,responseGoogle,facebookLogin }) => {
         navigate('/buyer/login')
     }
     
-  
-    function responseFb(response) {
-        facebookLogin(response.accessToken);
-        const config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        setTimeout(() => {
-            axios.post(loginURL,JSON.stringify({token:localStorage.access_token}), config)
-            .then(res=>{
-                const token = res.data.access;
-                localStorage.setItem('token',token);
-                const search = window.location.search;
-                const params = new URLSearchParams(search);
-                if(params.get('next')){
-                    window.location.href=params.get('next')
-                }
-                else{
-                    window.location.href='/'
-        }
-            })
-        }, 1000);
-    }
     const setpassword=(e)=>{
         e.preventDefault();
         e.stopPropagation()
@@ -337,4 +313,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated
 });
 
-export default connect(mapStateToProps, { signup,facebookLogin,responseGoogle })(Signup);
+export default connect(mapStateToProps, { signup,responseFb,responseGoogle })(Signup);

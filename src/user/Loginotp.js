@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import {useNavigate , Link,useLocation, Navigate} from 'react-router-dom';
 import { connect } from 'react-redux';
-import { facebookLogin,loginotp,login,responseGoogle} from '../actions/auth';
+import { responseFb,loginotp,login,responseGoogle} from '../actions/auth';
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
@@ -9,7 +9,7 @@ import {loginURL, otpURL,verifyotpURL,} from "../urls"
 import {isVietnamesePhoneNumber,generateString,validatePassword} from "../constants"
 import { GOOGLE_AUTH_SUCCESS } from '../actions/types';
 let user_id=null
-const Loginotp = ({ loginotp, isAuthenticated,responseGoogle}) => {
+const Loginotp = ({ loginotp, isAuthenticated,responseGoogle,responseFb}) => {
     const [formData, setFormData] = useState({
         username: '',
         password: '' ,
@@ -255,4 +255,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated
 });
   
-export default connect(mapStateToProps, { loginotp,responseGoogle })(Loginotp);
+export default connect(mapStateToProps, { loginotp,responseGoogle,responseFb })(Loginotp);

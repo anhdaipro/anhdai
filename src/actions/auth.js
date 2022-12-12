@@ -100,7 +100,8 @@ export const responseGoogle = (response) => async dispatch => {
     localStorage.setItem('token',token);
 }
 
-export const facebookLogin = (accessToken) => async dispatch =>{
+
+export const responseFb = (accessToken) => async dispatch =>{
     try {
     const res=await axios.post('https://web-production-d411.up.railway.app/api-auth/convert-token', {
         token: accessToken,
@@ -113,7 +114,14 @@ export const facebookLogin = (accessToken) => async dispatch =>{
             type: FACEBOOK_AUTH_SUCCESS,
             payload: res.data
         });
-        localStorage.setItem('access_token',res.data.access_token);
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        const res1= await axios.post(loginURL,JSON.stringify({token:res.data.access_token}), config)
+        const token = res1.data.access;
+        localStorage.setItem('token',token);
     }
     catch (err) {
         dispatch({

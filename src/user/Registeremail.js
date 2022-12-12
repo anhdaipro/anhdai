@@ -2,14 +2,14 @@
 import React, { useState } from 'react';
 import {useNavigate , Link,useLocation, Navigate} from 'react-router-dom';
 import { connect } from 'react-redux';
-import { login,facebookLogin,responseGoogle,signup } from '../actions/auth';
+import { login,responseFb,responseGoogle,signup } from '../actions/auth';
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
 import { headers } from '../actions/auth';
 import {loginURL, registeremailURL,verifyemailURL} from "../urls"
 import { GOOGLE_AUTH_SUCCESS } from '../actions/types';
-const Registeremail = ({responseGoogle,facebookLogin,signup,isAuthenticated}) => {
+const Registeremail = ({responseGoogle,responseFb,signup,isAuthenticated}) => {
     const [formData, setFormData] = useState({
         username: null,
         email:null,
@@ -262,4 +262,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated
 });
   
-export default connect(mapStateToProps, {facebookLogin,signup,responseGoogle })(Registeremail);
+export default connect(mapStateToProps, {responseFb,signup,responseGoogle })(Registeremail);
