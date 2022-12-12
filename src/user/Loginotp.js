@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import {useNavigate , Link,useLocation, Navigate} from 'react-router-dom';
 import { connect } from 'react-redux';
-import { facebookLogin,googleLogin,loginotp,login,expiry ,responseGoogle} from '../actions/auth';
+import { facebookLogin,loginotp,login,responseGoogle} from '../actions/auth';
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';

@@ -78,7 +78,7 @@ export const googleAuthenticate = (state, code) => async dispatch => {
         }
     }
 };
-export const responseGoogle = async (response) => {
+export const responseGoogle = (response) => async dispatch => {
     const res=await axios.post('https://web-production-d411.up.railway.app/api-auth/convert-token', {
         token: response.accessToken,
         backend: "google-oauth2",
@@ -99,28 +99,6 @@ export const responseGoogle = async (response) => {
     const token = res1.data.access;
     localStorage.setItem('token',token);
 }
-export const googleLogin = (accessToken) => async dispatch => {
-    try {
-        const res=await axios.post('https://web-production-d411.up.railway.app/api-auth/convert-token', {
-			token: accessToken,
-            backend: "google-oauth2",
-            grant_type: "convert_token",
-            client_id: "456152692700-qape5ita2bvpgdb8rpnb5bkltg8mhpus.apps.googleusercontent.com",
-            client_secret: "zg1qSsLmVaKs9d4XLcG3LXPk7p61jdU5k0LEepWyGwrokIuEmlgXxANZPTl32vLZK55XDS2LZAcrhOjDK2wZjsvbAsBW4tybAR6EVXbbsQMs8OpxCNHT4GU8FCRjiJt8",
-		})
-        dispatch({
-            type: GOOGLE_AUTH_SUCCESS,
-            payload: res.data
-        });
-        localStorage.setItem('access_token', res.data.access_token);
-		localStorage.setItem('refresh_token', res.data.refresh_token);
-    }
-    catch (err) {
-        dispatch({
-            type: GOOGLE_AUTH_FAIL
-        });
-    }
-};
 
 export const facebookLogin = (accessToken) => async dispatch =>{
     try {

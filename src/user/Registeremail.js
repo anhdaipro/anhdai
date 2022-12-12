@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import {useNavigate , Link,useLocation, Navigate} from 'react-router-dom';
 import { connect } from 'react-redux';
-import { login,facebookLogin,googleLogin,responseGoogle,signup } from '../actions/auth';
+import { login,facebookLogin,responseGoogle,signup } from '../actions/auth';
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
@@ -262,4 +262,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated
 });
   
-export default connect(mapStateToProps, {googleLogin,facebookLogin,signup,responseGoogle })(Registeremail);
+export default connect(mapStateToProps, {facebookLogin,signup,responseGoogle })(Registeremail);
