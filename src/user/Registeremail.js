@@ -53,31 +53,6 @@ const Registeremail = ({responseGoogle,responseFb,signup,isAuthenticated}) => {
     };
 
     
-    function responseFb(response) {
-        facebookLogin(response.accessToken);
-        const config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        setTimeout(() => {
- 
-            axios.post(loginURL,JSON.stringify({token:localStorage.access_token}), config)
-            .then(res=>{
-                const token = res.data.access;
-                localStorage.setItem('token',token);
-                const search = window.location.search;
-                const params = new URLSearchParams(search);
-                if(params.get('next')!=null){
-                    window.location.href=params.get('next')
-                }
-                else{
-                    window.location.href='/'
-                }
-            })
-        }, 1000);
-    }
-
     if (isAuthenticated) {
         navigate('/')
     }
