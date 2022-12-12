@@ -2,14 +2,14 @@
 import React, { useState } from 'react';
 import {useNavigate , Link,useLocation, Navigate} from 'react-router-dom';
 import { connect } from 'react-redux';
-import { login,facebookLogin,googleLogin, expiry,signup } from '../actions/auth';
+import { login,facebookLogin,googleLogin,responseGoogle,signup } from '../actions/auth';
 import ReactFacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
 import { headers } from '../actions/auth';
 import {loginURL, registeremailURL,verifyemailURL} from "../urls"
 import { GOOGLE_AUTH_SUCCESS } from '../actions/types';
-const Registeremail = ({googleLogin,facebookLogin,signup,isAuthenticated}) => {
+const Registeremail = ({responseGoogle,facebookLogin,signup,isAuthenticated}) => {
     const [formData, setFormData] = useState({
         username: null,
         email:null,
@@ -53,27 +53,6 @@ const Registeremail = ({googleLogin,facebookLogin,signup,isAuthenticated}) => {
     };
 
     
-     const responseGoogle = (res) => {
-        const res=await axios.post('https://web-production-d411.up.railway.app/api-auth/convert-token', {
-		    token: res.accessToken,
-            backend: "google-oauth2",
-            grant_type: "convert_token",
-            client_id: "456152692700-qape5ita2bvpgdb8rpnb5bkltg8mhpus.apps.googleusercontent.com",
-            client_secret: "zg1qSsLmVaKs9d4XLcG3LXPk7p61jdU5k0LEepWyGwrokIuEmlgXxANZPTl32vLZK55XDS2LZAcrhOjDK2wZjsvbAsBW4tybAR6EVXbbsQMs8OpxCNHT4GU8FCRjiJt8",
-		})
-        dispatch({
-            type: GOOGLE_AUTH_SUCCESS,
-            payload: res.data
-        });
-        const config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        const res1= await axios.post(loginURL,JSON.stringify({token:res.data.access_token}), config)
-        const token = res1.data.access;
-        localStorage.setItem('token',token);
-      }
     function responseFb(response) {
         facebookLogin(response.accessToken);
         const config = {
@@ -283,4 +262,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.isAuthenticated
 });
   
-export default connect(mapStateToProps, {googleLogin,facebookLogin,signup })(Registeremail);
+export default connect(mapStateToProps, {googleLogin,facebookLogin,signup,responseGoogle })(Registeremail);
