@@ -417,7 +417,7 @@ const Message=(props)=>{
     }
 
     useEffect(() => {
-        socket.current=io.connect('https://anhdai12345.herokuapp.com/');
+        socket.current=io.connect('https://web-production-e133.up.railway.app/');
         socket.current.on('message',({data})=>{ 
             if(data.typing || data.typing==""){
                 if(data.typing==""){
