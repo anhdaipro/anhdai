@@ -453,7 +453,7 @@ const Programinfo=(props)=>{
             })
             const discount_model_list=list_enable_on.reduce((arr,obj,i)=>{
                 const datavariation= obj.variations.map(variation=>{
-                    return({promotion_price:variation.promotion_price,id:variation.id,
+                    return({promotion_price:variation.promotion_price,id:variation.id,color_value:variation.color_value,size_value:variation.size_value,
                     enable:variation.enable,promotion_price_after_tax:variation.promotion_price,
                     variation_id:variation.variation_id,item_id:variation.item_id,percent_discount:variation.percent_discount,
                     promotion_stock:variation.promotion_stock?variation.promotion_stock:variation.inventory,

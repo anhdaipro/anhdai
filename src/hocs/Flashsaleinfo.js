@@ -457,7 +457,7 @@ const Flashsaleinfo=(props)=>{
                 const datavariation= obj.variations.map(variation=>{
                     return({promotion_price:variation.promotion_price,id:variation.id,
                         enable:variation.enable,percent_discount:variation.percent_discount,
-                        variation_id:variation.variation_id,item_id:variation.item_id,
+                        variation_id:variation.variation_id,item_id:variation.item_id,color_value:variation.color_value,size_value:variation.size_value,
                         promotion_stock:variation.promotion_stock?variation.promotion_stock:variation.inventory,
                         user_item_limit:obj.user_item_limit?obj.user_item_limit:0})
                 })
