@@ -235,7 +235,7 @@ const Programinfo=(props)=>{
         .then(res=>{
             const list_itemschoice=res.data.map(item=>{
                 return({...item,check:false,show:false,limit:false,user_item_limit:'',variations:item.variations.map(variation=>{
-                    return({...variation,promotion_stock:'',enable:true,show:false,limit:false,percent_discount:0,promotion_price:variation.price})
+                    return({...variation,promotion_stock:'',number_order:0,enable:true,show:false,limit:false,percent_discount:0,promotion_price:variation.price})
                 })})})
             
             const databyproduct=[...list_itemschoice,...itemshop.byproduct_choice]

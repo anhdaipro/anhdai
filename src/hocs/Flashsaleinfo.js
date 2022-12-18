@@ -183,7 +183,7 @@ const Flashsaleinfo=(props)=>{
         .then(res=>{
             const list_itemschoice=res.data.map(item=>{
                 return({...item,check:false,user_item_limit:'',variations:item.variations.map(variation=>{
-                    return({...variation,enable:false,percent_discount:0,promotion_price:variation.price,promotion_stock:variation.inventory,check:false})
+                    return({...variation,enable:false,number_order:0,percent_discount:0,promotion_price:variation.price,promotion_stock:variation.inventory,check:false})
                 })})
             })
 
