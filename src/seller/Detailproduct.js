@@ -654,7 +654,7 @@ console.log(shipping)
         }):[{color_id:null,size_id:null,price:formData,sku_classify:formData.sku_classify,inventory:formData.inventory}]
         const variations_remain=variations.filter(item=>!isNaN(item.variation_id)).map(item=>item.variation_id)
         const formdata={action:'update',variations_remain:variations_remain,buymorediscounts_remain:buymorediscounts_remain,
-        variations:datavariations,files:files,buymorediscounts:buymore,category_id:category.id,method:shippings,...detail,...formData}
+        variations:datavariations,files:files,buymorediscounts:buymore,category_id:category.id,method:shippings,info_detail:detail,...formData}
         const url=id?detailproductURL+id:newproductURL      
         const res1 =await axios.post(url,JSON.stringify(formdata),headers)
         
