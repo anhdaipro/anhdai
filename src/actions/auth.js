@@ -65,7 +65,7 @@ export const googleAuthenticate = (state, code) => async dispatch => {
         const formBody = Object.keys(details).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key])).join('&');
 
         try {
-            const res = await axios.post(`https://web-production-e67d.up.railway.app/auth/o/google-oauth2/?${formBody}`, config);
+            const res = await axios.post(`https://ecomerceapp-production.up.railway.app/auth/o/google-oauth2/?${formBody}`, config);
             dispatch({
                 type: GOOGLE_AUTH_SUCCESS,
                 payload: res.data
@@ -79,7 +79,7 @@ export const googleAuthenticate = (state, code) => async dispatch => {
     }
 };
 export const responseGoogle = (response) => async dispatch => {
-    const res=await axios.post('https://web-production-e67d.up.railway.app/api-auth/convert-token', {
+    const res=await axios.post('https://ecomerceapp-production.up.railway.app/api-auth/convert-token', {
         token: response.accessToken,
         backend: "google-oauth2",
         grant_type: "convert_token",
@@ -105,7 +105,7 @@ export const responseGoogle = (response) => async dispatch => {
 
 export const responseFb = (accessToken) => async dispatch =>{
     try {
-    const res=await axios.post('https://web-production-e67d.up.railway.app/api-auth/convert-token', {
+    const res=await axios.post('https://ecomerceapp-production.up.railway.app/api-auth/convert-token', {
         token: accessToken,
         backend: "facebook",
         grant_type: "convert_token",
@@ -142,7 +142,7 @@ export const loginotp = (user_id) => async dispatch =>{
     };
    
     try {
-        const res = await axios.post('https://web-production-e67d.up.railway.app/api/v4/login', JSON.stringify({user_id:user_id}), config);
+        const res = await axios.post('https://ecomerceapp-production.up.railway.app/api/v4/login', JSON.stringify({user_id:user_id}), config);
 
         dispatch({
             type: LOGIN_SUCCESS,
@@ -176,7 +176,7 @@ export const facebookAuthenticate = (state, code) => async dispatch => {
         const formBody = Object.keys(details).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key])).join('&');
 
         try {
-            const res = await axios.post(`https://web-production-e67d.up.railway.app/auth/o/facebook/?${formBody}`, config);
+            const res = await axios.post(`https://ecomerceapp-production.up.railway.app/auth/o/facebook/?${formBody}`, config);
 
             dispatch({
                 type: FACEBOOK_AUTH_SUCCESS,
@@ -227,7 +227,7 @@ export const signup = (username, email, password,phone) => async dispatch => {
     const body = JSON.stringify({ username, email, password, profile:{phone} });
    
     try {
-        const res = await axios.post(`https://web-production-e67d.up.railway.app/api/v4/register`, body, config);
+        const res = await axios.post(`https://ecomerceapp-production.up.railway.app/api/v4/register`, body, config);
 
         dispatch({
             type: SIGNUP_SUCCESS,
@@ -250,7 +250,7 @@ export const reset_password = (email) => async dispatch => {
     const body = JSON.stringify({ email });
 
     try {
-        await axios.post(`https://web-production-e67d.up.railway.app/api/v4/reset/password/`, body, config);
+        await axios.post(`https://ecomerceapp-production.up.railway.app/api/v4/reset/password/`, body, config);
 
         dispatch({
             type: PASSWORD_RESET_SUCCESS
@@ -272,7 +272,7 @@ export const reset_password_confirm = (uidb64, token, password) => async dispatc
     const body = JSON.stringify({ uidb64, token,password});
 
     try {
-        await axios.post(`https://web-production-e67d.up.railway.app/api/v4/password-reset/${uidb64}/${token}/`, body, config);
+        await axios.post(`https://ecomerceapp-production.up.railway.app/api/v4/password-reset/${uidb64}/${token}/`, body, config);
 
         dispatch({
             type: PASSWORD_RESET_CONFIRM_SUCCESS
