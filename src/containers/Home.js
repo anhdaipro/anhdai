@@ -212,7 +212,7 @@ class Category extends React.Component {
                                     <div className="home-category-list__group">
                                         {
                                         item.map(category=>
-                                        <Link onClick={remove} to={`/`} key={category.id} className="home-category-list__category-grid">
+                                        <Link onClick={remove} to={`/${category.slug}`} key={category.id} className="home-category-list__category-grid">
                                             <div className="_5XYhbS">
                                                 <div className="WCwWZw">
                                                     <div className="_25_r8I _3K5s_h">
