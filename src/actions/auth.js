@@ -21,6 +21,7 @@ import {
 import {createthreadURL, listThreadlURL,buyagainURL,loginURL, user} from "../urls"
 import axios from 'axios';
 import { validatEemail } from '../constants';
+import dayjs from 'dayjs';
 const expirationDate = localStorage.getItem("expirationDate")
 export const expiry=new Date(expirationDate).getTime() - new Date().getTime()
 export const headers={'headers': localStorage.token!='null' && expiry>0?{ Authorization:`JWT ${localStorage.token}`,'Content-Type': 'application/json' }:{'Content-Type': 'application/json'}}
@@ -95,6 +96,7 @@ export const responseGoogle = (response) => async dispatch => {
     const res1= await axios.post(loginURL,JSON.stringify({token:res.data.access_token}), config)
     const token = res1.data.access;
     localStorage.setItem('token',token);
+    localStorage.setItem("expirationDate", res1.data.access_expires);
 	window.location.href="/"
     dispatch({
         type: GOOGLE_AUTH_SUCCESS,
@@ -121,6 +123,7 @@ export const responseFb = (accessToken) => async dispatch =>{
         const res1= await axios.post(loginURL,JSON.stringify({token:res.data.access_token}), config)
         const token = res1.data.access;
         localStorage.setItem('token',token);
+        localStorage.setItem("expirationDate", res1.data.access_expires);
         dispatch({
             type: FACEBOOK_AUTH_SUCCESS,
             payload: res.data

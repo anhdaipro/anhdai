@@ -10,14 +10,6 @@ import "./css/chat.css"
 import './css/slideshow.css'
 import { Provider } from 'react-redux'
 import store  from "./store"
-
-
-
-
-
-
-
-
 import Home from "./containers/Home"
 import Login from "./user/Login"
 import Addressuser from "./user/Listaddress"
@@ -79,6 +71,7 @@ import Programinfo from './hocs/Programinfo'
 import FollowerOfferInfo from './hocs/FollowerOfferInfo'
 import ShopAwardInfo from './hocs/ShopAwardInfo'
 import Promotioninfo from './hocs/Promotioninfo'
+import GoogleMaps from './hocs/GoogleMap';
 
 const Appstore=()=>{
 return(
@@ -113,6 +106,7 @@ return(
                                         <Route exact path='/cart' element={<Cart/>} /> 
                                         <Route exact path='/flash_sale' element={<Flashsale/>} /> 
                                         <Route exact path='/checkout' element={<Checkout/>} /> 
+                                        <Route exact path='/maps' element={<GoogleMaps/>} /> 
                                         <Route exact path='/payment' element={<Payment/>} /> 
                                         <Route exact path='/vendor/login' element={<Loginvendor/>} />
                                         <Route  path='/vendor' element={<HomePageSeller/>} />
