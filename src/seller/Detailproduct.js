@@ -693,7 +693,9 @@ console.log(shipping)
             setLeft(0)
         }
         else{
+            if(!category.choice){
             setLeft(-168.5)
+            }
         }
         const list_choices=state.list_choice.map((item,index)=>{
             if(index==i){
