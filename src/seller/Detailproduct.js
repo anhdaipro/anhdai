@@ -974,7 +974,7 @@ console.log(shipping)
                                             </div>
                                             <div className="edit-input edit-main">
                                                 <div className="input__inner input__inner--large"> 
-                                                    <input type="text" className="form-select name" style={{width:'100%'}} name="name" minLength="10" maxLength="120" onChange={(e)=>setformData({...formData,name:e.target.value.trim()})} value={formData.name.trim()} id="nameproduct" placeholder="Name Product"  required/>
+                                                    <input type="text" className="form-select name" style={{width:'100%'}} name="name" minLength="10" maxLength="120" onChange={(e)=>setformData({...formData,name:e.target.value})} value={formData.name.trim()} id="nameproduct" placeholder="Name Product"  required/>
                                                     <div className="input__suffix">
                                                         <span className="input__suffix-split"></span>
                                                         {formData.name.trim().length}/120
