@@ -689,6 +689,12 @@ console.log(shipping)
     })
     const setcategorychoice=(i,category)=>{
         setLevel(i+1)
+        if(i<2){
+            setLeft(0)
+        }
+        else{
+            setLeft(-168.5)
+        }
         const list_choices=state.list_choice.map((item,index)=>{
             if(index==i){
                 return({...item,id:category.id,title:category.title,choice:category.choice})
