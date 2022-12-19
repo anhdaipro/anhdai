@@ -124,17 +124,17 @@ const Newproduct=()=>{
                                                             </div>
                                                         </div>
                                                         <div className="category-wrap">
-                                                            <div onCLick={()=>setLeft(left+20)} className="btn-wrap-left" style={{display: `${level<3 || (level>=3 && left==0)?'none':'block'}`}}>
+                                                            <div onCLick={()=>setLeft(left+168.5)} className="btn-wrap-left" style={{display: `${level<3 || (level>=3 && left==0)?'none':'block'}`}}>
                                                                 <button type="button" className="cat-btn">
                                                                     <i className="icon"><svg viewBox="0 0 32 32"><path d="M9.3 17.5l12 11c.6.6 1.5.6 2.1 0 .2-.2.4-.6.4-1s-.2-.8-.4-1l-10.9-10 10.9-10c.6-.6.6-1.5 0-2.1-.3-.3-.7-.4-1-.4-.4 0-.7.1-1 .4L9.5 15.3l-.1.1c-.3.3-.4.7-.4 1.1-.1.4 0 .9.3 1z"></path></svg></i>
                                                                 </button>
                                                             </div>
-                                                            <div onClick={()=>setLeft(left-20)} className="btn-wrap-right" style={{right: '0px', display: `${level<3 || (level>=3 && left<0)?'none':'block'}`}}>
+                                                            <div onClick={()=>setLeft(left-168.5)} className="btn-wrap-right" style={{right: '0px', display: `${level<3 || (level>=3 && left<0)?'none':'block'}`}}>
                                                                 <button type="button" className="cat-btn">
                                                                     <i className="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.5 15.5l-12-11c-.6-.6-1.5-.6-2.1 0-.2.2-.4.6-.4 1s.2.8.4 1l10.9 10-10.9 10c-.6.6-.6 1.5 0 2.1.3.3.7.4 1 .4.4 0 .7-.1 1-.4l11.9-10.9.1-.1c.3-.3.4-.7.4-1.1.1-.4 0-.8-.3-1z"></path></svg></i>
                                                                 </button>
                                                             </div>
-                                                            <div className="category-list" style={{left: `${left}%`,width: '1200px'}}>
+                                                            <div className="category-list" style={{left: `${left}px`,width: '1200px'}}>
                                                                 {Array(5).fill().map((_, i) =>
                                                                     <ul  className="scroll-item">
                                                                         {i<=level?<>
