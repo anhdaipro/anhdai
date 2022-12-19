@@ -417,7 +417,7 @@ const Detailproduct=()=>{
         const error=state.list_color.find(item=>item.value.trim()==e.target.value.trim())
         const list_color=state.list_color.map((color,index)=>{
             if(colorchoice.id==color.id){
-                if(state.list_color.some(item=>item.value==e.target.value.trim())){
+                if(state.list_color.filter(item=>item.id!==colorchoice.id).some(item=>item.value==e.target.value.trim())){
                     return({...color,value:e.target.value,error:true})
                 }
                 return({...color,value:e.target.value,error:false})
@@ -452,10 +452,10 @@ const Detailproduct=()=>{
     }
 
     const setvaluesize=(e,sizechoice)=>{
-        const error=state.list_size.find(item=>item.value.trim()==e.target.value.trim())
+        const error=state.list_size.find(item=>item.value==e.target.value.trim())
         const list_size=state.list_size.map(size=>{
             if(sizechoice.id==size.id){
-                if(state.list_size.some(item=>item.value==e.target.value.trim())){
+                if(state.list_size.filter(item=>item.id!==sizechoice.id).some(item=>item.value==e.target.value.trim())){
                     return({...size,value:e.target.value,error:true})
                 }
                 return({...size,value:e.target.value,error:false})
