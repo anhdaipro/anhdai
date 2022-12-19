@@ -688,7 +688,7 @@ console.log(shipping)
     ]
     })
     const setcategorychoice=(i,category)=>{
-        setLevel(i+1)
+        setLevel(category.choice?i:i+1)
         if(i<2){
             setLeft(0)
         }
