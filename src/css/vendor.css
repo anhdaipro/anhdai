@@ -1454,6 +1454,9 @@ display: block;
   flex-direction: row;
   align-items: center;
   }
+  .choice_variation .variation-item{
+    width:100%
+  }
   .cricles{
     border-radius: 50%;
     width: 16px;
