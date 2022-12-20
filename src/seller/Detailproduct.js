@@ -652,7 +652,7 @@ console.log(shipping)
         const buymorediscounts_remain=buymore.filter(item=>!isNaN(item.id)).map(item=>item.id)
         const datavariations=variations.length>0?variations.map(variation=>{
             return({...variation,color_id:res.data.colors.find(color=>color.value==variation.color_value)?res.data.colors.find(color=>color.value==variation.color_value).id:null,size_id:res.data.sizes.find(size=>size.value==variation.size_value)?res.data.sizes.find(size=>size.value==variation.size_value).id:null})
-        }):[{color_id:null,size_id:null,price:formData,sku_classify:formData.sku_classify,inventory:formData.inventory}]
+        }):[{color_id:null,size_id:null,price:formData.price,sku_classify:formData.sku_classify,inventory:formData.inventory}]
         const variations_remain=variations.filter(item=>!isNaN(item.variation_id)).map(item=>item.variation_id)
         const formdata={action:'update',brand:detail.brand,variations_remain:variations_remain,buymorediscounts_remain:buymorediscounts_remain,
         variations:datavariations,files:files,buymorediscounts:buymore,category_id:category.id,method:shippings,info_detail:detail,...formData}
