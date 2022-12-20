@@ -406,7 +406,8 @@ const Itemflashsale =(props)=> {
     )
 }
 
-
+const StyleText=styled.div`
+`
 export default class HomePage extends React.Component {
     state={items:[],item_common:[],list_trend_search:[],list_top_search:[],showimage:true,from_index:0,categories:[]}
     componentDidMount() {  
@@ -452,7 +453,7 @@ export default class HomePage extends React.Component {
                     </div>
                     <div className="home-page" style={{marginTop:'7.375rem'}}>
                         <div className="containers">
-                        <ImageHome/>
+                            <ImageHome/>
                             <Category
                             width={1200}
                             num_display={10}
@@ -461,6 +462,9 @@ export default class HomePage extends React.Component {
                             width={1200}
                             num_display={10}
                             />
+                            <div className="text-transfrom">
+                                <p>item</p>
+                            </div>
                             <div className="section-trending-search-list">
                                 <div className="header-section header-section--simple">
                                     <div className="header-section__header item-center">
