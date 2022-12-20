@@ -619,12 +619,12 @@ const Detailproduct=()=>{
 
 console.log(shipping)
     const isAscending=listitems.filter((item,i)=>item>=listitems[i+1]).length==0
-    const valid_sale=variations.every(item=>item.price && item.inventory)
+    const valid_sale=variations.length>0?variations.every(item=>item.price && item.inventory!==null):formData.price&&formData.inventory
     const valid_media=state.list_media.length>0
     const valid_delivery=shipping_item.find(item=>item.enable)
-
+    console.log(valid_sale)
     const shippings=shipping_item.filter(item=>item.enable).map(item=>item.method)
-    
+    const valid=valid_sale&&valid_delivery&&valid_media&&formData.name&&category && formData.weight&&formData.description
     const submit= async ()=>{
         let form=new FormData()
         const colors_update=state.list_color.filter(item=>!isNaN(item.id))
@@ -1908,8 +1908,8 @@ console.log(shipping)
                                     <div data-v-72ea37fa="" data-v-192fa078="" className="container-left"></div>
                                     <div className="container-right btn-group">
                                         <button className="btn-m btn-light" type="button">Cancel</button>
-                                        <button onClick={submit} disabled={valid_sale&&valid_delivery&&valid_media&&formData.name&&category && formData.weight?false:true} className="btn-m btn-light mx-1" type="button">Save and hiden</button>
-                                        <button onClick={submit} disabled={valid_sale&&valid_delivery&&valid_media&&formData.name&&category && formData.weight?false:true} className="btn-m btn-orange" type="button">Save and display</button> 
+                                        <button onClick={submit} disabled={valid?false:true} className="btn-m btn-light mx-1" type="button">Save and hiden</button>
+                                        <button onClick={submit} disabled={valid?false:true} className="btn-m btn-orange" type="button">Save and display</button> 
                                     </div>
                                 </div>  
                                 <div className="product-edit__side">
