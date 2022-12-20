@@ -65,7 +65,7 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
     const navigate=useNavigate()
     useEffect(() => {
         const getJournal = async () => {
-            await axios(purchaselistdURL,headers)
+            await axios(purchaselistdURL,headers())
            // <-- passed to API URL
             .then(res=>{
                 let data=res.data
@@ -100,7 +100,7 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
             search_params.append('offset',state.orders.length)
             url.search = search_params.toString();
             let new_url = url.toString();
-            axios(new_url,headers)
+            axios(new_url,headers())
             .then(res=>{
                 setLoading(true)
                 let data=res.data
@@ -159,14 +159,14 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
         url.search = search_params.toString();
         let url_main = url.toString();
         setShow(false)
-        axios.get(url_main,headers)
+        axios.get(url_main,headers())
         .then(res=>{
             setState({...state,order_choice:order})
             setListreview(res.data)
             setShow(true)
         })
     }
-    if(expiry<=0 || !localStorage.token){
+    if(expiry()<=0 || !localStorage.token){
         window.location.href="/buyer/login"
     }
     const review=(e,order)=>{

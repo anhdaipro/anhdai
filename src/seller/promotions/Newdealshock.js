@@ -31,7 +31,7 @@ const Newdealshock=()=>{
     }
 
     const editdeal=()=>{
-        axios.post(newdealURL,JSON.stringify(deal),headers)
+        axios.post(newdealURL,JSON.stringify(deal),headers())
         .then(res=>{
             let id=res.data.id
             navigate(`/marketing/add-on-deal/${id}`)

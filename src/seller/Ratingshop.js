@@ -16,7 +16,7 @@ const Ratingshop=()=>{
     const [currentPage, setCurrentPage] = useState({page:1,pagesize:5});
     useEffect(() => {
         const getJournal = async () => {
-            await axios(shopratingURL,headers)
+            await axios(shopratingURL,headers())
            // <-- passed to API URL
             .then(res=>{
                 let data=res.data
@@ -52,7 +52,7 @@ const Ratingshop=()=>{
             setLoading(false)
             setState({...state,show:false})
             let new_url = url.toString();
-            axios.get(new_url,headers)
+            axios.get(new_url,headers())
             .then(res=>{ 
                 let data=res.data
                 setLoading(true)
@@ -76,7 +76,7 @@ const Ratingshop=()=>{
        let form= new FormData()
        form.append('id',review_choice.id)
        form.append('text',state.text)
-       axios.post(shopratingURL,form,headers)
+       axios.post(shopratingURL,form,headers())
        .then(res=>{
         const list_reviews= list_review.map(item=>{
             if(review_choice.id==item.id){

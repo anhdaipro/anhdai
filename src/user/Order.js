@@ -15,12 +15,12 @@ const Orderuser=(props)=>{
     const [params, setSearchParams] = useSearchParams();
     const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
     const navigate=useNavigate()
-    if(expiry<=0 || !localStorage.token){
+    if(expiry()<=0 || !localStorage.token){
         window.location.href="/buyer/login"
     }
     useEffect(() => {
         const getJournal = async () => {
-        await axios.get(orderURL+id+'?'+params,headers)
+        await axios.get(orderURL+id+'?'+params,headers())
             .then(res=>{
                 setData(res.data)
         })

@@ -34,7 +34,7 @@ const ShopAwardInfo=(props)=>{
     useEffect(() => {
         (async () => {
             if(id){
-            const res = await axios(url,headers)
+            const res = await axios(url,headers())
             const data=res.data
             setShopaward({game_name:data.game_name,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)})
             setTime_end(timesubmit(data.valid_to))
@@ -56,7 +56,7 @@ const ShopAwardInfo=(props)=>{
         const datadate=index==0?{valid_from:dateshop_award,valid_to:shop_award.valid_to}:{valid_to:dateshop_award,valid_from:shop_award.valid_from}
         setShopaward({...shop_award,...datadate})
         const data={action:'checkitem',...datadate}
-        axios.post(url,JSON.stringify(data),headers)
+        axios.post(url,JSON.stringify(data),headers())
         .then(res=>{
             const data=res.data.sameitem   
         })
@@ -78,7 +78,7 @@ const ShopAwardInfo=(props)=>{
     const complete=()=>{
         const datashop_award={valid_from:shop_award.valid_from,valid_to:shop_award.valid_to,game_name:shop_award.game_name}
         const data={...datashop_award,action:'submit',list_award:listaward}
-        axios.post(url,JSON.stringify(data),headers)
+        axios.post(url,JSON.stringify(data),headers())
         .then(res=>{
             if(!res.data.error){
                 const countDown = setInterval(() => {

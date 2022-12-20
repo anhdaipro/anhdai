@@ -27,7 +27,7 @@ const ListFollowerOffer=()=>{
     useEffect(()=>{
         (async()=>{
             try{
-            const obj1=await axios.get(dataOfferURL,headers)
+            const obj1=await axios.get(dataOfferURL,headers())
             const datapromotion=stats.map(item=>{
                 if(item.id==1){
                     return ({...item,result:obj1.data.total_amount,result_last:obj1.data.total_amount_last})
@@ -65,7 +65,7 @@ const ListFollowerOffer=()=>{
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
             if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && follower_offers.length< count){
                 setLoading(false)
-                const res =await axios.get(`${listFollowOffershopURL}?&offset=${follower_offers.length}`,headers)
+                const res =await axios.get(`${listFollowOffershopURL}?&offset=${follower_offers.length}`,headers())
                 setFollowerOffer(current=>[...current,...res.data.data])
                 setLoading(true)
             }
@@ -86,7 +86,7 @@ const ListFollowerOffer=()=>{
         }
         params.set('keyword',keyword)
         params.set('choice',choice)
-        const res =await axios.get(`${listFollowOffershopURL}?${params}`,headers)
+        const res =await axios.get(`${listFollowOffershopURL}?${params}`,headers())
         setFollowerOffer(current=>[...current,...res.data.data])
         setLoading(true)
     })()

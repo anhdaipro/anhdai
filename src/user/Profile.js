@@ -11,7 +11,7 @@ const Profile =()=>{
     const [loading,setLoading]=useState(false)
     const [formData,setformData]=useState({phone:'',date:1,month:1,year:2000,username:'',name:'',email:'',image:null})
     useEffect(() => {
-        axios.get(profiledURL,headers)
+        axios.get(profiledURL,headers())
         .then(res=>{
           const data = res.data
           setLoading(true)
@@ -21,7 +21,7 @@ const Profile =()=>{
         })   
     },[])
     
-    if(expiry<=0 || !localStorage.token){
+    if(expiry()<=0 || !localStorage.token){
         window.location.href="/buyer/login"
     }
     
@@ -53,7 +53,7 @@ const Profile =()=>{
             form.append(item,formData[item])
         })
         form.append('date_of_birth',`${formData.year}-${('0'+formData.month).slice(-2)}-${('0'+formData.date).slice(-2)}`)
-        axios.post(profiledURL,form,headers)
+        axios.post(profiledURL,form,headers())
         .then(res=>{
         })
     }

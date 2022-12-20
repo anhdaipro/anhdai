@@ -39,7 +39,7 @@ const Promotioninfo=(props)=>{
     useEffect(() => {
         (async () => {
             if(id){
-                const res=await axios(url_combo,headers)
+                const res=await axios(url_combo,headers())
                 const data=res.data
                 setCombo({...data,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)}) 
                 setLoading(true)
@@ -72,7 +72,7 @@ const Promotioninfo=(props)=>{
             const data={action:'checkitem',...datadate,list_items:list_enable_on.map(item=>{
                 return(item.id)
             })}
-            axios.post(url_combo,JSON.stringify(data),headers)
+            axios.post(url_combo,JSON.stringify(data),headers())
             .then(res=>{
                 const data=res.data.sameitem
                 if(res.data.error){
@@ -107,7 +107,7 @@ const Promotioninfo=(props)=>{
         setLoading(true)
         setShow({...show,items:true,byproduct:false})
             const url = id?`${newcomboURL}?combo_id=${id}&valid_from=${timesubmit(combo.valid_from)}&valid_to=${timesubmit(combo.valid_to)}`:`${newcomboURL}?&valid_from=${timesubmit(combo.valid_from)}&valid_to=${timesubmit(combo.valid_to)}`
-            axios.get(url,headers)
+            axios.get(url,headers())
             .then(res=>{
                 const items=res.data.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
                 const list_items=items.map(item=>{
@@ -236,7 +236,7 @@ const Promotioninfo=(props)=>{
             delete datacombo.products
             const data={action:'submit',list_items:list_enable_on.map(item=>{
             return(item.id)}),...datacombo}
-            axios.post(url_combo,JSON.stringify(data),headers)
+            axios.post(url_combo,JSON.stringify(data),headers())
             .then(res=>{
                 const data=res.data.sameitem
                 if(!res.data.error){

@@ -23,9 +23,12 @@ import axios from 'axios';
 import { validatEemail } from '../constants';
 import dayjs from 'dayjs';
 const expirationDate = localStorage.getItem("expirationDate")
-export const expiry=new Date(expirationDate).getTime() - new Date().getTime()
-export const headers={'headers': localStorage.token!='null' && expiry>0?{ Authorization:`JWT ${localStorage.token}`,'Content-Type': 'application/json' }:{'Content-Type': 'application/json'}}
-
+export const expiry=()=>{
+  return  new Date(expirationDate).getTime() - new Date().getTime()
+}
+export const headers=()=>{
+   return {'headers': localStorage.token && expiry()>0?{ Authorization:`JWT ${localStorage.token}`,'Content-Type': 'application/json' }:{'Content-Type': 'application/json'}}
+}
 export const checkAuthenticated = () => async dispatch => {
     if (localStorage.getItem('access')) {
         try {
@@ -295,7 +298,7 @@ export const logout = () => dispatch => {
 };
 export const showthreads=()=> async dispatch=>{
     try{
-        const res=await axios.get(listThreadlURL,headers)
+        const res=await axios.get(listThreadlURL,headers())
         dispatch({
             type: SHOW_THREADS,
             payload: res.data
@@ -311,7 +314,7 @@ export const  buyagain=(data)=>async dispatch =>{
             return(cartitem.product_id)
         })
         const form={product_id:datacart,shop_id:data.shop.id}
-        const res=await axios.post(buyagainURL,JSON.stringify(form),headers)
+        const res=await axios.post(buyagainURL,JSON.stringify(form),headers())
         dispatch({
             type: BUYAGAIN,
             payload: res.data
@@ -324,7 +327,7 @@ export const  buyagain=(data)=>async dispatch =>{
 export const showchat = (data) => async dispatch => {
     try{
         if(!data.thread){
-            const res=await axios.post(createthreadURL,JSON.stringify(data),headers)
+            const res=await axios.post(createthreadURL,JSON.stringify(data),headers())
             const datachat={showchat:true,...res.data}
             dispatch({
                 type: SHOW_CHAT,

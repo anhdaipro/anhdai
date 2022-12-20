@@ -11,7 +11,7 @@ const Shipping=()=>{
     const [loading,setLoading]=useState(false)
     useEffect(() => {
         const getJournal = async () => {
-            await axios(listshippingURL,headers)
+            await axios(listshippingURL,headers())
            // <-- passed to API URL
             .then(res=>{
                 setData(groupBy(res.data.list_shipping,'method'))
@@ -30,7 +30,7 @@ const Shipping=()=>{
             return({...item})
         })
         setData({...data,[keys]:list_shipping})
-        axios.post(listshippingURL,JSON.stringify({id:itemchoice.id}),headers)
+        axios.post(listshippingURL,JSON.stringify({id:itemchoice.id}),headers())
         .then(res=>{
 
         })

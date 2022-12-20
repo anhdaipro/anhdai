@@ -29,7 +29,7 @@ const Listdiscountshop=()=>{
     const [keyword,setKeyword]=useState()
     useEffect(()=>{
         (async()=>{
-            const obj1=await axios.get(dataProgramURL,headers)
+            const obj1=await axios.get(dataProgramURL,headers())
             const datadiscount=stats.map(item=>{
                 if(item.id==1){
                     return ({...item,result:obj1.data.total_amount,result_last:obj1.data.total_amount_last})
@@ -77,7 +77,7 @@ const Listdiscountshop=()=>{
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
             if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listdiscount.length< count){
                 setLoading(false)
-                const res =await axios.get(`${listdiscountshopURL}?&offset=${listdiscount.length}`,headers)
+                const res =await axios.get(`${listdiscountshopURL}?&offset=${listdiscount.length}`,headers())
                 setDiscount(current=>[...current,...res.data.data])
                 setLoading(true)
             }
@@ -102,7 +102,7 @@ const Listdiscountshop=()=>{
         search_params.set('option',option)
         search_params.set('keyword',keyword)
         search_params.set('choice',choice)
-        const res =await axios.get(`${listdiscountshopURL}?${search_params}`,headers)
+        const res =await axios.get(`${listdiscountshopURL}?${search_params}`,headers())
         setDiscount([...res.data.data])
         setCount(res.data.count)
         setLoading(true)

@@ -103,7 +103,7 @@ const Flashsale=()=>{
     const navigate=useNavigate()
     useEffect(() => {
         (async()=>{
-            const res= await axios.get(listflashsaleURL,headers)
+            const res= await axios.get(listflashsaleURL,headers())
             setListflashsale(res.data)
             setLoading(true)
         })()
@@ -111,7 +111,7 @@ const Flashsale=()=>{
     useEffect(() => {
         (async()=>{
             setLoading(false)
-            const res= await axios.get(`${flashsaleURL}?${params}`,headers)
+            const res= await axios.get(`${flashsaleURL}?${params}`,headers())
             setItems(res.data.items_flash_sale)
             setLoading(true)
             setFlashsale({id:res.data.id,valid_from:res.data.valid_from,valid_to:res.data.valid_to})

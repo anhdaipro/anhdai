@@ -21,7 +21,7 @@ const Listvoucher=()=>{
     {name:'Người mua',id:4,info:'Tổng số lượng người mua duy nhất đã mua sản phẩm có áp dụng khuyến mãi, tính trên toàn bộ các đơn hàng được xác nhận trong khoảng thời gian đã chọn.',result:0,result_last:0}])
     useEffect(()=>{
         (async()=>{
-            const obj1=await axios.get(dataVoucherURL,headers)
+            const obj1=await axios.get(dataVoucherURL,headers())
             const datadiscount=stats.map(item=>{
                 if(item.id==1){
                     return ({...item,result:obj1.data.total_amount,result_last:obj1.data.total_amount_last})
@@ -55,7 +55,7 @@ const Listvoucher=()=>{
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
             if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listvoucher.length< count){
                 setLoading(false)
-                const res =await axios.get(`${listvouchershopURL}?&offset=${listvoucher.length}`,headers)
+                const res =await axios.get(`${listvouchershopURL}?&offset=${listvoucher.length}`,headers())
                 setVouchers(current=>[...current,...res.data.data])
                 setLoading(true)
             }

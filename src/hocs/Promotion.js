@@ -66,7 +66,7 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring,setc
             seterrow(false)
             setwarring(true)
             const data={id:state.id,item_id:state.data.id,quantity:quantity} 
-            axios.post(addToCartURL,JSON.stringify(data),headers)
+            axios.post(addToCartURL,JSON.stringify(data),headers())
             .then(res=>{
                 let data=res.data
                 setshow(false)

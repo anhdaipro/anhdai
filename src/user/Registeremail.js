@@ -28,7 +28,7 @@ const Registeremail = ({responseGoogle,responseFb,signup,isAuthenticated}) => {
         e.preventDefault();
         (async () => {
             try {
-                const res=await axios.post(registeremailURL,form,headers)
+                const res=await axios.post(registeremailURL,form,headers())
                 setState({...state,error:res.data.error,show:true})
             }
             catch(err){
@@ -64,7 +64,7 @@ const Registeremail = ({responseGoogle,responseFb,signup,isAuthenticated}) => {
         (async () => {
             const data={otp:otp,email:email}
             try {
-                const res=await axios.post(verifyemailURL,JSON.stringify(data),headers)
+                const res=await axios.post(verifyemailURL,JSON.stringify(data),headers())
                 setState({...state,show:false,verify:res.data.verify})
                 if(res.data.verify){
                     signup(username,email,password,phone)

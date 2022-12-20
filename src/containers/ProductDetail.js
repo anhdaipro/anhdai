@@ -390,7 +390,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
             try{
                 if(id){
                     if(data_product.shock_deal_type || data_product.promotion){
-                        const res =await axios.get(`${productinfoURL}/${id}?choice=${data_product.shock_deal_type?'deal':'combo'}`,headers)
+                        const res =await axios.get(`${productinfoURL}/${id}?choice=${data_product.shock_deal_type?'deal':'combo'}`,headers())
                         const data=res.data
                         if(data_product.shock_deal_type){
                             setMainproduct({image:data_product.image,quantity:1,
@@ -410,9 +410,9 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                         }  
                     }
                     const [obj1,obj2,obj3]=await axios.all([
-                        axios.get(`${productinfoURL}/${id}?choice=shop`,headers),
-                        axios.get(`${productinfoURL}/${id}?choice=detail`,headers),
-                        axios.get(`${productinfoURL}/${id}?choice=hotsale`,headers),
+                        axios.get(`${productinfoURL}/${id}?choice=shop`,headers()),
+                        axios.get(`${productinfoURL}/${id}?choice=detail`,headers()),
+                        axios.get(`${productinfoURL}/${id}?choice=hotsale`,headers()),
                     ])
                     setProductdetail(obj2.data)
                     setListhostsale(obj3.data)
@@ -435,7 +435,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
         if(clientHeight + scrollTop === scrollHeight){
             if(!listreview){
-                axios.get(`${productinfoURL}/${id}?choice=review`,headers)
+                axios.get(`${productinfoURL}/${id}?choice=review`,headers())
                 .then(res=>{
                     let data=res.data
                     const list_reviews=data.reviews.map(item=>{
@@ -500,7 +500,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
 
     const addtocart=(e)=>{
         e.stopPropagation()
-        if (localStorage.token && expiry>0){
+        if (localStorage.token && expiry()>0){
             let variation_active=document.querySelectorAll('.product-variation--selected')
             if(variation_active.length===data.count_variation){
             setWaring({...waring,warring:false})
@@ -532,7 +532,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                 }
                
                 }
-                axios.post(addToCartURL,JSON.stringify(data),headers)
+                axios.post(addToCartURL,JSON.stringify(data),headers())
                 .then(res=>{
                     addcartitem(res.data)
                 })
@@ -547,8 +547,8 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
     }
 
     const setlike=()=>{
-        if(localStorage.token && expiry>0){
-            axios.post(`${productinfoURL}/${id}`,JSON.stringify({action:'like'}),headers)
+        if(localStorage.token && expiry()>0){
+            axios.post(`${productinfoURL}/${id}`,JSON.stringify({action:'like'}),headers())
             .then(res=>{
             setData({...data,...res.data})
             })
@@ -566,8 +566,8 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
     }
   
     const setlikereview=(e,review)=>{
-        if(localStorage.token&& expiry>0){
-            axios.post(`${reviewURL}/${review.id}`,JSON.stringify({action:'like'}),headers)
+        if(localStorage.token&& expiry()>0){
+            axios.post(`${reviewURL}/${review.id}`,JSON.stringify({action:'like'}),headers())
             .then(res=>{
             const list_review=listreview.map(item=>{
                 if(review.id==item.id){
@@ -592,7 +592,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         (async()=>{
             if(indextype){
             setPage(1)
-            const res = await axios.get(`${productinfoURL}/${data.id}?choice=review&${[typereview.name]}=${typereview.value}`,headers)
+            const res = await axios.get(`${productinfoURL}/${data.id}?choice=review&${[typereview.name]}=${typereview.value}`,headers())
             let data=res.data
             setReview(data.reviews)
             setState({...state,review_choice:typereview.value,page_count:data.page_count,rating:data.rating,has_comment:data.has_comment,has_media:data.has_media})
@@ -673,7 +673,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         }
         url.search = search_params.toString();
         let new_url = url.toString();
-        axios.get(new_url,headers)
+        axios.get(new_url,headers())
         .then(res=>{
             const data=res.data
             if(product=='mainproduct'){
@@ -700,7 +700,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         product_id:main_product.variation_choice.product_id,quantity:main_product.quantity,
         byproducts:byproducts,item_id:main_product.id}
         
-        axios.post(addToCartBatchURL,JSON.stringify(form),headers)
+        axios.post(addToCartBatchURL,JSON.stringify(form),headers())
         .then(res => {  
             addcartitem({id:res.data.id,image:data.image,name:data.name,price:pricemain()*main_product.quantity})
         })
@@ -711,7 +711,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
             navigate(`/search?promotionId=${voucher.id}&evcode=${voucher.code}`)
         }
         else{
-            axios.post(savevoucherURL,JSON.stringify({voucher_id:voucher.id}),headers)
+            axios.post(savevoucherURL,JSON.stringify({voucher_id:voucher.id}),headers())
             .then(res=>{
                 setVouchers(current=>current.map(item=>{
                     return({...item,exists:item.id==voucher.id?true:item.exists})

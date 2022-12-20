@@ -34,7 +34,7 @@ const FollowerOfferInfo=(props)=>{
     useEffect(() => {
         (async () => {
             if(id){
-                const res = await axios(url,headers)
+                const res = await axios(url,headers())
                 const data=res.data
                 const limit=data.maximum_discount==null?'U':'L'
                 setFolloweroffer({...data,limit:limit,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)})
@@ -68,7 +68,7 @@ const FollowerOfferInfo=(props)=>{
         }
         else{
             const data={...follower_offer,action:'submit'}
-            axios.post(url,JSON.stringify(data),headers)
+            axios.post(url,JSON.stringify(data),headers())
             .then(res=>{
                 if(res.data.success){
                     const countDown = setInterval(() => {

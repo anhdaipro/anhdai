@@ -16,7 +16,7 @@ const Tabs=(props)=>{
                 params.set('choice',choice)
             }
             const urldata=choice=='all'?`${url}`:`${url}?${params}`
-            const res =await axios.get(urldata,headers)
+            const res =await axios.get(urldata,headers())
             setdata(res.data.data)
             setcount(res.data.count)
             setloading(true)

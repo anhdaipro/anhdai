@@ -46,7 +46,7 @@ const Detaildealshock=()=>{
     const item_unvalid=list_enable_main_on.some(item=>sameitem.some(product=>product==item.id))
     useEffect(() => {
         const getJournal = async () => {
-            await axios(dealDetailshopURL+id,headers)
+            await axios(dealDetailshopURL+id,headers())
            // <-- passed to API URL
             .then(res=>{
                 let data=res.data
@@ -80,7 +80,7 @@ const Detaildealshock=()=>{
     const additem=(e)=>{
         setLoading(true)
         setShow({...show,items:true,byproduct:false})
-        axios.get(`${newdealURL}?deal_id=${id}&mainproducts=true&valid_from=${timesubmit(deal.valid_from)}&valid_to=${timesubmit(deal.valid_to)}`,headers)
+        axios.get(`${newdealURL}?deal_id=${id}&mainproducts=true&valid_from=${timesubmit(deal.valid_from)}&valid_to=${timesubmit(deal.valid_to)}`,headers())
         .then(res=>{
             const items=res.data.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
             const list_items=items.map(item=>{
@@ -96,7 +96,7 @@ const Detaildealshock=()=>{
     const addbyproduct=  async (e)=>{
         setShow({...show,byproduct:true,items:false})
         if(itemshop.byproduct.length==0){
-            const res = await axios.get(`${newdealURL}?byproducts=true&deal_id=${id}`,headers)
+            const res = await axios.get(`${newdealURL}?byproducts=true&deal_id=${id}`,headers())
             const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
             const byproduct=list_byproduct.map(item=>{
                 if(itemshop.byproduct_choice.some(by=>by.id==item.id)){
@@ -162,7 +162,7 @@ const Detaildealshock=()=>{
         const data={byproducts:list_itemscheck.map(item=>{return item.id}),
             action:'addbyproduct'
         }
-        axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
+        axios.post(dealDetailshopURL+id,JSON.stringify(data),headers())
         .then(res=>{
             const list_itemschoice=res.data.map(item=>{
                 return({...item,variations:item.variations.map(variation=>{
@@ -210,7 +210,7 @@ const Detaildealshock=()=>{
             }
             if(value){
                 if(!item_unvalid){
-                    axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
+                    axios.post(dealDetailshopURL+id,JSON.stringify(data),headers())
                     .then(res=>{
                         if(!res.data.error){
                             setSameitem([])
@@ -255,7 +255,7 @@ const Detaildealshock=()=>{
                 },[])
                 const data={action:'savebyproduct',byproducts:list_enable_byproduct_on.map(item=>{return item.id}),discount_model_list:discount_model_list}
                 if(value){
-                    axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
+                    axios.post(dealDetailshopURL+id,JSON.stringify(data),headers())
                     .then(res=>{
                         
                     })
@@ -499,7 +499,7 @@ const Detaildealshock=()=>{
     console.log(deal)
     const editdeal=useCallback(()=>{
         const data={...deal,action:'change'}
-        axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
+        axios.post(dealDetailshopURL+id,JSON.stringify(data),headers())
         .then(res=>{
             setDeal(res.data)
             setState({...state,edit:false})
@@ -537,7 +537,7 @@ const Detaildealshock=()=>{
     const complete=()=>{
         if(list_enable_byproduct_on.length>0){
             const data={action:'submit',byproducts:list_enable_byproduct_on.map(item=>{return(item.id)})}
-            axios.post(dealDetailshopURL+id,JSON.stringify(data),headers)
+            axios.post(dealDetailshopURL+id,JSON.stringify(data),headers())
             .then(res=>{
                 const countDown = setInterval(() => {
                     state.timeSecond--;

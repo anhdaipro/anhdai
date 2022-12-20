@@ -15,12 +15,12 @@ const Addressuser = ({user}) =>{
     const [addresschoice,setAddressChoice]=useState({city_choice:{'name':null,'matp':null,level:1},
     district_choice:{'name':null,'matp':null,level:2,'maqh':null},
     town_choice:{'name':null,'maqh':null,level:3},showcity:false})
-    if(expiry<=0 || !localStorage.token){
+    if(expiry()<=0 || !localStorage.token){
         window.location.href="/buyer/login"
     }
     useEffect(() => {
         const getJournal = async () => {
-            await axios.get(updateAddressURL,headers)
+            await axios.get(updateAddressURL,headers())
             // <-- passed to API URL
             .then(res=>{
                 let data=res.data
@@ -70,7 +70,7 @@ const Addressuser = ({user}) =>{
             }
         })
         setState({...state,list_addresses:list_addresses})
-        axios.post(updateAddressURL,JSON.stringify(data),headers)
+        axios.post(updateAddressURL,JSON.stringify(data),headers())
         .then(res=>{
         })   
     }
@@ -85,7 +85,7 @@ const Addressuser = ({user}) =>{
         const list_addresses=state.list_addresses.filter(item=>item.id!=address.id)
         setState({...state,list_addresses:list_addresses})
         setAction(false)
-        axios.post(updateAddressURL,JSON.stringify(data),headers)
+        axios.post(updateAddressURL,JSON.stringify(data),headers())
         .then(res=>{
         })
     }, [state]);

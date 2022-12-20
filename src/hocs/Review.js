@@ -242,7 +242,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                 }
                 form.append('file_id',image.id)
             })
-            axios.post(`${reviewURL}/${state.review.id}`,form,headers)
+            axios.post(`${reviewURL}/${state.review.id}`,form,headers())
             .then(res=>{
                 setedit(false)
                 setStatusreview(false)
@@ -275,7 +275,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                 alert('Đánh giá Chất lượng sản phẩm, Dịch vụ của Người bán và Dịch vụ vận chuyển của bạn đang cao hơn đánh giá chung, vui lòng kiểm tra lại.')
             }
             else{
-                axios.post(purchaselistdURL,form,headers)
+                axios.post(purchaselistdURL,form,headers())
                 .then(res=>{
                     const orders=list_orders.map(order=>{
                         if(order.id==order_choice.id){
@@ -499,7 +499,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
         })
         updateorder(orders)
         setcancel(false)
-        axios.post(purchaselistdURL,form,headers)
+        axios.post(purchaselistdURL,form,headers())
         .then(res=>{
             
         })  

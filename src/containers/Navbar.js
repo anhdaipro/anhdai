@@ -22,14 +22,14 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     },[data])
     
     useEffect(() =>  {
-        if(expiry>0 && localStorage.token){
+        if(expiry()>0 && localStorage.token){
             (async () => {
                 try {
                     await isAuthenticated
                     if(!hidesearch){
                         const [obj1,obj2]= await axios.all([
-                            axios.get(cartviewURL,headers),
-                            axios.get(categoryhomeURL,headers),
+                            axios.get(cartviewURL,headers()),
+                            axios.get(categoryhomeURL,headers()),
                         ])
                         setState({...state,loading:true,view:false,view_account:false,count:obj1.data.count}) 
                         setCategory(obj2.data)
@@ -52,10 +52,10 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
 
     const onUnload=(e)=>{
         (async ()=>{
-            if(expiry>0 && localStorage.token){
+            if(expiry()>0 && localStorage.token){
                 let form =new FormData()
                 form.append('online',false)
-                axios.post(updateuseronlineURL,form,headers)
+                axios.post(updateuseronlineURL,form,headers())
             }
         })()
     }

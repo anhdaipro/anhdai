@@ -24,7 +24,7 @@ const Whell=()=>{
 
     useEffect(() => {
         const getJournal = async () => {
-            await axios(`${detailAwardshopURL}/${id}`,headers)
+            await axios(`${detailAwardshopURL}/${id}`,headers())
             .then(res=>{
                 let data=res.data
                 setLoading(true)
@@ -62,7 +62,7 @@ const Whell=()=>{
             try{
                 const data=itemchoice
                 if(position && time==0){
-                   const res=await axios.post(newAwardshopURL,JSON.stringify(data),headers)
+                   const res=await axios.post(newAwardshopURL,JSON.stringify(data),headers())
                 }
             }
             catch(e){

@@ -52,7 +52,7 @@ const Newproduct=()=>{
     }
     
     const submit=()=>{
-        axios.get(shippingshopURL,headers)
+        axios.get(shippingshopURL,headers())
         .then(res=>{
             setShipping(groupBy(res.data.shipping_shop,'method'))
             const list_image=Array(9).fill().map((_, i) =>{

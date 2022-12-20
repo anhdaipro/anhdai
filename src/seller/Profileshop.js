@@ -23,7 +23,7 @@ const Profileshop=({user})=>{
         form.append('url',item.url)
       }
     })
-    axios.post(shopprofileURL,form,headers)
+    axios.post(shopprofileURL,form,headers())
     .then(res=>{
 
     })  
@@ -68,7 +68,7 @@ const Profileshop=({user})=>{
     (async () => {
       try {
         
-        const res = await axios.get(shopprofileURL,headers)
+        const res = await axios.get(shopprofileURL,headers())
         setLoading(true)
         setListfile(res.data.description_url)
         setState({...state,loading:true,name:res.data.name,image_cover:res.data.image_cover,description:res.data.description}) 

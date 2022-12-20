@@ -109,7 +109,7 @@ class ImageHome extends React.Component {
     }
   
     componentDidMount() {
-      axios.get(imagehomeURL,headers)
+      axios.get(imagehomeURL,headers())
       .then(res=>{
         const data = res.data;
         this.setState({items:data,loading:true})
@@ -175,7 +175,7 @@ class Category extends React.Component {
     };
   
     componentDidMount() {
-      axios.get(listcategoryURL,headers)
+      axios.get(listcategoryURL,headers())
       .then(res=>{
         this.setState({loading:true,transform: 'translate(0px, 0px)',categories:partition(res.data, int).map(subarray => subarray)});
       
@@ -251,7 +251,7 @@ const Itemflashsale =(props)=> {
     
     useEffect(() => {
         const getJournal = async () => {
-        await axios.get(listitemflashsalelURL,headers)
+        await axios.get(listitemflashsalelURL,headers())
         .then(res => {
                 const data = res.data;
                 const time_end=data.valid_to
@@ -422,7 +422,7 @@ export default class HomePage extends React.Component {
             if(clientHeight + scrollTop == scrollHeight && this.state.items.length==0){
                 (async () => {
                     try {
-                      const res1 = await axios.get(topsearchURL,headers)
+                      const res1 = await axios.get(topsearchURL,headers())
                       this.setState({list_top_search:res1.data.item_top_search,list_trend_search:res1.data.item_top_search})
                     } catch (error) {
                       console.log(error);
@@ -430,7 +430,7 @@ export default class HomePage extends React.Component {
                   })();
                 (async () => {
                     try {
-                        const res = await axios.get(ItemRecommend,headers)
+                        const res = await axios.get(ItemRecommend,headers())
                         let data=res.data
                         this.setState({items:data});
                     } catch (error) {

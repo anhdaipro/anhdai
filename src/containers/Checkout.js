@@ -38,15 +38,15 @@ const Checkout =({user,showchat})=>{
     const [addresschoice,setAddressChoice]=useState({city_choice:{'name':null,'matp':null,level:1},
     district_choice:{'name':null,'matp':null,level:2,'maqh':null},
     town_choice:{'name':null,'maqh':null,level:3},showcity:false})
-    if(expiry<=0 || !localStorage.token){
+    if(expiry()<=0 || !localStorage.token){
         window.location.href="/buyer/login"
     }
     const navigate=useNavigate()
     useEffect(() => {
         (async () => {
             const [obj1,obj2]=await axios.all([
-                axios.get(checkoutURL,headers),
-                axios.get(`${updateAddressURL}?default=true`,headers)
+                axios.get(checkoutURL,headers()),
+                axios.get(`${updateAddressURL}?default=true`,headers())
                 ])
                 let total=0
                 let total_final=0
@@ -80,7 +80,7 @@ const Checkout =({user,showchat})=>{
     
     function checkout(e){
         const data={id:state.address_order.id,payment_choice:state.method_choice}
-        axios.post(checkoutURL,JSON.stringify(data),headers)
+        axios.post(checkoutURL,JSON.stringify(data),headers())
             .then(res=>{ 
                 if(state.method_choice=='Payment on delivery'){
                 navigate("/user/purchase")
@@ -93,7 +93,7 @@ const Checkout =({user,showchat})=>{
     
     function changeaddress(){
         if(state.list_addresses.length==0){
-            axios.get(updateAddressURL,headers)
+            axios.get(updateAddressURL,headers())
             .then(res=>{
                 setState({...state,list_addresses:res.data.a,show:true})
             })

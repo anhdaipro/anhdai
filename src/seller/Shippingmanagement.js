@@ -18,7 +18,7 @@ const Shippingmanagement=()=>{
     useEffect(() => {
         (async () => {
         try {
-            const res = await axios.get(listordersellerURL+'?'+params,headers)
+            const res = await axios.get(listordersellerURL+'?'+params,headers())
             setData(res.data)
             setLoading(true)
             } catch (error) {

@@ -37,7 +37,7 @@ const Daterange=(props)=>{
     }
     useEffect(() => {
         if(startDate&&endDate&&changeday){    
-            axios.get(`${url}?start_day=${timevalue(start)}&end_day=${timevalue(end)}`,headers)
+            axios.get(`${url}?start_day=${timevalue(start)}&end_day=${timevalue(end)}`,headers())
             .then(res=>{
                 setdata(res.data.data)
                 setcount(res.data.count)

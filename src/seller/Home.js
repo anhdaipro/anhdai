@@ -90,7 +90,7 @@ const HomePageSeller=()=>{
     
     useEffect(()=>{
         const getJournal = async () => {
-            await axios(`${dashboardURL}?time=currentday`,headers)
+            await axios(`${dashboardURL}?time=currentday`,headers())
            // <-- passed to API URL
             .then(res=>{
                 setLoading(true)

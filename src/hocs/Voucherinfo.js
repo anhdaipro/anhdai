@@ -39,7 +39,7 @@ const Voucherinfo=(props)=>{
     useEffect(() => {
         (async () => {
             if(id){
-                const res = await axios(url_voucher,headers)
+                const res = await axios(url_voucher,headers())
                 const data=res.data
                 const limit=data.maximum_discount==null?'U':'L'
                 setVoucher({...data,limit:limit,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)})
@@ -102,7 +102,7 @@ const Voucherinfo=(props)=>{
                     navigate('/marketing/vouchers/list')
                 }
             }, 1000);
-            axios.post(url_voucher,JSON.stringify(data),headers)
+            axios.post(url_voucher,JSON.stringify(data),headers())
             .then(res=>{
                 
             })
@@ -182,7 +182,7 @@ const Voucherinfo=(props)=>{
             search_params.set('item','item')
             url.search = search_params.toString();
             let new_url = url.toString();
-            axios.get(new_url,headers)
+            axios.get(new_url,headers())
             .then(res=>{
                 const items=res.data.filter(item=>itemshop.byproduct_choice.every(itemchoice=>item.id!=itemchoice.id))
                 const list_items=items.map(item=>{

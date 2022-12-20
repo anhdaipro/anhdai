@@ -137,9 +137,9 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
         (async()=>{
             if(shop_id){
                 const [obj1,obj2,obj3] =await axios.all([
-                    axios.get(`${shopinfoURL}?choice=gettreecategory&shop_id=${shop_id}`,headers),
-                    axios.get(`${shopinfoURL}?choice=deal&shop_id=${shop_id}`,headers),
-                    axios.get(`${shopinfoURL}?choice=combo&shop_id=${shop_id}`,headers),
+                    axios.get(`${shopinfoURL}?choice=gettreecategory&shop_id=${shop_id}`,headers()),
+                    axios.get(`${shopinfoURL}?choice=deal&shop_id=${shop_id}`,headers()),
+                    axios.get(`${shopinfoURL}?choice=combo&shop_id=${shop_id}`,headers()),
                 ])
                 setChildcategory(obj1.data)
                 setProducts(obj2.data)
@@ -153,7 +153,7 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
             if(shop_id){
             const usesearch=params
             usesearch.set('shop_id',shop_id)
-            const res =await axios.get(`${searchshopURL}?${usesearch}`,headers)
+            const res =await axios.get(`${searchshopURL}?${usesearch}`,headers())
             setListitem(res.data)
             }
         })()
@@ -178,9 +178,9 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
 
     const setfollow=e=>{
         e.preventDefault();
-        if(localStorage.token && expiry>0){
+        if(localStorage.token && expiry()>0){
             const form={shop_id:data.id}
-            axios.post(shopinfoURL,JSON.stringify(form),headers)
+            axios.post(shopinfoURL,JSON.stringify(form),headers())
             .then(res=>{
             let data=res.data
             const shop_info={...state,...data}

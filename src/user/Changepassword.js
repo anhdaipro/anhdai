@@ -12,7 +12,7 @@ const Changepassword =()=>{
     const navigate=useNavigate()
     const [formData,setformData]=useState({username:'',email:'',avatar:null,old_password:'',new_password:'',new_password2:''})
     useEffect(() => {
-        axios.get(profiledURL,headers)
+        axios.get(profiledURL,headers())
         .then(res=>{
           const data = res.data
           setLoading(true)

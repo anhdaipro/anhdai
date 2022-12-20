@@ -14,7 +14,7 @@ const Address=({address,show,setshow,list_city,action,city_choice,district_choic
     function createAddress(){
         const data={...address,address_type:'S',city:city_choice.name,action:address.id?'update':'default',
         district:district_choice.name,town:town_choice.name}
-        axios.post(updateAddressURL,JSON.stringify(data),headers)
+        axios.post(updateAddressURL,JSON.stringify(data),headers())
         .then(res=>{
             let data=res.data
             setlistaddress(data)

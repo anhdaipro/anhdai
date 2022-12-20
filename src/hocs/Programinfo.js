@@ -106,7 +106,7 @@ const Programinfo=(props)=>{
     useEffect(() => {
         (async () => {
             if(id){
-                const res = await axios(detailprogramURL+id,headers)
+                const res = await axios(detailprogramURL+id,headers())
             // <-- passed to API URL
                 const data=res.data
                 setProgram({...data,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)})
@@ -152,7 +152,7 @@ const Programinfo=(props)=>{
             const data={action:'checkitem',...datadate,list_items:list_enable_on.map(item=>{
                 return(item.id)
             })}
-            axios.post(url_program,JSON.stringify(data),headers)
+            axios.post(url_program,JSON.stringify(data),headers())
             .then(res=>{
                 const data=res.data.sameitem
                 if(res.data.error){
@@ -184,7 +184,7 @@ const Programinfo=(props)=>{
     const addbyproduct=(e)=>{
         setShow({...show,byproduct:true,items:false})
         const url=id?`${newprogramURL}?valid_from=${timesubmit(program.valid_from)}&valid_to=${timesubmit(program.valid_to)}&program_id=${id}`:`${newprogramURL}?valid_from=${timesubmit(program.valid_from)}&valid_to=${timesubmit(program.valid_to)}`
-        axios.get(url,headers)
+        axios.get(url,headers())
         .then(res=>{
             setLoading(true)
             const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id))
@@ -231,7 +231,7 @@ const Programinfo=(props)=>{
         const data={list_items:list_itemscheck.map(item=>{return item.id}),
         action:'addproduct'
         }
-        axios.post(url_program,JSON.stringify(data),headers)
+        axios.post(url_program,JSON.stringify(data),headers())
         .then(res=>{
             const list_itemschoice=res.data.map(item=>{
                 return({...item,check:false,show:false,limit:false,user_item_limit:'',variations:item.variations.map(variation=>{
@@ -463,7 +463,7 @@ const Programinfo=(props)=>{
             },[])
             const dataprogram={valid_from:program.valid_from,valid_to:program.valid_to,name_program:program.name_program}
             const data={...dataprogram,action:'submit',list_items:list_product,discount_model_list:discount_model_list}
-            axios.post(url_program,JSON.stringify(data),headers)
+            axios.post(url_program,JSON.stringify(data),headers())
             .then(res=>{
                 if(!res.data.error){
                     const countDown = setInterval(() => {

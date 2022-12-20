@@ -162,7 +162,7 @@ const Detailproduct=()=>{
     
     useEffect(()=>{
         (async()=>{
-            const res= await axios.get(shippingshopURL,headers)
+            const res= await axios.get(shippingshopURL,headers())
             const datashipping=res.data.shipping_shop.reduce((arr,obj)=>{
                 const method=obj['method']
                 if(!arr.some(item=>item.method==method)){
@@ -194,7 +194,7 @@ const Detailproduct=()=>{
             setListcategory(res1.data.list_category)
             setState({...state,list_choice:list_null,max_level:max_level+1})
             if(id){
-                const res =await axios.get(detailproductURL+id,headers)
+                const res =await axios.get(detailproductURL+id,headers())
                 const list_null=Array(max_level+1-res.data.list_category_choice.length).fill().map((_, i) =>{
                     return {id:null,title:null}
                 })
@@ -316,7 +316,7 @@ const Detailproduct=()=>{
         form.append('id',filechoice.id)
         form.append('file',dataURLtoFile(cropper.getCroppedCanvas().toDataURL("image/png"),`${generateString(14)}.png`))
         
-        axios.post(updateimageURL,form,headers)
+        axios.post(updateimageURL,form,headers())
         .then(res => {
             const list_medias=value.map(file=>{
             if(file.id==filechoice.id){
@@ -379,7 +379,7 @@ const Detailproduct=()=>{
                 video.play();
             }
             setTimeout(function() {
-            axios.post(updateimageURL,form,headers)
+            axios.post(updateimageURL,form,headers())
             .then(res => {
                 const list_medias=media?value.map(item=>{
                     if(item.id==media.id){
@@ -646,7 +646,7 @@ console.log(shipping)
             
         }
         form.append('sizes',JSON.stringify(state.list_size))
-        const res=await axios.post(createvariationURL,form,headers)
+        const res=await axios.post(createvariationURL,form,headers())
         
         const files=list_media.map(item=>item.id)
         const buymorediscounts_remain=buymore.filter(item=>!isNaN(item.id)).map(item=>item.id)
@@ -657,7 +657,7 @@ console.log(shipping)
         const formdata={action:'update',brand:detail.brand,variations_remain:variations_remain,buymorediscounts_remain:buymorediscounts_remain,
         variations:datavariations,files:files,buymorediscounts:buymore,category_id:category.id,method:shippings,info_detail:detail,...formData}
         const url=id?detailproductURL+id:newproductURL      
-        const res1 =await axios.post(url,JSON.stringify(formdata),headers)
+        const res1 =await axios.post(url,JSON.stringify(formdata),headers())
         
         nagative('/vendor/marketing')
        

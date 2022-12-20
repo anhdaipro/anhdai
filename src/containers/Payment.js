@@ -44,7 +44,7 @@ export default function Payment() {
     const [show,setShow]=useState(false)
     useEffect(() => {
         const getJournal = async () => {
-            await axios.get(paymentURL,headers)
+            await axios.get(paymentURL,headers())
             .then(res=>{
                 setState({amount:res.data.amount})
                 setShow(true)
@@ -88,7 +88,7 @@ export default function Payment() {
                                         
                                         const form={payID:details.purchase_units[0].payments.captures[0].id}
                                     
-                                        axios.post(paymentURL,JSON.stringify(form),headers)
+                                        axios.post(paymentURL,JSON.stringify(form),headers())
                                         .then(res=>{
                                             
                                         })

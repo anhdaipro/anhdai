@@ -45,7 +45,7 @@ const Flashsaleinfo=(props)=>{
     useEffect(() => {
         (async () => {
             if(id){
-                const res = await axios(detailflashsaleURL+id,headers)
+                const res = await axios(detailflashsaleURL+id,headers())
                 const  data=res.data
                 setFlashsale({time:new Date(data.valid_from),hour:new Date(data.valid_from).getHours(),minutes:new Date(data.valid_from).getMinutes(),
                     hour_to:new Date(data.valid_to).getHours(),minutes_to:new Date(data.valid_to).getMinutes()})
@@ -126,7 +126,7 @@ const Flashsaleinfo=(props)=>{
 
     const addbyproduct=(e)=>{
         const url=id?`${newflashsaleURL}?flash_sale_id=${id}&valid_to=${valid_to}&valid_from=${valid_from}`:`${newflashsaleURL}?valid_to=${valid_to}&valid_from=${valid_from}`
-        axios.get(url,headers)
+        axios.get(url,headers())
         .then(res=>{
             const list_byproduct=res.data.filter(item=>itemshop.items_choice.every(itemchoice=>item.id!=itemchoice.id)).map(item=>{
             if(itemshop.byproduct_choice.some(product=>product.id==item.id)){
@@ -179,7 +179,7 @@ const Flashsaleinfo=(props)=>{
         const data={list_items:list_itemscheck.map(item=>{return item.id}),
         action:'addproduct'
         }
-        axios.post(url_flashsale,JSON.stringify(data),headers)
+        axios.post(url_flashsale,JSON.stringify(data),headers())
         .then(res=>{
             const list_itemschoice=res.data.map(item=>{
                 return({...item,check:false,user_item_limit:'',variations:item.variations.map(variation=>{
@@ -407,7 +407,7 @@ const Flashsaleinfo=(props)=>{
         setShowtime(false)
         if(itemshop.byproduct_choice.length>0){
             const data={action:'checkitem',valid_from:valid_from,valid_to:valid_to}
-            axios.post(url_flashsale,JSON.stringify(data),headers)
+            axios.post(url_flashsale,JSON.stringify(data),headers())
             .then(res=>{
                 if(res.data.error){
                     setDuplicate(true)
@@ -467,7 +467,7 @@ const Flashsaleinfo=(props)=>{
             valid_to:`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour_to).slice(-2)}:${('0'+date.minutes_to).slice(-2)}`}
             const data={...dataflash_sale,action:'submit',list_items:list_product,discount_model_list:discount_model_list}
             
-            axios.post(url_flashsale,JSON.stringify(data),headers)
+            axios.post(url_flashsale,JSON.stringify(data),headers())
             .then(res=>{
                 if(!res.data.error){
                     const countDown = setInterval(() => {

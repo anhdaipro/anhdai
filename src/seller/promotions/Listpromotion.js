@@ -28,7 +28,7 @@ const Listcomboshop=()=>{
     useEffect(()=>{
         (async()=>{
             try{
-            const obj1=await axios.get(dataPromotionURL,headers)
+            const obj1=await axios.get(dataPromotionURL,headers())
             const datapromotion=stats.map(item=>{
                 if(item.id==1){
                     return ({...item,result:obj1.data.total_amount,result_last:obj1.data.total_amount_last})
@@ -81,7 +81,7 @@ const Listcomboshop=()=>{
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
             if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listcombo.length< count){
                 setLoading(false)
-                const res =await axios.get(`${listcomboshopURL}?&offset=${listcombo.length}`,headers)
+                const res =await axios.get(`${listcomboshopURL}?&offset=${listcombo.length}`,headers())
                 setCombo(current=>[...current,...res.data.data])
                 setLoading(true)
             }
@@ -104,7 +104,7 @@ const Listcomboshop=()=>{
         params.set('keyword',keyword)
        
         params.set('choice',choice)
-        const res =await axios.get(`${listcomboshopURL}?${params}`,headers)
+        const res =await axios.get(`${listcomboshopURL}?${params}`,headers())
         setCombo(current=>[...res.data.data])
         setCount(res.data.count)
         setLoading(true)

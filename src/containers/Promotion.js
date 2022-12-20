@@ -22,7 +22,7 @@ const Promotion = () => {
         count_variation:0,quantity:1})
     useEffect(() => {
       (async () => {
-            const res=await axios(promotionURL+id,headers)
+            const res=await axios(promotionURL+id,headers())
             let data=res.data
             setLoading(true)
             setState(data)
@@ -56,7 +56,7 @@ const Promotion = () => {
             let form =new FormData()
             form.append('item_id',data.id)
             form.append('quantity',1)
-            axios.post(addToCartURL,form,headers)
+            axios.post(addToCartURL,form,headers())
             .then(res=>{
                 setCartitem(res.data)
             })

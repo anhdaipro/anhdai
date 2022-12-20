@@ -28,7 +28,7 @@ const Listdealshop=()=>{
     useEffect(()=>{
         (async()=>{
             try{
-            const obj1=await axios.get(dataAddonURL,headers)
+            const obj1=await axios.get(dataAddonURL,headers())
             const datapromotion=stats.map(item=>{
                 if(item.id==1){
                     return ({...item,result:obj1.data.amount_main
@@ -81,7 +81,7 @@ const Listdealshop=()=>{
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
             if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listdeal.length< count){
                 setLoading(false)
-                const res =await axios.get(`${listAddonshopURL}?&offset=${listdeal.length}`,headers)
+                const res =await axios.get(`${listAddonshopURL}?&offset=${listdeal.length}`,headers())
                 setDeal(current=>[...current,...res.data.data])
                 setLoading(true)
             }
@@ -101,7 +101,7 @@ const Listdealshop=()=>{
         params.set('keyword',keyword)
        
         params.set('choice',choice)
-        const res =await axios.get(`${listAddonshopURL}?${params}`,headers)
+        const res =await axios.get(`${listAddonshopURL}?${params}`,headers())
         setDeal([...res.data.data])
         setCount(res.data.count)
         setLoading(true)

@@ -16,7 +16,7 @@ const Phoneuser =()=>{
     const [state,setState]=useState({time:60,error:true,showpass:false,showrepass:false,style:{backgroundImage: `url(&quot;https://cf.shopee.vn/file/5569eb9dc7e09e2dbed5315b8f2ea8ba&quot;)`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center center'}})
     const [formData,setformData]=useState({verify:false,phone:'',pin:'',username:'',name:'',email:''})
     useEffect(() => {
-        axios.get(profiledURL,headers)
+        axios.get(profiledURL,headers())
         .then(res=>{
           const data = res.data
           setLoading(true)
@@ -46,7 +46,7 @@ const Phoneuser =()=>{
     }
 
     const saveinfo=()=>{
-        axios.post(profiledURL,JSON.stringify({phone:formData.phone}),headers)
+        axios.post(profiledURL,JSON.stringify({phone:formData.phone}),headers())
         .then(res=>{
             navigate('user/account/password')
         })

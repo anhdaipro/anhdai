@@ -18,7 +18,7 @@ const Newshop=()=>{
     const [address,setAddress]=useState({address:'',address_choice:'',default:false,name:null,phone_number:null,city:null,district:null,town:null});
     const [formData,setformData]=useState({name:null,phone_number:null,code:null,email:null})
     useEffect(() => {
-        axios.get(newshopURL,headers)
+        axios.get(newshopURL,headers())
         .then(res=>{
             if(res.data.address.length>0){
                 setAddress(res.data.address[0])
@@ -141,7 +141,7 @@ const Newshop=()=>{
         form.append('name',formData.name)
         form.append('phone_number',formData.phone_number)  
         form.append('city',address.city_choice)  
-        axios.post(newshopURL,form,headers)
+        axios.post(newshopURL,form,headers())
         .then(res=>{
             
         })
@@ -161,7 +161,7 @@ const Newshop=()=>{
             form.append('address',address.address)
             form.append('address_type','B')
             form.append('address_choice',address.address_choice)
-            axios.post(updateAddressURL,form,headers)
+            axios.post(updateAddressURL,form,headers())
             .then(res=>{
                 setAddress(res.data)
                 setShow(false)

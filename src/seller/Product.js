@@ -397,7 +397,7 @@ const ProductDetail=({form,list_choice,data_item,list_buymore,shipping_shop,sets
         form.append('id',filechoice.id)
         form.append('file',dataURLtoFile(cropper.getCroppedCanvas().toDataURL("image/png"),`${generateString(14)}.png`))
         
-        axios.post(updateimageURL,form,headers)
+        axios.post(updateimageURL,form,headers())
         .then(res => {
             const list_medias=value.map(file=>{
             if(file.id==filechoice.id){
@@ -460,7 +460,7 @@ const ProductDetail=({form,list_choice,data_item,list_buymore,shipping_shop,sets
                 video.play();
             }
             setTimeout(function() {
-            axios.post(updateimageURL,form,headers)
+            axios.post(updateimageURL,form,headers())
             .then(res => {
                 const list_medias=media?value.map(item=>{
                     if(item.id==media.id){
@@ -720,7 +720,7 @@ const ProductDetail=({form,list_choice,data_item,list_buymore,shipping_shop,sets
             
         }
         form.append('sizes',JSON.stringify(state.list_size))
-        const res=await axios.post(createvariationURL,form,headers)
+        const res=await axios.post(createvariationURL,form,headers())
         
         const files=list_media.map(item=>item.id)
         const buymorediscounts_remain=buymore.filter(item=>!isNaN(item.id)).map(item=>item.id)
@@ -731,7 +731,7 @@ const ProductDetail=({form,list_choice,data_item,list_buymore,shipping_shop,sets
         const formdata={action:'update',variations_remain:variations_remain,buymorediscounts_remain:buymorediscounts_remain,
         variations:variations,files:files,buymorediscounts:buymore,category_id:category_choice.id,method:shippings,...detail,...formData}
         const url=id?detailproductURL+id:newproductURL      
-        const res1 =await axios.post(url,JSON.stringify(formdata),headers)
+        const res1 =await axios.post(url,JSON.stringify(formdata),headers())
         
         nagative('/vendor/marketing')
        

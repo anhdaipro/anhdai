@@ -28,7 +28,7 @@ const ListAwardShop=()=>{
     const [keyword,setKeyword]=useState()
     useEffect(()=>{
         (async()=>{
-            const obj1=await axios.get(dataShopawardURL,headers)
+            const obj1=await axios.get(dataShopawardURL,headers())
             const dataaward=stats.map(item=>{
                 if(item.id==1){
                     return ({...item,result:obj1.data.total_amount,result_last:obj1.data.total_amount_last})
@@ -61,7 +61,7 @@ const ListAwardShop=()=>{
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
             if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listaward.length< count){
                 setLoading(false)
-                const res =await axios.get(`${listAwardshopURL}?&offset=${listaward.length}`,headers)
+                const res =await axios.get(`${listAwardshopURL}?&offset=${listaward.length}`,headers())
                 setListAward(current=>[...current,...res.data.data])
                 setLoading(true)
             }
@@ -83,7 +83,7 @@ const ListAwardShop=()=>{
         }
         params.set('keyword',keyword)
         params.set('choice',choice)
-        const res =await axios.get(`${listAwardshopURL}?${params}`,headers)
+        const res =await axios.get(`${listAwardshopURL}?${params}`,headers())
         setListAward(current=>[...current,...res.data.data])
         setLoading(true)
     })()

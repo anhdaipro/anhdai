@@ -147,7 +147,7 @@ const Iteminfo=(props)=>{
         }
     }
     const finditem=(e)=>{
-        axios.get(`${updatecartURL}?item_id=${item.item_id}`,headers)
+        axios.get(`${updatecartURL}?item_id=${item.item_id}`,headers())
         .then(rep=>{
             let data=rep.data
             setItems(data.list_item)
@@ -158,7 +158,7 @@ const Iteminfo=(props)=>{
 
     const handlePageChange=(page,item)=>{
         setState({...state,loading_item:false})
-        axios.get(`${updatecartURL}?item_id=${item.item_id}&page=${page}`,headers)
+        axios.get(`${updatecartURL}?item_id=${item.item_id}&page=${page}`,headers())
         .then(rep=>{
             let data=rep.data
             setItems(data.list_item)
@@ -420,7 +420,7 @@ class Cart extends React.Component{
     
     voucherapply = createRef();
     componentDidMount(){
-        if(expiry<=0 || !localStorage){
+        if(expiry()<=0 || !localStorage.token){
             window.location.href=`/buyer/login?next=${window.location}`
         }
         (async () => {
@@ -428,9 +428,9 @@ class Cart extends React.Component{
         try {
             
             const [obj1, obj2,obj3] = await axios.all([
-                axios.get(listorderURL,headers),
-                axios.get(shoporderURL,headers),
-                axios.get(cartURL,headers),
+                axios.get(listorderURL,headers()),
+                axios.get(shoporderURL,headers()),
+                axios.get(cartURL,headers()),
             ])
             console.log(obj1.data)
             const total=obj1.data.reduce((total,order)=>{
@@ -490,7 +490,7 @@ class Cart extends React.Component{
             if(clientHeight + scrollTop === scrollHeight && this.state.list_item_recommend.length===0){
                 (async () => {
                     try {
-                        const res = await axios.get(itemrecentlyURL,headers)
+                        const res = await axios.get(itemrecentlyURL,headers())
                         let data=res.data
                         this.setState({list_item_recommend:data}); 
                     } catch (error) {
@@ -516,7 +516,7 @@ class Cart extends React.Component{
         })
         const data_check=e.target.checked?{id_checked:list_checked}:{id_check:list_checked}
         const data={...data_check,shop_id:list_shop}
-        axios.post(cartURL,JSON.stringify(data),headers)
+        axios.post(cartURL,JSON.stringify(data),headers())
         .then(rep=>{
             let data=rep.data
             this.setState({...data,
@@ -540,7 +540,7 @@ class Cart extends React.Component{
         })
         const data_check=e.target.checked?{id_checked:list_checked}:{id_check:list_checked}
         const data={...data_check,shop_id:[shop.id]}
-        axios.post(cartURL,JSON.stringify(data),headers)
+        axios.post(cartURL,JSON.stringify(data),headers())
         .then(rep=>{
             let data=rep.data
             this.setState({...data,
@@ -560,7 +560,7 @@ class Cart extends React.Component{
         })
         this.setState({list_cartitem:list_cartitem})
         const data={...data_check,shop_id:[item.shop_id]}
-        axios.post(cartURL,JSON.stringify(data),headers)
+        axios.post(cartURL,JSON.stringify(data),headers())
         .then(rep=>{
             let data=rep.data
             this.setState({...data})
@@ -572,7 +572,7 @@ class Cart extends React.Component{
         const dataitem={item_id:item.item_id,color_id:color_id,size_id:size_id}
         const datacartitem=product==='mainproduct'?{cartitem_id:item.id}:{byproduct_id:item.id}
         const data={...dataitem,...datacartitem}
-        axios.post(updatecartURL,JSON.stringify(data),headers)
+        axios.post(updatecartURL,JSON.stringify(data),headers())
         .then(rep=>{
             let result=rep.data
             const list_cartitem=product==='mainproduct'?this.state.list_cartitem.map(cartitem=>{
@@ -600,7 +600,7 @@ class Cart extends React.Component{
     adjustitem(e,item,product,cartitemchoice,value){
         const dataitem=product==='byproduct'?{byproduct_id:item.id}:{cartitem_id:item.id}
         const data={...dataitem,quantity:value}
-        axios.post(cartURL,JSON.stringify(data),headers)
+        axios.post(cartURL,JSON.stringify(data),headers())
         .then(rep=>{
             let data=rep.data
             const list_cartitem=product==='mainproduct'?this.state.list_cartitem.map(cartitem=>{
@@ -629,7 +629,7 @@ class Cart extends React.Component{
 
     removeitem(e,itemchoice,product,cartitemchoice){
         const data=product==='byproduct'?{byproduct_id_delete:itemchoice.id}:{cartitem_id_delete:itemchoice.id}
-        axios.post(cartURL,JSON.stringify(data),headers)
+        axios.post(cartURL,JSON.stringify(data),headers())
         .then(resp => {
         let data=resp.data
         const list_cartitem=product==='byproduct'?this.state.list_cartitem.map(cartitem=>{
@@ -644,7 +644,7 @@ class Cart extends React.Component{
 
     apply_voucher(voucher){
         const data={voucher_id:voucher.id,shop_id:[this.shopchoice().id]}
-        axios.post(cartURL,JSON.stringify(data),headers)
+        axios.post(cartURL,JSON.stringify(data),headers())
         .then(rep=>{
             let data=rep.data
             const list_shop=this.state.list_shop.map(shop=>{
@@ -659,7 +659,7 @@ class Cart extends React.Component{
 
     remove_voucher(voucher){
         const data={voucher_id_remove:voucher.id,shop_id:[this.shopchoice().id]}
-        axios.post(cartURL,JSON.stringify(data),headers)
+        axios.post(cartURL,JSON.stringify(data),headers())
         .then(rep=>{
             const list_shop=this.state.list_shop.map(shop=>{
                 if(this.shopchoice().id===shop.id){
@@ -688,7 +688,7 @@ class Cart extends React.Component{
             return({...shop})
         })
         this.setState({list_shop:list_shop})
-        axios.post(savevoucherURL,JSON.stringify({voucher_id:voucher.id}),headers)
+        axios.post(savevoucherURL,JSON.stringify({voucher_id:voucher.id}),headers())
         .then(rep=>{
            
         })
@@ -724,7 +724,7 @@ class Cart extends React.Component{
             search_params.append('thread_id',threadchoice.id)
             url.search = search_params.toString();
             let new_url = url.toString();
-            axios.get(new_url,headers)
+            axios.get(new_url,headers())
             .then(res => { 
                 this.setState({show_thread:true,show_message:true,threadchoice:threadchoice,threads:res.data.threads,messages:res.data.messages})
                 })  
@@ -739,7 +739,7 @@ class Cart extends React.Component{
         let form=new FormData()
         form.append('participants',this.state.user.user_id)
         form.append('participants',order.shop_user)
-        axios.post(listThreadlURL,form,headers)
+        axios.post(listThreadlURL,form,headers())
         .then(res=>{
             this.setState({show_thread:true,show_message:true,threadchoice:res.data.threadchoice,threads:res.data.threads,messages:res.data.messages})
         })
@@ -758,7 +758,7 @@ class Cart extends React.Component{
         const addealshock=(e,cartitem)=>{
             if(cartitem.deal){
                 const data={dealold:cartitem.deal,dealcurrent:cartitem.shock_deal.id}
-                axios.post(updatecartURL,JSON.stringify(data),headers)
+                axios.post(updatecartURL,JSON.stringify(data),headers())
                 .then(res=>{
                 })
             }

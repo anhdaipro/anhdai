@@ -38,7 +38,7 @@ const Listproduct=()=>{
     }
     useEffect(() => {
         const getJournal = async () => {
-            await axios(productshopURL,headers)
+            await axios(productshopURL,headers())
            // <-- passed to API URL
             .then(res=>{
                 let data=res.data
@@ -64,7 +64,7 @@ const Listproduct=()=>{
         url.search = search_params.toString();
         let new_url=url.toString();
         if(itemchoice.variations.length==3){
-            axios.get(new_url,headers)
+            axios.get(new_url,headers())
             .then(res=>{ 
                 let data=res.data
                 const pageitem=itemshop.pageitem.map(item=>{
@@ -107,7 +107,7 @@ const Listproduct=()=>{
     const deleteitemchoice=(e)=>{
         const data={items:itemshop.pageitem.filter(item=>item.check)}
         const pageitem=itemshop.pageitem.filter(item=>!item.check)
-        axios.post(productshopURL,JSON.stringify(data),headers)
+        axios.post(productshopURL,JSON.stringify(data),headers())
         .then(res=>{
             let data=res.data
             setLoading(true)
@@ -139,7 +139,7 @@ const Listproduct=()=>{
             setLoading(false)
             setState({show:false})
             let new_url = url.toString();
-            axios.get(new_url,headers)
+            axios.get(new_url,headers())
             .then(res=>{ 
                 let data=res.data
                 setLoading(true)

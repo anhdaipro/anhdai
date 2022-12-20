@@ -114,7 +114,7 @@ const Categorydetail = ({data,category_id}) => {
     useEffect(()=>{
         (async()=>{
             if(category_id){
-                const res =await axios.get(`${categoryinfoURL}?category_id=${category_id}`,headers)
+                const res =await axios.get(`${categoryinfoURL}?category_id=${category_id}`,headers())
                 setCategory(res.data)
                 setShopmall(partition(shopmall, int).map(subarray => subarray))
             }
@@ -126,7 +126,7 @@ const Categorydetail = ({data,category_id}) => {
             if(category_id){
             const usesearch=params
             usesearch.set('category_id',category_id)
-            const res =await axios.get(`${searchURL}?${usesearch}`,headers)
+            const res =await axios.get(`${searchURL}?${usesearch}`,headers())
             setListitem(res.data)
             }
         })()

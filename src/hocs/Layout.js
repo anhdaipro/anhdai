@@ -4,7 +4,7 @@ import { checkAuthenticated, expiry} from '../actions/auth';
 import Message from "../containers/Chat" 
 const Layout = ({children,checkAuthenticated,user }) => {
     useEffect(() => {
-        if(localStorage.token && expiry>0){
+        if(localStorage.token && expiry()>0){
         checkAuthenticated()
         }
     }, []);

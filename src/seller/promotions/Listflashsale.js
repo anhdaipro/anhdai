@@ -25,7 +25,7 @@ const Listflashseleshop=()=>{
     useEffect(()=>{
         (async()=>{
             try{
-            const obj1=await axios.get(dataFlashsaleURL,headers)
+            const obj1=await axios.get(dataFlashsaleURL,headers())
             const datapromotion=stats.map(item=>{
                 if(item.id==1){
                     return ({...item,result:obj1.data.total_amount,result_last:obj1.data.total_amount_last})
@@ -64,7 +64,7 @@ const Listflashseleshop=()=>{
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
             if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listflashsale.length< count){
                 setLoading(false)
-                const res =await axios.get(`${listflashsaleshopURL}?&offset=${listflashsale.length}`,headers)
+                const res =await axios.get(`${listflashsaleshopURL}?&offset=${listflashsale.length}`,headers())
                 setFlashsales(current=>[...current,...res.data.data])
                 setLoading(true)
             }
@@ -81,7 +81,7 @@ const Listflashseleshop=()=>{
         }
         params.set('keyword',keyword)
         params.set('choice',choice)
-        const res =await axios.get(`${listflashsaleshopURL}?${params}`,headers)
+        const res =await axios.get(`${listflashsaleshopURL}?${params}`,headers())
         setFlashsales(current=>[...current,...res.data.data])
                 setLoading(true)
     })()

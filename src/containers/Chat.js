@@ -51,7 +51,7 @@ const Shopmember=(props)=>{
     const fetchdata=useCallback(debounce((value)=>{
         (async()=>{
             setloading(false)
-            const res= await axios.get(`${conversationsURL}/${thread.id}?user_id=${shop.user_id}&action=showitem&keyword=${value}`,headers)
+            const res= await axios.get(`${conversationsURL}/${thread.id}?user_id=${shop.user_id}&action=showitem&keyword=${value}`,headers())
             setshop(current=>{
                 return {...current,list_items:res.data.list_items}
             })
@@ -418,6 +418,12 @@ const Message=(props)=>{
 
     useEffect(() => {
         socket.current=io.connect('https://serverecomerce-production.up.railway.app/');
+        return () => {
+            socket.current.disconnect();
+        };
+    },[]);
+    
+    useEffect(() => {
         socket.current.on('message',({data})=>{ 
             if(data.typing || data.typing==""){
                 if(data.typing==""){
@@ -453,15 +459,10 @@ const Message=(props)=>{
                 }
             }
         })
-        
-        return () => {
-            socket.current.disconnect();
-        };
-    },[scrollRef,thread?thread.id:thread,user?user.id:user]);
-    
+    },[scrollRef,thread?thread.id:thread,user?user.id:user])
     const showthread=()=>{
         setShow(true)
-        axios.get(listThreadlURL,headers)
+        axios.get(listThreadlURL,headers())
         .then(res=>{
             setState({...state,loading:true})
             const threads=res.data.map(item=>{
@@ -488,7 +489,7 @@ const Message=(props)=>{
         setListmember(threadchoice.members)
         if(!thread || threadchoice.members.some(member=>member.count_message_unseen>0 && member.user_id==user.id) ||  (threadchoice && threadchoice.id!=thread.id)){
             setState({...state,loading:false})
-            axios.get(`${conversationsURL}/${threadchoice.id}?action=showmessage`,headers)
+            axios.get(`${conversationsURL}/${threadchoice.id}?action=showmessage`,headers())
             .then(res=>{
                 setState(current=>({...current,loading:true}))
                 const datamesssage=res.data.reverse()
@@ -507,7 +508,7 @@ const Message=(props)=>{
                 form.append('item_id',item.id) 
                 form.append('action','create-message')
                 form.append('send_to',direact.user_id)
-                const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers)
+                const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers())
                 setShowshop({show_product:false,show_order:false})
                 if(!res.data.error){
                     const messages={message:res.data,thread_id:thread.id,send_by:user.id}
@@ -530,7 +531,7 @@ const Message=(props)=>{
                 form.append('order_id',order.id) 
                 form.append('send_to',direact.user_id)
                 form.append('action','create-message')
-                const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers)
+                const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers())
                 setShowshop({show_product:false,show_order:false})
                 if(!res.data.error){
                 const messages={message:res.data,thread_id:thread.id,send_by:user.id}
@@ -577,7 +578,7 @@ const Message=(props)=>{
                 form.append('image',file.file)
             }) 
             setListfile(current=>current.filter(file=>file.filetype!='image')) 
-            axios.post(`${conversationsURL}/${thread.id}`,form,headers)
+            axios.post(`${conversationsURL}/${thread.id}`,form,headers())
             .then(res=>{ 
                 setShowemoji(false)
                 setMessage('') 
@@ -613,7 +614,7 @@ const Message=(props)=>{
                 })  
                 setListfile([])
                 setMessagefile(messagefile)
-                axios.post(`${conversationsURL}/${thread.id}`,formfile,headers)
+                axios.post(`${conversationsURL}/${thread.id}`,formfile,headers())
                 .then(res=>{
                     setMessagefile([])
                     if(!res.data.error){
@@ -633,7 +634,7 @@ const Message=(props)=>{
         e.stopPropagation()
         if(state.loading && e.target.scrollTop==0 && list_messages.length<thread.count_message){
             setState({...state,loading:false})
-            axios.get(`${conversationsURL}/${thread.id}?offset=${list_messages.length}`,headers)
+            axios.get(`${conversationsURL}/${thread.id}?offset=${list_messages.length}`,headers())
             .then(res=>{
                 setState({...state,loading:true})
                 const datamesssage=res.data.reverse()
@@ -721,7 +722,7 @@ const Message=(props)=>{
             try{
                 if(shopchoice){
                     setLoading(false)
-                    const res= await axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showitem`,headers)
+                    const res= await axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showitem`,headers())
                     setShop({...shop,list_items:res.data.list_items,choice:'item',count_product:res.data.count_product})
                     setLoading(true)
                 }
@@ -737,7 +738,7 @@ const Message=(props)=>{
         setShowshop({...showshop,show_order:!showshop.show_order,show_product:false})
         if(!showshop.show_order && shop.list_orders.length==0){
             setLoading(false)
-            axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showorder`,headers)
+            axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showorder`,headers())
             .then(res=>{
                 setLoading(true)
                 const listorder=res.data.list_orders.map(order=>{
@@ -752,7 +753,7 @@ const Message=(props)=>{
         if(e.target.scrollTop==e.target.scrollHeight-e.target.offsetHeight && state.loading){
             if(name=='item' && shop.count_product>shop.list_items.length){
                 setLoading(false)
-                axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showitem&offset=${shop.list_items.length}`,headers)
+                axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showitem&offset=${shop.list_items.length}`,headers())
                 .then(res => {
                     const list_items=[...shop.list_items,...res.data.list_items]
                     setShop({...shop,list_items:list_items})
@@ -761,7 +762,7 @@ const Message=(props)=>{
             }
             if(name=='order' && shop.count_product>shop.list_orders.length){
                 setLoading(false)
-                axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showorder&offset=${shop.list_orders.length}`,headers)
+                axios.get(`${conversationsURL}/${thread.id}?user_id=${shopchoice}&action=showorder&offset=${shop.list_orders.length}`,headers())
                 .then(res => {
                     const listorder=res.data.list_orders.map(order=>{
                         return({...order,showall:false})
@@ -778,7 +779,7 @@ const Message=(props)=>{
         e.stopPropagation()
         let form=new FormData()
         form.append('action',name)
-        axios.post(`${conversationsURL}/${thread.id}`,form,headers)
+        axios.post(`${conversationsURL}/${thread.id}`,form,headers())
         .then(res=>{
             setMessage_unseen(name=='seen' && value?message_unseen-1:message_unseen+1)
             setThreads(current=>name=='delete'?
@@ -808,7 +809,7 @@ const Message=(props)=>{
     useEffect(()=>{
         (async()=>{
             if(typechat){
-                const res =await axios.get(`${listThreadlURL}?type_chat=${typechat}`,headers)
+                const res =await axios.get(`${listThreadlURL}?type_chat=${typechat}`,headers())
                 const threads=res.data.map(thread=>{
                     return({...thread,show_action:false})
                 })

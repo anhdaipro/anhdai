@@ -34,7 +34,7 @@ const Detailview = () => {
     (async () => {
         const searchparama=params
        
-        const url=params.get('itemId') && !params.get('categoryId')?axios.get(`${itemURL}?${params}`,headers):axios.get(`${categoryURL}/${slug}`,headers)
+        const url=params.get('itemId') && !params.get('categoryId')?axios.get(`${itemURL}?${params}`,headers()):axios.get(`${categoryURL}/${slug}`,headers())
         setChoice(choices)
         const res = await url
         setData(res.data)
@@ -82,8 +82,8 @@ const Detailview = () => {
     const data={review_id:reviewchoice.id,
     reason:state.report_reson,
     reason:state.report_reson==7?state.text_report:state.report_reson}
-    if(localStorage.token &&expiry>0){
-      axios.post(productinfoURL,JSON.stringify(data),headers)
+    if(localStorage.token &&expiry()>0){
+      axios.post(productinfoURL,JSON.stringify(data),headers())
       .then(res=>{
         setState({...state,show_report:false,report_complete:true})
       })

@@ -175,7 +175,7 @@ const Dealshock = () => {
     const [variation, setVariation] = useState({count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],count_variation:0,product_id:0})
     useEffect(() => {
         (async()=>{
-            const obj1=await axios.get(`${dealURL}/${deal_id}/${id}`,headers)
+            const obj1=await axios.get(`${dealURL}/${deal_id}/${id}`,headers())
             const byproductcart=obj1.data.byproducts.map(item=>{
                 return({...item,check:true,byproduct_id:item.id})
             })
@@ -183,7 +183,7 @@ const Dealshock = () => {
             setItems([...items,obj1.data.variation_choice,...byproductcart])
             setState({...state,loading:true,cartitem_id:obj1.data.cartitem_id})
             setCart_id(obj1.data.cartitem_id)
-            const url= obj1.data.cartitem_id?axios.get(`${byproductdealURL}/${deal_id}?cart_id=${obj1.data.cartitem_id}`,headers):axios.get(`${byproductdealURL}/${deal_id}`,headers)
+            const url= obj1.data.cartitem_id?axios.get(`${byproductdealURL}/${deal_id}?cart_id=${obj1.data.cartitem_id}`,headers()):axios.get(`${byproductdealURL}/${deal_id}`,headers())
             const obj2=await url
             const byproductdeal=obj2.data.byproducts.map(item=>{
                 return({...item,check:false,item_id:item.id,quantity:1,size_value:'',color_value:''})
@@ -205,7 +205,7 @@ const Dealshock = () => {
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
             if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && items.length< count){
                 setLoading(false)
-                const url= cart_id?axios.get(`${byproductdealURL}/${deal_id}?cart_id=${cart_id}&offset=${items.length-1}`,headers):axios.get(`${byproductdealURL}/${deal_id}?offset=${items.length-1}`,headers)
+                const url= cart_id?axios.get(`${byproductdealURL}/${deal_id}?cart_id=${cart_id}&offset=${items.length-1}`,headers()):axios.get(`${byproductdealURL}/${deal_id}?offset=${items.length-1}`,headers())
                 const res =await url
                 const byproductdeal=res.data.byproducts.map(item=>{
                     return({...item,check:false,item_id:item.id,quantity:1,size_value:'',color_value:''})
@@ -228,7 +228,7 @@ const Dealshock = () => {
         }
         url.search = search_params.toString();
         let new_url = url.toString();
-        axios.get(new_url,headers)
+        axios.get(new_url,headers())
         .then(res=>{
             const listitem=items.map(item=>{
                 if(item.item_id==itemchoice.item_id){
@@ -263,7 +263,7 @@ const Dealshock = () => {
         product_id:main_product.product_id,quantity:main_product.quantity!=''?main_product.quantity:1,
         byproducts:byproducts,item_id:main_product.item_id}
         
-        axios.post(addToCartBatchURL,JSON.stringify(data),headers)
+        axios.post(addToCartBatchURL,JSON.stringify(data),headers())
         .then(resp => {
             
         })
