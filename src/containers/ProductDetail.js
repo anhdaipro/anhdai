@@ -497,45 +497,23 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
             setVariation({...variation,data:null})
         }
     }
-
-    const addtocart=(e)=>{
+    
+    const [success, setSuccess] = useState(false);
+    const addtocart= async (e,value)=>{
         e.stopPropagation()
         if (localStorage.token && expiry()>0){
             let variation_active=document.querySelectorAll('.product-variation--selected')
             if(variation_active.length===data.count_variation){
             setWaring({...waring,warring:false})
-            const data={item_id:data.id,quantity:quantity,id:variation.data.id}
-            if(e.currentTarget.classList.contains('btn-tinted')){
-                const Divbox=()=>{
-                const [remove, setRemove] = useState({remove:false});
+            const form={item_id:data.id,quantity:quantity,id:variation.data.id}
+            const res = await axios.post(addToCartURL,JSON.stringify(form),headers())
+            addcartitem(res.data)
+            if(value){
+                setSuccess(true)
                 setTimeout(function(){
-                setRemove({remove:true})
-                },2500)
-                return(
-                    <>
-                    {remove.remove!=true?
-                    <div className="action-toast">
-                    <div className="toast">
-                        <div className="toast__container">
-                            <div className="toast__icon">
-                                <div className="action-toast__icon">
-                                    <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
-                                </div>
-                            </div>
-                            <div className="toast__text">Sản phẩm đã được thêm vào Giỏ hàng</div>
-                        </div>
-                    </div>
-                    </div>
-                    :''}
-                </>
-                )
+                    setSuccess(false)
+                },2500)        
                 }
-               
-                }
-                axios.post(addToCartURL,JSON.stringify(data),headers())
-                .then(res=>{
-                    addcartitem(res.data)
-                })
             }
             else{
                 setWaring({...state,warring:true})
@@ -1098,11 +1076,11 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                             </div>
                             {user&&user.id!=data.user_id?
                             <div className="my-1 item-center pl-1">
-                                <button onClick={(e)=>addtocart(e)} className="buy _3Kiuzg btn-l item-centers btn-tinted mr-1">
+                                <button onClick={(e)=>addtocart(e,true)} className="buy _3Kiuzg btn-l item-centers btn-tinted mr-1">
                                     <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon _2FCuXA icon-add-to-cart"><g><g><polyline fill="none" points=".5 .5 2.7 .5 5.2 11 12.4 11 14.5 3.5 3.7 3.5" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10"></polyline><circle cx="6" cy="13.5" r="1" stroke="none"></circle><circle cx="11.5" cy="13.5" r="1" stroke="none"></circle></g><line fill="none" strokeLinecap="round" strokeMiterlimit="10" x1="7.5" x2="10.5" y1="7" y2="7"></line><line fill="none" strokeLinecap="round" strokeMiterlimit="10" x1="9" x2="9" y1="8.5" y2="5.5"></line></g></svg>
                                     <span>Add to cart</span> 
                                 </button>
-                                <button onClick={(e)=>addtocart(e)} className="buy _3Kiuzg btn-l btn-red ">Buy now</button>
+                                <button onClick={(e)=>addtocart(e,false)} className="buy _3Kiuzg btn-l btn-red ">Buy now</button>
                             </div>:''}
                         </div>
                     </div>
@@ -1201,7 +1179,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                             </div>
                         </a>
                         <div className="item-col ml-1">
-                            <p className="pb-1_2">{shop.shop_name}</p>
+                            <p className="pb-1_2">{shop.name}</p>
 
                             <p className="time_off pb-1_2">Online {!shop.online?`${timeago(shop.is_online)} ago`:''}</p>
                             
@@ -1422,6 +1400,20 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                     </>}</>:''}
                 </div>
             </div>
+            {success&&(
+                <div className="action-toast">
+                    <div className="toast">
+                        <div className="toast__container">
+                            <div className="toast__icon">
+                                <div className="action-toast__icon">
+                                    <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
+                                </div>
+                            </div>
+                            <div className="toast__text">Sản phẩm đã được thêm vào Giỏ hàng</div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>:''}
     </div>
   )
