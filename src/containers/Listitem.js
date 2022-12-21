@@ -70,7 +70,7 @@ const Itemsearch=({listitem,setsearch,searchitem,search,data,setsearchitem})=>{
             {
                 listitem.map(item=>
                 <div key={item.id} className="grid__column-2-4">
-                    <Link className="home-product-item" to={`${item.url}?itemId=${item.id}`}>
+                    <Link className="home-product-item" to={`/${item.url}?itemId=${item.id}`}>
                     <div className="home-product-item__image" style={{backgroundImage: `url(${item.image})`}}></div>
                     <div className="home-product-item-info">
                         <div className="home-product-item__name">{item.name}</div>
