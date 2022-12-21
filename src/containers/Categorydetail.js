@@ -279,7 +279,7 @@ const Categorydetail = ({data,category_id}) => {
                                 <div className="folding-items category-list__sub-category-list folding-items--folded">
                                     {categories.category_children.map((category,index)=>{
                                         if(index<3){
-                                            return (<Link key={index} className="category-list__sub-category" to={category.url}>
+                                            return (<Link key={index} className="category-list__sub-category" to={`/${category.url}`}>
                                                 <svg viewBox="0 0 4 7" className="svg-icon category-list__sub-category__caret icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon>
                                                 </svg>{category.title}
                                             </Link>)
@@ -299,7 +299,7 @@ const Categorydetail = ({data,category_id}) => {
                                                 {categories.category_children.map((category,index)=>{
                                                     if(index>=3){
                                                         return (
-                                                        <Link key={index} className="category-list__sub-category" to={category.url}>
+                                                        <Link key={index} className="category-list__sub-category" to={`/${category.url}`}>
                                                         <svg viewBox="0 0 4 7" className="svg-icon category-list__sub-category__caret icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon>
                                                         </svg>{category.title}
                                                         </Link>)
