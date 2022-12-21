@@ -204,11 +204,11 @@ const Iteminfo=(props)=>{
                 :''}
             </div>
             <div className="shop-item-info item-center">
-                <Link to={`${item.url}?itemId=${item.item_id}`}>
+                <Link to={`/${item.url}?itemId=${item.item_id}`}>
                     <div className="shop-item-image" style={{backgroundImage: `url(${item.image})`}}></div>
                 </Link>
                 <div className="_3OrWGt">
-                    <Link className="_2fQT1K" title={`${item.name}`} to={`${item.url}?itemId=${item.item_id}`}>
+                    <Link className="_2fQT1K" title={`${item.name}`} to={`/${item.url}?itemId=${item.item_id}`}>
                         {product==='byproduct'?<span className="Uow98x">Deal Sốc</span>:''}
                        {item.name}
                     </Link>
@@ -314,7 +314,7 @@ const Iteminfo=(props)=>{
                         <div className="_1bmRDE">
                         {items.map(item=>
                             <div className="grid__column-2-4" key={item.id}>
-                                <Link className="home-product-item" to={`${item.url}?itemID=${item.id}`}>
+                                <Link className="home-product-item" to={`/${item.url}?itemID=${item.id}`}>
                                     <div className="home-product-item__image" style={{backgroundImage: `url(${item.image})`}}></div>
                                     <div className="home-product-item-info">
                                         <div className="home-product-item__name">{item.name}</div>

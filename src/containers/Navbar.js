@@ -241,7 +241,7 @@ searchitem()
                                     items.map((item,index)=>{
                                         if(index<5){
                                             return(
-                                            <div key={item.id} onClick={()=>navigate(`${item.url}?itemId=${item.item_id}`)} className='item-start cart-item'>
+                                            <div key={item.id} onClick={()=>navigate(`/${item.url}?itemId=${item.item_id}`)} className='item-start cart-item'>
                                                 <div className="n0eaQq" style={{backgroundImage: `url(${item.image})`}}></div>
                                                 <div className="cart-item-name_price">
                                                     <div className="item-center">

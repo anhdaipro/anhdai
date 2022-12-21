@@ -93,7 +93,7 @@ const Promotion = () => {
                                 <div className="bundle-deal__card-list">
                                     {state.products.map(item=>
                                         <div key={item.id} className='bundle-deal__card'>
-                                            <Link data-sqe="link" to={`${item.url}?itemId=${item.id}`}>
+                                            <Link data-sqe="link" to={`/${item.url}?itemId=${item.id}`}>
                                                 <div className="_1C-0ut">
                                                     <div className="_1gZS6z">
                                                         <div className="_25_r8I ggJllv">

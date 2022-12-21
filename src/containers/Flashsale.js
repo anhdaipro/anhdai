@@ -259,7 +259,7 @@ const Flashsale=()=>{
                             {items.map(item=>
                             <div key={item.id} className="B3+pb+ N8hR+F y+U+-m">
 
-                                <Link className="PMpbYz" to={`${item.url}?itemId=${item.id}`}>
+                                <Link className="PMpbYz" to={`/${item.url}?itemId=${item.id}`}>
                                     <div className="FSzItq qifRic">
                                         <div className="DKMfci">
                                             <div className="_6y1ec4 qOUKdN LKoGAt" style={{backgroundImage: `url(https://cf.shopee.vn/file/3ecec90a54dfc9a7a6c83e44c4d67a3a_tn)`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>

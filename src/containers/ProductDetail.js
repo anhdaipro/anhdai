@@ -1323,7 +1323,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                     <div className="product-shop-hot-sales page-product__hot-sales">
                         <div className="product-shop-hot-sales__header">Top sản phẩm bán chạy</div>
                         {list_hot_sales.map(item=>
-                        <Link key={item.id} className="item-card-special__link product-shop-hot-sales__item" to={`${item.url}?itemId=${item.id}`}>
+                        <Link key={item.id} className="item-card-special__link product-shop-hot-sales__item" to={`/${item.url}?itemId=${item.id}`}>
                             <div className="item-card-special">
                                 <div className="item-card-special__img">
                                     <div className="lazy-image__container item-card-special__img-background">

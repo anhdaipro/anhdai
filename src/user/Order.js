@@ -179,7 +179,7 @@ const Orderuser=(props)=>{
                                             {data.cart_item.map(cartitem=>
                                             <div key={cartitem.id} className="_1limL3">
                                                 <div>
-                                                    <Link className="_1BJEKe" to={`${cartitem.url}?itemId=${cartitem.item_id}`}><div>
+                                                    <Link className="_1BJEKe" to={`/${cartitem.url}?itemId=${cartitem.item_id}`}><div>
                                                         </div>
                                                         <div className="_3huAcN">
                                                             <div className="_3btL3m">

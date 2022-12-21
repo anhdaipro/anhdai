@@ -159,7 +159,7 @@ const Dailyreacomment=(props)=>{
                     <ListItem>
                         {items.map(item=>
                         <Item key={item.id}>
-                            <Link to={`${item.url}?itemId=${item.id}`}>
+                            <Link to={`/${item.url}?itemId=${item.id}`}>
                                 <div className="item">
                                     <div style={{position:'relative'}}>
                                         <StyleImage url={item.image}></StyleImage>
