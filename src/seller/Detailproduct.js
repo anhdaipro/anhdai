@@ -86,16 +86,16 @@ const price_ship={
     'Nhanh':[{weight_from:1,weight_to:500,price:16300},{weight_from:501,weight_to:1000,price:18300},
         {weight_from:1001,weight_to:1500,price:19300},{weight_from:1501,weight_to:2000,price:20100},
         {weight_from:1501,weight_to:2000,price:21100},
-        {weight_from:2001,weight_to:40000,price:26100}
+        {weight_from:2001,weight_to:10000,price:26100},{weight_from:10001,weight_to:99999,price:36100}
     ],
     'Tiết kiệm':[{weight_from:1,weight_to:500,price:14300},{weight_from:501,weight_to:1000,price:16300},
         {weight_from:1001,weight_to:1500,price:18300},{weight_from:1501,weight_to:2000,price:19100},
         {weight_from:1501,weight_to:2000,price:20100},
-        {weight_from:2001,weight_to:40000,price:24400}
+        {weight_from:2001,weight_to:10000,price:24400},{weight_from:10001,weight_to:99999,price:31100}
     ],
     'Hỏa tốc':[{weight_from:1,weight_to:500,price:18300},{weight_from:501,weight_to:1000,price:20300},
         {weight_from:1001,weight_to:1500,price:24300},{weight_from:1501,weight_to:2000,price:26100},
-        {weight_from:2001,weight_to:40000,price:32400}
+        {weight_from:2001,weight_to:10000,price:36400},{weight_from:10001,weight_to:99999,price:46100}
         
     ]
 }
@@ -1709,7 +1709,7 @@ console.log(shipping)
                                             <div className="edit-input edit-text-mini">
                                                 <div className="product-edit-form-item-content">
                                                     <div className="input__inner input__inner--large"> 
-                                                        <input onChange={(e)=>setdelivery('weight',e)} type="text" className="form-select weigth" value={formData.weight?formData.weight:''} name="weigth" placeholder="Enter"  required/>
+                                                        <input maxLength="5" onChange={(e)=>setdelivery('weight',e)} type="text" className="form-select weigth" value={formData.weight?formData.weight:''} name="weigth" placeholder="Enter"  required/>
                                                         <div className="input__suffix">
                                                             <span className="input__suffix-split"></span>
                                                             gr
