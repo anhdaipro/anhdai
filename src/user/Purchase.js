@@ -300,7 +300,7 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
                                                         </div>
                                                     </span>
                                                     <div className="_1mmoh8">Tổng số tiền:</div>
-                                                    <div className="_1MS3t2">₫{formatter.format(order.amount)}</div>
+                                                    <div className="_1MS3t2">₫{formatter.format(order.total_final)}</div>
                                                 </div>
                                             </div>
                                             <div className="_1Qn42s">
