@@ -355,7 +355,7 @@ const Checkout =({user,showchat})=>{
                                         </div>
                                         <div className="_1MFx1Y">
                                             <div className="_3519w5">Tổng số tiền ({order.count} sản phẩm):</div>
-                                            <div className="-c5EIK">₫{formatter.format(order.total_discount)}</div>
+                                            <div className="-c5EIK">₫{formatter.format(order.total-order.total_discount)}</div>
                                         </div> 
                                     </div>
                                 </div>
