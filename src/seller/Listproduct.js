@@ -43,7 +43,7 @@ const Listproduct=()=>{
             .then(res=>{
                 let data=res.data
                 const pageitem=data.pageitem.map(product=>{
-                    return({...product,check:false,show:false,list_variation:product.variations.map(variation=>{
+                    return({...product,check:false,show:false,variations:product.variations.map(variation=>{
                         if(variation.percent_discount>0){
                             return({...variation,enable:true})
                         }
@@ -69,7 +69,7 @@ const Listproduct=()=>{
                 let data=res.data
                 const pageitem=itemshop.pageitem.map(item=>{
                     if(item.id==itemchoice.id){
-                        return({...item,show:!item.show,list_variation:[...item.list_variation,...data.list_variation]})
+                        return({...item,show:!item.show,variations:[...item.variations,...data]})
                     }
                     return({...item})
                 })
