@@ -42,7 +42,7 @@ const Infoitem=(props)=>{
                     </div>
                 </div>
                 <div className="_1kvNGb">
-                    <span className={`${item.discount_price==0?'mBERmM':'_34DOjq'}`}>₫{formatter.format(item.price)}</span>
+                    <span className={`${!item.discount_price?'mBERmM':'_34DOjq'}`}>₫{formatter.format(item.price)}</span>
                     {item.discount_price>0?<span className="mBERmM _2mEJ4q">₫{item.price-item.discount_price}</span>:''}
                 </div>
             </span>
