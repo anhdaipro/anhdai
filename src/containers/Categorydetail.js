@@ -1,4 +1,4 @@
-import {rating_choice,partition} from "../constants"
+import {rating_choice,partition, address_null} from "../constants"
 import Itemsearch from "./Listitem"
 import React, {useState, useEffect,useRef} from 'react'
 import SlideshowGallery from "../hocs/Slideshow"
@@ -104,7 +104,7 @@ const Categorydetail = ({data,category_id}) => {
     const {slug}=useParams();
     const [FormData,setFormData]=useState({minPrice:null,maxPrice:null})
     const [show,setShow]=useState(false)
-    const [categories,setCategory]=useState({category_children:[]})
+    const [categories,setCategory]=useState({category_children:[],category_parent:null})
     const [params, setSearchParams] = useSearchParams();
     const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
     const [category_choice,setCategorychoice]=useState([])
@@ -117,11 +117,13 @@ const Categorydetail = ({data,category_id}) => {
         (async()=>{
             if(category_id){
                 const res =await axios.get(`${categoryinfoURL}?category_id=${category_id}`,headers())
+                if(data.level==0){
                 setCategory(res.data)
+                }
                 setShopmall(partition(shopmall, int).map(subarray => subarray))
             }
         })()
-    },[category_id])
+    },[category_id,data])
 
     useEffect(()=>{
         (async()=>{
@@ -270,19 +272,20 @@ const Categorydetail = ({data,category_id}) => {
                             </svg>
                             Tất cả Danh mục
                         </Link>
+                        {categories.category_parent&&(
                         <div className="category-list__body">
                             <div className="category-list__category">
-                                <div className="category-list__main-category category-list__main-category--active">
-                                    <Link className="category-list__main-category__link" to={`/${slug}`}>
+                                <div className={`category-list__main-category ${categories.category_parent.slug===slug?'category-list__main-category--active':''}`}>
+                                    <Link className="category-list__main-category__link" to={`/${categories.category_parent.slug}`}>
                                         <svg viewBox="0 0 4 7" className="svg-icon category-list__main-category__caret icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon></svg>
-                                        {data.title}
+                                        {categories.category_parent.title}
                                     </Link>
                                 </div>
                                 
                                 <div className="folding-items category-list__sub-category-list folding-items--folded">
                                     {categories.category_children.map((category,index)=>{
                                         if(index<3){
-                                            return (<Link key={index} className="category-list__sub-category" to={`/${category.url}`}>
+                                            return (<Link key={index} className={`category-list__sub-category ${category.slug===slug?'category-list__sub-category--active':''}`} to={`/${category.slug}`}>
                                                 <svg viewBox="0 0 4 7" className="svg-icon category-list__sub-category__caret icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon>
                                                 </svg>{category.title}
                                             </Link>)
@@ -302,7 +305,7 @@ const Categorydetail = ({data,category_id}) => {
                                                 {categories.category_children.map((category,index)=>{
                                                     if(index>=3){
                                                         return (
-                                                        <Link key={index} className="category-list__sub-category" to={`/${category.url}`}>
+                                                        <Link key={index} className={`category-list__sub-category ${category.slug===slug?'category-list__sub-category--active':''}`} to={`/${category.slug}`}>
                                                         <svg viewBox="0 0 4 7" className="svg-icon category-list__sub-category__caret icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon>
                                                         </svg>{category.title}
                                                         </Link>)
@@ -314,7 +317,7 @@ const Categorydetail = ({data,category_id}) => {
                                     </div>:""}
                                 </div>
                             </div>
-                        </div>
+                        </div>)}
                     </div>
                     <div className="search-filter-status _3rumdU">
                         <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0" className="svg-icon "><g><polyline fill="none" points="5.5 13.2 5.5 5.8 1.5 1.2 13.5 1.2 9.5 5.8 9.5 10.2" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10"></polyline></g></svg>

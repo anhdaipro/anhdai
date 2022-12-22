@@ -5228,7 +5228,12 @@ button._0FecFw {
     width: 100%;
     height: 100%;
   }
-  
+  .category-list__sub-category--active {
+    color: #ee4d2d;
+}
+.category-list__sub-category--active .svg-icon{
+  opacity:1
+}
   .sort-by-options__option--selected.sort-by-options__option {
     color: #fff;
     background: #ee4d2d;
