@@ -199,10 +199,10 @@ const Iteminfo=(props)=>{
     }
 
     const valid_size=(size) => {
-        return !list_cartitem.find(cart=>cart.size_id==size.id && cart.id!==item.id && product=='mainproduct' &&  cart.color_id==state.color_id) && (state.variation_color.length==0  || item.variation.some(r=> state.variation_color.includes(r)))
+        return !list_cartitem.find(cart=>cart.size_id==size.id && cart.id!==item.id && product=='mainproduct' &&  cart.color_id==state.color_id) && (state.variation_color.length==0  || size.variation.some(r=> state.variation_color.includes(r)))
     }
     const valid_color=(color)=>{
-        return !list_cartitem.find(cart=>cart.size_id==state.size_id && cart.id!==item.id && product=='mainproduct' && cart.color_id==color.id) && (state.variation_size.length==0 || item.variation.some(r=> state.variation_size.includes(r)))
+        return !list_cartitem.find(cart=>cart.size_id==state.size_id && cart.id!==item.id && product=='mainproduct' && cart.color_id==color.id) && (state.variation_size.length==0 || color.variation.some(r=> state.variation_size.includes(r)))
     }
     return(
         <div className={`d-flex p-1 ${product==='mainproduct'?'':'_1ocTN'}`}>
