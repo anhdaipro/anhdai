@@ -43,20 +43,9 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
         }
     }, []);
 
-    useEffect(() => {
-        document.addEventListener('beforeunload', onUnload)
-        return () => {
-            document.removeEventListener('beforeunload', onUnload)
-        }
-    }, [])
+    
 
-    const onUnload=(e)=>{
-        (async ()=>{
-            if(expiry()>0 && localStorage.token){
-                axios.post(updateuseronlineURL,JSON.stringify({online:false}),headers())
-            }
-        })()
-    }
+    
    
     useEffect(()=>{
         if(cartitem){
@@ -90,7 +79,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     useEffect(()=>{
     if(user){
         setTimeout(()=>{
-            axios.post(`${refreshtokenURL}/${user.id}`)
+            axios.post(`${refreshtokenURL}`)
             .then(res=>{
                 localStorage.setItem("expirationDate", res.data.access_expires);
             })

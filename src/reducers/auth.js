@@ -16,6 +16,7 @@ import {
     LOGOUT,
     SHOW_CHAT,
     SHOW_THREADS,
+    SHOWONLINE,
 } from '../actions/types';
 
 let initialState = {
@@ -27,6 +28,7 @@ let initialState = {
     count_message_unseen:0,
     thread:null,
     messages:[],
+    users:[],
     threads:[],
     showchat:false
 };
@@ -34,6 +36,10 @@ let initialState = {
 const rootReducer=(state = initialState, action)=>{
     const { type, payload } = action;
     switch(type) {
+        case SHOWONLINE:
+            return{
+                ...state,users:payload
+            }
         case AUTHENTICATED_SUCCESS:
             return {
                 ...state,
@@ -56,7 +62,7 @@ const rootReducer=(state = initialState, action)=>{
         case SIGNUP_SUCCESS:
             return {
                 ...state,
-                isAuthenticated: false
+                
             }
         case SHOW_THREADS:
             return{

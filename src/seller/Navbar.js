@@ -22,16 +22,7 @@ const Navbar = ({ logout, isAuthenticated,user }) => {
         }
         info();
     }, [])
-    useEffect(()=>{
-        if(user){
-            setTimeout(()=>{
-                axios.post(`${refreshtokenURL}/${user.id}`)
-                .then(res=>{
-                    localStorage.setItem("expirationDate", res.data.access_expires);
-                })
-            },72000)
-        }
-    },[user])
+    
     
     const logout_user=(e)=> {
         logout();  

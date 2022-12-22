@@ -1,14 +1,14 @@
 export const localhost = "https://ecomerceapp-production.up.railway.app";
 const apiURL = "/api/v4";
 export const endpoint = `${localhost}${apiURL}`;
-export const refreshtokenURL=`${localhost}${apiURL}/refresh/token`
+export const refreshtokenURL=`${localhost}${apiURL}/refresh`
 export const loginURL=`${localhost}${apiURL}/login`
 export const user =`${localhost}${apiURL}/user-id/`
 export const forgotpasswordURL=`${endpoint}/buyer/forgot_password`;
 export const purchaselistdURL=`${endpoint}/purchase`;
 export const addresslistdURL=`${endpoint}/get_address`;
 export const profiledURL=`${endpoint}/profile`;
-export const updateuseronlineURL=`${endpoint}/update/pnline`
+export const updateuseronlineURL=`${endpoint}/update/online`
 export const resetpassdURL=`${endpoint}/user/account/password-reset`;
 export const cityListURL = `${endpoint}/get_city`;
 export const passwordURL=`${endpoint}/user/account/password`;

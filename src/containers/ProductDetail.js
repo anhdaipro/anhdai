@@ -306,7 +306,7 @@ const Itemdeal=(props)=>{
     )
 }
 let pageSize=5
-const ProductDetail = ({report_complete,showchat,show_report,setreport,
+const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
     showthreads,data_product,addcartitem,showmediaitem,user,id}) => {
     const [state, setState] = useState({request_report:false,list_host_sale:[],data:null,inventory:null,count_variation:0,quantity:1,review_choice:'all',
     color_id:0,size_id:0,variation_color:[],variation_size:[],page_count:1,rating:[],has_comment:0,
@@ -542,7 +542,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
         showchat(form)
         showthreads()
     }
-  
+    
     const setlikereview=(e,review)=>{
         if(localStorage.token&& expiry()>0){
             axios.post(`${reviewURL}/${review.id}`,JSON.stringify({action:'like'}),headers())
@@ -1181,7 +1181,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
                         <div className="item-col ml-1">
                             <p className="pb-1_2">{shop.name}</p>
 
-                            <p className="time_off pb-1_2">Online {!shop.online?`${timeago(shop.is_online)} ago`:''}</p>
+                            <p className="time_off pb-1_2">Online {!users.find(item=>item.userId===data.user_id)?`${timeago(shop.is_online)} ago`:''}</p>
                             
                             <div className="d-flex ">
                                 {user && data.user_id!=user.id?
@@ -1419,7 +1419,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
   )
 }
 const mapStateToProps = state => ({
-    isAuthenticated: state.isAuthenticated,user:state.user
+    isAuthenticated: state.isAuthenticated,user:state.user,users:state.users
 });
 
 export default connect(mapStateToProps,{showchat,showthreads})(ProductDetail);

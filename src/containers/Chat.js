@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React, {useState, useEffect,useCallback,useRef} from 'react'
 import {formatter,dataURLtoFile,checkDay,itemvariation,timeformat,timevalue} from "../constants"
-import { connect } from 'react-redux';
-import {conversationsURL,listThreadlURL,updatefileURL,} from "../urls"
-import { headers,expiry} from '../actions/auth';
+import { connect,useDispatch } from 'react-redux';
+import {conversationsURL,listThreadlURL,updatefileURL,updateuseronlineURL} from "../urls"
+import { headers,expiry, setuseronline} from '../actions/auth';
 import io from "socket.io-client";
 import {Link,useNavigate} from "react-router-dom"
 import {debounce} from 'lodash';
@@ -346,7 +346,7 @@ const Threadinfo=(props)=>{
     )
 }
 const Message=(props)=>{
-    const {threadstate,isAuthenticated,list_threads,user,messages,members,showchat,count_message_unseen}=props
+    const {threadstate,list_threads,user,messages,members,showchat,count_message_unseen}=props
     const [state, setState] = useState({show_type_chat:false,type_chat:1,user_search:null,loading:false,
     show_product:false,show_order:false,loading_more:false});
     const [show, setShow] = useState(false);
@@ -364,7 +364,7 @@ const Message=(props)=>{
     const [listfile,setListfile]=useState([]);
     const [listmember,setListmember]=useState([])
     const [typing,setTyping]=useState({typing:false,send_to:null})
-    const [messagefile,setMessagefile]=useState([])
+    const dispatch = useDispatch()
     const [length,setLength]=useState(40)
     const [typechat,setTypechat]=useState()
     const [loading,setLoading]=useState(false)
@@ -418,11 +418,19 @@ const Message=(props)=>{
 
     useEffect(() => {
         socket.current=io.connect('https://serverecomerce-production.up.railway.app/');
+        socket.current.on("getUsers", (users) => {
+            dispatch(setuseronline(users))
+        });
         return () => {
             socket.current.disconnect();
         };
     },[]);
-    
+    useEffect(() => { 
+        if(user){
+            socket.current.emit("addUser", user.id);
+        }
+        
+    },[user])
     useEffect(() => {
         socket.current.on('message',(data)=>{ 
             if(data.typing || data.typing==""){
@@ -613,10 +621,10 @@ const Message=(props)=>{
                     })
                 })  
                 setListfile([])
-                setMessagefile(messagefile)
+                
                 axios.post(`${conversationsURL}/${thread.id}`,formfile,headers())
                 .then(res=>{
-                    setMessagefile([])
+                    
                     if(!res.data.error){
                     const messages={message:res.data,thread_id:thread.id,send_by:user.id}
                     socket.current.emit("sendData",messages)   

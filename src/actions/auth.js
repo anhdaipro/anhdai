@@ -16,7 +16,8 @@ import {
     LOGOUT,
     SHOW_CHAT,
     SHOW_THREADS,
-    BUYAGAIN
+    BUYAGAIN,
+    SHOWONLINE
 } from './types';
 import {createthreadURL, listThreadlURL,buyagainURL,loginURL, user} from "../urls"
 import axios from 'axios';
@@ -97,17 +98,22 @@ export const responseGoogle = (response) => async dispatch => {
         }
     };
     const res1= await axios.post(loginURL,JSON.stringify({token:res.data.access_token}), config)
-    const token = res1.data.access;
-    localStorage.setItem('token',token);
-    localStorage.setItem("expirationDate", res1.data.access_expires);
+    const data = res1.data
+    localStorage.setItem("expirationDate", data.access_expires);
+    localStorage.setItem('token',data.access);
+    localStorage.setItem('refresh',data.refresh)
 	window.location.href="/"
     dispatch({
         type: GOOGLE_AUTH_SUCCESS,
         payload: res.data
     });
 }
-
-
+export const setuseronline=(data)=>{
+    return{
+        payload:data,
+        type:SHOWONLINE
+    }
+}
 export const responseFb = (accessToken) => async dispatch =>{
     try {
     const res=await axios.post('https://ecomerceapp-production.up.railway.app/api-auth/convert-token', {
@@ -124,9 +130,10 @@ export const responseFb = (accessToken) => async dispatch =>{
             }
         };
         const res1= await axios.post(loginURL,JSON.stringify({token:res.data.access_token}), config)
-        const token = res1.data.access;
-        localStorage.setItem('token',token);
-        localStorage.setItem("expirationDate", res1.data.access_expires);
+        const data = res1.data
+        localStorage.setItem("expirationDate", data.access_expires);
+        localStorage.setItem('token',data.access);
+        localStorage.setItem('refresh',data.refresh)
         dispatch({
             type: FACEBOOK_AUTH_SUCCESS,
             payload: res.data
@@ -212,9 +219,11 @@ export const login = (username, password) => async dispatch => {
             payload: res.data
             
         });
-        localStorage.setItem("expirationDate", res.data.access_expires);
-        const token = res.data.access;
-        localStorage.setItem('token',token);
+        
+        const data = res.data
+        localStorage.setItem("expirationDate", data.access_expires);
+        localStorage.setItem('token',data.access);
+        localStorage.setItem('refresh',data.refresh)
        
     } catch (err) {
         dispatch({
