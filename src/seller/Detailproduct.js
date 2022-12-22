@@ -1015,7 +1015,7 @@ console.log(shipping)
                                             <div className="edit-input edit-main">
                                                 <div className='product-edit-form-item-content'>
                                                     <div className=""> 
-                                                        <textarea onChange={(e)=>setformData({...formData,description:e.target.value.trim()})} value={formData.description} type="textarea" rows="2" minrows="9" autosize="true" maxlength="Infinity"  max="Infinity" min="-Infinity" className="input__inner input__inner--normal    item-center" style={{ minHeight: '210px', height: '284px'}}></textarea>
+                                                        <textarea onChange={(e)=>setformData({...formData,description:e.target.value})} value={formData.description} type="textarea" rows="2" minrows="9" autosize="true" maxlength="Infinity"  max="Infinity" min="-Infinity" className="input__inner input__inner--normal    item-center" style={{ minHeight: '210px', height: '284px'}}></textarea>
                                                     </div>
                                                     <div data-v-4c2d181f="" data-v-a3311712="" className="text-area-label">
                                                         <span data-v-4c2d181f="" data-v-a3311712="" className="text-area-label-pre">{formData.description.trim().length}</span>/3000

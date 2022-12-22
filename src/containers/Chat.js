@@ -424,21 +424,21 @@ const Message=(props)=>{
     },[]);
     
     useEffect(() => {
-        socket.current.on('message',({data})=>{ 
+        socket.current.on('message',(data)=>{ 
             if(data.typing || data.typing==""){
                 if(data.typing==""){
                     setTyping({typing:false})
                 }
                 else{
                     setTyping({typing:true})
-                    if(thread.id==data.thread_id){
+                    if(thread && thread.id==data.thread_id){
                         setReceiver(data.receiver)
                     }
                 }
             }
             else{
                 setTyping({typing:false})
-                if(thread.id==data.thread_id){
+                if(thread && thread.id==data.thread_id){
                     console.log(data)
                     setListmessages(current=>[...current,...data.message])
                 }
@@ -459,7 +459,7 @@ const Message=(props)=>{
                 }
             }
         })
-    },[scrollRef,thread?thread.id:thread,user?user.id:user])
+    },[scrollRef,thread?thread.id:thread,user])
     const showthread=()=>{
         setShow(true)
         axios.get(listThreadlURL,headers())
@@ -499,7 +499,7 @@ const Message=(props)=>{
                 }
             })
         }
-    },[thread,members,user?user.id:user])
+    },[thread,members,user])
 
     const sendproduct=(e,item)=>{
         (async ()=>{
