@@ -117,13 +117,13 @@ const Categorydetail = ({data,category_id}) => {
         (async()=>{
             if(category_id){
                 const res =await axios.get(`${categoryinfoURL}?category_id=${category_id}`,headers())
-                if(data.level==0){
+                
                 setCategory(res.data)
-                }
+                
                 setShopmall(partition(shopmall, int).map(subarray => subarray))
             }
         })()
-    },[category_id,data])
+    },[category_id])
 
     useEffect(()=>{
         (async()=>{
