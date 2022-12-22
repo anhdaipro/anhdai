@@ -420,6 +420,7 @@ const Message=(props)=>{
         socket.current=io.connect('https://serverecomerce-production.up.railway.app/');
         socket.current.on("getUsers", (users) => {
             dispatch(setuseronline(users))
+            console.log(users)
         });
         return () => {
             socket.current.disconnect();

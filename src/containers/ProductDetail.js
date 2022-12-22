@@ -1181,7 +1181,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
                         <div className="item-col ml-1">
                             <p className="pb-1_2">{shop.name}</p>
 
-                            <p className="time_off pb-1_2">Online {!users.find(item=>item.userId===data.user_id)?`${timeago(shop.is_online)} ago`:''}</p>
+                            <p className="time_off pb-1_2">Online {users.find(item=>item.userId!==data.user_id)?`${timeago(shop.is_online)} ago`:''}</p>
                             
                             <div className="d-flex ">
                                 {user && data.user_id!=user.id?
