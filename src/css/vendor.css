@@ -1455,7 +1455,8 @@ display: block;
   align-items: center;
   }
   .choice_variation .variation-item{
-    width:100%
+    width:100%;
+    flex-wrap: wrap;
   }
   .cricles{
     border-radius: 50%;

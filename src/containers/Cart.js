@@ -119,7 +119,7 @@ const Divbox=(props)=>{
 }
 
 const Iteminfo=(props)=>{
-    const {item,cartitem,product,checked,adjustitem,removeitem,updatevariation}=props
+    const {item,list_cartitem,cartitem,product,checked,adjustitem,removeitem,updatevariation}=props
     const [show,setShow]=useState(false)
     const [showsearch,setShowsearch]=useState(false)
     const [items,setItems]=useState([])
@@ -175,6 +175,7 @@ const Iteminfo=(props)=>{
     }
     
     const setcolor=(e,item)=>{ 
+        if(valid_color(item)){
         e.target.classList.toggle('product-variation--selected')
         if(e.target.classList.contains('product-variation--selected')){
           setState({...state,color_id:item.id,variation_color:item.variation,color_value:item.value})  
@@ -183,8 +184,10 @@ const Iteminfo=(props)=>{
           setState({...state,color_id:null,variation_color:[],color_value:''})
         }
     }
+    }
 
     const setsize=(e,item)=>{
+        if(valid_size(item)){
         e.target.classList.toggle('product-variation--selected')
         if(e.target.classList.contains('product-variation--selected')){
           setState({...state,size_id:item.id,variation_size:item.variation,size_value:item.value}) 
@@ -192,6 +195,14 @@ const Iteminfo=(props)=>{
         else{
           setState({...state,size_id:null,variation_size:[],size_value:''})
         }
+    }
+    }
+
+    const valid_size=(size) => {
+        return !list_cartitem.find(cart=>cart.size_id==size.id && cart.id!==item.id && product=='mainproduct' &&  cart.color_id==state.color_id) && (state.variation_color.length==0  || item.variation.some(r=> state.variation_color.includes(r)))
+    }
+    const valid_color=(color)=>{
+        return !list_cartitem.find(cart=>cart.size_id==state.size_id && cart.id!==item.id && product=='mainproduct' && cart.color_id==color.id) && (state.variation_size.length==0 || item.variation.some(r=> state.variation_size.includes(r)))
     }
     return(
         <div className={`d-flex p-1 ${product==='mainproduct'?'':'_1ocTN'}`}>
@@ -247,7 +258,7 @@ const Iteminfo=(props)=>{
                                             <div className="_3gvvQI">
                                                 <div className="_3_Bulc">{item.colors[0].name}:</div>
                                                 {item.colors.map(item=>
-                                                    <button key={item.id} onClick={(e)=>setcolor(e,item)} className={`product-variation ${state.variation_size.length==0 || item.variation.some(r=> state.variation_size.includes(r))?'':' disable'} ${item.id===state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
+                                                    <button key={item.id} onClick={(e)=>setcolor(e,item)} className={`product-variation ${valid_color(item)?'':' disable'} ${item.id===state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                                         {state.color_id===item.id?
                                                         <div className="product-variation__tick">
                                                         <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
@@ -261,7 +272,7 @@ const Iteminfo=(props)=>{
                                             <div className="_3gvvQI">
                                                 <div className="_3_Bulc">{item.sizes[0].name}:</div>
                                                 {item.sizes.map(item=>
-                                                    <button key={item.id} onClick={(e)=>setsize(e,item)} className={`product-variation ${state.variation_color.length==0 || !cartitem.find(cart=>cart.size_id==size.id && cart.color_id==state.color_id) || item.variation.some(r=> state.variation_color.includes(r))?'':' disable'} ${item.id===state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
+                                                    <button key={item.id} onClick={(e)=>setsize(e,item)} className={`product-variation ${valid_size(item)?'':' disable'} ${item.id===state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                                         {state.size_id===item.id?
                                                         <div className="product-variation__tick">
                                                             <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
@@ -857,6 +868,7 @@ class Cart extends React.Component{
                                                                     product={'mainproduct'}
                                                                     key={`cartitem_${item.id}`}
                                                                     list_cartitem={list_cartitem}
+                                                                    cartitem={item}
                                                                     updatevariation={(e,item,color_id,size_id,product,cartitemchoice)=>this.updatevariation(e,item,color_id,size_id,product,cartitemchoice)}
                                                                 />  
                                                             )}
@@ -879,6 +891,7 @@ class Cart extends React.Component{
                                                                 item={cartitem}
                                                                 product={'mainproduct'}
                                                                 list_cartitem={list_cartitem}
+                                                                cartitem={cartitem}
                                                                 key={`cartitem_${cartitem.id}`}
                                                                 adjustitem={(e,item,product,cartitem,value)=>this.adjustitem(e,item,product,cartitem,value)}
                                                                 removeitem={(e,item,product)=>this.removeitem(e,item,product)}
