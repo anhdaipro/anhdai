@@ -111,6 +111,7 @@ const Categorydetail = ({data,category_id}) => {
     const [listitem,setListitem]=useState()
     const[shopmalls,setShopmall]=useState([])
     const[page_count]=useState(1)
+    const [showmore,setShowmore]=useState({children:false,choice:false,rating:false})
     useEffect(()=>{
         (async()=>{
             if(category_id){
@@ -288,13 +289,13 @@ const Categorydetail = ({data,category_id}) => {
                                     }
                                     {categories.category_children.length>2?
                                     <div className="stardust-dropdown folding-items__toggle">
-                                        <div className="stardust-dropdown__item-header">
-                                            <div className="category-list__toggle-btn">Thêm
-                                                <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" role="img" className="stardust-icon stardust-icon-arrow-down"><path stroke="none" d="m11 2.5c0 .1 0 .2-.1.3l-5 6c-.1.1-.3.2-.4.2s-.3-.1-.4-.2l-5-6c-.2-.2-.1-.5.1-.7s.5-.1.7.1l4.6 5.5 4.6-5.5c.2-.2.5-.2.7-.1.1.1.2.3.2.4z"></path></svg>
+                                        {showmore.children && (<div className="stardust-dropdown__item-header">
+                                            <div onClick={()=>setShowmore({...showmore,children:true})} className="filter-group__toggle-btn">
+                                                Thêm<svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-down"><g><path d="m11 2.5c0 .1 0 .2-.1.3l-5 6c-.1.1-.3.2-.4.2s-.3-.1-.4-.2l-5-6c-.2-.2-.1-.5.1-.7s.5-.1.7.1l4.6 5.5 4.6-5.5c.2-.2.5-.2.7-.1.1.1.2.3.2.4z"></path></g></svg>
                                             </div>
-                                        </div>
+                                        </div>)}
 
-                                        <div className="stardust-dropdown__item-body">
+                                        <div className={`stardust-dropdown__item-body ${showmore.children?'stardust-dropdown__item-body--open':""}`}>
                                             <div className="folding-items__folded-items">
                                                 {categories.category_children.map((category,index)=>{
                                                     if(index>=3){
@@ -341,12 +342,12 @@ const Categorydetail = ({data,category_id}) => {
                             })}
                             {categories.category_choice.length>2?
                             <div className="stardust-dropdown folding-items__toggle">
-                                <div className="stardust-dropdown__item-header">
-                                    <div className="filter-group__toggle-btn">
+                                {showmore.choice && (<div className="stardust-dropdown__item-header">
+                                    <div onClick={()=>setShowmore({...showmore,choice:true})} className="filter-group__toggle-btn">
                                         Thêm<svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-down"><g><path d="m11 2.5c0 .1 0 .2-.1.3l-5 6c-.1.1-.3.2-.4.2s-.3-.1-.4-.2l-5-6c-.2-.2-.1-.5.1-.7s.5-.1.7.1l4.6 5.5 4.6-5.5c.2-.2.5-.2.7-.1.1.1.2.3.2.4z"></path></g></svg>
                                     </div>
-                                </div>
-                                <div className="stardust-dropdown__item-body">
+                                </div>)}
+                                <div className={`stardust-dropdown__item-body ${showmore.choice?'stardust-dropdown__item-body--open':""}`}>
                                     <div className="folding-items__folded-items">
                                     {categories.category_choice.map((category,index)=>{
                                         if(index>2){

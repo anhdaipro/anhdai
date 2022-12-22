@@ -13,6 +13,10 @@
       min-height: 600px;
       margin: 0 auto;
   }
+  .stardust-dropdown__item-body.stardust-dropdown__item-body--open {
+    height: auto;
+    opacity: 1;
+}
   ._1ix216, .Xqnqjs {
     justify-content: space-between;
   }
