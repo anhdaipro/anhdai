@@ -104,9 +104,10 @@ const Categorydetail = ({data,category_id}) => {
     const {slug}=useParams();
     const [FormData,setFormData]=useState({minPrice:null,maxPrice:null})
     const [show,setShow]=useState(false)
-    const [categories,setCategory]=useState({category_children:[],category_choice:[]})
+    const [categories,setCategory]=useState({category_children:[]})
     const [params, setSearchParams] = useSearchParams();
     const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
+    const [category_choice,setCategorychoice]=useState([])
     const search=Object.fromEntries([...params])
     const [listitem,setListitem]=useState()
     const[shopmalls,setShopmall]=useState([])
@@ -129,6 +130,7 @@ const Categorydetail = ({data,category_id}) => {
             usesearch.set('category_id',category_id)
             const res =await axios.get(`${searchURL}?${usesearch}`,headers())
             setListitem(res.data)
+            setCategorychoice(res.data.category_choice)
             }
         })()
     },[params,category_id])
@@ -321,7 +323,7 @@ const Categorydetail = ({data,category_id}) => {
                     <div className="filter-group facet-filter">
                         <div className="filter-group__header">Theo Danh Mục</div>
                         <div className="folding-items filter-group__body folding-items--folded">
-                            {categories.category_choice.map((category,index)=>{
+                            {category_choice.map((category,index)=>{
                                 if(index<2){
                                     return(
                                         <div key={index} onClick={()=>setsearch('categoryID',category.id)} className="checkbox-filter">
@@ -340,7 +342,7 @@ const Categorydetail = ({data,category_id}) => {
                                     )
                                 }
                             })}
-                            {categories.category_choice.length>2?
+                            {category_choice.length>2?
                             <div className="stardust-dropdown folding-items__toggle">
                                 {!showmore.choice && (<div className="stardust-dropdown__item-header">
                                     <div onClick={()=>setShowmore({...showmore,choice:true})} className="filter-group__toggle-btn">
@@ -349,7 +351,7 @@ const Categorydetail = ({data,category_id}) => {
                                 </div>)}
                                 <div className={`stardust-dropdown__item-body ${showmore.choice?'stardust-dropdown__item-body--open':""}`}>
                                     <div className="folding-items__folded-items">
-                                    {categories.category_choice.map((category,index)=>{
+                                    {category_choice.map((category,index)=>{
                                         if(index>2){
                                             return(
                                                 <div key={index} className="checkbox-filter">
