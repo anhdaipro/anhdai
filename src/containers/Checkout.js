@@ -78,18 +78,18 @@ const Checkout =({user,showchat})=>{
         
     }, []);
     
-    function checkout(e){
-        const data={id:state.address_order.id,payment_choice:state.method_choice}
-        axios.post(checkoutURL,JSON.stringify(data),headers())
-            .then(res=>{ 
-                if(state.method_choice=='Payment on delivery'){
+    const  checkout = async (e)=>{
+        if(state.address_order){
+            const data={id:state.address_order.id,payment_choice:state.method_choice}
+            const res= await axios.post(checkoutURL,JSON.stringify(data),headers())
+            if(state.method_choice=='Payment on delivery'){
                 navigate("/user/purchase")
-                }
-                if(state.method_choice=='Paypal'){
+            }
+            if(state.method_choice=='Paypal'){
                 window.location.href="/payment"
-                }
-            })
+            }
         }
+    }
     
     function changeaddress(){
         if(state.list_addresses.length==0){
@@ -494,7 +494,7 @@ const Checkout =({user,showchat})=>{
                                     <a href="https://shopee.vn/legaldoc/policies/" target="_blank" rel="noopener noreferrer">Điều khoản Shopee</a>
                                     </div>
                                 </div>
-                                <button onClick={(e)=>checkout(e)} className="stardust-button stardust-button--primary stardust-button--large _1qSlAe">Đặt hàng</button>
+                                <button disabled={state.address_order?false:true} onClick={(e)=>checkout(e)} className={`stardust-button stardust-button--primary ${state.address_order?'':'disable'} stardust-button--large _1qSlAe`}>Đặt hàng</button>
                                 </div>
                             </div>
                         </div>

@@ -538,8 +538,8 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,
   
     const setshowthread=(e)=>{
         e.preventDefault()
-        let data={member:[user.id,data.user_id],thread:null,item_id:data.id,send_to:data.user_id}
-        showchat(data)
+        const form={member:[user.id,data.user_id],thread:null,item_id:data.id,send_to:data.user_id}
+        showchat(form)
         showthreads()
     }
   
