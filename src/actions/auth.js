@@ -210,9 +210,9 @@ export const login = (username, password) => async dispatch => {
             'Content-Type': 'application/json'
         }
     };
-    const data=!validatEemail(username)?{username:username,password:password}:{email:username,password:password}
+    const form=!validatEemail(username)?{username:username,password:password}:{email:username,password:password}
     try {
-        const res = await axios.post(loginURL,JSON.stringify(data), config);
+        const res = await axios.post(loginURL,JSON.stringify(form), config);
 
         dispatch({
             type: LOGIN_SUCCESS,
@@ -221,6 +221,7 @@ export const login = (username, password) => async dispatch => {
         });
         
         const data = res.data
+        
         localStorage.setItem("expirationDate", data.access_expires);
         localStorage.setItem('token',data.access);
         localStorage.setItem('refresh',data.refresh)
