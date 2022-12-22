@@ -247,7 +247,7 @@ const Iteminfo=(props)=>{
                                             <div className="_3gvvQI">
                                                 <div className="_3_Bulc">{item.colors[0].name}:</div>
                                                 {item.colors.map(item=>
-                                                    <button key={item.id} onClick={(e)=>setcolor(e,item)} className={`product-variation${state.variation_size.length>0?`${item.variation.some(r=> state.variation_size.includes(r))?'':' disable'}`:''}${item.id===state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
+                                                    <button key={item.id} onClick={(e)=>setcolor(e,item)} className={`product-variation ${state.variation_size.length==0 || item.variation.some(r=> state.variation_size.includes(r))?'':' disable'} ${item.id===state.color_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                                         {state.color_id===item.id?
                                                         <div className="product-variation__tick">
                                                         <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
@@ -261,7 +261,7 @@ const Iteminfo=(props)=>{
                                             <div className="_3gvvQI">
                                                 <div className="_3_Bulc">{item.sizes[0].name}:</div>
                                                 {item.sizes.map(item=>
-                                                    <button key={item.id} onClick={(e)=>setsize(e,item)} className={`product-variation${state.variation_color.length>0?`${item.variation.some(r=> state.variation_color.includes(r))?'':' disable'}`:''}${item.id===state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
+                                                    <button key={item.id} onClick={(e)=>setsize(e,item)} className={`product-variation ${state.variation_color.length==0 || !cartitem.find(cart=>cart.size_id==size.id && cart.color_id==state.color_id) || item.variation.some(r=> state.variation_color.includes(r))?'':' disable'} ${item.id===state.size_id?' product-variation--selected':''}`} aria-label={item.value}>{item.value}
                                                         {state.size_id===item.id?
                                                         <div className="product-variation__tick">
                                                             <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
