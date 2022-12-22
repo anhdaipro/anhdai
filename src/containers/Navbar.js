@@ -53,9 +53,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     const onUnload=(e)=>{
         (async ()=>{
             if(expiry()>0 && localStorage.token){
-                let form =new FormData()
-                form.append('online',false)
-                axios.post(updateuseronlineURL,form,headers())
+                axios.post(updateuseronlineURL,JSON.stringify({online:false}),headers())
             }
         })()
     }
