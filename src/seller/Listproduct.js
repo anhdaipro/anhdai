@@ -395,7 +395,7 @@ const Listproduct=()=>{
                                                     </div>
                                                 </div>
                                                 <div className="item-center" >
-                                                    <Link to={`vendor/product/${item.id}`}>
+                                                    <Link to={`/vendor/product/${item.id}`}>
                                                         <img src={item.image} alt="" width="52px" height="52px"/> 
                                                     </Link>
                                                     <div className="item_detail">
