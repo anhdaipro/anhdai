@@ -38,7 +38,7 @@ const Layout = ({children,checkAuthenticated,user }) => {
                     localStorage.setItem("expirationDate",expiri);
                 })
             }
-        },2000)
+        },300)
         return () => clearInterval(interval);
     },[user])
     return (
