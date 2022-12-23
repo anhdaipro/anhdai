@@ -18,6 +18,7 @@ export const promotionURL=`${endpoint}/bundle-deal/`
 export const otpURL=`${endpoint}/resend-sms`
 export const updateURL=`${endpoint}/update/image`
 export const categoryhomeURL=`${endpoint}/category/home`
+export const trendsearchURL=`${endpoint}/trendsearch`
 export const changepassURL=`${endpoint}/change/password/`
 export const registeremailURL=`${endpoint}/register/email`
 export const verifyemailURL=`${endpoint}/verify/email`

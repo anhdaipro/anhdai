@@ -182,8 +182,7 @@ const Categorydetail = ({data,category_id}) => {
             </div>
             <div className="containers _3wA4TW">
                 <Shopmall 
-                num_display={6}
-                width={1200}
+               
                 categories={shopmalls}/>
             </div>
             <div className="containers">

@@ -2,13 +2,14 @@ import React,{useState,useEffect,createRef} from 'react';
 import axios from 'axios';
 import Navbar from "./Navbar"
 import {formatter,partition} from "../constants"
-import {ItemRecommend,topsearchURL,imagehomeURL,dashboardpromotionURL,listitemflashsalelURL,listcategoryURL} from "../urls"
+import {ItemRecommend,topsearchURL,imagehomeURL,trendsearchURL,listitemflashsalelURL,listcategoryURL} from "../urls"
 import { Link } from 'react-router-dom';
 import SlideshowGallery from "../hocs/Slideshow"
 import { headers } from '../actions/auth';
 import Dailyreacomment from './home/Dailyrecommend';
 import styled from "styled-components"
 import Brand from './home/Brand';
+import Items from './home/Displayitem';
 
 const ListItem=styled.div`
     display: flex;
@@ -54,7 +55,21 @@ const Image1=styled.img`
 width:17px;height:17px;
 margin-right:4px
 `
-const Name=styled.div`
+const Styletext=styled.div`
+    line-height: 1.5625rem;
+    font-weight: 500;
+`
+const Boxitem=styled(Styletext)`
+    bottom: 0;
+    position:absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5625rem;
+    background-color: rgba(0,0,0,.26);
+    color: #fff;
+    text-align: center;
+`
+const Name=styled(Styletext)`
     display: -webkit-box;
     text-overflow: ellipsis;
     -webkit-box-orient: vertical;
@@ -85,6 +100,19 @@ const ImageBackground=styled.div`
     width: 100%;
     padding-top: 100%;
 
+`
+const Title=styled.div`
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    margin-top: 1.25rem;
+    color: #555;
+    font-size: 1.125rem;
+    text-align: left;
+    text-transform: capitalize;
+    word-break: break-word;
 `
 const listitem=[
     {name:'Shopee food',image:'https://cf.shopee.vn/file/46a2a2c810622f314d78455da5e5d926_xhdpi'},
@@ -186,58 +214,41 @@ class Category extends React.Component {
     }
     
     render() {
-        const {categories,transform,translateY}=this.state
-        const {num_display,width}=this.props
-            const remove=(e)=>{
-                var array = [...this.state.categories]
-                var index = array.indexOf(e.target.value)
-            }
-        const widthcate=categories.length/num_display
-        const settransform=(value)=>{
-            this.setState({translateY: value<=0?0:value>=widthcate-1?widthcate-1:value})
+        const {categories}=this.state
+        const itemdisplay=(item)=>{
+            return(
+                <div className="home-category-list__group">
+                    {
+                        item.map(category=>
+                        <Link to={`/${category.slug}`} key={category.id} className="home-category-list__category-grid">
+                            <div className="_5XYhbS">
+                                <div className="WCwWZw">
+                                    <div className="_25_r8I _3K5s_h">
+                                        <div className="_3K5s_h _2GchKS" style={{backgroundImage:`url(${category.image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                                    </div>
+                                </div>
+                                <div className="_3DLGAG">
+                                    <div className="_13sfos">{category.title}</div>
+                                </div>
+                            </div>
+                        </Link>
+                    )}
+                                    
+                </div>
+            )
         }
-        const dx=parseInt(num_display)/num_display
         return (
             <div className="section-category-list">
                 <div className="header-section__header item-center">
                     <div className="header-section__header__title">Danh Mục</div>
                 </div>
-                
-                <div className="image-carousel">
-                    <div className="image-carousel__item-list-wrapper">
-                        <ul className="image-carousel__item-list" style={{width: `${categories.length*100/num_display}%`, transform: `translate(-${translateY*width}px, 0px)`, transition: 'all 500ms ease 0s'}}>
-                           {
-                            categories.map((item,i)=>
-                                <li className="image-carousel__item" key={i} style={{width:`${100/num_display}%`}}>
-                                    <div className="home-category-list__group">
-                                        {
-                                        item.map(category=>
-                                        <Link onClick={remove} to={`/${category.slug}`} key={category.id} className="home-category-list__category-grid">
-                                            <div className="_5XYhbS">
-                                                <div className="WCwWZw">
-                                                    <div className="_25_r8I _3K5s_h">
-                                                        <div className="_3K5s_h _2GchKS" style={{backgroundImage:`url(${category.image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
-                                                    </div>
-                                                </div>
-                                                <div className="_3DLGAG">
-                                                    <div className="_13sfos">{category.title}</div>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                        )}
-                                    
-                                    </div>
-                                </li>
-                            )}
-                        </ul>
-                    </div>
-                    <div onClick={()=>settransform(translateY-dx)} className={`carousel-arrow carousel-arrow--prev carousel-arrow--hint ${translateY==0?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
-                            <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
-                    </div>
-                    <div onClick={()=>settransform(translateY+dx)}  className={`carousel-arrow carousel-arrow--next carousel-arrow--hint ${translateY==(categories.length/num_display)?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==widthcate-1?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
-                        <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
-                    </div>
-                </div>
+                <Items
+                    itemdisplay={itemdisplay}
+                    num_display={10}
+                    num_show={10}
+                    width={1200}
+                    items={categories}
+                />
             </div>
         )
     }
@@ -246,9 +257,7 @@ class Category extends React.Component {
 const Itemflashsale =(props)=> {
     const [state,setState]=useState({items:[],time_end:new Date(),transform:'translate(0px, 0px)',loading:false })
     const [time,setTime]=useState({hours:0,mins:0,seconds:0})
-    const [translateY,settranslateY]=useState(0)
-    const{num_display,width}=props
-    
+   
     useEffect(() => {
         const getJournal = async () => {
         await axios.get(listitemflashsalelURL,headers())
@@ -275,7 +284,54 @@ const Itemflashsale =(props)=> {
         getJournal()
     },[])
 
-    
+    const itemdisplay=(item)=>{
+        return(
+            <div className="flash-sale-item-card flash-sale-item-card--home-page">
+                <Link className="flash-sale-item-card-link" to={`/flash_sale?fromItem=${item.id}&promotionId=${id}`}>
+                    <div className="flash-sale-item-card__image flash-sale-item-card__image--home-page">
+                        <div className="_2JCOmq">
+                            <div className="flash-sale-item-card__image-overlay flash-sale-item-card__image-overlay--home-page _3LhWWQ" style={{backgroundImage:`url(${item.image})`,backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                        </div>
+                        <div className="_2JCOmq">
+                            <div className="flash-sale-item-card__animated-image _3LhWWQ" style={{backgroundImage: `url(${item.image})`,backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                        </div>
+                    </div>
+                    <div className="flash-sale-item-card__lower-wrapper flash-sale-item-card__lower-wrapper flash-sale-item-card__lower-wrapper--home-page">
+                        <div className="flash-sale-item-card__lower-left">
+                            <div className="flash-sale-item-card__current-price flash-sale-item-card__current-price--home-page">
+                                <span className="item-price-dollar-sign">₫ </span>
+                                <span className="item-price-number">{formatter.format(item.discount_price)}</span> 
+                            </div>
+                            
+                            <div className="flash-sale-progress-bar__wrapper flash-sale-progress-bar__wrapper--home-page">
+                                <div className="HIIASx">
+                                    <div className="Ygavkn">{item.number_order/item.promotion_stock>0.8?'Sắp cháy hàng':`Đã bán ${item.number_order}`}</div>
+                                    <div className="NiQ2DI">
+                                        <div className="NwnNg9" style={{width: `${(1-(item.number_order/item.promotion_stock))*100}%`}}> 
+                                            <div className="zYeAeX"></div>
+                                        </div>
+                                    
+                                    </div>
+                                    {item.number_order/item.promotion_stock>0.5&&(<div className="Xm0-Ex"></div>)}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flash-sale-item-card__lower-right">
+                        </div>
+                        
+                        <div className="item-card__badge-wrapper fs-item-card__badge-wrapper fs-item-card__badge-wrapper--home-page">
+                            <div className="_3e3Ul9 _63yEXc XzXrC5" >
+                                <div className="_1l5jbc">
+                                    <span className="percent-flash">{item.percent_discount}%</span>
+                                    <span className="_1GDo5V">giảm</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Link>
+            </div>  
+        )
+    }
     
     const number=(number,value)=>{
         return Array(number).fill().map((_,i)=>
@@ -284,15 +340,11 @@ const Itemflashsale =(props)=> {
             </div>
         )
     }
-    const { items,transform,id} = state;
-    const widthcate=items.length/num_display
-    const settransform=(value)=>{
-        settranslateY(value<=0?0:value>=widthcate-1?widthcate-1:value)
-    }
-    const dx=parseInt(num_display)/num_display
+    const { items,id} = state;
+    
         return (
             <>
-            {state.loading && items.length>0?
+            {state.loading && state.id?
             <div className="flash-sale-overview-carousel">
                 <div className="header-section--simple">
                     <div className="header-section__header">
@@ -336,92 +388,74 @@ const Itemflashsale =(props)=> {
                         </div>
                     </div>
                     <div className="header-section__content">
-                        <div className="image-carousel">
-                            <div className="image-carousel__item-list-wrapper">                      
-                                <ul className="image-carousel__item-list" style={{width: `${items.length*100/num_display}%`, transform: `translate(-${translateY*1200}px, 0px)`, transition: 'all 500ms ease 0s'}}>
-                                    {
-                                    items.map(item =>
-                                        <li key={item.id} className="image-carousel__item" style={{width:`${100/num_display}%`}}>
-                                            <div className="flash-sale-item-card flash-sale-item-card--home-page">
-                                                <Link className="flash-sale-item-card-link" to={`/flash_sale?fromItem=${item.id}&promotionId=${id}`}>
-                                                    <div className="flash-sale-item-card__image flash-sale-item-card__image--home-page">
-                                                        <div className="_2JCOmq">
-                                                            <div className="flash-sale-item-card__image-overlay flash-sale-item-card__image-overlay--home-page _3LhWWQ" style={{backgroundImage:`url(${item.image})`,backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
-                                                        </div>
-                                                        <div className="_2JCOmq">
-                                                            <div className="flash-sale-item-card__animated-image _3LhWWQ" style={{backgroundImage: `url(${item.image})`,backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flash-sale-item-card__lower-wrapper flash-sale-item-card__lower-wrapper flash-sale-item-card__lower-wrapper--home-page">
-                                                        <div className="flash-sale-item-card__lower-left">
-                                                            <div className="flash-sale-item-card__current-price flash-sale-item-card__current-price--home-page">
-                                                                <span className="item-price-dollar-sign">₫ </span>
-                                                                <span className="item-price-number">{formatter.format(item.discount_price)}</span> 
-                                                            </div>
-                                                            
-                                                            <div className="flash-sale-progress-bar__wrapper flash-sale-progress-bar__wrapper--home-page">
-                                                                <div className="HIIASx">
-                                                                    <div className="Ygavkn">{item.number_order/item.promotion_stock>0.8?'Sắp cháy hàng':`Đã bán ${item.number_order}`}</div>
-                                                                    <div className="NiQ2DI">
-                                                                        <div className="NwnNg9" style={{width: `${(1-(item.number_order/item.promotion_stock))*100}%`}}> 
-                                                                            <div className="zYeAeX"></div>
-                                                                        </div>
-                                                                       
-                                                                    </div>
-                                                                    {item.number_order/item.promotion_stock>0.5&&(<div className="Xm0-Ex"></div>)}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flash-sale-item-card__lower-right">
-                                                        </div>
-                                                        
-                                                        <div className="item-card__badge-wrapper fs-item-card__badge-wrapper fs-item-card__badge-wrapper--home-page">
-                                                            <div className="_3e3Ul9 _63yEXc XzXrC5" >
-                                                                <div className="_1l5jbc">
-                                                                    <span className="percent-flash">{item.percent_discount}%</span>
-                                                                    <span className="_1GDo5V">giảm</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </Link>
-                                            </div>
-                                        </li>
-                                        )
-                                        }
-                                    </ul>
-                                </div>
-                                <div onClick={()=>settransform(translateY-dx)} className={`carousel-arrow carousel-arrow--prev carousel-arrow--hint ${translateY==0?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
-                                    <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
-                                </div>
-                                <div onClick={()=>settransform(translateY+dx)}  className={`carousel-arrow carousel-arrow--next carousel-arrow--hint ${translateY==widthcate-1?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==widthcate-1?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
-                                    <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>  
+                        <Items
+                            itemdisplay={itemdisplay}
+                            num_display={6}
+                            num_show={5}
+                            width={1200}
+                            items={items}
+                        />
+                    </div>
+                </div>  
             </div>:""}
         </>
     )
 }
 
-const StyleText=styled.div`
-`
+const Topsearch=(props)=>{
+    const [items,setItems]=useState([])
+    useEffect(()=>{
+        (async () => {
+            try {
+              const res = await axios.get(trendsearchURL,headers())
+              setItems(res.data)
+            } catch (error) {
+              console.log(error);
+            }
+        })();
+    },[])
+
+    const itemdisplay=(item)=>{
+        return(
+            <Link className="_2v1m5m _19v7wz" to="/top_products?catId=VN_BITL0_157%3Atop_sold">
+                <div className="_2wHcAp" style={{position:'relative'}}>
+                    <div className="_2vSrVD _1zCwoN _3ZJfNv"></div>
+                    <ImageBackground image={item.image}>             
+                    </ImageBackground>
+                    <Boxitem>Bán {item.number_order}k+ / tháng</Boxitem>
+                </div>
+                <Title>{item.title}</Title>
+            </Link>
+        )
+    }
+    return(
+        <Items
+            itemdisplay={itemdisplay}
+            num_display={6}
+            num_show={5}
+            width={1200}
+            items={items}
+        />
+    )
+}
 export default class HomePage extends React.Component {
-    state={items:[],item_common:[],list_trend_search:[],list_top_search:[],showimage:true,from_index:0,categories:[]}
+    state={items:[],loading:false,item_common:[],list_trend_search:[],list_top_search:[],showimage:true,from_index:0,categories:[]}
     componentDidMount() {  
+        
         document.addEventListener('scroll',this.addItem)
     }
+    
     componentWillUnmount() {
         document.removeEventListener('scroll', this.addItem)
     }
     addItem=()=>{
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-            if(clientHeight + scrollTop == scrollHeight && this.state.items.length==0){
+            if(clientHeight + scrollTop >= scrollHeight -200 && !this.state.loading){
                 (async () => {
                     try {
                       const res1 = await axios.get(topsearchURL,headers())
-                      this.setState({list_top_search:res1.data.item_top_search,list_trend_search:res1.data.item_top_search})
+
+                      this.setState({loading:true,list_trend_search:res1.data.item_top_search})
                     } catch (error) {
                       console.log(error);
                     }
@@ -442,7 +476,8 @@ export default class HomePage extends React.Component {
         this.setState({from_index:from_index})
     }
     render() {
-        const {items,categories}=this.state
+        const {items,categories,list_trend_search,list_top_search}=this.state
+        console.log(this.state.list_trend_search)
         return (
             <>
                 <div id="main">
@@ -453,58 +488,11 @@ export default class HomePage extends React.Component {
                         <div className="containers">
                             <ImageHome/>
                             <Category
-                            width={1200}
-                            num_display={10}
                             />
                             <Itemflashsale
-                            width={1200}
-                            num_display={10}
                             />
                             
-                            <div className="section-trending-search-list">
-                                <div className="header-section header-section--simple">
-                                    <div className="header-section__header item-center">
-                                        <div className="header-section__header__title">
-                                            <span>xu hướng tìm kiếm</span>
-                                        </div>
-                                        <div className="header-section__header-link">
-                                            <button onClick={()=>this.addtrendsearch(this.state.from_index+5)} className="button-no-outline">
-                                                <svg viewBox="0 0 12 15" className="svg-icon icon-refresh"><path d="M12 7.51268255c0-1.71021918-.7226562-3.30538371-1.9648437-4.43447938-.20507817-.18525749-.52148442-.16965686-.7070313.03315134-.18554687.20475828-.16992188.52067106.03320313.70592856C10.3984375 4.75722109 11 6.08717488 11 7.51268255c0 2.59360495-1.98242187 4.72699125-4.515625 4.96880095l.68164063-.7878318c.1796875-.2086585.15625-.5245713-.05273438-.7039785-.20898438-.1794073-.52539062-.1560063-.70507813.0526521l-1.49609375 1.7336201c-.18164062.2106086-.15625.5284714.05664063.7078787l1.65429688 1.3982065c.21093749.1774572.52539062.1521062.70507812-.0585023.17773438-.2106085.15234375-.5245712-.05859375-.7039785l-.75195313-.6357257C9.58789062 13.2205634 12 10.6484094 12 7.51268255zM2.80273438 11.3523879C1.66796875 10.4085497 1 9.0161934 1 7.51463263c0-2.75741154 2.23828125-4.99220194 5-4.99220194h.01367188l-.7734375.75078037c-.19726563.19305781-.203125.50897059-.00976563.70592855.19335938.19695797.50976563.20280821.70703125.0097504l1.64257813-1.59516453c.19921875-.19305781.20117187-.51287074.00585937-.70982871L6.06054688.14723461c-.1953125-.19500789-.51171875-.19695797-.70703125-.00195008C5.15820313.34029242 5.15625.6562052 5.3515625.85121309l.66992188.67472729H6c-3.31445312 0-6 2.68135846-6 5.99064232 0 1.8018729.80273438 3.4750406 2.16210938 4.6060863.21289062.1755071.52734375.148206.70507812-.0643526.17773438-.2164587.1484375-.5304214-.06445312-.7059285z" fillRule="nonzero"></path></svg>&nbsp;Xem thêm
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="header-section__content item-center">
-                                        {this.state.list_trend_search.slice(this.state.from_index,this.state.from_index+5).map((item,i)=>
-                                                <Link key={i} className="_2o9bHG X_20U5" to={`/search?keyword=${item.title}`}>
-                                                    <div className="_3gOWPW">
-                                                        <div className="_1-oDWo">
-                                                            <div className="_2-Akqx">{item.tile}</div>
-                                                            <div className="SB6LCl">{item.count>1000?`${item.count/1000}k`:item.count}+ sản phẩm</div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="_25_r8I _34PMOY">
-                                                        <div className="_1JryA_ _2GchKS" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
-                                                    </div>
-                                                </Link>
-                                                
-                                        )}
-                                        
-                                    </div> 
-                                </div>
-                            </div>
-                            
-                            <div className="header-section header-section--simple">
-                                <div className="header-section__header item-center">
-                                    <div className="header-section__header__title">
-                                        <span className="_1HWfeJ">Tìm kiếm hàng đầu</span>
-                                    </div>
-                                    <Link className="header-section__header-link" to="/top_products?catId=VN_BITL0_157">
-                                        <button className="button-no-outline">Xem tất cả&nbsp;
-                                            <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
-                                        </button>
-                                    </Link>
-                                </div>
-                                <div class="homepage-mall-section">
+                            <div class="homepage-mall-section">
                                     <div class="header-section header-section--simple">
                                         <Header>
                                             <div class="header-section__header__title">
@@ -541,39 +529,59 @@ export default class HomePage extends React.Component {
                                         <div class="header-section__content">
                                             
                                             <Brand
-                                            width={800}
-                                            num_display={4}
+                                           
                                             />
                                             
                                         </div>
                                     </div>
                                 </div>
-                                <div className="header-section__content">
-                                    <div className="stardust-carousel">
-                                        <div className="stardust-carousel__item-list-wrapper">
-                                            <ul className="stardust-carousel__item-list" style={{width: '333%', transition: 'all 500ms ease 0s', transform: 'translateX(0%) translateX(0px)'}}>
-                                                {this.state.list_trend_search.map(item=>
-                                                <li className="stardust-carousel__item" style={{width: '67%'}}>
-                                                    <Link className="_2v1m5m _19v7wz" to="/top_products?catId=VN_BITL0_157%3Atop_sold">
-                                                        <div className="_2wHcAp">
-                                                            <div className="_2vSrVD _1zCwoN _3ZJfNv"></div>
-                                                            <div className="_3XtrnR _2IxFy9">
-                                                                <img width="invalid-value" height="invalid-value" className="_2LpY01 nO87xn" style={{objectFit: 'contain'}} src={item.image}/>
-                                                            </div>
-                                                            <div className="_2-yTl9">Bán {item.number_order}k+ / tháng</div>
-                                                        </div>
-                                                        <div className="_2v3AbD">{item.name}</div>
-                                                    </Link>
-                                                </li>)}
-                                            </ul>               
+                                <div className="section-trending-search-list">
+                                <div className="header-section header-section--simple">
+                                    <div className="header-section__header item-center">
+                                        <div className="header-section__header__title">
+                                            <span>xu hướng tìm kiếm</span>
                                         </div>
-                                        <div className="stardust-carousel__arrow stardust-carousel__arrow--type-2 stardust-carousel__arrow--prev stardust-carousel__arrow--disabled">
-                                            <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" role="img" className="stardust-icon stardust-icon-arrow-left-bold"><path stroke="none" d="m4.2 10l7.9-7.9-2.1-2.2-9 9-1.1 1.1 1.1 1 9 9 2.1-2.1z"></path></svg>
-                                        </div>
-                                        <div className="stardust-carousel__arrow stardust-carousel__arrow--type-2 stardust-carousel__arrow--next">
-                                            <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" role="img" className="stardust-icon stardust-icon-arrow-right-bold"><path stroke="none" d="m11.1 9.9l-9-9-2.2 2.2 8 7.9-8 7.9 2.2 2.1 9-9 1-1z"></path></svg>
+                                        <div className="header-section__header-link">
+                                            <button onClick={()=>this.addtrendsearch(this.state.from_index+5)} className="button-no-outline">
+                                                <svg viewBox="0 0 12 15" className="svg-icon icon-refresh"><path d="M12 7.51268255c0-1.71021918-.7226562-3.30538371-1.9648437-4.43447938-.20507817-.18525749-.52148442-.16965686-.7070313.03315134-.18554687.20475828-.16992188.52067106.03320313.70592856C10.3984375 4.75722109 11 6.08717488 11 7.51268255c0 2.59360495-1.98242187 4.72699125-4.515625 4.96880095l.68164063-.7878318c.1796875-.2086585.15625-.5245713-.05273438-.7039785-.20898438-.1794073-.52539062-.1560063-.70507813.0526521l-1.49609375 1.7336201c-.18164062.2106086-.15625.5284714.05664063.7078787l1.65429688 1.3982065c.21093749.1774572.52539062.1521062.70507812-.0585023.17773438-.2106085.15234375-.5245712-.05859375-.7039785l-.75195313-.6357257C9.58789062 13.2205634 12 10.6484094 12 7.51268255zM2.80273438 11.3523879C1.66796875 10.4085497 1 9.0161934 1 7.51463263c0-2.75741154 2.23828125-4.99220194 5-4.99220194h.01367188l-.7734375.75078037c-.19726563.19305781-.203125.50897059-.00976563.70592855.19335938.19695797.50976563.20280821.70703125.0097504l1.64257813-1.59516453c.19921875-.19305781.20117187-.51287074.00585937-.70982871L6.06054688.14723461c-.1953125-.19500789-.51171875-.19695797-.70703125-.00195008C5.15820313.34029242 5.15625.6562052 5.3515625.85121309l.66992188.67472729H6c-3.31445312 0-6 2.68135846-6 5.99064232 0 1.8018729.80273438 3.4750406 2.16210938 4.6060863.21289062.1755071.52734375.148206.70507812-.0643526.17773438-.2164587.1484375-.5304214-.06445312-.7059285z" fillRule="nonzero"></path></svg>&nbsp;Xem thêm
+                                            </button>
                                         </div>
                                     </div>
+                                    <div className="header-section__content item-center">
+                                        {list_trend_search.slice(this.state.from_index,this.state.from_index+5).map((item,i)=>
+                                                <Link key={item.id} className="_2o9bHG X_20U5" to={`/search?keyword=${item.title}`}>
+                                                    <div className="_3gOWPW">
+                                                        <div className="_1-oDWo">
+                                                            <div className="_2-Akqx">{item.tile}</div>
+                                                            <div className="SB6LCl">{item.count>1000?`${item.count/1000}k`:item.count}+ sản phẩm</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="_25_r8I _34PMOY">
+                                                        <div className="_1JryA_ _2GchKS" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                                                    </div>
+                                                </Link>
+                                                
+                                        )}
+                                        
+                                    </div> 
+                                </div>
+                            </div>
+                            <div className="header-section header-section--simple">
+                                <div className="header-section__header item-center">
+                                    <div className="header-section__header__title">
+                                        <span className="_1HWfeJ">Tìm kiếm hàng đầu</span>
+                                    </div>
+                                    <Link className="header-section__header-link" to="/top_products?catId=VN_BITL0_157">
+                                        <button className="button-no-outline">Xem tất cả&nbsp;
+                                            <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
+                                        </button>
+                                    </Link>
+                                </div>
+                                
+                                <div className="header-section__content">
+                                    <Topsearch
+                                    />
+                                    
                                 </div>
                             </div>
                             <div className="section-recommend-products-wrapper">

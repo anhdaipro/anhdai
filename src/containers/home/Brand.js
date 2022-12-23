@@ -3,6 +3,7 @@ import {useMemo, useState} from "react"
 import styled from 'styled-components'
 import SlideshowGallery from '../../hocs/Slideshow';
 import {partition} from "../../constants"
+import Items from './Displayitem';
 const Content=styled.div`
 width: 50rem;
 display: inline-block;
@@ -51,59 +52,45 @@ const int=2
 const categories=partition(listitem, int).map(subarray => subarray)
 
 const Brand=(props)=>{
-    const {num_display,width}=props
-   
-    
-    const [translateY,settranslateY]=useState(0)
-    const widthcate=categories.length/num_display
-    const settransform=(value)=>{
-        settranslateY(value<=0?0:value>=widthcate-1?widthcate-1:value)
+    const itemdisplay=(item)=>{
+        return(
+            <div>
+                {item.map((category,index)=>
+                    <div key={index} class="ofs-carousel__item" location="14" shopid="37251700">
+                        <Link class="ofs-carousel__shop-cover-image" to="/larocheposay">
+                            <div class="n-CE6j">
+                                <ImageBackground image={category.image} class="ofs-carousel__cover-image edy5hG"></ImageBackground>
+                            </div>
+                        </Link>
+                        <div class="ofs-carousel__item__text">{category.name}</div>
+                    </div>
+                )}
+            </div> 
+        )
     }
-  
-    const dx=parseInt(num_display)/num_display
     return(
-                <>
-                    <Contentslide>
-                        <div style={{width:'100%'}}>
-                        <SlideshowGallery
-                            slides={items}
-                            automatic={true}
-                            timeout={`2500`}
-                            top={118.947}
-                            dot={true}
-                        />
-                        </div>
-                    </Contentslide>
-                    <Content>
-                        <div className="image-carousel">
-                            <div className="image-carousel__item-list-wrapper">
-                                <ul className="image-carousel__item-list" style={{width: `${categories.length*100/num_display}%`, transform: `translate(-${translateY*width}px, 0px)`, transition: 'all 500ms ease 0s'}}>
-                                    {categories.map((category,i)=>
-                                    <li key={i} className="image-carousel__item" style={{padding: '0px',width: `${100/num_display}%`}}>
-                                        <div>
-                                            {category.map(item=>
-                                                <div class="ofs-carousel__item" location="14" shopid="37251700">
-                                                    <Link class="ofs-carousel__shop-cover-image" to="/larocheposay">
-                                                        <div class="n-CE6j">
-                                                            <ImageBackground image={item.image} class="ofs-carousel__cover-image edy5hG"></ImageBackground>
-                                                        </div>
-                                                    </Link>
-                                                    <div class="ofs-carousel__item__text">{item.name}</div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </li>)}
-                                </ul>
-                            </div>
-                            <div onClick={()=>settransform(translateY-dx)} className={`carousel-arrow carousel-arrow--prev carousel-arrow--hint ${translateY==0?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==0?'hidden':'visible'}`, transform: 'translateX(calc(-50% + 0px))'}}>
-                                <svg enableBackground="new 0 0 13 20" viewBox="0 0 13 20" x="0" y="0" className="svg-icon icon-arrow-left-bold"><polygon points="4.2 10 12.1 2.1 10 -.1 1 8.9 -.1 10 1 11 10 20 12.1 17.9"></polygon></svg>
-                            </div>
-                            <div onClick={()=>settransform(translateY+dx)}  className={`carousel-arrow carousel-arrow--next carousel-arrow--hint ${translateY==Math.ceil(categories.length/num_display)?'carousel-arrow--hidden':''}`} role="button" tabIndex="0" style={{opacity: 1, visibility: `${translateY==widthcate-1?'hidden':'visible'}`, transform: 'translateX(calc(50% - 0px))'}}>
-                                <svg enableBackground="new 0 0 13 21" viewBox="0 0 13 21" x="0" y="0" className="svg-icon icon-arrow-right-bold"><polygon points="11.1 9.9 2.1 .9 -.1 3.1 7.9 11 -.1 18.9 2.1 21 11.1 12 12.1 11"></polygon></svg>
-                            </div>
-                        </div>
-                    </Content>
-                </>
+        <>
+            <Contentslide>
+                <div style={{width:'100%'}}>
+                    <SlideshowGallery
+                        slides={items}
+                        automatic={true}
+                        timeout={`2500`}
+                        top={118.947}
+                        dot={true}
+                    />
+                </div>
+            </Contentslide>
+            <Content>
+                <Items
+                    itemdisplay={itemdisplay}
+                    num_display={4}
+                    num_show={4}
+                    width={800}
+                    items={categories}
+                />         
+            </Content>
+        </>
     )
 }
 export default Brand

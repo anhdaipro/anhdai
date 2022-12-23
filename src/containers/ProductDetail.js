@@ -917,7 +917,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
                                                         <div className="_3frbLs _2nXmFs">
                                                             <div className="_33E3pD">
                                                                 <div className="_25_r8I">
-                                                                    <div className="_3AmYHa _2ep7Ag _2GchKS" style={{backgroundImage: `url(${shop.avatar})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                                                                    <div className="_3AmYHa _2ep7Ag _2GchKS" style={{backgroundImage: `url(${shop?shop.avatar:''})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
                                                                 </div>
                                                             </div>
                                                             <div className="_2WQCW5">
@@ -934,7 +934,10 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
                                                                         <div className="FOBwBB">
                                                                             <div className="_6frbci _1VzsJ7">{voucher.discount_type === '1'?`Giảm ${voucher.percent}%`:`Giảm ₫${formatter.format(voucher.amount)}k`}</div>
                                                                         </div>
-                                                                        <div className=" _3SkhRq">Đơn Tối Thiểu ₫{formatter.format(voucher.minimum_order_value/1000)}k <br/> Giảm tối đa ₫{formatter.format(voucher.maximum_discount/1000)}k</div>
+                                                                        <div className=" _3SkhRq">
+                                                                            Đơn Tối Thiểu ₫{formatter.format(voucher.minimum_order_value/1000)}k <br/> 
+                                                                            {voucher.maximum_discount ?`Giảm tối đa ₫${formatter.format(voucher.maximum_discount/1000)}k)`:''}
+                                                                        </div>
                                                                     </div>
                                                                     <div class>
                                                                         <span className="_5BU55m _2a2S8T">HSD: {timepromotion(voucher.valid_to)}</span>

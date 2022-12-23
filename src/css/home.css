@@ -5926,6 +5926,10 @@ position: relative;
     min-height: 40rem;
     display: flex;
 }
+.header-section__content {
+    display: flex;
+    background-color: #fff;
+}
 .page-product__content--left {
     flex: 1;
     min-width: 0;
