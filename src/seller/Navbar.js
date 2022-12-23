@@ -24,7 +24,8 @@ const Navbar = ({ logout, isAuthenticated,user }) => {
     
     
     const logout_user=(e)=> {
-        logout();  
+        logout(); 
+        window.location.href="/vendor/login"
     };
    
     const viewaccount=()=>{
