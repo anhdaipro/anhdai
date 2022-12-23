@@ -11,7 +11,7 @@ const Navbar = ({ logout, isAuthenticated,user }) => {
     let navigate = useNavigate();
     useEffect(() => {
         const info= async () =>{
-            if(expiry()>0 && slocalStorage.token){
+            if(expiry()>0 && localStorage.token){
                 const res = await axios.get(infosellerURL,headers())
                 setState({...state,username:res.data.name,avatar:res.data.avatar})   
             }
