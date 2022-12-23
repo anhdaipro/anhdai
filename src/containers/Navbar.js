@@ -20,11 +20,11 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
         setSearchchoice(data)
         }
     },[data])
-    
+   
     useEffect(() =>  {
-        if(expiry()>0 && localStorage.token){
-            (async () => {
-                try {
+        (async () => {
+            try {
+                if(expiry()>0 && localStorage.token){
                     await isAuthenticated
                     if(!hidesearch){
                         const [obj1,obj2]= await axios.all([
@@ -35,12 +35,16 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                         setCategory(obj2.data)
                         setItems(obj1.data.a)
                     }
-                }   
-                catch (error) {
-                    console.log(error);
-                }
-            })();
-        }
+                }  
+                else{
+                    window.location.href="/vendor/login"
+                } 
+            }
+                
+            catch (error) {
+                console.log(error);
+            }
+        })();
     }, []);
 
     
@@ -76,16 +80,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
     const hideaccount=()=>{
         setState({...state,view_account:false})
     };
-    useEffect(()=>{
-    if(user){
-        setTimeout(()=>{
-            axios.post(`${refreshtokenURL}`)
-            .then(res=>{
-                localStorage.setItem("expirationDate", res.data.access_expires);
-            })
-            },72000)
-        }
-    },[user])
+    
     const searchitem=()=>{
         if(searchchoice){
         navigate(`/search?keyword=${keyword}&${searchchoice.user_id?`shop=${data.name}`:`category=${data.id}`}`)
