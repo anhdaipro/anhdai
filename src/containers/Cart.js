@@ -436,66 +436,66 @@ class Cart extends React.Component{
         }
         (async () => {
             await this.props.isAuthenticated
-        try {
+            try {
+                const [obj1, obj2,obj3] = await axios.all([
+                    axios.get(listorderURL,headers()),
+                    axios.get(shoporderURL,headers()),
+                    axios.get(cartURL,headers()),
+                ])
             
-            const [obj1, obj2,obj3] = await axios.all([
-                axios.get(listorderURL,headers()),
-                axios.get(shoporderURL,headers()),
-                axios.get(cartURL,headers()),
-            ])
-            console.log(obj1.data)
-            const total=obj1.data.reduce((total,order)=>{
-                return total+order.total
-            },0)
-            const discount_product=obj1.data.reduce((total,order)=>{
-                return total+order.discount_product
-            },0)
-            const discount_promotion=obj1.data.reduce((total,order)=>{
-                return total+order.discount_promotion
-            },0)
-            const discount_deal=obj1.data.reduce((total,order)=>{
-                return total+order.discount_deal
-            },0)
-            const discount_voucher_shop=obj1.data.reduce((total,order)=>{
-                return total+order.discount_voucher_shop
-            },0)
-            const count_order=obj1.data.reduce((total,order)=>{
-                return total+order.count
-            },0)
-            const count_cartitem=obj1.data.reduce((total,order)=>{
-                return total+order.count_cartitem
-            },0)
+                const total=obj1.data.reduce((total,order)=>{
+                    return total+order.total
+                },0)
+                const discount_product=obj1.data.reduce((total,order)=>{
+                    return total+order.discount_product
+                },0)
+                const discount_promotion=obj1.data.reduce((total,order)=>{
+                    return total+order.discount_promotion
+                },0)
+                const discount_deal=obj1.data.reduce((total,order)=>{
+                    return total+order.discount_deal
+                },0)
+                const discount_voucher_shop=obj1.data.reduce((total,order)=>{
+                    return total+order.discount_voucher_shop
+                },0)
+                const count_order=obj1.data.reduce((total,order)=>{
+                    return total+order.count
+                },0)
+                const count_cartitem=obj1.data.reduce((total,order)=>{
+                    return total+order.count_cartitem
+                },0)
             
-            const list_shop=obj2.data.map(shop=>{
-                let order=obj1.data.find(order=>order.shop_id===shop.id)
-                if(order&& order.shop_id===shop.id){
-                    return({...shop,voucher:order.voucher,discount_voucher_shop:order.discount_voucher_shop,loading_voucher:true,show_voucher:false})
-                }
-                return({...shop,show_voucher:false})
-            })
-            this.setState({
-                count:obj3.data.length,
-                list_cartitem:obj3.data,
-                count_order:count_order,
-                total:total,
-                count_cartitem:count_cartitem,
-                discount_product:discount_product,
-                discount_promotion:discount_promotion,
-                discount_deal:discount_deal,
-                list_shop:list_shop,
-                discount_voucher_shop:discount_voucher_shop,loading:true})
+                const list_shop=obj2.data.map(shop=>{
+                    let order=obj1.data.find(order=>order.shop_id===shop.id)
+                    if(order&& order.shop_id===shop.id){
+                        return({...shop,voucher:order.voucher,discount_voucher_shop:order.discount_voucher_shop,loading_voucher:true,show_voucher:false})
+                    }
+                    return({...shop,show_voucher:false})
+                })
+                this.setState({
+                    count:obj3.data.length,
+                    list_cartitem:obj3.data,
+                    count_order:count_order,
+                    total:total,
+                    count_cartitem:count_cartitem,
+                    discount_product:discount_product,
+                    discount_promotion:discount_promotion,
+                    discount_deal:discount_deal,
+                    list_shop:list_shop,
+                    discount_voucher_shop:discount_voucher_shop,loading:true
+                })
             }
             catch (error) {
-            console.log(error);
+                console.log(error);
             }
         })()
         
-        document.addEventListener('scroll',this.addItem)
-        return () => {
-            document.removeEventListener('scroll', this.addItem)
-        }      
+        document.addEventListener('scroll',this.addItem)    
     }
 
+    componentWillUnmount() {
+        document.removeEventListener('scroll', this.addItem)
+    }
     addItem=()=>{
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
             if(clientHeight + scrollTop === scrollHeight && this.state.list_item_recommend.length===0){
