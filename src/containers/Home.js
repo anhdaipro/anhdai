@@ -328,11 +328,11 @@ const Itemflashsale =(props)=> {
                                     </div>
                                 </div>
                             </div>   
-                            <a href="" className="header-section__header-link">
+                            <Link to={`/flash_sale?promotionId=${id}`} className="header-section__header-link">
                                 <button className="button-no-outline">Xem tất cả&nbsp;
                                     <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
                                 </button>
-                            </a>
+                            </Link>
                         </div>
                     </div>
                     <div className="header-section__content">
@@ -368,8 +368,7 @@ const Itemflashsale =(props)=> {
                                                                         </div>
                                                                        
                                                                     </div>
-                                                                    {item.number_order/item.promotion_stock>0.5?
-                                                                        <div className="Xm0-Ex"></div>:''}
+                                                                    {item.number_order/item.promotion_stock>0.5&&(<div className="Xm0-Ex"></div>)}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -476,7 +475,7 @@ export default class HomePage extends React.Component {
                                     </div>
                                     <div className="header-section__content item-center">
                                         {this.state.list_trend_search.slice(this.state.from_index,this.state.from_index+5).map((item,i)=>
-                                                <a key={i} className="_2o9bHG X_20U5" href={`/search?keyword=${item.title}`}>
+                                                <Link key={i} className="_2o9bHG X_20U5" to={`/search?keyword=${item.title}`}>
                                                     <div className="_3gOWPW">
                                                         <div className="_1-oDWo">
                                                             <div className="_2-Akqx">{item.tile}</div>
@@ -486,7 +485,7 @@ export default class HomePage extends React.Component {
                                                     <div className="_25_r8I _34PMOY">
                                                         <div className="_1JryA_ _2GchKS" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
                                                     </div>
-                                                </a>
+                                                </Link>
                                                 
                                         )}
                                         
@@ -499,11 +498,11 @@ export default class HomePage extends React.Component {
                                     <div className="header-section__header__title">
                                         <span className="_1HWfeJ">Tìm kiếm hàng đầu</span>
                                     </div>
-                                    <a className="header-section__header-link" href="/top_products?catId=VN_BITL0_157">
+                                    <Link className="header-section__header-link" to="/top_products?catId=VN_BITL0_157">
                                         <button className="button-no-outline">Xem tất cả&nbsp;
                                             <svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-right"><path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path></svg>
                                         </button>
-                                    </a>
+                                    </Link>
                                 </div>
                                 <div class="homepage-mall-section">
                                     <div class="header-section header-section--simple">
@@ -555,7 +554,7 @@ export default class HomePage extends React.Component {
                                             <ul className="stardust-carousel__item-list" style={{width: '333%', transition: 'all 500ms ease 0s', transform: 'translateX(0%) translateX(0px)'}}>
                                                 {this.state.list_trend_search.map(item=>
                                                 <li className="stardust-carousel__item" style={{width: '67%'}}>
-                                                    <a className="_2v1m5m _19v7wz" href="/top_products?catId=VN_BITL0_157%3Atop_sold">
+                                                    <Link className="_2v1m5m _19v7wz" to="/top_products?catId=VN_BITL0_157%3Atop_sold">
                                                         <div className="_2wHcAp">
                                                             <div className="_2vSrVD _1zCwoN _3ZJfNv"></div>
                                                             <div className="_3XtrnR _2IxFy9">
@@ -564,7 +563,7 @@ export default class HomePage extends React.Component {
                                                             <div className="_2-yTl9">Bán {item.number_order}k+ / tháng</div>
                                                         </div>
                                                         <div className="_2v3AbD">{item.name}</div>
-                                                    </a>
+                                                    </Link>
                                                 </li>)}
                                             </ul>               
                                         </div>
