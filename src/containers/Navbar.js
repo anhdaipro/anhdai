@@ -36,9 +36,6 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                         setItems(obj1.data.a)
                     }
                 }  
-                else{
-                    window.location.href="/vendor/login"
-                } 
             }
                 
             catch (error) {
