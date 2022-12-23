@@ -411,11 +411,10 @@ const StyleText=styled.div`
 export default class HomePage extends React.Component {
     state={items:[],item_common:[],list_trend_search:[],list_top_search:[],showimage:true,from_index:0,categories:[]}
     componentDidMount() {  
-        
         document.addEventListener('scroll',this.addItem)
-        return () => {
-            document.removeEventListener('scroll', this.addItem)
-        }
+    }
+    componentWillUnmount() {
+        document.removeEventListener('scroll', this.addItem)
     }
     addItem=()=>{
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
