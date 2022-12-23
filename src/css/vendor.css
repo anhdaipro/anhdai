@@ -2638,7 +2638,7 @@ margin: 0 1rem;
 margin: auto 1rem;
 display: flex;
 flex-direction: row;
-justify-content: end;
+justify-content: flex-end;
 }
 #cancel{
 flex:1 1 10rem
@@ -7052,7 +7052,7 @@ cursor: pointer;
   background-color: white;
   box-shadow: 0 1rem 2rem rgba(0,0,0,.1);
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   padding:  1rem;
   position: relative;
 }
@@ -7926,7 +7926,6 @@ cursor: pointer;
   max-width: 554px;
 }
 .variation-edit-wrapper .text-row .edit-text[data-v-44d9d323] {
-  -ms-flex-preferred-size: 383px;
   flex-basis: 383px;
   width: 383px;
   max-width: 383px;

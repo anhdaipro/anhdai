@@ -461,9 +461,7 @@ export default class HomePage extends React.Component {
                             width={1200}
                             num_display={10}
                             />
-                            <div className="text-transfrom">
-                                <p>item</p>
-                            </div>
+                            
                             <div className="section-trending-search-list">
                                 <div className="header-section header-section--simple">
                                     <div className="header-section__header item-center">
