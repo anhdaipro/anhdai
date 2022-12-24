@@ -338,7 +338,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                     )}
                 </div>
                 <div className="_1ZUFQn">
-                    <textarea value={item.info_more!=''?item.info_more:''} onChange={e => infomoreReview(e,item)} className="_2t-71S" maxLength="300" placeholder="Hãy chia sẻ vì sao bạn chưa thực sự thích sản phẩm này nhé" style={{overflow: 'hidden', overflowWrap: 'break-word', height: '100px'}}></textarea>
+                    <textarea value={item.info_more!=''?item.info_more:''} onChange={e => infomoreReview(e,item)} className="_2t-71S" maxLength="1000" placeholder="Hãy chia sẻ vì sao bạn chưa thực sự thích sản phẩm này nhé" style={{overflow: 'hidden', overflowWrap: 'break-word', height: '100px'}}></textarea>
                     <div className="_3ClA8M">
                         {item.video || item.list_image.length>0?
                             <>

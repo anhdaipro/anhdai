@@ -571,9 +571,9 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
             if(indextype){
             setPage(1)
             const res = await axios.get(`${productinfoURL}/${data.id}?choice=review&${[typereview.name]}=${typereview.value}`,headers())
-            let data=res.data
-            setReview(data.reviews)
-            setState({...state,review_choice:typereview.value,page_count:data.page_count,rating:data.rating,has_comment:data.has_comment,has_media:data.has_media})
+            
+            setReview(res.data.reviews)
+            setState({...state,review_choice:typereview.value,page_count:res.data.page_count,rating:res.data.rating,has_comment:res.data.has_comment,has_media:res.data.has_media})
         }
         })()
     },[indextype])
@@ -587,7 +587,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
         const list_reviews=listreview.map(review=>{
             if(review.id===reviewchoice.id){
                 return({...review,list_file:review.list_file.map(file=>{
-                    if (item.file_id===file.file_id){
+                    if (item.id===file.id){
                         return({...file,show:!file.show})
                     }
                     return({...file,show:false})
