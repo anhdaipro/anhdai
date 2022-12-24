@@ -11,52 +11,50 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
     const [submit,setSubmit]=useState(false)
   
     const [showinfo,setShowinfo]=useState(false)
-    const [showdata,setShowdata]=useState(false)
+   
     const inforef=useRef()
     const [statusreview,setStatusreview]=useState(false)
     const [preview,setPreview]=useState({width:520,index:0})
-    useEffect(()=>{
-        setShowdata(show)
-    },[show])
-
-    function rating_score_main(number,item){
+    
+    const rating_score_main=(number,item)=>{
         return Array(number).fill().map((_,k)=>{
             if(item.review_rating){
-                <div onClick={(e)=>rating_choice(e,k,item)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '36px', height: '36px'}}>{k<=item.review_rating ?star_solid:star_empty}</div>
+               return(<div key={k} onClick={(e)=>rating_choice(e,k,item)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '36px', height: '36px'}}>{k+1<=item.review_rating ?star_solid:star_empty}</div>)
             }
             else{
-                <div onClick={(e)=>rating_choice(e,k,item)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '36px', height: '36px'}}>{star_empty}</div>
+                return(<div key={k} onClick={(e)=>rating_choice(e,k,item)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '36px', height: '36px'}}>{star_empty}</div>)
             }
         })
     }
 
-    function rating_score_bad(number,item,i){
+    const rating_score_bad=(number,item,i)=>{
         return Array(number).fill().map((_,k)=>{
-            if(item.review_rating!=undefined){
-                return(<div onClick={(e)=>rating_choice_bad(e,k,item,i)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '26px', height: '26px'}}>{k<=item.rating_bab_category[i]?star_solid:star_empty}</div>)
+            if(item.review_rating){
+                return(<div key={k} onClick={(e)=>rating_choice_bad(e,k,item,i)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '26px', height: '26px'}}>{k+1<=item.rating_bab_category[i]?star_solid:star_empty}</div>)
             }
             else{
-                return(<div onClick={(e)=>rating_choice_bad(e,k,item,i)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '26px', height: '26px'}}>{star_empty}</div>)
+                return(<div key={k} onClick={(e)=>rating_choice_bad(e,k,item,i)} className="rating-stars__star rating-stars__star--clickable _2Jb05n" style={{width: '26px', height: '26px'}}>{star_empty}</div>)
             }
         })
         
     }
     
     useEffect(() => {
+        const handleClick = (event) => {
+            const { target } = event
+            if(inforef.current!=null){
+                if (!inforef.current.contains(target)) {
+                    setShowinfo(false)
+                }
+            }
+        }
         document.addEventListener('click', handleClick)
         return () => {
             document.removeEventListener('click', handleClick)
         }
     }, [])
 
-    const handleClick = (event) => {
-        const { target } = event
-        if(inforef.current!=null){
-            if (!inforef.current.contains(target)) {
-                setShowinfo(false)
-            }
-        }
-    }
+    
 
     const editreview=(e,review)=>{
         e.stopPropagation()
@@ -72,7 +70,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
         e.stopPropagation()
         const list_text=item.review_text.split(',').filter(it=>it!='')
         item.list_text=list_text
-        item.review_rating=k
+        item.review_rating=k+1
         if(item==state.review){
             setState({...state,review:item})
         }
@@ -83,7 +81,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
 
     function rating_choice_bad(e,k,item,i){
         e.stopPropagation()
-        item.rating_bab_category[i]=k
+        item.rating_bab_category[i]=k+1
         if(item==state.review){
             setState({...state,review:item})
         }
@@ -136,17 +134,16 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
             })
     }
 
-    console.log(list_cartitem)
     function setopenreview(e){
         e.stopPropagation()
-        setShowdata(false)
+        setshow(false)
         setedit(false)
         setState({...state,review:null})
     }
 
     function setclosereview(e){
         e.stopPropagation()
-        setShowdata(false)
+        setshow(false)
         setedit(false)
         setState({...state,review:null})
         setcartitem(null)
@@ -289,7 +286,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                     setcartitem(null)
                     setSubmit(false)
                     setStatusreview(false)
-                    setShowdata(false)  
+                    setshow(false)  
                 })
             }
         }
@@ -314,7 +311,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                 </a>
                 <div className="rating-modal-handler__rating-stars-wrapper rating__stars">
                     <div className="rating-stars__container">
-                        {rating_score_main(6,item)}
+                        {rating_score_main(5,item)}
                     </div>
                 </div>
                 {item.review_rating<3 && item.review_rating>0?
@@ -322,12 +319,12 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                     <div className="_2CGEXm">Vui lòng đánh giá mức độ hài lòng của bạn cho các mục sau.</div>
                     <div className="_1REb6E">
                         {list_rating_category_bab.map((category,i)=>
-                            <div className="U10Dyc">
+                            <div key={i} className="U10Dyc">
                                 <div className="DTVWp-">
                                     {list_rating_category_bab[i]}
                                 </div>
                                 <div className="rating-stars__container">
-                                    {rating_score_bad(6,item,i)}
+                                    {rating_score_bad(5,item,i)}
                                 </div>
                             </div>
                         )}
@@ -336,8 +333,8 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                 {item.review_rating>0?
                 <>
                 <div className="CIhqAx">
-                    {list_review_text_star[item.review_rating-1].map(text=>
-                        <span onClick={(e)=>setreviewtext(e,item,text)} className={`_336Vq- ${item.list_text.includes(text)?'_3XOOTd':''}`}>{text}</span>
+                    {list_review_text_star[item.review_rating-1].map((text,i)=>
+                        <span key={i} onClick={(e)=>setreviewtext(e,item,text)} className={`_336Vq- ${item.list_text.includes(text)?'_3XOOTd':''}`}>{text}</span>
                     )}
                 </div>
                 <div className="_1ZUFQn">
@@ -358,7 +355,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                             </div>:''}
                             </>
                             <>{item.list_image.map(image=>
-                                <div className="_2b-JH-" style={{backgroundImage:`url(${image.file})`}}>
+                                <div key={image.file} className="_2b-JH-" style={{backgroundImage:`url(${image.file})`}}>
                                     <button onClick={(e)=>removeimage(e,image,item)}>
                                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path fillRule="evenodd" clipRule="evenodd" d="M8.28268 0.908882C8.47794 0.71362 8.79452 0.71362 8.98978 0.908882L9.0908 1.0099C9.28606 1.20516 9.28606 1.52174 9.0908 1.717L1.71669 9.09112C1.52142 9.28638 1.20484 9.28638 1.00958 9.09112L0.908564 8.9901C0.713301 8.79484 0.713301 8.47826 0.908563 8.283L8.28268 0.908882Z" fill="#F6F6F6"></path><path fillRule="evenodd" clipRule="evenodd" d="M1.00973 0.908882C1.20499 0.71362 1.52157 0.71362 1.71683 0.908882L9.09095 8.28299C9.28621 8.47826 9.28621 8.79484 9.09095 8.9901L8.98993 9.09112C8.79467 9.28638 8.47809 9.28638 8.28283 9.09112L0.908713 1.717C0.713451 1.52174 0.71345 1.20516 0.908713 1.0099L1.00973 0.908882Z" fill="#F6F6F6"></path></svg>
                                     </button>
@@ -393,7 +390,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                         </>
                         }
                     </div>
-                    {item!=state.review?<div className="_2RDJL3">{item.info_more.length>=50?item.video||item.list_image.length>0? `Gửi đánh giá để nhận ${item.video&&item.list_image.length>0?'200 Xu!':'100 Xu'}  ${item.video&&item.list_image.length==0 || !item.video&&item.list_image.length>0?`hoặc thêm 1 ${!item.video&&item.list_image.length>0?'video':'hình ảnh'} để nhận 200 Xu`:''}`:"Thêm 1 hình ảnh và 1 video để nhận 200 Xu":`Thêm ${50-item.info_more.length} ký tự và ${item.list_image.length==0?'1 hinh anh':''} ${!item.video?'và 1 video':''} để nhận 200 Xu`}</div>:''}
+                    {item!=state.review?<div className="_2RDJL3">{item.info_more.length>=50?item.video||item.list_image.length>0? `Gửi đánh giá để nhận ${item.video&&item.list_image.length>0?'200 Xu!':'100 Xu'}  ${(item.video&&item.list_image.length==0) || (!item.video&&item.list_image.length>0)?`hoặc thêm 1 ${!item.video&&item.list_image.length>0?'video':'hình ảnh'} để nhận 200 Xu`:''}`:"Thêm 1 hình ảnh và 1 video để nhận 200 Xu":`Thêm ${50-item.info_more.length} ký tự và ${item.list_image.length==0?'1 hinh anh':''} ${!item.video?'và 1 video':''} để nhận 200 Xu`}</div>:''}
                 </div>
                 <div className="rating-modal-handler__rating-anonymous-wrapper">
                     <label className={`stardust-checkbox ${item.anonymous_review?'stardust-checkbox--checked':''}`}>
@@ -415,7 +412,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
         setState({...state,review:null})
         setcartitem(null)
         setSubmit(false)
-        setShowdata(false)
+        setshow(false)
     }
 
     function receivexu(){
@@ -425,7 +422,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
                 if(cartitem.video&& cartitem.list_image.length>0){
                     total_xu+=200
                 }
-                else if(cartitem.video&& cartitem.list_image.length==0 ||!cartitem.video&& cartitem.list_image.length>0){
+                else if((cartitem.video&& cartitem.list_image.length==0) ||(!cartitem.video&& cartitem.list_image.length>0)){
                     total_xu+=100
                 }
             }
@@ -506,7 +503,7 @@ const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,us
     }
     return(
         <>
-        {showdata?
+        {show?
         <div className='popup modal__transition-enter-done'>
             <div className="popup__overlay"></div>
             <div className="popup__container">

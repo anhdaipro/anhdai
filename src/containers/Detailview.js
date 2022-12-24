@@ -153,7 +153,7 @@ const Detailview = () => {
           <div className="hoo2kB">
             <div className="flex _1P7dnP">
               <div className="_1zceAY">
-                <video data-dashjs-player="true" src={state.listmedia.find(item=>state.listmedia.indexOf(item)===state.indexchoice).media_type==='video'?state.listmedia.find(item=>state.listmedia.indexOf(item)===state.indexchoice).file:''} controls={true} className="_1X-zm0" style={{display: `${state.listmedia.find(item=>state.listmedia.indexOf(item)===state.indexchoice).media_type==='video'?'block':'none'}`}}></video>
+                <video data-dashjs-player="true" src={state.listmedia.find(item=>state.listmedia.indexOf(item)===state.indexchoice).typefile==='video'?state.listmedia.find(item=>state.listmedia.indexOf(item)===state.indexchoice).file:''} controls={true} className="_1X-zm0" style={{display: `${state.listmedia.find(item=>state.listmedia.indexOf(item)===state.indexchoice).typefile==='video'?'block':'none'}`}}></video>
                 <div className="aGIJCo">
                   <div className="_3fAvN4 _1vc1W7" style={{backgroundImage: `url(${state.listmedia.find(item=>state.listmedia.indexOf(item)===state.indexchoice).file})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
                 </div>
@@ -172,10 +172,10 @@ const Detailview = () => {
                   {state.listmedia.map((item,index)=>
                   <div key={index} onClick={()=>setindexchoice(index)} className="_4yF4f1 _1s7RSK">
                     <div className="aGIJCo">
-                      <div className="_2UWcUi _1vc1W7" style={{backgroundImage: `url(${item.media_type==='video'?item.image_preview:item.file})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
+                      <div className="_2UWcUi _1vc1W7" style={{backgroundImage: `url(${item.image_preview||item.file})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat'}}></div>
                     </div>
                     <img className="_1RZOE3" src="https://cf.shopee.vn/file/fb826ea87f6ede5704e58d1646815823"/>
-                    {item.media_type==='video'?<div className="_2G-j0m">
+                    {item.typefile==='video'?<div className="_2G-j0m">
                       <div className="_2ht6Qj"></div>
                       <div className="_3YTVWT">00:{Math.round(item.duration)}</div>
                     </div>:''}

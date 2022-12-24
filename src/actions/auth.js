@@ -302,6 +302,7 @@ export const reset_password_confirm = (uidb64, token, password) => async dispatc
 
 export const logout = () => dispatch => {
     localStorage.removeItem('token')
+    localStorage.removeItem('expirationDate')
     dispatch({
         type: LOGOUT
     });

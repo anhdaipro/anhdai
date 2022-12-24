@@ -328,7 +328,7 @@ const Shippingmanagement=()=>{
                                                         <div></div>
                                                     </div>
                                                     <div className="item-channel">
-                                                        <div>{}</div>
+                                                        <div></div>
                                                     </div>
                                                     <div className="item-action">
                                                         <div>{!order.canceled && !order.being_delivered && !order.received && new Date().getTime()>new Date(order.ordered_date).getTime()+30*1000*1800?'Chuẩn bị hàng':''}</div>

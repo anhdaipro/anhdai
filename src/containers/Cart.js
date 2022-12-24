@@ -17,6 +17,14 @@ const Divbox=(props)=>{
     const voucherref=useRef()
 
     useEffect(() => {
+        const handleClick = (event) => {
+            const { target } = event
+            if(voucherref.current!=null){
+                if (!voucherref.current.contains(target)) {
+                    setShow(false)
+                }
+            }
+        }
         document.addEventListener('click', handleClick)
         return () => {
             document.removeEventListener('click', handleClick)
@@ -28,14 +36,7 @@ const Divbox=(props)=>{
             setShow(shop.show_voucher)
         }
     },[shop])
-    const handleClick = (event) => {
-        const { target } = event
-        if(voucherref.current!=null){
-            if (!voucherref.current.contains(target)) {
-                setShow(false)
-            }
-        }
-    }
+    
     const listvoucherapply=shop.listvoucher.filter(voucher=>shop.voucher===voucher.id)
     const listvouchernotapply=shop.listvoucher.filter(voucher=>shop.voucher!==voucher.id)
     const listvoucher=[...listvoucherapply,...listvouchernotapply]
@@ -127,25 +128,26 @@ const Iteminfo=(props)=>{
     const itemref=useRef()
     const searchref=useRef()
     useEffect(() => {
+        const handleClick = (event) => {
+            const { target } = event
+            if(itemref.current!=null){
+                if (!itemref.current.contains(target)) {
+                    setShow(false)
+                }
+            }
+            if(searchref.current!=null){
+                if (!searchref.current.contains(target)) {
+                    setShowsearch(false)
+                }
+            }
+        }
         document.addEventListener('click', handleClick)
         return () => {
             document.removeEventListener('click', handleClick)
         }
     }, [])
 
-    const handleClick = (event) => {
-        const { target } = event
-        if(itemref.current!=null){
-            if (!itemref.current.contains(target)) {
-                setShow(false)
-            }
-        }
-        if(searchref.current!=null){
-            if (!searchref.current.contains(target)) {
-                setShowsearch(false)
-            }
-        }
-    }
+    
     const finditem=(e)=>{
         axios.get(`${updatecartURL}?item_id=${item.item_id}`,headers())
         .then(rep=>{

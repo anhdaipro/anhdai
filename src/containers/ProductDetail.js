@@ -669,7 +669,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
         }) 
     },[])
 
-    const addtocartbatch=(e)=>{
+    const addtocartbatch= async (e)=>{
         const byproducts=byproduct.map(item=>{
             return({byproduct_id:item.byproduct_id,quantity:item.quantity,check:item.check,
             product_id:item.variation_choice.product_id,item_id:item.id})
@@ -677,24 +677,29 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
         const form={deal_id:main_product.deal_id,item_id:main_product.item_id,action:'add',
         product_id:main_product.variation_choice.product_id,quantity:main_product.quantity,
         byproducts:byproducts,item_id:main_product.id}
-        
-        axios.post(addToCartBatchURL,JSON.stringify(form),headers())
-        .then(res => {  
+        if(localStorage.token && expiry()>0){
+            const res= await axios.post(addToCartBatchURL,JSON.stringify(form),headers())
             addcartitem({id:res.data.id,image:data.image,name:data.name,price:pricemain()*main_product.quantity})
-        })
+        }
+        else{
+            navigate(`/buyer/login?next=${window.location}`, { replace: true });
+        }
     }
 
-    const savevoucher=(e,voucher)=>{
+    const savevoucher= async (e,voucher)=>{
         if(voucher.exists){
             navigate(`/search?promotionId=${voucher.id}&evcode=${voucher.code}`)
         }
         else{
-            axios.post(savevoucherURL,JSON.stringify({voucher_id:voucher.id}),headers())
-            .then(res=>{
+            if(localStorage.token && expiry()>0){
+                const res=await axios.post(savevoucherURL,JSON.stringify({voucher_id:voucher.id}),headers())
                 setVouchers(current=>current.map(item=>{
                     return({...item,exists:item.id==voucher.id?true:item.exists})
-                }))
-            })
+                })) 
+            }
+            else{
+                navigate(`/buyer/login?next=${window.location}`, { replace: true });
+            }
         }
     }
     return(
@@ -1184,7 +1189,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
                         <div className="item-col ml-1">
                             <p className="pb-1_2">{shop.name}</p>
 
-                            <p className="time_off pb-1_2">Online {users.find(item=>item.userId!==data.user_id)?`${timeago(shop.is_online)} ago`:''}</p>
+                            <p className="time_off pb-1_2">Online {users.find(item=>item.userId===data.user_id)?``:`${timeago(shop.is_online)} ago`}</p>
                             
                             <div className="d-flex ">
                                 {user && data.user_id!=user.id?
@@ -1203,11 +1208,11 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
                         <div className="_1utN4D">
                             <button className="_14x4GD gy4qkp">
                                 <span className="_3ApBiN">Rating</span>
-                                <span className="_33OqNH _2YMXyO">dddddddd</span>
+                                <span className="_33OqNH _2YMXyO">{shop.total_review}</span>
                             </button>
                             <div className="_14x4GD gy4qkp" style={{width:'200px'}}>
                                 <span className="_3ApBiN">Join</span>
-                                <span className="_33OqNH _2YMXyO">{shop.time} days ago</span>
+                                <span className="_33OqNH _2YMXyO">{timeago(shop.date_joined)} ago</span>
                             </div>
                         </div>
                         <div className="_1utN4D">

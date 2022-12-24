@@ -5,16 +5,47 @@ import axios from 'axios';
 import React, {useState, useEffect,useCallback} from 'react'
 import {connect} from "react-redux"
 import Listreview from "../hocs/Review"
-
-import {Link, useNavigate} from 'react-router-dom'
+import styled from "styled-components"
+import {Link,NavLink, useNavigate,useSearchParams,useLocation} from 'react-router-dom'
 import {formatter,itemvariation} from "../constants"
 import { headers,expiry ,showchat,showthreads,buyagain} from "../actions/auth";
 import {purchaselistdURL,listThreadlURL,buyagainURL} from "../urls"
 
+const EmptyWrapper=styled.div`
+    width: 100%;
+    height: 600px;
+    text-align: center;
+`
+const Emptycontent=styled.div`
+    box-shadow: 0 1px 1px 0 rgb(0 0 0 / 5%);
+    border-radius: 0.125rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+`
+const Emptytitle=styled.div`
+    margin: 20px 0 0;
+    font-size: 18px;
+    line-height: 1.4;
+    color: rgba(0,0,0,.8);
+`
+const EmptyImg=styled.div`
+background-position: 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 100px;
+    height: 100px;
+    background-image: url(https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/5fafbb923393b712b96488590b8f781f.png);
+`
 const Infoitem=(props)=>{
-    const {item}=props
+    const {item,type}=props
     return (
-        <div key={item.id} className="_1limL3">
+        <div className="_1limL3">
         <div>
             <span className="_1BJEKe">
                 <div className="_3huAcN">
@@ -52,30 +83,34 @@ const Infoitem=(props)=>{
 
     )
 }
+const list_type_order=[
+    {name:'Tất cả',type:'1'},{name:'Chờ xác nhận',type:'2'},
+    {name:'Chờ lấy hàng',type:'3'},
+    {name:'Đang giao',type:'4'},{name:'Đã giao',type:'5'},
+    {name:'Đã Hủy',type:'6'},{name:'Trả hàng/Hoàn tiền',type:'7'}
+]
 const Purchase =({user,showchat,showthreads,buyagain})=>{
-    const [state, setState] = useState({count_order:0,orders:[],user:null,list_type_order:[{name:'Tất cả',type:'1'},{name:'Chờ xác nhận',type:'2'},{name:'Chờ lấy hàng',type:'3'}
-,{name:'Đang giao',type:'4'},{name:'Đã giao',type:'5'},{name:'Đã Hủy',type:'6'}],
-
-    review:null,order_choice:null,show_thread:false,show_message:false,threadchoice:null});
+    const [state, setState] = useState({user:null,
+    review:null,order_choice:null});
     const [show,setShow]=useState(false)
     const [loading,setLoading]=useState(false)
+    let [searchParams, setSearchParams] = useSearchParams();
     const [edit,setEdit]=useState(false)
     const [listreview,setListreview]=useState([])
     const [cancel,setCancel]=useState(false)
+    const [orders,setOrders]=useState([])
+    const [count,setCount]=useState(0)
     const navigate=useNavigate()
     useEffect(() => {
-        const getJournal = async () => {
-            await axios(purchaselistdURL,headers())
-           // <-- passed to API URL
-            .then(res=>{
-                let data=res.data
-                setLoading(true)
-                setState({...state,count_order:data.count_order,orders:data.a,loading:true
-            })
-          })
-        }
-        getJournal();
-    }, []);
+        (async () => {
+            const res = await axios(`${purchaselistdURL}?type=${searchParams.get('type')}`,headers())
+            const data=res.data
+            setLoading(true)
+            setOrders(data.orders)
+            setCount(data.count)
+          
+        })();
+    }, [searchParams]);
 
     const setshowthread=(e,order)=>{
         e.preventDefault()
@@ -85,31 +120,30 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
     }
     
     useEffect(()=>{
+        const addOrder=()=>{
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            if(clientHeight + scrollTop >= scrollHeight-300 && loading && orders.length<count){
+                let url=new URL(purchaselistdURL)
+                let search_params=url.searchParams
+                setLoading(false)
+                search_params.append('offset',orders.length)
+                search_params.append('type',searchParams.get('type'))
+                url.search = search_params.toString();
+                let new_url = url.toString();
+                axios(new_url,headers())
+                .then(res=>{
+                    setLoading(true)
+                    let data=res.data
+                    setOrders(current=>[...current,...data.orders])
+                    
+                })
+            }
+        }
         document.addEventListener('scroll',addOrder)
         return () => {
             document.removeEventListener('scroll', addOrder)
         }
-    },[loading,state])
-    
-    const addOrder=()=>{
-        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-        if(clientHeight + scrollTop >= scrollHeight-300 && loading && state.orders.length<state.count_order){
-            let url=new URL(purchaselistdURL)
-            let search_params=url.searchParams
-            setLoading(false)
-            search_params.append('offset',state.orders.length)
-            url.search = search_params.toString();
-            let new_url = url.toString();
-            axios(new_url,headers())
-            .then(res=>{
-                setLoading(true)
-                let data=res.data
-                const list_order=[...state.orders,...data.a]
-                setState({...state,orders:list_order})
-            })
-        }
-    }
-    
+    },[loading,orders.length,count,searchParams])
     
     const setshow =(es) => {
         setShow(es);
@@ -128,16 +162,15 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
     }, [state]);
 
     const setlistreview=useCallback((edit) => {
-        const list_reviews=listreview.map(review=>{
+        setListreview(current=>current.map(review=>{
             if(edit.id==review.id){
                 return({...edit})
             }
             else{
                 return({...review})
             }
-        })
-        setListreview(list_reviews)
-    }, [listreview]);
+        }))
+    }, []);
 
     const setChoice=useCallback((item) => {
         const list_cartitem=state.list_cartitem.map(cartitem=>{
@@ -183,9 +216,10 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
         setCancel(true)
         setState({...state,order_choice:order})
     }
-    const updateorder=(value)=>{
-        setState({...state,orders:value})
-    }
+    const updateorder=useCallback((value)=>{
+        setOrders(value)
+        
+    },[])
     
     const buyagainitem=(e,order)=>{
         buyagain(order)
@@ -206,20 +240,21 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
                         <div className="_3D9BVC">
                             <div className="_2mSi0S">
                                 <div className="ZS1kj6">
-                                    {state.list_type_order.map(item=>
-                                    <Link key={item.type} className="_2sowby _23VQQX" to={`/user/purchase/?type=${item.type}`}>
+                                    {list_type_order.map((item,i)=>
+                                    <Link key={i}  className={`_2sowby ${(item.type===searchParams.get('type')) ||(item.type=='1' && !searchParams.get('type'))?'_23VQQX':""}`} to={`/user/purchase/?type=${item.type}`}>
                                         <span className="_2pSH8O">{item.name}</span>
                                     </Link>
                                     )}
                                 </div>
+                                {orders.length>0?<>
                                 <div className="_1MmTVs">
                                     <svg width="19px" height="19px" viewBox="0 0 19 19"><g id="Search-New" strokeWidth="1" fill="none" fillRule="evenodd"><g id="my-purchase-copy-27" transform="translate(-399.000000, -221.000000)" strokeWidth="2"><g id="Group-32" transform="translate(400.000000, 222.000000)"><circle id="Oval-27" cx="7" cy="7" r="7"></circle><path d="M12,12 L16.9799555,16.919354" id="Path-184" strokeLinecap="round" strokeLinejoin="round"></path></g></g></g></svg>
                                     <input autocomplete="off" placeholder="Tìm kiếm theo Tên Shop, ID đơn hàng hoặc Tên Sản phẩm" value />
                                 </div>
                                 <div>
                                     {
-                                    state.orders.map(order=>
-                                        <div key={order.id} className="_2n4gHk">
+                                    orders.map(order=>
+                                        <div key={`${order.id}`} className="_2n4gHk">
                                             <div className="GuWdvd">
                                                 <div className="item-center item-space">
                                                     <div className="item-center item-center">
@@ -274,16 +309,20 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
                                                 <div className="_39XDzv"></div>
                                                 <Link to={`/user/purchase/order/${order.id}`}>
                                                     <div className="_2lVoQ1">
-                                                        {order.cart_item.map(cartitem=><>
+                                                        {order.cart_item.map(cartitem=><div key={`${order.id}-${cartitem.id}`}>
                                                             <Infoitem
-                                                            item={cartitem}
+                                                                item={cartitem}
+                                                                type='main'
+                                                                key={`${order.id}-${cartitem.id}`}
                                                             />
                                                             {cartitem.byproducts.map(byproduct=>
                                                                 <Infoitem
-                                                                item={byproduct}
+                                                                    item={byproduct}
+                                                                    type="byproduct"
+                                                                    key={`${order.id}-${cartitem.id}-${byproduct.id}`}
                                                                 />
                                                             )}
-                                                            </>
+                                                            </div>
                                                         )}
                                                     </div>
                                                 </Link>
@@ -342,9 +381,8 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
                                                 </div>
                                             </div>
                                         </div>
-                                    )
-                                }
-                                {loading?"":
+                                    )}
+                                    {loading?"":
                                     <div className="loading">
                                         <div className="loading_item item-center">
                                             <div className="ball"></div>
@@ -352,30 +390,36 @@ const Purchase =({user,showchat,showthreads,buyagain})=>{
                                             <div className="ball"></div>
                                         </div>
                                     </div>}
-                                </div>
+                                </div></>:
+                                <EmptyWrapper>
+                                    <Emptycontent>
+                                        <EmptyImg/>
+                                        <Emptytitle>{searchParams.get('type')=='7'?'Bạn hiện không có yêu cầu Trả hàng/Hoàn tiền nào':'Chưa có đơn hàng'}</Emptytitle>
+                                    </Emptycontent>
+                                </EmptyWrapper>}
                             </div>             
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="modal">
+            <div id="model">
             <Listreview
-            show={show}
-            edit={edit}
-            cancel={cancel}
-            list_review={listreview}
-            list_cartitem={state.list_cartitem}
-            list_orders={state.orders}
-            order_choice={state.order_choice}
-            updateorder={value=>updateorder(value)}
-            setshow={es=>setshow(es)}
-            setcancel={es=>setcancel(es)}
-            setedit={ed=>setedit(ed)}
-            setcartitem={or=>setcartitem(or)}
-            user={user}
-            setChoice={item=>setChoice(item)}
-            setlistreview={edit=>setlistreview(edit)}
-        />
+                show={show}
+                edit={edit}
+                cancel={cancel}
+                list_review={listreview}
+                list_cartitem={state.list_cartitem}
+                list_orders={orders}
+                order_choice={state.order_choice}
+                updateorder={value=>updateorder(value)}
+                setshow={es=>setshow(es)}
+                setcancel={es=>setcancel(es)}
+                setedit={ed=>setedit(ed)}
+                setcartitem={or=>setcartitem(or)}
+                user={user}
+                setChoice={item=>setChoice(item)}
+                setlistreview={edit=>setlistreview(edit)}
+            />
             </div>
              
         </>
