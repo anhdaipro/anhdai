@@ -73,14 +73,17 @@ const Checkout =({user,showchat})=>{
                     discount_promotion:discount_promotion,discount_voucher:discount_voucher,
                     address_order:address_order,fee_shipping:fee_shipping,address_choice:address_order
                 }})
-                setOrders(obj1.data)
+                const dataorders=obj1.data.map(order=>{
+                    return({...order,shipping:order.shipping_item[0]})
+                })
+                setOrders(dataorders)
         })()
         
     }, []);
     
     const  checkout = async (e)=>{
         if(state.address_order){
-            const data={id:state.address_order.id,payment_choice:state.method_choice}
+            const data={orders:orders,address_id:state.address_order.id,payment_choice:state.method_choice}
             const res= await axios.post(checkoutURL,JSON.stringify(data),headers())
             if(state.method_choice=='Payment on delivery'){
                 navigate("/user/purchase")
@@ -344,7 +347,7 @@ const Checkout =({user,showchat})=>{
                                             <div className="_2cbALo _2i5d8_">
                                                 <div className="_167h1y">Đơn vị vận chuyển:</div>
                                                 <div className="_2v48Zq">
-                                                    <div>Nhanh</div>
+                                                    <div>{order.shipping.method}</div>
                                                     <div className="_3pQMrK">Vui lòng chọn thời gian giao hàng mong muốn</div>
                                                 </div>
                                                 <div className="_1AYYHD"></div>

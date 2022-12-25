@@ -308,7 +308,7 @@ const Shippingmanagement=()=>{
                                             </div>
                                             <div className="order-detail">
                                                 {order.cart_item.map(cartitem=>
-                                                <div key={cartitem.id} className="order-cartitem">
+                                                <div key={cartitem.id} className="order-cartitem d-flex">
                                                     <div className="item-product d-flex">
                                                         <div className="item-product-image">
                                                             <div className="image__content" style={{backgroundImage: `url(${cartitem.image})`}}></div>

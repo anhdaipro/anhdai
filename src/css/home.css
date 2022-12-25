@@ -5930,6 +5930,10 @@ position: relative;
     display: flex;
     background-color: #fff;
 }
+._4lItOR {
+    transition: transform .3s ease;
+    transition-delay: .35s;
+}
 .page-product__content--left {
     flex: 1;
     min-width: 0;
@@ -7932,7 +7936,7 @@ margin: 0 1rem;
 margin: auto 1rem;
 display: flex;
 flex-direction: row;
-justify-content: end;
+justify-content: flex-end;
 }
 
 
