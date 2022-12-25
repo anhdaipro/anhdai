@@ -83,19 +83,19 @@ flex:1;
 }
 `
 const price_ship={
-    'Nhanh':[{weight_from:1,weight_to:500,price:16300},{weight_from:501,weight_to:1000,price:18300},
-        {weight_from:1001,weight_to:1500,price:19300},{weight_from:1501,weight_to:2000,price:20100},
-        {weight_from:1501,weight_to:2000,price:21100},
-        {weight_from:2001,weight_to:10000,price:26100},{weight_from:10001,weight_to:99999,price:36100}
+    'Nhanh':[{weight_from:1,weight_to:500,price:19600},{weight_from:501,weight_to:1000,price:22200},
+        {weight_from:1001,weight_to:1500,price:24400},{weight_from:1501,weight_to:2000,price:28100},
+        {weight_from:1501,weight_to:2000,price:32100},
+        {weight_from:2001,weight_to:10000,price:36100},{weight_from:10001,weight_to:99999,price:46100}
     ],
-    'Tiết kiệm':[{weight_from:1,weight_to:500,price:14300},{weight_from:501,weight_to:1000,price:16300},
-        {weight_from:1001,weight_to:1500,price:18300},{weight_from:1501,weight_to:2000,price:19100},
-        {weight_from:1501,weight_to:2000,price:20100},
-        {weight_from:2001,weight_to:10000,price:24400},{weight_from:10001,weight_to:99999,price:31100}
+    'Tiết kiệm':[{weight_from:1,weight_to:500,price:16400},{weight_from:501,weight_to:1000,price:18300},
+        {weight_from:1001,weight_to:1500,price:19300},{weight_from:1501,weight_to:2000,price:24100},
+        {weight_from:1501,weight_to:2000,price:30100},
+        {weight_from:2001,weight_to:10000,price:34400},{weight_from:10001,weight_to:99999,price:38100}
     ],
-    'Hỏa tốc':[{weight_from:1,weight_to:500,price:18300},{weight_from:501,weight_to:1000,price:20300},
-        {weight_from:1001,weight_to:1500,price:24300},{weight_from:1501,weight_to:2000,price:26100},
-        {weight_from:2001,weight_to:10000,price:36400},{weight_from:10001,weight_to:99999,price:46100}
+    'Hỏa tốc':[{weight_from:1,weight_to:500,price:32300},{weight_from:501,weight_to:1000,price:36400},
+        {weight_from:1001,weight_to:1500,price:42300},{weight_from:1501,weight_to:2000,price:46100},
+        {weight_from:2001,weight_to:10000,price:52400},{weight_from:10001,weight_to:99999,price:56100}
         
     ]
 }

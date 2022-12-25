@@ -7,6 +7,117 @@ import React, {useState, useEffect,useCallback} from 'react'
 import { connect } from 'react-redux';
 import {formatter,itemvariation,arraymove} from "../constants"
 import {localhost,checkoutURL,threadlURL,savevoucherURL,updateAddressURL,cityListURL,listThreadlURL, addressListURL} from "../urls"
+import dayjs from 'dayjs';
+import styled from 'styled-components'
+const Flexcenter=styled.div`
+display:flex;
+align-items:center;
+justify-content:center
+`
+const Modal=styled(Flexcenter)`
+position:fixed;
+top:0;
+left:0;
+right:0;
+z-index:9999;
+bottom:0;
+
+` 
+const ModalWrap=styled.div`
+    background: #fff;
+    z-index: 10000;
+    border-radius: 3px;
+    box-shadow: 0 3px 10px 0 rgb(0 0 0 / 14%);
+    position: relative;
+    width:720px;
+}
+`
+
+const ModalHeader=styled.div`
+    margin-top: 30px;
+    margin-right: 30px;
+    margin-left: 30px;
+    color: #222;
+    font-size: 1.25rem;
+`
+const ModalBody=styled.div`
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+    max-height: 480px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    margin-top: 16px;
+    padding-right: 30px;
+    padding-left: 30px;
+    overflow: auto;
+    .body-title{
+        padding-bottom: 9px;
+        position: relative;
+        margin-top: 12px;
+        .title{
+            color: #929292;
+        };
+        .subtitle{
+            color: #bbb;
+            font-size: .75rem;
+            margin-top: 3px;
+        }
+    }
+    
+`
+const Listitem=styled.div`
+    
+`
+const Item=styled.div`
+display:flex;
+align-items:center;
+margin-bottom:8px;
+padding: 20px;
+background-color: #fafafa;
+cursor:pointer;
+box-shadow: inset 4px 0 0 rgb(0 0 0 / 9%);
+.item-left{
+    flex:1;
+    .method{
+        margin-right:16px;
+        font-size: 1rem;
+        font-weight: 500;
+    };
+    .price{
+        margin-left: 3px;
+        color: #ee4d2d;
+        font-weight: 400;
+        font-size: 1rem;
+    };
+    .time {
+        color: #929292;
+        font-size: .75rem;
+        margin-top: 4px;
+    }
+};
+.item-right{
+    font-size:16px;
+    color:#ee4d2d
+}
+`
+const ModalFotter=styled.div`
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 30px;
+    padding-right: 30px;
+    background: hsla(0,0%,100%,.85);
+    .footer-content{
+        justify-content:flex-end;
+        padding: 20px 0;
+        width: 100%;
+        border-top: 1px dashed rgba(0,0,0,.09);
+        display:flex;
+        .btn-light{
+            margin-right:16px
+        }
+    }
+`
 const Infoitem=(props)=>{
     const {item}=props
     return(
@@ -26,6 +137,11 @@ const Infoitem=(props)=>{
         </div>
     )
 }
+const prices=[
+    {method:"Tiết kiệm",price:16400},
+    {method:"Nhanh",price:19600},
+    {method:"Hỏa tốc",price:39600}
+]
 const Checkout =({user,showchat})=>{
     const [state,setState] = useState({show_message:false,show_thread:false,loading:false,orders:[],address:null,method_payment:['Ví Điện tử','Thẻ Tín dụng/Ghi nợ',
     'Paypal','Số dư TK Shopee','Payment on delivery'],
@@ -35,6 +151,7 @@ const Checkout =({user,showchat})=>{
     const [address,setAddress]=useState({address_type:"S",address:'',address_choice:'',default:false,name:'',phone_number:''});
     const [show,setShow]=useState(false)
     const [city,setCity]=useState({list_city:[]})
+    
     const [addresschoice,setAddressChoice]=useState({city_choice:{'name':null,'matp':null,level:1},
     district_choice:{'name':null,'matp':null,level:2,'maqh':null},
     town_choice:{'name':null,'maqh':null,level:3},showcity:false})
@@ -74,7 +191,7 @@ const Checkout =({user,showchat})=>{
                     address_order:address_order,fee_shipping:fee_shipping,address_choice:address_order
                 }})
                 const dataorders=obj1.data.map(order=>{
-                    return({...order,shipping:order.shipping_item[0]})
+                    return({...order,show_shipping:false,shipping:order.shipping_item[0]})
                 })
                 setOrders(dataorders)
         })()
@@ -193,6 +310,28 @@ const Checkout =({user,showchat})=>{
             return({...order})
         }))
     }
+    const order=orders.find(order=>order.show_shipping)
+    const setorders=(orderchoice,name,value)=>{
+        setOrders(prev=>prev.map(order=>{
+            if(orderchoice.id==order.id){
+                return({...order,shipping_choice:order.shipping,[name]:value})
+            }
+            return({...order})
+        }))
+    }
+    const setshippingorder=(orderchoice)=>{
+        setOrders(prev=>prev.map(order=>{
+            if(orderchoice.id==order.id){
+                return({...order,show_shipping:false,shipping:order.shipping_choice})
+            }
+            return({...order})
+        }))
+    }
+    
+    const fee_shipping=orders.reduce((total,order)=>{
+        return total+prices.find(item=>item.method==order.shipping.method).price
+    },0)
+    
     return(
         <>
         <div id="main">
@@ -352,8 +491,8 @@ const Checkout =({user,showchat})=>{
                                                 </div>
                                                 <div className="_1AYYHD"></div>
                                                 <div className="JjgwiH">(Nhanh tay vào ngay "Anhdai Voucher" để săn mã Miễn phí vận chuyển nhé!)</div>
-                                                <div className="_26DEZ8">Thay đổi</div>
-                                                <div className="_1OKizE">₫42.500</div>
+                                                <div onClick={()=>setorders(order,'show_shipping',true)} className="_26DEZ8">Thay đổi</div>
+                                                <div className="_1OKizE">₫{formatter.format(prices.find(item=>item.method==order.shipping.method).price)}</div>
                                             </div>
                                         </div>
                                         <div className="_1MFx1Y">
@@ -482,7 +621,7 @@ const Checkout =({user,showchat})=>{
                             <div className="_1i3wS2 _1X3--o RihLPS">Tổng tiền hàng</div>
                             <div className="_1i3wS2 lsNObX RihLPS">₫{formatter.format(state.total)}</div>
                             <div className="_1i3wS2 _1X3--o _1tcGRT">Phí vận chuyển</div>
-                            <div className="_1i3wS2 lsNObX _1tcGRT">₫12.800</div>
+                            <div className="_1i3wS2 lsNObX _1tcGRT">₫{formatter.format(fee_shipping)}</div>
                             {state.discount_promotion>0?<>
                             <div className="_1i3wS2 _1X3--o _1O3Crk">Combo khuyến mãi</div>
                             <div className="_1i3wS2 lsNObX _1O3Crk">-₫{formatter.format(state.discount_promotion)}</div></>:''}
@@ -490,7 +629,7 @@ const Checkout =({user,showchat})=>{
                             <div className="_1i3wS2 _1X3--o _1O3Crk">Deal shock</div>
                             <div className="_1i3wS2 lsNObX _1O3Crk">-₫{formatter.format(state.discount_voucher)}</div></>:''}
                             <div className="_1i3wS2 _1X3--o _1lSnJ4">Tổng thanh toán:</div>
-                            <div className="_1i3wS2 _20-5lO lsNObX _1lSnJ4">₫{formatter.format(state.total_final)}</div>
+                            <div className="_1i3wS2 _20-5lO lsNObX _1lSnJ4">₫{formatter.format(state.total_final+fee_shipping)}</div>
                             <div className="_3swGZ9">
                                 <div className="RVLKaf">
                                     <div className="_28K0Ni">Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo 
@@ -526,6 +665,45 @@ const Checkout =({user,showchat})=>{
                 defaultaddress={()=>defaultaddress()}
             />
             :''}
+            {order&&(
+                <Modal>
+                    <ModalWrap>
+                        
+                            <ModalHeader>
+                                <div className="title">Chọn đơn vị vận chuyển</div>
+                            </ModalHeader>
+                            <ModalBody>
+                                <div className="body-title">
+                                    <div className="title">KÊNH VẬN CHUYỂN LIÊN KẾT VỚI SHOPEE</div>
+                                    <div className="subtitle">Bạn có thể theo dõi đơn hàng trên ứng dụng Shopee khi chọn một trong các đơn vị vận chuyển:</div> 
+                                </div>
+                                <Listitem>
+                                    {order.shipping_item.map(shipping=>
+                                        <Item onClick={()=>setorders(order,'shipping_choice',shipping)} key={shipping.id}>
+                                            <div className="item-left">
+                                                <div className="d-flex">
+                                                    <div className="method">{shipping.method}</div>
+                                                    <div className='price'>₫{formatter.format(prices.find(item=>item.method==shipping.method).price)}</div>
+                                                </div>
+                                                <div className="time">Nhận hàng vào {dayjs().add(3,'day').format("DD")} Th{dayjs().add(3,'day').format("MM")} - {dayjs().add(4,'day').format("DD")} Th{dayjs().add(4,'day').format("MM")}</div>
+                                            </div>
+                                            {shipping.id==order.shipping_choice.id &&( <div className="item-right">
+                                                <svg enable-background="new 0 0 15 15" viewBox="0 0 15 15" role="img" class="stardust-icon stardust-icon-tick"><path stroke="none" d="m6.5 13.6c-.2 0-.5-.1-.7-.2l-5.5-4.8c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l4.7 4 6.8-9.4c.3-.4.9-.5 1.4-.2.4.3.5 1 .2 1.4l-7.4 10.3c-.2.2-.4.4-.7.4 0 0 0 0-.1 0z"></path></svg>
+                                            </div>)}
+                                        </Item>
+                                    )}
+                                </Listitem>
+                            </ModalBody>
+                            <ModalFotter>
+                                <div className="footer-content">
+                                    <button onClick={()=>setorders(order,'show_shipping',false)} className="btn-m btn-light">TRỞ LẠI</button>
+                                    <button onClick={()=>setshippingorder(order)} className="btn-m btn-orange">Hoàn thành</button>
+                                </div>
+                            </ModalFotter>
+                        
+                    </ModalWrap>
+                </Modal>
+            )}
         </div>
         
         </>    
