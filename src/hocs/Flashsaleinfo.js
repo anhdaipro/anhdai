@@ -455,10 +455,8 @@ const Flashsaleinfo=(props)=>{
             })
             const discount_model_list=itemshop.byproduct_choice.reduce((arr,obj,i)=>{
                 const datavariation= obj.variations.map(variation=>{
-                    return({promotion_price:variation.promotion_price,id:variation.id,
-                        enable:variation.enable,percent_discount:variation.percent_discount*100/variation.price,price:variation.price,
-                        variation_id:variation.variation_id,item_id:variation.item_id,color_value:variation.color_value,size_value:variation.size_value,
-                        promotion_stock:variation.promotion_stock,
+                    return({...variation,
+                        percent_discount:variation.percent_discount*100/variation.price,
                         user_item_limit:obj.user_item_limit?obj.user_item_limit:0})
                 })
                 return [...arr,...datavariation]
