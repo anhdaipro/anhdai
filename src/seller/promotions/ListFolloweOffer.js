@@ -171,13 +171,9 @@ const ListFollowerOffer=()=>{
                                     <div className="tabs tabs-line tabs-normal tabs-top landing-page-tab">
                                         <Tabs
                                         listchoice={listchoice}
-                                        url={listFollowOffershopURL}
                                         choice={choice}
-                                        loading={loading}
                                         setchoice={data=>setChoice(data)}
-                                        setcount={data=>setCount(data)}
-                                        setdata={data=>setdata(data)}
-                                        setloading={data=>setLoading(data)}
+                                        
                                         />
                                         <div className="tabs__content">
                                             <div className="tabs-tabpane"></div>
@@ -204,10 +200,7 @@ const ListFollowerOffer=()=>{
                                                 setDaychoice={data=>setDaychoice(data)}
                                                     
                                                 daychoice={daychoice}
-                                                setcount={data=>setCount(data)}
-                                                setdata={(data)=>setdata(data)}
-                                                setloading={data=>setLoading(data)}
-                                                url={listFollowOffershopURL}
+                                                
                                                 />
                                                 
                                             </div>
@@ -215,8 +208,12 @@ const ListFollowerOffer=()=>{
                                                     <button onClick={e=>searchitem(e)} data-v-40673d96="" type="button" className="button btn-orange ">
                                                         <span>Tìm</span>
                                                     </button> 
-                                                    <button onClick={()=>{setKeyword()
-                                                        setDaychoice()
+                                                    <button onClick={()=>{setKeyword('')
+                                                    params.delete('start_day')
+                                                    params.delete('end_day')
+                                                    params.delete('keyword')
+                                                    params.delete('option')
+                                                        setDaychoice({start:null,end:null})
                                                         
                                                     }} data-v-40673d96="" type="button" className="button btn-light">
                                                             <span>Nhập Lại</span>

@@ -1,37 +1,47 @@
 import Sidebamenu from "./Sidebar-menu"
 import axios from 'axios';
 import Navbar from "./Navbar"
-import { useParams,Link } from "react-router-dom";
+import { useParams,Link,useSearchParams } from "react-router-dom";
 import React, {useState,useEffect,useCallback,useRef} from 'react'
 import ReactDOM, { render } from 'react-dom'
 import {itemvariation,pagesize, rating, timepromotion} from "../constants"
 import Pagination from "../hocs/Pagination"
 import {shopratingURL,} from "../urls"
 import { headers} from '../actions/auth';
+import Daterange from "../hocs/Daterange";
+const stars=[5,4,3,2,1]
 const Ratingshop=()=>{
     const [state,setState]=useState({show:false,page_input:1,text:null,page_count:1})
     const [list_review,setListreview]=useState([])
-    const [list_reply,setListreply]=useState([])
+    const [formdata,setFormdata]=useState({product_name:'',category_name:'',username:''})
+    const {username,category_name,product_name}=formdata
+    const [score,setScore]=useState(0)
     const [loading,setLoading]=useState(false)
-    const [currentPage, setCurrentPage] = useState({page:1,pagesize:5});
+    const [currentPage,setCurrentPage]=useState(1)
+    const [page_size,setPagesize]=useState(5)
+    const [params, setSearchParams] = useSearchParams();
+    const [daychoice,setDaychoice]=useState({start:null,end:null})
+    const productRef=useRef()
+    const categoryRef=useRef()
+    const usernameRef=useRef()
     useEffect(() => {
         const getJournal = async () => {
-            await axios(shopratingURL,headers())
-           // <-- passed to API URL
-            .then(res=>{
-                let data=res.data
-                setLoading(true)
-                const list_reviews=res.data.reviews.map(item=>{
-                    return({...item,show_reply:false})
-                })
-                setState({...state,page_count:data.page_count})
-                setListreview(list_reviews)
+            const url=score?`${shopratingURL}?review_rating=${score}&page=${currentPage}&page_size=${page_size}`:`${shopratingURL}?page=${currentPage}&page_size=${page_size}`
+            const res=await axios(url,headers())
+            let data=res.data
+            setLoading(true)
+            const list_reviews=res.data.reviews.map(item=>{
+                return({...item,show_reply:false})
             })
+            setState({...state,page_count:data.page_count})
+            setListreview(list_reviews)
         }
         getJournal();
-    }, []);
+    }, [score,currentPage,page_size,category_name,product_name,username]);
     
-    
+    const setsearch=(e)=>{
+        setFormdata({...formdata,product_name:productRef.current.value,username:usernameRef.current.value,category_name:categoryRef.current.value})
+    }
     const showreply=(e,review)=>{
         const list_reviews=list_review.map(item=>{
             if(item.id==review.id){
@@ -41,28 +51,9 @@ const Ratingshop=()=>{
         })
         setListreview(list_reviews)
     }
-    const setpagechoice=(page,name_choice,value_choice)=>{
-        if(page!=value_choice){
-            const page_chocie=page<=1?1:page>=state.page_count?state.page_count:page
-            let url= new URL(shopratingURL)
-            let search_params=url.searchParams
-            search_params.set([name_choice],page_chocie)
-            setCurrentPage({...currentPage,[name_choice]:page_chocie})
-            url.search = search_params.toString();
-            setLoading(false)
-            setState({...state,show:false})
-            let new_url = url.toString();
-            axios.get(new_url,headers())
-            .then(res=>{ 
-                let data=res.data
-                setLoading(true)
-                const list_reviews=data.reviews.map(item=>{
-                    return({...item,show_reply:false})
-                })
-                setListreview(list_reviews)
-                
-            })
-        }
+    const setpagechoice=(page)=>{
+        const page_chocie=page<=1?1:page>=state.page_count?state.page_count:page
+        setCurrentPage(page_chocie)
     }
    const review_choice=list_review.find(item=>item.show_reply)
    console.log(review_choice)
@@ -121,7 +112,7 @@ const Ratingshop=()=>{
                                                         <div className="form-item__content">
                                                             <div data-v-e373b4b6="" className="input">
                                                                 <div className="input__inner input__inner--normal    item-center"> 
-                                                                    <input type="text" placeholder="Nhập tên sản phẩm" resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                    <input ref={productRef} type="text" placeholder="Nhập tên sản phẩm" resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                 </div>
                                                             </div>
                                                         </div>  
@@ -133,7 +124,7 @@ const Ratingshop=()=>{
                                                         <div className="form-item__content">
                                                             <div data-v-e373b4b6="" className="input">
                                                                 <div className="input__inner input__inner--normal    item-center"> 
-                                                                    <input type="text" placeholder="Nhập tên Phân loại hàng" resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                    <input ref={categoryRef} type="text" placeholder="Nhập tên Phân loại hàng" resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                 </div>
                                                             </div>
                                                         </div>  
@@ -145,7 +136,7 @@ const Ratingshop=()=>{
                                                         <div className="form-item__content">
                                                             <div data-v-e373b4b6="" className="input">
                                                                 <div className="input__inner input__inner--normal    item-center"> 
-                                                                    <input type="text" placeholder="Nhập tên đăng nhập" resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                    <input ref={usernameRef} type="text" placeholder="Nhập tên đăng nhập" resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                 </div>
                                                             </div>
                                                         </div>  
@@ -166,7 +157,12 @@ const Ratingshop=()=>{
                                                                     </div>
                                                                 </div>
                                                                 <div className="popper date-picker__picker" style={{display:'none'}}> 
-                                                                    
+                                                                    <Daterange
+                                                                        setDaychoice={data=>setDaychoice(data)}
+                                                                        
+                                                                        daychoice={daychoice}
+                                                                       
+                                                                    />
                                                                 </div>
                                                             </div>
                                                         </div>  
@@ -178,10 +174,19 @@ const Ratingshop=()=>{
                                                     <label className="form-item__label empty"> </label> 
                                                     <div className="form-item__control">
                                                         <div className="form-item__content">
-                                                            <button data-v-e373b4b6="" type="button" className="button button--primary button--normal">
+                                                            <button onClick={e=>setsearch(e)} data-v-e373b4b6="" type="button" className="button button--primary button--normal">
                                                                 <span>Tìm</span>
                                                             </button> 
-                                                            <button data-v-e373b4b6="" type="button" className="mr12 button button--normal">
+                                                            <button onClick={()=>{
+                                                                setFormdata({...formdata,product_name:'',category_name:'',username:''})
+                                                                setDaychoice({start:null,end:null})
+                                                                params.delete('start_day')
+                                                                params.delete('end_day')
+                                                                params.delete('product_name')
+                                                                params.delete('category_name')
+                                                                params.delete('username')
+                                                                }} 
+                                                                data-v-e373b4b6="" type="button" className="mr12 button button--normal">
                                                                 <span>Nhập Lại</span>
                                                             </button>
                                                         </div>  
@@ -218,22 +223,12 @@ const Ratingshop=()=>{
                                             <div className="tabs__nav">  
                                                 <div className="tabs__nav-warp">
                                                     <div className="tabs__nav-tabs" style={{transform: 'translateX(0px)'}}>
-                                                        <div className="tabs__nav-tab active">Tất cả </div>
-                                                        <div className="tabs__nav-tab">
-                                                            <span data-v-f68eb30a="" className="title">5 Sao</span>  
-                                                        </div>
-                                                        <div className="tabs__nav-tab">
-                                                            <span data-v-f68eb30a="" className="title">4 Sao</span>  
-                                                        </div>
-                                                        <div className="tabs__nav-tab">
-                                                            <span data-v-f68eb30a="" className="title">3 Sao</span>  
-                                                        </div>
-                                                        <div className="tabs__nav-tab">
-                                                            <span data-v-f68eb30a="" className="title">2 Sao</span>  
-                                                        </div>
-                                                        <div className="tabs__nav-tab">
-                                                            <span data-v-f68eb30a="" className="title">1 Sao</span>  
-                                                        </div>
+                                                        <div onClick={()=>setScore(0)} className={`tabs__nav-tab ${score==0?'active':''}`}>Tất cả </div>
+                                                        {stars.map((item,index)=>
+                                                            <div onClick={()=>setScore(item)} key={index} className={`tabs__nav-tab ${score==item?'active':''}`}>
+                                                                <span data-v-f68eb30a="" className="title">{item} Sao</span>  
+                                                            </div>
+                                                        )}
                                                     </div> 
                                                 </div> 
                                             </div> 
@@ -269,8 +264,8 @@ const Ratingshop=()=>{
                                                                 <div className="item-space">
                                                                     <div className="item-center">
                                                                         <div>Người Mua:</div>
-                                                                        <div className="review-user-image"><img src={review.avatar}/></div>
-                                                                        <div className="review-username">{review.user}</div>
+                                                                        <div className="review-user-image"><img src={review.user.avatar}/></div>
+                                                                        <div className="review-username">{review.user.username}</div>
                                                                     </div>
                                                                     <div className="review-prrder_id">{review.ref_code}</div>
                                                                 </div>
@@ -305,13 +300,13 @@ const Ratingshop=()=>{
                                                                     </div>
                                                                 </div>
                                                                 <div className='vertical-line'></div>
-                                                                {Object.keys(review.get_reply).length>0?
+                                                                {review.reply?
                                                                 <div className="review-detail-reply">
                                                                     <div className="review-detail-text">
-                                                                        {review.get_reply.text}
+                                                                        {review.reply.text}
                                                                     </div>
                                                                     <div className="review-detail-reply-time">
-                                                                        {timepromotion(review.get_reply.created)}
+                                                                        {timepromotion(review.reply.created)}
                                                                     </div>
                                                                 </div>:<div className="review-detail-reply">
                                                                     <div className="review-detail-reply-request">
@@ -337,7 +332,7 @@ const Ratingshop=()=>{
                                                 currentPage={currentPage.page}
                                                 totalCount={state.page_count}
                                                 Pagesize={currentPage.pagesize}
-                                                onPageChange={(page) => setpagechoice(page,'page',currentPage.page)}
+                                                onPageChange={(page) => setpagechoice(page)}
                                             />
                                         </div>
                                         <div className="pagination-jumperpagination__part">
@@ -346,7 +341,7 @@ const Ratingshop=()=>{
                                                 <div className="number-input  number-input--no-suffix">
                                                     <input onChange={(e)=>setState({...state,page_input:isNaN(e.target.value)?state.page_input:e.target.value})} type="text" value={state.page_input}  className="input_input"/>
                                                 </div>
-                                                <button onClick={()=>setpagechoice(state.page_input,'page',currentPage.page)} type="button" className="button btn-m btn-light "><span>Go</span></button>
+                                                <button onClick={()=>setpagechoice(state.page_input)} type="button" className="button btn-m btn-light "><span>Go</span></button>
                                             </div>
                                         </div>
                                     </div>

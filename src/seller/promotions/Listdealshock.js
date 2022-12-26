@@ -187,14 +187,11 @@ const Listdealshop=()=>{
                                     <div className="tabs tabs-line tabs-normal tabs-top landing-page-tab">
                                         <Tabs
                                         listchoice={listchoice}
-                                        url={listAddonshopURL}
-                                        listchoice={listchoice}
+                                       
                                         choice={choice}
-                                        loading={loading}
+                                       
                                         setchoice={data=>setChoice(data)}
-                                        setcount={data=>setCount(data)}
-                                        setdata={data=>setDeal(data)}
-                                        setloading={data=>setLoading(data)}
+                                        
                                         />
                                         <div className="tabs__content">
                                             <div className="tabs-tabpane"></div>
@@ -245,10 +242,7 @@ const Listdealshop=()=>{
                                                 <Daterange
                                                 setDaychoice={data=>setDaychoice(data)}   
                                                 daychoice={daychoice}
-                                                setcount={data=>setCount(data)}
-                                                setdata={data=>setDeal(data)}
-                                                setloading={data=>setLoading(data)}
-                                                url={listAddonshopURL}
+                                                
                                                 />
                                                 
                                             </div>
@@ -256,8 +250,12 @@ const Listdealshop=()=>{
                                                     <button onClick={e=>searchitem(e)} data-v-40673d96="" type="button" className="button btn-orange ">
                                                         <span>Tìm</span>
                                                     </button> 
-                                                    <button onClick={()=>{setKeyword()
-                                                        setDaychoice()
+                                                    <button onClick={()=>{setKeyword('')
+                                                    params.delete('start_day')
+                                                    params.delete('end_day')
+                                                    params.delete('keyword')
+                                                    params.delete('option')
+                                                        setDaychoice({start:null,end:null})
                                                         setOption(1)
                                                     }} data-v-40673d96="" type="button" className="button btn-light">
                                                             <span>Nhập Lại</span>

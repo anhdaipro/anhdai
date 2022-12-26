@@ -3,7 +3,7 @@ import Navbar from "../seller/Navbar"
 import {Link,useNavigate,useParams} from 'react-router-dom'
 import ReactDOM, { render } from 'react-dom'
 import Timeoffer from "./Timeoffer"
-import React, {useState,useEffect,useCallback,useTransition,memo,useMemo} from 'react'
+import React, {useState,useEffect,useCallback,useTransition,memo,useMemo,useRef} from 'react'
 import Pagination from "./Pagination"
 import {detailcomboURL, newcomboURL,} from "../urls"
 import {formatter,timesubmit,combo_type,valid_from,valid_to,time_end} from "../constants"
@@ -23,6 +23,7 @@ const Promotioninfo=(props)=>{
         valid_to:valid_to.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     }})
     const [isPending, startTransition] = useTransition()
+    const inputRef=useRef()
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
     const [state,setState]=useState({timeSecond:5,complete:false,page_input:1,combo_type:[{name:'Giảm giá theo %',value:'1'},
         {name:'Giảm giá theo số tiền',value:'2'},{name:'Giảm giá đặc biệt',value:'3'}]})
@@ -48,6 +49,7 @@ const Promotioninfo=(props)=>{
                 })
                 setTime_end(timesubmit(data.valid_to))
                 setTime_start(timesubmit(data.valid_from))
+                inputRef.current.value=data.promotion_combo_name
                 setItem({...itemshop,items_choice:list_products,page_count_main:Math.ceil(list_products.length / Pagesize)})
             }
             else{
@@ -235,7 +237,7 @@ const Promotioninfo=(props)=>{
             const datacombo=combo
             delete datacombo.products
             const data={action:'submit',list_items:list_enable_on.map(item=>{
-            return(item.id)}),...datacombo}
+            return(item.id)}),...datacombo,promotion_combo_name:inputRef.current.value}
             axios.post(url_combo,JSON.stringify(data),headers())
             .then(res=>{
                 const data=res.data.sameitem
@@ -278,7 +280,7 @@ const Promotioninfo=(props)=>{
                                         </label>
                                         <div className="item-col">
                                             <div className="input-inner" style={{width: '450px'}}> 
-                                                <input onChange={(e)=>setform(e.target.name,e.target.value)} type="text"  className="form-select" value={combo.promotion_combo_name} name="promotion_combo_name" placeholder="Enter" style={{width: '450px'}} required/>
+                                                <input ref={inputRef} type="text"  className="form-select"  name="promotion_combo_name" placeholder="Enter" style={{width: '450px'}} required/>
                                                 <div className="input__suffix">
                                                 </div>
                                             </div>

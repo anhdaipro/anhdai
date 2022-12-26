@@ -167,14 +167,11 @@ const Listflashseleshop=()=>{
                                     <div className="tabs tabs-line tabs-normal tabs-top landing-page-tab">
                                         <Tabs
                                         listchoice={listchoice}
-                                        url={listflashsaleshopURL}
-                                        listchoice={listchoice}
+                                        
                                         choice={choice}
-                                        loading={loading}
+                                       
                                         setchoice={data=>setChoice(data)}
-                                        setcount={data=>setCount(data)}
-                                        setdata={data=>setFlashsales(data)}
-                                        setloading={data=>setLoading(data)}
+                                        
                                         />
                                         <div className="tabs__content">
                                             <div className="tabs-tabpane"></div>
@@ -192,10 +189,7 @@ const Listflashseleshop=()=>{
                                                 setDaychoice={data=>setDaychoice(data)}
                                                     
                                                 daychoice={daychoice}
-                                                setcount={data=>setCount(data)}
-                                                setdata={data=>setFlashsales(data)}
-                                                setloading={data=>setLoading(data)}
-                                                url={listflashsaleshopURL}
+                                                
                                                 />
                                                 
                                             </div>

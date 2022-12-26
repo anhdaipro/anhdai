@@ -1,5 +1,5 @@
 import React, {useState,useCallback,useEffect,useRef} from 'react'
-import {formatter,timepromotion,percent, timeformat,listchoice,choice_option} from "../../constants"
+import {formatter,timepromotion,percent, timeformat,listchoice,choice_option,timevalue} from "../../constants"
 import {dashboardprogramURL, dataProgramURL, listdiscountshopURL,} from "../../urls"
 import {useNavigate,useSearchParams} from 'react-router-dom'
 import axios from 'axios'
@@ -19,14 +19,16 @@ const Listdiscountshop=()=>{
     const [showoption,setShowoption]=useState(false)
     const optionref=useRef()
     const [showdate,setShowdate]=useState(false)
-    const [daychoice,setDaychoice]=useState('')
+    const inputRef=useRef()
+    const [daychoice,setDaychoice]=useState({start:null,end:null})
     const [params, setSearchParams] = useSearchParams();
     const [stats,setStats]=useState([{name:'Doanh số',id:1,info:'Tổng giá trị của các đơn hàng có áp dụng discount Của Shop đã được xác nhận, bao gồm phí vận chuyển và không bao gồm các khuyến mãi khác, tính trong khoảng thời gian đã chọn.',result:0,result_last:0,symbol:true},
     {name:'Đơn hàng',id:2,info:'Tổng số lượng các đơn hàng bao gồm sản phẩm có áp dụng khuyến mãi được xác nhận, tính trong khoảng thời gian đã chọn.',result:0,result_last:0},
     {name:'Số lượng đã bán',id:3,info:'Tổng số lượng sản phẩm có áp dụng khuyến mãi đã bán, tính trên toàn bộ các đơn hàng được xác nhận trong khoảng thời gian đã chọn.',result:0,result_last:0},
     {name:'Người mua',id:4,info:'Tổng số lượng người mua duy nhất đã mua sản phẩm có áp dụng khuyến mãi, tính trên toàn bộ các đơn hàng được xác nhận trong khoảng thời gian đã chọn.',result:0,result_last:0}])
     const navite=useNavigate()
-    const [keyword,setKeyword]=useState()
+    const [keyword,setKeyword]=useState('')
+    const {start,end}=daychoice
     useEffect(()=>{
         (async()=>{
             const obj1=await axios.get(dataProgramURL,headers())
@@ -87,27 +89,32 @@ const Listdiscountshop=()=>{
         navite(`/marketing/discount/${item.id}`)
     }
 
-    
-    const setdata=(data)=>{
-      setDiscount(current=>[...data])
-    }
+    useEffect(()=>{
+        (async()=>{
+            if(start){
+                params.set('start_day',timevalue(start))
+            }
+            if(end){
+                params.set('end_day',timevalue(end))
+            }
+            if(choice!='all'){
+                params.set('choice',choice)
+            }
+            
+            if(keyword.trim()!=''){
+                params.set('keyword',keyword)
+                params.set('option',option)
+            }
+            setLoading(false)
+            const res =await axios.get(`${listdiscountshopURL}?${params}`,headers())
+            setDiscount([...res.data.data])
+            setCount(res.data.count)
+            setLoading(true)
+        })()
+    },[option,keyword,end,start,choice])
     const searchitem=(e)=>{
-      (async()=>{
-        const search_params=params
-        if(daychoice){
-          search_params.set('start_day',daychoice.start)
-          search_params.set('end_day',daychoice.end)
-        }
-        
-        search_params.set('option',option)
-        search_params.set('keyword',keyword)
-        search_params.set('choice',choice)
-        const res =await axios.get(`${listdiscountshopURL}?${search_params}`,headers())
-        setDiscount([...res.data.data])
-        setCount(res.data.count)
-        setLoading(true)
-    })()
-  }
+      
+    }
     return(
         <>
             <Navbar/>
@@ -189,14 +196,11 @@ const Listdiscountshop=()=>{
                                     <div className="tabs tabs-line tabs-normal tabs-top landing-page-tab">
                                         <Tabs
                                         listchoice={listchoice}
-                                        url={listdiscountshopURL}
-                                        listchoice={listchoice}
+                                       
                                         choice={choice}
-                                        loading={loading}
+                                       
                                         setchoice={data=>setChoice(data)}
-                                        setcount={data=>setCount(data)}
-                                        setdata={data=>setDiscount(data)}
-                                        setloading={data=>setLoading(data)}
+                                       
                                         />
                                         <div className="tabs__content">
                                             <div className="tabs-tabpane"></div>
@@ -234,23 +238,20 @@ const Listdiscountshop=()=>{
                                                     <span className="input-group__append">
                                                         <div data-v-40673d96="" className="input search-input">
                                                             <div className="input__inner input__inner--normal"> 
-                                                                <input onChange={e=>setKeyword(e.target.value)} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                <input ref={inputRef} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
                                                             </div>
                                                         </div>
                                                     </span>
                                                 </div>
                                             </div> 
                                             <div data-v-40673d96="" className="custom-input-group">
-                                                <div data-v-40673d96="" className="search-label">Thời gian khuyến mãi    
-                                                </div>
+                                                <div data-v-40673d96="" className="search-label">Thời gian khuyến mãi </div>
                                                
                                                 <Daterange
                                                     setDaychoice={data=>setDaychoice(data)}
-                                                    setcount={data=>setCount(data)}
+                                                   
                                                     daychoice={daychoice}
-                                                    setdata={(data)=>setdata(data)}
-                                                    setloading={data=>setLoading(data)}
-                                                    url={listdiscountshopURL}
+                                                    
                                                 />
                                                 
                                             </div>
@@ -258,8 +259,13 @@ const Listdiscountshop=()=>{
                                                     <button onClick={e=>searchitem(e)} data-v-40673d96="" type="button" className="button btn-orange ">
                                                         <span>Tìm</span>
                                                     </button> 
-                                                    <button onClick={()=>{setKeyword('')
-                                                        setDaychoice()
+                                                    <button onClick={()=>{
+                                                        setKeyword('')
+                                                        params.delete('start_day')
+                                                        params.delete('end_day')
+                                                        params.delete('keyword')
+                                                        params.delete('option')
+                                                        setDaychoice({start:null,end:null})
                                                         setOption(1)
                                                     }} data-v-40673d96="" type="button" className="button btn-light">
                                                             <span>Nhập Lại</span>

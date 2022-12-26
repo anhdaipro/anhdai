@@ -16,7 +16,8 @@ const ListAwardShop=()=>{
     const [choice,setChoice]=useState('all')
     const [count,setCount]=useState(0)
     const [showdate,setShowdate]=useState(false)
-    const [daychoice,setDaychoice]=useState('')
+    const [daychoice,setDaychoice]=useState({start:null,end:null})
+    const {start,end}=daychoice
     const [params, setSearchParams] = useSearchParams();
     const [stats,setStats]=useState([
     {name:'Tổng lượt chơi',id:3,info:'Tổng số lượng sản phẩm có áp dụng khuyến mãi đã bán, tính trên toàn bộ các đơn hàng được xác nhận trong khoảng thời gian đã chọn.',result:0,result_last:0},
@@ -71,23 +72,26 @@ const ListAwardShop=()=>{
         navite(`/marketing/shop-game/${item.id}`)
     }
 
-    const inputref=useRef()
-    const setdata=(data)=>{
-      setListAward(current=>[...data])
-    }
+    const inputRef=useRef()
+    useEffect(() => {
+        (async()=>{
+            if(start){
+                params.set('start_day',start)
+            }
+            if(end){
+                params.set('end_day',end)
+            }
+            params.set('keyword',keyword)
+            params.set('choice',choice)
+            const res =await axios.get(`${listAwardshopURL}?${params}`,headers())
+            setListAward(current=>[...current,...res.data.data])
+            setLoading(true)
+        })()
+    }, [start,end,choice,keyword])
+    
     const searchitem=(e)=>{
-      (async()=>{
-        if(daychoice){
-          params.set('start_day',daychoice.start)
-          params.set('end_day',daychoice.end)
-        }
-        params.set('keyword',keyword)
-        params.set('choice',choice)
-        const res =await axios.get(`${listAwardshopURL}?${params}`,headers())
-        setListAward(current=>[...current,...res.data.data])
-        setLoading(true)
-    })()
-  }
+        setKeyword(inputRef.current.value)
+    }
     return(
         <>
             <Navbar/>
@@ -169,14 +173,12 @@ const ListAwardShop=()=>{
                                     <div className="tabs tabs-line tabs-normal tabs-top landing-page-tab">
                                         <Tabs
                                         listchoice={listchoice}
-                                        url={listAwardshopURL}
-                                        listchoice={listchoice}
+                                        
+                                        
                                         choice={choice}
-                                        loading={loading}
+                                        
                                         setchoice={data=>setChoice(data)}
-                                        setcount={data=>setCount(data)}
-                                        setdata={data=>setdata(data)}
-                                        setloading={data=>setLoading(data)}
+                                        
                                         />
                                         <div className="tabs__content">
                                             <div className="tabs-tabpane"></div>
@@ -191,7 +193,7 @@ const ListAwardShop=()=>{
                                                 <div data-v-40673d96="" className="search-label">Tên chương trình</div> 
                                                 <div data-v-43e4333a="" className="input search-value-item" slot="append">
                                                     <div className="input__inner input__inner--normal"> 
-                                                        <input type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                        <input ref={inputRef} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                     </div>
                                                 </div>
                                             </div> 
@@ -201,11 +203,9 @@ const ListAwardShop=()=>{
                                                
                                                 <Daterange
                                                     setDaychoice={data=>setDaychoice(data)}
-                                                    setcount={data=>setCount(data)}
+                                                    
                                                     daychoice={daychoice}
-                                                    setdata={(data)=>setdata(data)}
-                                                    setloading={data=>setLoading(data)}
-                                                    url={listAwardshopURL}
+                                                   
                                                 />
                                                 
                                             </div>
@@ -213,8 +213,12 @@ const ListAwardShop=()=>{
                                                     <button onClick={e=>searchitem(e)} data-v-40673d96="" type="button" className="button btn-orange ">
                                                         <span>Tìm</span>
                                                     </button> 
-                                                    <button onClick={()=>{setKeyword()
-                                                        setDaychoice()
+                                                    <button onClick={()=>{setKeyword('')
+                                                    params.delete('start_day')
+                                                    params.delete('end_day')
+                                                    params.delete('keyword')
+                                                    params.delete('option')
+                                                        setDaychoice({start:null,end:null})
                                                         
                                                     }} data-v-40673d96="" type="button" className="button btn-light">
                                                             <span>Nhập Lại</span>

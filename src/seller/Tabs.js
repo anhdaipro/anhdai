@@ -10,19 +10,6 @@ const Tabs=(props)=>{
     const parent =useRef()
     const [left,setLeft]=useState(0)
     const [width,setWidth]=useState(72)
-    useEffect(()=>{
-        (async()=>{
-            if(choice!='all'){
-                params.set('choice',choice)
-            }
-            const urldata=choice=='all'?`${url}`:`${url}?${params}`
-            const res =await axios.get(urldata,headers())
-            setdata(res.data.data)
-            setcount(res.data.count)
-            setloading(true)
-            
-        })()
-    },[choice])
     
     return(
         <div className="tabs__nav">  
