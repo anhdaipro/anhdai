@@ -144,15 +144,11 @@ const Listvoucher=()=>{
                         <div data-v-439649ed="" className="landing-page-content aguth_iEwtiEw1ejuP3Yg">
                             <div className="tabs tabs-line tabs-normal tabs-top landing-page-tab">
                                 <Tabs
-                                    
-                                    url={listvouchershopURL}
                                     listchoice={listchoice}
                                     choice={choice}
                                     loading={loading}
                                     setchoice={data=>setChoice(data)}
-                                    setcount={data=>setCount(data)}
-                                    setdata={data=>setdata(data)}
-                                    setloading={data=>setLoading(data)}
+                                   
                                 />
                                 <div className="tabs__content">
                                     <div className="tabs-tabpane"></div>

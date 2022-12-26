@@ -8640,10 +8640,48 @@ margin-right:12px
   color: #999;
 }
 /*-------------------------shipping-----------------------------------*/
-
-.shipping-setting-item{
-  margin-top:16px
+.channel-container{
+padding:0 24px
 }
+.shipping-setting-item{
+  background-color: #fff;
+    box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 9%);
+}
+.shipping-other-settings[data-v-de658a02] {
+  padding: 0px 24px 24px;
+}
+.settings-card[data-v-4cad06e3] {
+    position: relative;
+    margin-top: 24px;
+    padding-left: 48px;
+}
+.settings-card-row.disabled[data-v-787e388e] {
+  color: rgb(153, 153, 153);
+}
+.settings-card-row[data-v-787e388e] {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 24px 0px;
+  clear: both;
+  transition: color 0.3s ease 0s;
+  border-top: 1px solid rgb(232, 232, 232);
+}
+.settings-card-row .icon[data-v-787e388e] {
+    position: absolute;
+    left: 0px;
+    width: 24px;
+    height: 24px;
+}
+.settings-card-row .desc[data-v-787e388e] {
+  -webkit-box-flex: 1;
+  flex: 1 1 0%;
+  margin-right: 8px;
+}
+.settings-card-row .operations[data-v-787e388e] {
+  position: relative;
+}
+
 .shipping-setting-item .shipping {
   background-color: #fff;
   -webkit-box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 9%);
@@ -9225,6 +9263,7 @@ width:240px
   align-items: center;
   height: 56px;
   padding: 0 16px;
+  cursor:pointer;
   overflow: hidden;
   text-align: center;
 }

@@ -1,5 +1,5 @@
-import React, {useState,useCallback,useEffect} from 'react'
-import {formatter,timepromotion,percent,timeformat,listchoice} from "../../constants"
+import React, {useState,useRef,useEffect} from 'react'
+import {formatter,timepromotion,percent,timeformat,listchoice,timevalue} from "../../constants"
 import {dataOfferURL, dataPromotionURL,listFollowOffershopURL,} from "../../urls"
 import {useNavigate,useSearchParams} from 'react-router-dom'
 import axios from 'axios'
@@ -13,10 +13,11 @@ const ListFollowerOffer=()=>{
     const [follower_offers,setFollowerOffer]=useState([])
     const [loading,setLoading]=useState(true)
     const [count,setCount]=useState(0)
-    const [daychoice,setDaychoice]=useState()
+    const [daychoice,setDaychoice]=useState({end:null,start:null})
     const [choice,setChoice]=useState('all')
     const [keyword,setKeyword]=useState('')
     const [params, setSearchParams] = useSearchParams();
+    const inputRef=useRef()
     const [stats,setStats]=useState([
     {name:'Số lượt xem pop-up',id:3,info:'Tổng số lượng sản phẩm có áp dụng khuyến mãi đã bán, tính trên toàn bộ các đơn hàng được xác nhận trong khoảng thời gian đã chọn.',result:0,result_last:0},
     {name:'Người theo dõi mới',id:4,info:'Tổng số lượng người mua duy nhất đã mua sản phẩm có áp dụng khuyến mãi, tính trên toàn bộ các đơn hàng được xác nhận trong khoảng thời gian đã chọn.',result:0,result_last:0},
@@ -24,6 +25,7 @@ const ListFollowerOffer=()=>{
     {name:'Đơn hàng',id:2,info:'Tổng số lượng các đơn hàng bao gồm sản phẩm có áp dụng khuyến mãi được xác nhận, tính trong khoảng thời gian đã chọn.',result:0,result_last:0},
    ])
     const navite=useNavigate()
+    const {end,start}=daychoice
     useEffect(()=>{
         (async()=>{
             try{
@@ -78,18 +80,41 @@ const ListFollowerOffer=()=>{
     const setdetail=(item)=>{
         navite(`/marketing/follow-prize/${item.id}`)
     }
-     const searchitem=(e)=>{
+    useEffect(()=>{
       (async()=>{
-        if(daychoice){
-          params.set('start_day',daychoice.start)
-          params.set('end_day',daychoice.end)
+        if(start){
+            params.set('start_day',timevalue(start))
         }
-        params.set('keyword',keyword)
-        params.set('choice',choice)
+        else{
+            params.delete('start_day')
+        }
+        if(end){
+            params.set('end_day',timevalue(end))
+        }
+        else{
+            params.delete('end_day')
+        }
+        if(keyword){
+            params.set('keyword',keyword)
+        }
+        else{
+            params.delete('keyword')
+        }
+        if(choice!=='all'){
+            params.set('choice',choice)
+        }
+        else{
+            params.delete('choice')
+        }
+
+        setLoading(false)
         const res =await axios.get(`${listFollowOffershopURL}?${params}`,headers())
         setFollowerOffer(current=>[...current,...res.data.data])
         setLoading(true)
     })()
+    },[end,start,keyword,params,choice])
+    const searchitem=(e)=>{
+        setKeyword(inputRef.current.value)
     }
     return(
         <>
@@ -173,7 +198,7 @@ const ListFollowerOffer=()=>{
                                         listchoice={listchoice}
                                         choice={choice}
                                         setchoice={data=>setChoice(data)}
-                                        
+                                        loading={loading}
                                         />
                                         <div className="tabs__content">
                                             <div className="tabs-tabpane"></div>
@@ -188,7 +213,7 @@ const ListFollowerOffer=()=>{
                                                 <div data-v-40673d96="" className="search-label">Tên chương trình</div> 
                                                 <div data-v-43e4333a="" className="input search-value-item" slot="append">
                                                     <div className="input__inner input__inner--normal"> 
-                                                        <input type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                        <input ref={inputRef} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                     </div>
                                                 </div>
                                             </div> 
@@ -198,7 +223,7 @@ const ListFollowerOffer=()=>{
                                                
                                                 <Daterange
                                                 setDaychoice={data=>setDaychoice(data)}
-                                                    
+                                                title="Bắt Đầu - Kết Thúc"
                                                 daychoice={daychoice}
                                                 
                                                 />
@@ -209,10 +234,7 @@ const ListFollowerOffer=()=>{
                                                         <span>Tìm</span>
                                                     </button> 
                                                     <button onClick={()=>{setKeyword('')
-                                                    params.delete('start_day')
-                                                    params.delete('end_day')
-                                                    params.delete('keyword')
-                                                    params.delete('option')
+                                                    
                                                         setDaychoice({start:null,end:null})
                                                         
                                                     }} data-v-40673d96="" type="button" className="button btn-light">

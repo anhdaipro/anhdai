@@ -234,6 +234,26 @@
   .filter-col-left .input-inner{
     width: 174px;
   }
+  .flex-center{
+    display:flex;
+    align-items:center;
+    width:100%
+  }
+  
+  .order-cartitem{
+    padding:12px 0
+  }
+  .order-cartitem:not(:last-child){
+    border-bottom:1px solid #e5e5e5;
+   
+  };
+  
+  .settings-card-row .title[data-v-787e388e] {
+    line-height: 24px;
+    font-size: 18px;
+    margin-bottom: 4px;
+    font-weight: var(--font-weight);
+}
   .filter-col-right .input-inner{
     width: 186px;
   }

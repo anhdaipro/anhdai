@@ -1,5 +1,5 @@
 import React, {useState,useCallback,useEffect} from 'react'
-import {formatter,timepromotion,percent,timeformat,listchoice} from "../../constants"
+import {formatter,timepromotion,percent,timeformat,listchoice,timevalue} from "../../constants"
 import {useNavigate,useSearchParams} from 'react-router-dom'
 import {dataFlashsaleURL, listflashsaleshopURL,} from "../../urls"
 import axios from 'axios'
@@ -13,8 +13,7 @@ const Listflashseleshop=()=>{
     const [listflashsale,setFlashsales]=useState([])
     const [loading,setLoading]=useState(true)
     const [count,setCount]=useState(0)
-    const [daychoice,setDaychoice]=useState()
-    const [keyword,setKeyword]=useState('')
+    const [daychoice,setDaychoice]=useState({start:null,end:null})
     const [choice,setChoice]=useState('all')
     const [params, setSearchParams] = useSearchParams();
     const [stats,setStats]=useState([{name:'Doanh số',id:1,info:'Tổng giá trị của các đơn hàng có áp dụng discount Của Shop đã được xác nhận, bao gồm phí vận chuyển và không bao gồm các khuyến mãi khác, tính trong khoảng thời gian đã chọn.',result:0,result_last:0,symbol:true},
@@ -22,11 +21,12 @@ const Listflashseleshop=()=>{
     {name:'Người mua',id:3,info:'Tổng số lượng người mua duy nhất đã mua sản phẩm có áp dụng khuyến mãi, tính trên toàn bộ các đơn hàng được xác nhận trong khoảng thời gian đã chọn.',result:0,result_last:0},
     {name:'Tỉ lệ click',id:4,info:'Tổng số lượng sản phẩm có áp dụng khuyến mãi đã bán, tính trên toàn bộ các đơn hàng được xác nhận trong khoảng thời gian đã chọn.',result:0,result_last:0},])
     const navite=useNavigate()
+    const {start,end}=daychoice
     useEffect(()=>{
         (async()=>{
             try{
             const obj1=await axios.get(dataFlashsaleURL,headers())
-            const datapromotion=stats.map(item=>{
+            setStats(current=>current.map(item=>{
                 if(item.id==1){
                     return ({...item,result:obj1.data.total_amount,result_last:obj1.data.total_amount_last})
                 }
@@ -40,8 +40,7 @@ const Listflashseleshop=()=>{
                 else{
                     return ({...item,result:obj1.data.total_quantity,result_last:obj1.data.total_quantity_last})
                 }
-            })
-            setStats(datapromotion)
+            }))
             }
             catch(err){
                 console.log(err)
@@ -53,39 +52,53 @@ const Listflashseleshop=()=>{
     
 
     useEffect(()=>{
+        const addItem=()=>{
+            (async()=>{
+                const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+                if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listflashsale.length< count){
+                    setLoading(false)
+                    const res =await axios.get(`${listflashsaleshopURL}?&offset=${listflashsale.length}`,headers())
+                    setFlashsales(current=>[...current,...res.data.data])
+                    setLoading(true)
+                }
+            })()
+        }
         document.addEventListener('scroll',addItem)
         return () => {
             document.removeEventListener('scroll', addItem)
         }
     },[count,loading,listflashsale.length])
 
-    const addItem=()=>{
-        (async()=>{
-            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-            if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listflashsale.length< count){
-                setLoading(false)
-                const res =await axios.get(`${listflashsaleshopURL}?&offset=${listflashsale.length}`,headers())
-                setFlashsales(current=>[...current,...res.data.data])
-                setLoading(true)
-            }
-        })()
-    }
+    
     const setdetail=(item)=>{
         navite(`/marketing/flash-sale/${item.id}`)
     }
-    const searchitem=(e)=>{
-      (async()=>{
-        if(daychoice){
-          params.set('start_day',daychoice.start)
-          params.set('end_day',daychoice.end)
-        }
-        params.set('keyword',keyword)
-        params.set('choice',choice)
-        const res =await axios.get(`${listflashsaleshopURL}?${params}`,headers())
-        setFlashsales(current=>[...current,...res.data.data])
-                setLoading(true)
-    })()
-}
+    useEffect(()=>{
+        (async()=>{
+            if(start){
+                params.set('start_day',timevalue(start))
+            }
+            else{
+                params.delete('start_day')
+            }
+            if(end){
+                params.set('end_day',timevalue(end))
+            }
+            else{
+                params.delete('end_day')
+            }
+            if(choice!=='all'){
+                params.set('choice',choice)
+            }
+            else{
+                params.delete('choice')
+            }
+            setLoading(false)
+            const res =await axios.get(`${listflashsaleshopURL}?${params}`,headers())
+            setFlashsales(current=>[...current,...res.data.data])
+            setLoading(true)
+        })()
+    },[start,end,choice,params])
     return(
         <>
             <Navbar/>
@@ -166,12 +179,10 @@ const Listflashseleshop=()=>{
                                 <div data-v-439649ed="" className="landing-page-content aguth_iEwtiEw1ejuP3Yg">
                                     <div className="tabs tabs-line tabs-normal tabs-top landing-page-tab">
                                         <Tabs
-                                        listchoice={listchoice}
-                                        
-                                        choice={choice}
-                                       
-                                        setchoice={data=>setChoice(data)}
-                                        
+                                            listchoice={listchoice}
+                                            choice={choice}
+                                            loading={loading}
+                                            setchoice={data=>setChoice(data)}
                                         />
                                         <div className="tabs__content">
                                             <div className="tabs-tabpane"></div>
@@ -184,14 +195,11 @@ const Listflashseleshop=()=>{
                                         <div data-v-40673d96="" data-v-771d39f6="" className="filter-bar">
                                             <div data-v-40673d96="" className="custom-input-group">
                                                 <div data-v-40673d96="" className="search-label">Khung giờ</div>
-                                               
                                                 <Daterange
-                                                setDaychoice={data=>setDaychoice(data)}
-                                                    
-                                                daychoice={daychoice}
-                                                
-                                                />
-                                                
+                                                    setDaychoice={data=>setDaychoice(data)}
+                                                    daychoice={daychoice}
+                                                    title="Bắt Đầu - Kết Thúc"
+                                                />   
                                             </div>
                                         </div>
                                     </div>

@@ -115,6 +115,11 @@ const Shipping=()=>{
                                             </div>
                                         </div>
                                     </div> 
+                                    <div data-v-de658a02="" data-v-0e2ec95c="" class="shipping-other-settings">  <div data-v-4cad06e3="" data-v-de658a02="" class="settings-card"> <div data-v-787e388e="" data-v-de658a02="" class="settings-card-row disabled" data-v-4cad06e3=""><div data-v-787e388e="" className="flex-center" ><div data-v-787e388e="" class="icon"><i data-v-787e388e="" class="icon icon-grey"><svg data-name="图层 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path d="M832 448h-32V224a31.94 31.94 0 0 0-9.4-22.6l-128-128A31.94 31.94 0 0 0 640 64H288a64.06 64.06 0 0 0-64 64v320h-32A128.12 128.12 0 0 0 64 576v192a64.06 64.06 0 0 0 64 64h96v64a64.06 64.06 0 0 0 64 64h448a64.06 64.06 0 0 0 64-64v-64h96a64.06 64.06 0 0 0 64-64V576a128.12 128.12 0 0 0-128-128zM672 173.3l18.7 18.7H672zM288 128h320v96a32 32 0 0 0 32 32h96v192H288zm448 768H288V736h448v160zm160-128h-96v-32a64.06 64.06 0 0 0-64-64H288a64.06 64.06 0 0 0-64 64v32h-96V576a64.06 64.06 0 0 1 64-64h640a64.06 64.06 0 0 1 64 64z" data-name="Layer 1"></path></svg></i></div> <div data-v-787e388e="" class="desc"><div data-v-787e388e="" class="title">
+        In Nhiệt (Thermal)
+      </div> <div data-v-787e388e="" class="subtitle">
+          Bật In Nhiệt cho các Phiếu Xuất Hàng của tất cả phương thức vận chuyển.
+        </div></div> <div data-v-787e388e="" class="operations"> <div data-v-787e388e="" class="switch switch--close switch--normal"></div></div></div> </div></div> </div>
                                 </div>
                             </div>
                         </div>:''}

@@ -1,13 +1,13 @@
 import React, {useState,useCallback,useEffect,useRef} from 'react'
-import {formatter,timepromotion,percent, timeformat,listchoice} from "../../constants"
-import {dashboardprogramURL, dataProgramURL, dataShopawardURL, listAwardshopURL, listawardshopURL,} from "../../urls"
+import {formatter,timepromotion,percent, timeformat,listchoice,timevalue} from "../../constants"
+import {dataShopawardURL, listAwardshopURL} from "../../urls"
 import {useNavigate,useSearchParams} from 'react-router-dom'
 import axios from 'axios'
 import { headers } from '../../actions/auth'
 import Navbar from '../Navbar'
 import Tabs from '../Tabs'
 import Daterange from '../../hocs/Daterange'
-const listitem=[{name:''}]
+
 const now=new Date()
 now.setDate(new Date().getDate()-7)
 const ListAwardShop=()=>{
@@ -30,7 +30,7 @@ const ListAwardShop=()=>{
     useEffect(()=>{
         (async()=>{
             const obj1=await axios.get(dataShopawardURL,headers())
-            const dataaward=stats.map(item=>{
+            setStats(current=>current.map(item=>{
                 if(item.id==1){
                     return ({...item,result:obj1.data.total_amount,result_last:obj1.data.total_amount_last})
                 }
@@ -44,30 +44,30 @@ const ListAwardShop=()=>{
                 else{
                     return ({...item,result:obj1.data.number_gamers,result_last:obj1.data.number_gamers_last})
                 }
-            })
-            setStats(dataaward)
+            }))
         })()
     },[])
     
 
     useEffect(()=>{
+        const addItem=()=>{
+            (async()=>{
+                const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+                if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listaward.length< count){
+                    setLoading(false)
+                    const res =await axios.get(`${listAwardshopURL}?&offset=${listaward.length}`,headers())
+                    setListAward(current=>[...current,...res.data.data])
+                    setLoading(true)
+                }
+            })()
+        }
         document.addEventListener('scroll',addItem)
         return () => {
             document.removeEventListener('scroll', addItem)
         }
     },[count,loading,listaward.length])
 
-    const addItem=()=>{
-        (async()=>{
-            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-            if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listaward.length< count){
-                setLoading(false)
-                const res =await axios.get(`${listAwardshopURL}?&offset=${listaward.length}`,headers())
-                setListAward(current=>[...current,...res.data.data])
-                setLoading(true)
-            }
-        })()
-    }
+    
     const setdetail=(item)=>{
         navite(`/marketing/shop-game/${item.id}`)
     }
@@ -76,18 +76,35 @@ const ListAwardShop=()=>{
     useEffect(() => {
         (async()=>{
             if(start){
-                params.set('start_day',start)
+                params.set('start_day',timevalue(start))
+            }
+            else{
+                params.delete('start_day')
             }
             if(end){
-                params.set('end_day',end)
+                params.set('end_day',timevalue(end))
             }
-            params.set('keyword',keyword)
-            params.set('choice',choice)
+            else{
+                params.delete('end_day')
+            }
+            if(keyword){
+                params.set('keyword',keyword)
+            }
+            else{
+                params.delete('keyword')
+            }
+            if(choice!=='all'){
+                params.set('choice',choice)
+            }
+            else{
+                params.delete('choice')
+            }
+            setLoading(false)
             const res =await axios.get(`${listAwardshopURL}?${params}`,headers())
             setListAward(current=>[...current,...res.data.data])
             setLoading(true)
         })()
-    }, [start,end,choice,keyword])
+    }, [start,end,choice,keyword,params])
     
     const searchitem=(e)=>{
         setKeyword(inputRef.current.value)
@@ -174,7 +191,7 @@ const ListAwardShop=()=>{
                                         <Tabs
                                         listchoice={listchoice}
                                         
-                                        
+                                        loading={loading}
                                         choice={choice}
                                         
                                         setchoice={data=>setChoice(data)}
@@ -203,7 +220,7 @@ const ListAwardShop=()=>{
                                                
                                                 <Daterange
                                                     setDaychoice={data=>setDaychoice(data)}
-                                                    
+                                                    title="Bắt Đầu - Kết Thúc"
                                                     daychoice={daychoice}
                                                    
                                                 />
@@ -214,10 +231,7 @@ const ListAwardShop=()=>{
                                                         <span>Tìm</span>
                                                     </button> 
                                                     <button onClick={()=>{setKeyword('')
-                                                    params.delete('start_day')
-                                                    params.delete('end_day')
-                                                    params.delete('keyword')
-                                                    params.delete('option')
+                                                    
                                                         setDaychoice({start:null,end:null})
                                                         
                                                     }} data-v-40673d96="" type="button" className="button btn-light">

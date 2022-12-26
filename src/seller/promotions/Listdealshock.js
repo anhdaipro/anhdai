@@ -7,6 +7,7 @@ import { headers } from '../../actions/auth'
 import Daterange from '../../hocs/Daterange'
 import Navbar from '../Navbar'
 import Tabs from '../Tabs'
+import Options from '../Options'
 const now=new Date()
 now.setDate(new Date().getDate()-7)
 const Listdealshop=()=>{
@@ -18,18 +19,20 @@ const Listdealshop=()=>{
     const [showoption,setShowoption]=useState(false)
     const optionref=useRef()
     const [keyword,setKeyword]=useState('')
-    const [daychoice,setDaychoice]=useState()
+    const inputRef=useRef()
+    const [daychoice,setDaychoice]=useState({start:null,end:null})
     const [params, setSearchParams] = useSearchParams();
     const [stats,setStats]=useState([{name:'Doanh số sản phẩm chính',id:1,info:'Tổng giá trị của các đơn hàng có áp dụng discount Của Shop đã được xác nhận, bao gồm phí vận chuyển và không bao gồm các khuyến mãi khác, tính trong khoảng thời gian đã chọn.',result:0,result_last:0,symbol:true},
     {name:'Doanh số sản phẩm mua kèm',id:2,info:'Tổng số lượng các đơn hàng bao gồm sản phẩm có áp dụng khuyến mãi được xác nhận, tính trong khoảng thời gian đã chọn.',result:0,result_last:0},
     {name:'Đơn hàng',id:3,info:'Tổng số lượng sản phẩm có áp dụng khuyến mãi đã bán, tính trên toàn bộ các đơn hàng được xác nhận trong khoảng thời gian đã chọn.',result:0,result_last:0},
     {name:'Người mua',id:4,info:'Tổng số lượng người mua duy nhất đã mua sản phẩm có áp dụng khuyến mãi, tính trên toàn bộ các đơn hàng được xác nhận trong khoảng thời gian đã chọn.',result:0,result_last:0}])
     const navite=useNavigate()
+    const {end,start}=daychoice
     useEffect(()=>{
         (async()=>{
             try{
             const obj1=await axios.get(dataAddonURL,headers())
-            const datapromotion=stats.map(item=>{
+            setStats(current=>current.map(item=>{
                 if(item.id==1){
                     return ({...item,result:obj1.data.amount_main
                         ,result_last:obj1.data.amount_main_last})
@@ -44,8 +47,7 @@ const Listdealshop=()=>{
                 else{
                     return ({...item,result:obj1.data.number_buyer,result_last:obj1.data.number_buyer_last})
                 }
-            })
-            setStats(datapromotion)
+            }))
             }
             catch(err){
                 console.log(err)
@@ -70,43 +72,66 @@ const Listdealshop=()=>{
         }
     }
     useEffect(()=>{
+        const addItem=()=>{
+            (async()=>{
+                const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+                if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listdeal.length< count){
+                    setLoading(false)
+                    const res =await axios.get(`${listAddonshopURL}?&offset=${listdeal.length}`,headers())
+                    setDeal(current=>[...current,...res.data.data])
+                    setLoading(true)
+                }
+            })()
+        }
+    
         document.addEventListener('scroll',addItem)
         return () => {
             document.removeEventListener('scroll', addItem)
         }
     },[count,loading,listdeal.length])
 
-    const addItem=()=>{
-        (async()=>{
-            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-            if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listdeal.length< count){
-                setLoading(false)
-                const res =await axios.get(`${listAddonshopURL}?&offset=${listdeal.length}`,headers())
-                setDeal(current=>[...current,...res.data.data])
-                setLoading(true)
-            }
-        })()
-    }
-
+    
     const setdetail=(item)=>{
         navite(`/marketing/add-on-deal/${item.id}`)
     }
     const searchitem=(e)=>{
+        setKeyword(inputRef.current.value)
+    }
+    useEffect(()=>{
       (async()=>{
-        if(daychoice){
-          params.set('start_day',timevalue(daychoice.start))
-          params.set('end_day',timevalue(daychoice.end))
+        if(start){
+            params.set('start_day',timevalue(start))
         }
+        else{
+            params.delete('start_day')
+        }
+        if(end){
+            params.set('end_day',timevalue(end))
+        }
+        else{
+            params.delete('end_day')
+        }
+        if(keyword){
+            params.set('keyword',keyword)
+        }
+        else{
+            params.delete('keyword')
+        }
+        if(choice!=='all'){
+            params.set('choice',choice)
+        }
+        else{
+            params.delete('choice')
+        }
+
         params.set('option',option)
-        params.set('keyword',keyword)
-       
-        params.set('choice',choice)
+        setLoading(false)
         const res =await axios.get(`${listAddonshopURL}?${params}`,headers())
         setDeal([...res.data.data])
         setCount(res.data.count)
         setLoading(true)
     })()
-    }
+    },[choice,option,start,end,keyword,params])
     return(
         <>
             <Navbar/>
@@ -187,7 +212,7 @@ const Listdealshop=()=>{
                                     <div className="tabs tabs-line tabs-normal tabs-top landing-page-tab">
                                         <Tabs
                                         listchoice={listchoice}
-                                       
+                                        loading={loading}
                                         choice={choice}
                                        
                                         setchoice={data=>setChoice(data)}
@@ -204,36 +229,12 @@ const Listdealshop=()=>{
                                         <div data-v-40673d96="" data-v-771d39f6="" className="promotion-search">
                                             <div data-v-40673d96="" className="custom-input-group">
                                                 <div data-v-40673d96="" className="search-label">Tìm kiếm</div> 
-                                                <div data-v-40673d96="" className="input-group search-type">
-                                                    <span ref={optionref} className="input-group__prepend" style={{width: '160px'}}>
-                                                        <div data-v-40673d96="" className="select">
-                                                            <div onClick={e=>setShowoption(!showoption)} tabIndex="0" className="selector selector--normal item-space"> 
-                                                                <div className="selector__inner line-clamp--1">{choice_option.find(item=>item.value==option).name}</div> 
-                                                                <div className="selector__suffix"> 
-                                                                    <i className="selector__suffix-icon icon">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,9.18933983 L4.03033009,5.21966991 C3.73743687,4.9267767 3.26256313,4.9267767 2.96966991,5.21966991 C2.6767767,5.51256313 2.6767767,5.98743687 2.96966991,6.28033009 L7.46966991,10.7803301 C7.76256313,11.0732233 8.23743687,11.0732233 8.53033009,10.7803301 L13.0303301,6.28033009 C13.3232233,5.98743687 13.3232233,5.51256313 13.0303301,5.21966991 C12.7374369,4.9267767 12.2625631,4.9267767 11.9696699,5.21966991 L8,9.18933983 Z"></path></svg>
-                                                                    </i>
-                                                                </div>
-                                                            </div> 
-                                                            {showoption?
-                                                            <div className="select__options">
-                                                                {choice_option.map(item=>
-                                                                <div key={item.value} onClick={(e)=>{setOption(item.value)
-                                                                    setShowoption(false)
-                                                                }} data-v-40673d96="" className={`option ${item.value==option?'selected':''}`}>{item.name}</div>
-                                                                )}
-                                                                
-                                                            </div>:''}
-                                                        </div>
-                                                    </span> 
-                                                    <span className="input-group__append">
-                                                        <div data-v-40673d96="" className="input search-input">
-                                                            <div className="input__inner input__inner--normal"> 
-                                                                <input onChange={e=>setKeyword(e.target.value)} type="text" placeholder=" " resize="vertical" rows="2" minrows="2" restrictiontype="value" max="Infinity" min="-Infinity" className="input__input"/> 
-                                                            </div>
-                                                        </div>
-                                                    </span>
-                                                </div>
+                                                <Options
+                                                    option={option}
+                                                    inputRef={inputRef}
+                                                    setOption={(data)=>setOption(data)}
+                                                    items={choice_option}
+                                                />
                                             </div> 
                                             <div data-v-40673d96="" className="custom-input-group">
                                                 <div data-v-40673d96="" className="search-label">Thời gian khuyến mãi    
@@ -242,7 +243,7 @@ const Listdealshop=()=>{
                                                 <Daterange
                                                 setDaychoice={data=>setDaychoice(data)}   
                                                 daychoice={daychoice}
-                                                
+                                                title="Bắt Đầu - Kết Thúc"
                                                 />
                                                 
                                             </div>
@@ -251,10 +252,7 @@ const Listdealshop=()=>{
                                                         <span>Tìm</span>
                                                     </button> 
                                                     <button onClick={()=>{setKeyword('')
-                                                    params.delete('start_day')
-                                                    params.delete('end_day')
-                                                    params.delete('keyword')
-                                                    params.delete('option')
+                                                    
                                                         setDaychoice({start:null,end:null})
                                                         setOption(1)
                                                     }} data-v-40673d96="" type="button" className="button btn-light">
@@ -371,14 +369,14 @@ const Listdealshop=()=>{
                                                                             <td className="">
                                                                                 <div className="table__cell">
                                                                                     <div data-v-771d39f6="" className="product-gallery-comp _25_tDRNHeHUHTHoVBXqqAZ">
-                                                                                        {deal.main_products.map((item,index)=>{
-                                                                                            if(index<5){
-                                                                                                return(
-                                                                                                <span className="avatar avatar--small product-gallery-item">
+                                                                                        {deal.main_products.filter((item,index)=>index<5).map((item,index)=>
+                                                                                            
+                                                                                                
+                                                                                                <span key={index} className="avatar avatar--small product-gallery-item">
                                                                                                     <div className="avatar-img" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center center'}}></div>
-                                                                                                </span>)
-                                                                                            }
-                                                                                        })}
+                                                                                                </span>
+                                                                                            
+                                                                                        )}
                                                                                         {deal.main_products.length>5?<div className="product-gallery-mask gallery-mask__small">+{deal.main_products.length-5}</div>:''}
                                                                                     </div>
                                                                                 </div>
@@ -386,14 +384,14 @@ const Listdealshop=()=>{
                                                                             <td className="">
                                                                                 <div className="table__cell">
                                                                                     <div data-v-771d39f6="" className="product-gallery-comp _25_tDRNHeHUHTHoVBXqqAZ">
-                                                                                        {deal.byproducts.map((item,index)=>{
-                                                                                            if(index<5){
-                                                                                                return(
-                                                                                                <span className="avatar avatar--small product-gallery-item">
+                                                                                        {deal.byproducts.filter((item,index)=>index<5).map((item,index)=>
+                                                                                            
+                                                                                                
+                                                                                                <span key={index} className="avatar avatar--small product-gallery-item">
                                                                                                     <div className="avatar-img" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center center'}}></div>
-                                                                                                </span>)
-                                                                                            }
-                                                                                        })}
+                                                                                                </span>
+                                                                                            
+                                                                                        )}
                                                                                         {deal.byproducts.length>5?<div className="product-gallery-mask gallery-mask__small">+{deal.byproducts.length-5}</div>:''}
                                                                                     </div>
                                                                                 </div>

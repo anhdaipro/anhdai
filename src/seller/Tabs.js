@@ -4,13 +4,19 @@ import {useNavigate,useSearchParams} from 'react-router-dom'
 import axios from 'axios'
 import { headers } from '../actions/auth'
 const Tabs=(props)=>{
-    const {url,setdata,choice,loading,setloading,setcount,listchoice,setchoice}=props
+    const {choice,loading,listchoice,setchoice}=props
     const [params, setSearchParams] = useSearchParams();
     const tabs_ink =useRef()
     const parent =useRef()
-    const [left,setLeft]=useState(0)
-    const [width,setWidth]=useState(72)
     
+    const [left,setLeft]=useState(0)
+    const [width,setWidth]=useState(0)
+    useEffect(()=>{
+        const active=document.querySelector('.tabs__nav-tab.active')
+        if(loading){
+            setWidth(active.offsetWidth)
+        }
+    },[loading])
     return(
         <div className="tabs__nav">  
             <div className="tabs__nav-warp">
