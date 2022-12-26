@@ -1,7 +1,6 @@
 import axios from 'axios';
 import Navbar from "../seller/Navbar"
-import {Link,useParams} from 'react-router-dom'
-import ReactDOM, { render } from 'react-dom'
+import {Link,useNavigate,useParams} from 'react-router-dom'
 import Timeoffer from "./Timeoffer"
 import React, {useState,useEffect,useCallback,useRef,useMemo} from 'react'
 import Pagination from "./Pagination"
@@ -101,6 +100,8 @@ const Programinfo=(props)=>{
     const [sameitem,setSameitem]=useState([])
     const [duplicate,setDuplicate]=useState(false)
     const {id}=useParams()
+    const inputRef=useRef()
+    const navigate=useNavigate()
     const url_program=id?detailprogramURL+id:newprogramURL
     const edit=id?true:false
     useEffect(() => {
@@ -122,6 +123,7 @@ const Programinfo=(props)=>{
                     return({...product,check:false,user_item_limit:variations.find(variation=>variation.user_item_limit)?variations.find(variation=>variation.user_item_limit).user_item_limit:'',
                     limit:variations.some(variation=>variation.user_item_limit)?true:false,variations:variations.filter(variation=>variation.item_id==product.id)})
                 })
+                inputRef.current.value=data.name_program
                 setItem({...itemshop,byproduct_choice:list_products,
                 page_count_by:Math.ceil(list_products.length / Pagesize)})
             }
@@ -461,7 +463,7 @@ const Programinfo=(props)=>{
                 })
                 return [...arr,...datavariation]
             },[])
-            const dataprogram={valid_from:program.valid_from,valid_to:program.valid_to,name_program:program.name_program}
+            const dataprogram={valid_from:program.valid_from,valid_to:program.valid_to,name_program:inputRef.current.value}
             const data={...dataprogram,action:'submit',list_items:list_product,discount_model_list:discount_model_list}
             axios.post(url_program,JSON.stringify(data),headers())
             .then(res=>{
@@ -472,6 +474,7 @@ const Programinfo=(props)=>{
                         if (state.timeSecond <= 0) {
                             clearInterval(countDown)
                             setState({...state,complete:false})
+                            navigate('/marketing/discount/list')
                         }
                     }, 1000);
                 }
@@ -502,7 +505,7 @@ const Programinfo=(props)=>{
                                         </label>
                                         <div className="item-col">
                                             <div className="input-inner" style={{width: '450px'}}> 
-                                                <input type="text" value={program.name_program} onChange={(e)=>setform(e)} className="form-select" name="name_program" placeholder="Enter" style={{width: '450px'}} required/>
+                                                <input type="text" ref={inputRef} className="form-select" name="name_program" placeholder="Enter" style={{width: '450px'}} required/>
                                                 <div className="input__suffix">
                                                 </div>
                                             </div>
