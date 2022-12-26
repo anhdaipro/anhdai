@@ -193,9 +193,10 @@ const Login = ({isAuthenticated,responseGoogle,responseFb}) => {
                     'Content-Type': 'application/json'
                 }
             };
+            console.log(config)
             const form=!validatEemail(username)?{username:username,password:password}:{email:username,password:password}
             const res = await axios.post(loginURL,JSON.stringify(form), config);
-    
+            
             dispatch({
                 type: LOGIN_SUCCESS,
                 payload: res.data
