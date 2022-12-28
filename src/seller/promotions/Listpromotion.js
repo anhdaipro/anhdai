@@ -1,6 +1,6 @@
 import React, {useState,useCallback,useEffect,useRef} from 'react'
 import {formatter,timepromotion,percent,timeformat,listchoice,timevalue,choice_option} from "../../constants"
-import {dataPromotionURL, listcomboshopURL,} from "../../urls"
+import {dataPromotionURL, detailcomboURL, listcomboshopURL,} from "../../urls"
 import {useNavigate,useSearchParams} from 'react-router-dom'
 import axios from 'axios'
 import { headers } from '../../actions/auth'
@@ -8,6 +8,7 @@ import Navbar from '../Navbar'
 import Tabs from '../Tabs'
 import Daterange from '../../hocs/Daterange'
 import Options from '../Options'
+import { BtnDelete, BtnInfo } from './Buttonaction'
 const now=new Date()
 now.setDate(new Date().getDate()-7)
 const Listcomboshop=()=>{
@@ -89,9 +90,7 @@ const Listcomboshop=()=>{
         }
     },[count,loading,listcombo.length])
 
-    const setdetail=(item)=>{
-        navite(`/marketing/bundle/${item.id}`)
-    }
+    
     useEffect(() => {
         ( async ()=>{
             if(start){
@@ -122,7 +121,7 @@ const Listcomboshop=()=>{
             params.set('option',option)
             setLoading(false)
             const res =await axios.get(`${listcomboshopURL}?${params}`,headers())
-            setCombo(current=>[...res.data.data])
+            setCombo(res.data.data)
             setCount(res.data.count)
             setLoading(true)
         })()
@@ -131,6 +130,12 @@ const Listcomboshop=()=>{
     const searchitem=(e)=>{
       setKeyword(inputRef.current.value)
     }
+    const setdata=useCallback(
+        (data) => {
+            setCombo(data)
+        },
+        [],
+    )
     return(
         <>
             <Navbar/>
@@ -396,18 +401,15 @@ const Listcomboshop=()=>{
                                                                             <td className="is-last">
                                                                                 <div className="table__cell last-cell">
                                                                                     <div data-v-6b00c90e="" className="action-list-comp _3MyH5U5zfKZqxZyFzTY6wM">
-                                                                                        <div className="action-list-item">
-                                                                                            <div className="popover popover--light">
-                                                                                                <div className="popover__ref">
-                                                                                                    <button onClick={()=>setdetail(combo)} type="button" className="button button--link button--normal">
-                                                                                                        <span>Chi tiết</span>
-                                                                                                    </button>
-                                                                                                </div> 
-                                                                                                <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
-                                                                                                    <div className="popover__content"></div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                        <BtnInfo
+                                                                                        url={`/marketing/bundle/${combo.id}`}
+                                                                                        />
+                                                                                        <BtnDelete
+                                                                                        url={`${detailcomboURL}/${combo.id}`}
+                                                                                        data={listcombo}
+                                                                                        setdata={data=>setdata(data)}
+                                                                                        itemchoice={combo}
+                                                                                        />
                                                                                         <div className="action-list-item">
                                                                                             <div className="popover popover--light">
                                                                                                 <div className="popover__ref">

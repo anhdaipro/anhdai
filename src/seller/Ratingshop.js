@@ -104,7 +104,7 @@ const Ratingshop=()=>{
         setCurrentPage(page_chocie)
     }
    const review_choice=list_review.find(item=>item.show_reply)
-   console.log(review_choice)
+  
    const setopenreply=(e)=>{
         const list_reviews= list_review.map(item=>{
             return({...item,show_reply:false})
@@ -279,7 +279,7 @@ const Ratingshop=()=>{
                                             <div data-v-f68eb30a="" className="column reply">Trả lời đánh giá của bạn</div>
                                         </div> 
                                         <div data-v-f68eb30a="" style={{position: 'relative'}}>
-                                            {list_review.length==0?
+                                                {list_review.length==0?
                                                 <div data-v-1c375e60="" data-v-f68eb30a="" className="no-result">
                                                     <div data-v-1c375e60="" className="default-page">
                                                         <i className="default-page__icon icon normal">

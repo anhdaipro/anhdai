@@ -73,16 +73,16 @@ export const originweb =window.location.origin
 const apivendorURL = "/api/v3";
 //prmotions
 export const vouchershopURL=`${localhost}${apivendorURL}/voucher/new`;
-export const dealDetailshopURL=`${localhost}${apivendorURL}/deal_shock/`;
+export const dealDetailshopURL=`${localhost}${apivendorURL}/deal_shock`;
 export const itemdealURL=`${localhost}${apivendorURL}/item_deal_shock`;
 export const newdealURL=`${localhost}${apivendorURL}/new_deal`
 export const newcomboURL=`${localhost}${apivendorURL}/new_combo`
-export const detailcomboURL=`${localhost}${apivendorURL}/combo/`
+export const detailcomboURL=`${localhost}${apivendorURL}/combo`
 export const newprogramURL=`${localhost}${apivendorURL}/discount/create`
-export const detailprogramURL=`${localhost}${apivendorURL}/discount/`
-export const detailvoucherURL=`${localhost}${apivendorURL}/voucher/`
+export const detailprogramURL=`${localhost}${apivendorURL}/discount`
+export const detailvoucherURL=`${localhost}${apivendorURL}/voucher`
 export const newflashsaleURL=`${localhost}${apivendorURL}/flashsale/create`
-export const detailflashsaleURL=`${localhost}${apivendorURL}/flashsale/`
+export const detailflashsaleURL=`${localhost}${apivendorURL}/flashsale`
 export const newAwardshopURL=`${localhost}${apivendorURL}/shop-game/new`
 export const detailAwardshopURL=`${localhost}${apivendorURL}/shop-game`
 export const listAwardshopURL=`${localhost}${apivendorURL}/shop-game/list`
@@ -110,7 +110,7 @@ export const productshopURL=`${localhost}${apivendorURL}/product/list`;
 export const listProductshopURL=`${localhost}${apivendorURL}/product`
 export const createvariationURL=`${localhost}${apivendorURL}/variation/create`
 export const newproductURL=`${localhost}${apivendorURL}/product/category`
-export const detailproductURL=`${localhost}${apivendorURL}/product/`
+export const detailproductURL=`${localhost}${apivendorURL}/product`
 
 
 //dashboard

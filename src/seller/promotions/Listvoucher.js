@@ -1,11 +1,12 @@
 import React, {useState,useCallback,useEffect} from 'react'
 import {timepromotion,formatter,percent, timeformat,listchoice} from "../../constants"
-import {listvouchershopURL,dataVoucherURL} from "../../urls"
+import {listvouchershopURL,dataVoucherURL, detailvoucherURL} from "../../urls"
 import {useNavigate,useSearchParams} from 'react-router-dom'
 import axios from 'axios'
 import { headers } from '../../actions/auth'
 import Navbar from '../Navbar'
 import Tabs from '../Tabs'
+import { BtnDelete, BtnInfo } from './Buttonaction'
 const now=new Date()
 now.setDate(new Date().getDate()-7)
 const Listvoucher=()=>{
@@ -61,10 +62,10 @@ const Listvoucher=()=>{
             }
         })()
     }
-    const setdata=data=>setVouchers(data)
-    const setdetail=(item)=>{
-        navite(`/marketing/vouchers/${item.id}`)
-    }
+    const setdata=useCallback((data)=>{
+        setVouchers(data)
+    },[])
+    
     return(
         <>
         <Navbar/>
@@ -305,30 +306,16 @@ const Listvoucher=()=>{
                                                                     <td className="is-last">
                                                                         <div className="table__cell last-cell">
                                                                             <div data-v-6b00c90e="" className="action-list-comp _3MyH5U5zfKZqxZyFzTY6wM">
-                                                                                <div className="action-list-item">
-                                                                                    <div className="popover popover--light">
-                                                                                        <div className="popover__ref">
-                                                                                            <button onClick={()=>setdetail(voucher)} type="button" className="button button--link button--normal">
-                                                                                                <span>Chi tiết</span>
-                                                                                            </button>
-                                                                                        </div> 
-                                                                                        <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
-                                                                                            <div className="popover__content"></div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div className="action-list-item">
-                                                                                    <div className="popover popover--light">
-                                                                                        <div className="popover__ref">
-                                                                                            <button type="button" className="button button--link button--normal">
-                                                                                                <span>Đơn hàng</span>
-                                                                                            </button>
-                                                                                        </div> 
-                                                                                        <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
-                                                                                            <div className="popover__content"></div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
+                                                                                <BtnInfo
+                                                                                        url={`/marketing/vouchers/${voucher.id}`}
+                                                                                />
+                                                                                <BtnDelete
+                                                                                    url={`${detailvoucherURL}/${voucher.id}`}
+                                                                                    data={listvoucher}
+                                                                                    setdata={data=>setdata(data)}
+                                                                                    itemchoice={voucher}
+                                                                                />
+                                                                                
                                                                                 <div className="action-list-item">
                                                                                     <div className="popover popover--light">
                                                                                         <div className="popover__ref">

@@ -38,7 +38,7 @@ const Detailview = () => {
         setChoice(choices)
         const res = await url
         setData(res.data)
-        console.log(headers)
+        
         if (choices=='product'){
           setProduct_id(res.data.id)
           setCategory_id()

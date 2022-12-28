@@ -10,7 +10,7 @@ import {
     SIGNUP_SUCCESS,
     SIGNUP_FAIL,
     GOOGLE_AUTH_SUCCESS,
-    GOOGLE_AUTH_FAIL,
+    UPDATE_PROFILE,
     FACEBOOK_AUTH_SUCCESS,
     FACEBOOK_AUTH_FAIL,
     LOGOUT,
@@ -54,35 +54,7 @@ export const checkAuthenticated = () => async dispatch => {
     }
 };
 
-export const googleAuthenticate = (state, code) => async dispatch => {
-    if (state && code) {
-        const config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        };
 
-        const details = {
-            'state': state,
-            'code': code
-        };
-
-        const formBody = Object.keys(details).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key])).join('&');
-
-        try {
-            const res = await axios.post(`https://ecomerceapp-production.up.railway.app/auth/o/google-oauth2/?${formBody}`, config);
-            dispatch({
-                type: GOOGLE_AUTH_SUCCESS,
-                payload: res.data
-            });
-
-        } catch (err) {
-            dispatch({
-                type: GOOGLE_AUTH_FAIL
-            });
-        }
-    }
-};
 export const responseGoogle = (response) => async dispatch => {
     const res=await axios.post('https://ecomerceapp-production.up.railway.app/api-auth/convert-token', {
         token: response.accessToken,
@@ -356,3 +328,10 @@ export const showchat = (data) => async dispatch => {
         console.log(e)
     }
 } 
+
+export const updateprofile=(data)=>{
+    return {
+        type:UPDATE_PROFILE,
+        payload:data
+    }
+}

@@ -27,12 +27,9 @@ const Changepassword =()=>{
     const saveinfo=(e)=>{
         e.preventDefault();
         const data=JSON.stringify({ old_password,new_password});
-        let form= new FormData()
-        form.append('new_password',formData.new_password)
-        form.append('old_password',formData.old_password)
         try {
-            const res = axios.put(changepassURL, form, headers);
-            console.log(res.data)
+            const res = axios.put(changepassURL, data, headers());
+            
         } catch (err) {
             setState({...state,invalid:true})
         }

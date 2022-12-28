@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Navbar from "../seller/Navbar"
-import {Link,useParams} from 'react-router-dom'
+import {Link,useNavigate,useParams} from 'react-router-dom'
 import ReactDOM, { render } from 'react-dom'
 import Timeoffer from "./Timeoffer"
 import React, {useState,useEffect,useCallback,useRef,useMemo} from 'react'
@@ -29,6 +29,7 @@ const ShopAwardInfo=(props)=>{
     const [awardchoice,setAwardchoice]=useState()
     const [requestedit,setEditaward]=useState(false)
     const {id}=useParams()
+    const navigate=useNavigate()
     const edit=id?true:false
     const url=id?`${detailAwardshopURL}/${id}`:newAwardshopURL
     useEffect(() => {
@@ -40,6 +41,7 @@ const ShopAwardInfo=(props)=>{
             setTime_end(timesubmit(data.valid_to))
             setTime_start(timesubmit(data.valid_from))
             setLoading(true)
+            
             const list_awards=data.list_awards.map(item=>{
                 return({...item,value:item.id})
             })
@@ -87,7 +89,8 @@ const ShopAwardInfo=(props)=>{
                     if (state.timeSecond <= 0) {
                         clearInterval(countDown)
                         setState({...state,complete:false})
-                        }
+                        navigate('/marketing/shop-game/list')
+                    }
                 }, 1000);
             }
         })

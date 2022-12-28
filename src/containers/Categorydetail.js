@@ -100,6 +100,7 @@ const Boxitem=styled.div`
 padding: 0px 0.9375rem;
 margin:0.625rem 0
 `
+const shopmalls=partition(shopmall, int).map(subarray => subarray)
 const Categorydetail = ({data,category_id}) => {
     const {slug}=useParams();
     const [FormData,setFormData]=useState({minPrice:null,maxPrice:null})
@@ -110,21 +111,19 @@ const Categorydetail = ({data,category_id}) => {
     const [category_choice,setCategorychoice]=useState([])
     const search=Object.fromEntries([...params])
     const [listitem,setListitem]=useState()
-    const[shopmalls,setShopmall]=useState([])
-    const[page_count]=useState(1)
+    
+   
     const [showmore,setShowmore]=useState({children:false,choice:false,rating:false})
     useEffect(()=>{
         (async()=>{
+            
             if(category_id){
                 const res =await axios.get(`${categoryinfoURL}?category_id=${category_id}`,headers())
-                
                 setCategory(res.data)
                 
-                setShopmall(partition(shopmall, int).map(subarray => subarray))
             }
         })()
     },[category_id])
-
     useEffect(()=>{
         (async()=>{
             if(category_id){
@@ -182,8 +181,8 @@ const Categorydetail = ({data,category_id}) => {
             </div>
             <div className="containers _3wA4TW">
                 <Shopmall 
-               
-                categories={shopmalls}/>
+                categories={shopmalls}
+                />
             </div>
             <div className="containers">
                 <div className="ofs-carousel">

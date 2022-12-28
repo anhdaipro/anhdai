@@ -3,12 +3,17 @@ import axios from 'axios';
 import React, {useState, useEffect,memo,useMemo,useCallback,useRef} from 'react'
 import {formatter,} from "../../constants"
 let PageSize = 10;
+const listchoice=[
+    {name:"",value:"1"},
+    {name:"",value:"1"},
+    {name:"",value:"1"},
+]
 const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,submitby,
     setshow,duplicate,sec,text,complete,setDuplicate,
     showmain,showbyproduct,byproduct,byproduct_choice})=>{
    
     const [currentPage, setCurrentPage] = useState(1);
-    const [state,setState]=useState({list_items:[]})
+    const [choice,setChoice]=useState('1')
     const [name,setName]=useState('items')
     const [show,setShow]=useState(false)
     const [choice_product,setChoiceproduct]=useState([])
@@ -92,7 +97,7 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
             </div>
         )
     }
-    console.log('og')
+    
     return(
         <>
         {show?

@@ -17,6 +17,7 @@ import {
     SHOW_CHAT,
     SHOW_THREADS,
     SHOWONLINE,
+    UPDATE_PROFILE,
 } from '../actions/types';
 
 let initialState = {
@@ -47,6 +48,10 @@ const rootReducer=(state = initialState, action)=>{
                 user:payload,
                 count_notify_unseen:payload.count_notify_unseen,
                 count_message_unseen:payload.count_message_unseen
+            }
+        case UPDATE_PROFILE:
+            return{
+                ...state,user:{...state.user,...payload}
             }
         case LOGIN_SUCCESS:
         case GOOGLE_AUTH_SUCCESS:

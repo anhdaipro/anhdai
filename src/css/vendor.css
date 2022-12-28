@@ -8734,6 +8734,14 @@ padding:0 24px
 .shipping-3pl-masking-setting .shipping-container .section:not(:first-child) {
   padding-top: 32px;
 }
+.switch--normal {
+  width: 48px;
+  height: 24px;
+  font-size: 14px;
+  line-height: 24px;
+  background-color: #b7b7b7;
+  border-radius: 12px;
+}
 .switch--open {
   background-color: #5c7;
 }
@@ -8807,13 +8815,7 @@ box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 9%);
   width: 16px;
   height: 16px;
 }
-.switch--normal {
-  width: 48px;
-  height: 24px;
-  font-size: 14px;
-  line-height: 24px;
-  border-radius: 12px;
-}
+
 .switch {
   position: relative;
   display: inline-block;
@@ -9431,10 +9433,8 @@ padding: 0 12px 12px 0;
     color: rgba(0,0,0,.87);
     display: block;
     margin-bottom: 5px;
-    max-height: 32px;
     text-overflow: ellipsis;
     word-break: break-all;
-    display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;

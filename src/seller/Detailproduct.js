@@ -148,6 +148,7 @@ const Detailproduct=()=>{
         
     ])
     const videoref=useRef();
+    const [list_category_choice,setListcategorychoice]=useState([])
     const [detail,setDetail]=useState({brand:'1'})
     const [shipping,setShipping]=useState([])
     const [formData,setformData]=useState({status:'1',name:'',description:'',height:'',length:'',weight:null,price:'',inventory:'',sku_classify:'',width:'',sku_classify:''})
@@ -193,6 +194,7 @@ const Detailproduct=()=>{
             })
             setListcategory(res1.data.list_category)
             setState({...state,list_choice:list_null,max_level:max_level+1})
+            setListcategorychoice(list_null)
             if(id){
                 const res =await axios.get(detailproductURL+id,headers())
                 const list_null=Array(max_level+1-res.data.list_category_choice.length).fill().map((_, i) =>{
@@ -218,6 +220,7 @@ const Detailproduct=()=>{
                 setState(prev=>{return{...prev,list_choice:list_category,
                 list_media:res.data.media_upload,list_color:res.data.colors,classify1:classify1,classify2:classify2,
                 list_size:res.data.sizes}})
+                setListcategorychoice(list_category)
                 setShippingitem([...shipping_item,...shipping_item_remainder])
                 setVariations(res.data.variations)
                 setBuymore(res.data.buymore)
@@ -617,12 +620,11 @@ const Detailproduct=()=>{
         },[])
     },[buymore])
 
-console.log(shipping)
     const isAscending=listitems.filter((item,i)=>item>=listitems[i+1]).length==0
     const valid_sale=variations.length>0?variations.every(item=>item.price && item.inventory!==null):formData.price&&formData.inventory
     const valid_media=state.list_media.length>0
     const valid_delivery=shipping_item.find(item=>item.enable)
-    console.log(valid_sale)
+  
     const shippings=shipping_item.filter(item=>item.enable).map(item=>item.method)
     const valid=valid_sale&&valid_delivery&&valid_media&&formData.name&&category && formData.weight&&formData.description
     const submit= async ()=>{
@@ -713,6 +715,7 @@ console.log(shipping)
     
     const comfirm=()=>{
         setCategory(state.list_choice.find(item=>item.choice))
+        setListcategorychoice(state.list_choice)
         setShow(false)
     }
     const setshow=(value)=>{
@@ -2026,12 +2029,16 @@ console.log(shipping)
                                                 <span className="no-select">Chưa chọn ngành hàng</span>}
                                             </div>
                                             <div>
-                                                <button onClick={()=>setShow(false)} type="button" class="button button--normal"><span>Hủy</span></button>
+                                                <button onClick={()=>{
+                                                    setState({...state,list_choice:list_category_choice})
+                                                    setShow(false)}} type="button" class="button button--normal"><span>Hủy</span></button>
                                                 <button onClick={comfirm}  className={`btn-m ml-1 ${state.list_choice.some(item=>item.choice)?'':'disable'} btn-orange`} type="button">Next</button>
                                             </div>
                                             
                                         </div>
-                                        <i onClick={()=>setShow(false)} class="icon modal__close"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2.85355339,1.98959236 L8.157,7.29314575 L13.4601551,1.98959236 C13.6337215,1.81602601 13.9031459,1.79674086 14.098014,1.93173691 L14.1672619,1.98959236 C14.362524,2.18485451 14.362524,2.501437 14.1672619,2.69669914 L14.1672619,2.69669914 L8.864,8.00014575 L14.1672619,13.3033009 C14.362524,13.498563 14.362524,13.8151455 14.1672619,14.0104076 C13.9719997,14.2056698 13.6554173,14.2056698 13.4601551,14.0104076 L8.157,8.70714575 L2.85355339,14.0104076 C2.67998704,14.183974 2.41056264,14.2032591 2.2156945,14.0682631 L2.14644661,14.0104076 C1.95118446,13.8151455 1.95118446,13.498563 2.14644661,13.3033009 L2.14644661,13.3033009 L7.45,8.00014575 L2.14644661,2.69669914 C1.95118446,2.501437 1.95118446,2.18485451 2.14644661,1.98959236 C2.34170876,1.79433021 2.65829124,1.79433021 2.85355339,1.98959236 Z"></path></svg></i>
+                                        <i onClick={()=>{
+                                            setState({...state,list_choice:list_category_choice})
+                                            setShow(false)}} class="icon modal__close"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2.85355339,1.98959236 L8.157,7.29314575 L13.4601551,1.98959236 C13.6337215,1.81602601 13.9031459,1.79674086 14.098014,1.93173691 L14.1672619,1.98959236 C14.362524,2.18485451 14.362524,2.501437 14.1672619,2.69669914 L14.1672619,2.69669914 L8.864,8.00014575 L14.1672619,13.3033009 C14.362524,13.498563 14.362524,13.8151455 14.1672619,14.0104076 C13.9719997,14.2056698 13.6554173,14.2056698 13.4601551,14.0104076 L8.157,8.70714575 L2.85355339,14.0104076 C2.67998704,14.183974 2.41056264,14.2032591 2.2156945,14.0682631 L2.14644661,14.0104076 C1.95118446,13.8151455 1.95118446,13.498563 2.14644661,13.3033009 L2.14644661,13.3033009 L7.45,8.00014575 L2.14644661,2.69669914 C1.95118446,2.501437 1.95118446,2.18485451 2.14644661,1.98959236 C2.34170876,1.79433021 2.65829124,1.79433021 2.85355339,1.98959236 Z"></path></svg></i>
                                     </div>
                                 </div>
                             </div>

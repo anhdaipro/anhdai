@@ -122,7 +122,7 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                         </Link>
                         {user?
                         <div onMouseLeave={()=>hideaccount()} onMouseEnter={()=>viewaccount()} className="item-center pl-2" id="nav">
-                            <img id="img-preview2" src={image!=undefined?image:user.avatar}/>
+                            <img id="img-preview2" src={user.avatar}/>
                             <span className="pl-1_2">{user.username}</span>
                             {state.view_account?
                             <div className="log">

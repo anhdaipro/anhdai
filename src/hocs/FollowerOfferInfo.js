@@ -29,6 +29,7 @@ const FollowerOfferInfo=(props)=>{
     const [timeend,setTime_end]=useState(()=>time_end.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
     const [timestart,setTime_start]=useState(()=>new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
     const {id}=useParams()
+    const [editprogram,setEditprogram]=useState(true)
     const edit=id?true:false
     const url=id?`${detailFollowOffershopURL}/${id}`:newFollowOffershopURL
     useEffect(() => {
@@ -41,6 +42,9 @@ const FollowerOfferInfo=(props)=>{
                 setLoading(true)
                 setTime_end(timesubmit(data.valid_to))
                 setTime_start(timesubmit(data.valid_from))
+                if (new Date(data.valid_from)<=new Date()  && new Date(data.valid_to) >=new Date()){
+                    setEditprogram(false)
+                }
             }
             else{
                 setLoading(true)
@@ -63,7 +67,7 @@ const FollowerOfferInfo=(props)=>{
     }
 
     const complete=()=>{
-        if(follower_offer.offer_name==''){
+        if(follower_offer.offer_name=='' || !editprogram){
             return 
         }
         else{

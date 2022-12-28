@@ -16,7 +16,7 @@ const Loginotp = ({ loginotp, isAuthenticated,responseGoogle,responseFb}) => {
         phone:'',
         pin:''
     });
-    console.log(isAuthenticated)
+    
     const [state,setState]=useState({time:60,error:true,showpass:false,showrepass:false})
     const [show,setShow]=useState(false)
     let navigate = useNavigate();
@@ -81,7 +81,7 @@ const Loginotp = ({ loginotp, isAuthenticated,responseGoogle,responseFb}) => {
             setFormData({...formData,id:res.data.id})
             const countDown = setInterval(() => {
                 time--
-                console.log(state)
+                
                 setState({...state,time:time})
                 if (time <= 0) {
                     clearInterval(countDown)

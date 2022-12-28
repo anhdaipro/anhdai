@@ -16,7 +16,7 @@ const Newdealshock=()=>{
     const navigate=useNavigate()
     const [timestart,setTime_start]=useState(()=>timevalue(new Date()))
     const [timeend,setTime_end]=useState(()=>timevalue(time_end))
-    console.log(deal)
+   
     const setdatevalid=(index,date)=>{
         if(index==0){
             setDeal({...deal,valid_from:date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)+' '+('0'+date.hours).slice(-2)+':'+("0"+date.minutes).slice(-2)})

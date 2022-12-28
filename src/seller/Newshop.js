@@ -177,7 +177,7 @@ const Newshop=()=>{
     if(!localStorage.token || expiry<0){
         window.location.href="/vendor/login"
     }
-    console.log(address)
+    
     return(
         <div id="app">
             <div data-v-5634b4d5="" className="onboarding-page">

@@ -87,6 +87,7 @@ const Programinfo=(props)=>{
     const [program,setProgram]=useState({name_program:'',valid_from:valid_from.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     valid_to:valid_to.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16),
     })
+    const [editprogram,setEditprogram]=useState(true)
     const [limititem,setLimititem]=useState({show:false,limit:false,user_item_limit:''})
     const [limitvariation,setLimitvariation]=useState({show:false,limit:false,promotion_stock:'',percent_discount:''})
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
@@ -102,12 +103,12 @@ const Programinfo=(props)=>{
     const {id}=useParams()
     const inputRef=useRef()
     const navigate=useNavigate()
-    const url_program=id?detailprogramURL+id:newprogramURL
+    const url_program=id?`${detailprogramURL}/${id}`:newprogramURL
     const edit=id?true:false
     useEffect(() => {
         (async () => {
             if(id){
-                const res = await axios(detailprogramURL+id,headers())
+                const res = await axios(url_program,headers())
             // <-- passed to API URL
                 const data=res.data
                 setProgram({...data,valid_from:timesubmit(data.valid_from),valid_to:timesubmit(data.valid_to)})
@@ -119,6 +120,9 @@ const Programinfo=(props)=>{
                 })
                 setTime_end(timesubmit(data.valid_to))
                 setTime_start(timesubmit(data.valid_from))
+                if (new Date(data.valid_from)<=new Date()  && new Date(data.valid_to) >=new Date()){
+                    setEditprogram(false)
+                }
                 const list_products=data.products.map(product=>{
                     return({...product,check:false,user_item_limit:variations.find(variation=>variation.user_item_limit)?variations.find(variation=>variation.user_item_limit).user_item_limit:'',
                     limit:variations.some(variation=>variation.user_item_limit)?true:false,variations:variations.filter(variation=>variation.item_id==product.id)})
@@ -446,43 +450,45 @@ const Programinfo=(props)=>{
     }
    
     const complete=()=>{
-        if(item_unvalid){
-            seteterror(sameitem)
-        }
-        else{
-            const list_product=list_enable_on.map(item=>{
-                return(item.id)
-            })
-            const discount_model_list=list_enable_on.reduce((arr,obj,i)=>{
-                const datavariation= obj.variations.map(variation=>{
-                    return({...variation,
-                    promotion_price_after_tax:variation.promotion_price,
-                    percent_discount:variation.percent_discount*100/variation.price,
-                    user_item_limit:obj.user_item_limit?obj.user_item_limit:0})
+        if(editprogram){
+            if(item_unvalid){
+                seteterror(sameitem)
+            }
+            else{
+                const list_product=list_enable_on.map(item=>{
+                    return(item.id)
                 })
-                return [...arr,...datavariation]
-            },[])
-            const dataprogram={valid_from:program.valid_from,valid_to:program.valid_to,name_program:inputRef.current.value}
-            const data={...dataprogram,action:'submit',list_items:list_product,discount_model_list:discount_model_list}
-            axios.post(url_program,JSON.stringify(data),headers())
-            .then(res=>{
-                if(!res.data.error){
-                    const countDown = setInterval(() => {
-                        state.timeSecond--;
-                        setState({...state,complete:true})
-                        if (state.timeSecond <= 0) {
-                            clearInterval(countDown)
-                            setState({...state,complete:false})
-                            navigate('/marketing/discount/list')
-                        }
-                    }, 1000);
-                }
-                else{
-                    
-                    setSameitem(res.data.sameitem)
-                    seteterror(res.data.sameitem)
-                }
-            })
+                const discount_model_list=list_enable_on.reduce((arr,obj,i)=>{
+                    const datavariation= obj.variations.map(variation=>{
+                        return({...variation,
+                        promotion_price_after_tax:variation.promotion_price,promotion_stock:variation.promotion_stock?variation.promotion_stock:variation.inventory,
+                        percent_discount:variation.percent_discount*100/variation.price,
+                        user_item_limit:obj.user_item_limit?obj.user_item_limit:null})
+                    })
+                    return [...arr,...datavariation]
+                },[])
+                const dataprogram={valid_from:program.valid_from,valid_to:program.valid_to,name_program:inputRef.current.value}
+                const data={...dataprogram,action:'submit',list_items:list_product,discount_model_list:discount_model_list}
+                axios.post(url_program,JSON.stringify(data),headers())
+                .then(res=>{
+                    if(!res.data.error){
+                        const countDown = setInterval(() => {
+                            state.timeSecond--;
+                            setState({...state,complete:true})
+                            if (state.timeSecond <= 0) {
+                                clearInterval(countDown)
+                                setState({...state,complete:false})
+                                navigate('/marketing/discount/list')
+                            }
+                        }, 1000);
+                    }
+                    else{
+                        
+                        setSameitem(res.data.sameitem)
+                        seteterror(res.data.sameitem)
+                    }
+                })
+            }
         }
     }
 

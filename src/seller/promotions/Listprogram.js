@@ -1,6 +1,6 @@
 import React, {useState,useCallback,useEffect,useRef} from 'react'
 import {formatter,timepromotion,percent, timeformat,listchoice,choice_option,timevalue} from "../../constants"
-import {dashboardprogramURL, dataProgramURL, listdiscountshopURL,} from "../../urls"
+import {dashboardprogramURL, dataProgramURL, detailprogramURL, listdiscountshopURL,} from "../../urls"
 import {useNavigate,useSearchParams} from 'react-router-dom'
 import axios from 'axios'
 import { headers } from '../../actions/auth'
@@ -8,6 +8,7 @@ import Navbar from '../Navbar'
 import Tabs from '../Tabs'
 import Daterange from '../../hocs/Daterange'
 import Options from '../Options'
+import { BtnInfo,BtnDelete } from './Buttonaction'
 const listitem=[{name:''}]
 const now=new Date()
 now.setDate(new Date().getDate()-7)
@@ -87,10 +88,6 @@ const Listdiscountshop=()=>{
     },[count,loading,listdiscount.length])
 
     
-    const setdetail=(item)=>{
-        navite(`/marketing/discount/${item.id}`)
-    }
-
     useEffect(()=>{
         (async()=>{
             if(start){
@@ -121,14 +118,21 @@ const Listdiscountshop=()=>{
             params.set('option',option)
             setLoading(false)
             const res =await axios.get(`${listdiscountshopURL}?${params}`,headers())
-            setDiscount([...res.data.data])
+            setDiscount(res.data.data)
             setCount(res.data.count)
             setLoading(true)
         })()
     },[option,keyword,end,start,choice,params])
     const searchitem=(e)=>{
-      
+      setKeyword(inputRef.current.value)
     }
+
+    const setdata=useCallback(
+        (data) => {
+            setDiscount(data)
+        },
+        [],
+    )
     return(
         <>
             <Navbar/>
@@ -383,30 +387,18 @@ const Listdiscountshop=()=>{
                                                                             <td className="is-last">
                                                                                 <div className="table__cell last-cell">
                                                                                     <div data-v-6b00c90e="" className="action-list-comp _3MyH5U5zfKZqxZyFzTY6wM">
-                                                                                        <div className="action-list-item">
-                                                                                            <div className="popover popover--light">
-                                                                                                <div className="popover__ref">
-                                                                                                    <button onClick={()=>setdetail(discount)} type="button" className="button button--link button--normal">
-                                                                                                        <span>Chi tiết</span>
-                                                                                                    </button>
-                                                                                                </div> 
-                                                                                                <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
-                                                                                                    <div className="popover__content"></div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div className="action-list-item">
-                                                                                            <div className="popover popover--light">
-                                                                                                <div className="popover__ref">
-                                                                                                    <button onClick={()=>setdetail(discount)} type="button" className="button button--link button--normal">
-                                                                                                        <span>Chi tiết</span>
-                                                                                                    </button>
-                                                                                                </div> 
-                                                                                                <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
-                                                                                                    <div className="popover__content"></div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                        <BtnInfo
+                                                                                            url={`/marketing/discount/${discount.id}`}
+                                                                                        />
+                                                                                        
+
+                                                                                        <BtnDelete
+                                                                                            url={`${detailprogramURL}/${discount.id}`}
+                                                                                            data={listdiscount}
+                                                                                            itemchoice={discount}
+                                                                                            setdata={data=>setdata(data)}
+                                                                                        />
+                                                                                        
                                                                                         <div className="action-list-item">
                                                                                             <div className="popover popover--light">
                                                                                                 <div className="popover__ref">

@@ -568,7 +568,7 @@ const ProductDetail=({form,list_choice,data_item,list_buymore,shipping_shop,sets
         setState({...state,variations:datavariations,list_size:list_size})
     }
 
-    console.log(state.variations)
+   
     const setremove=()=>{
         if(state.list_size.length>0){
             const variations=state.variations.reduce((arr,obj)=>{

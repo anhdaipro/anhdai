@@ -528,7 +528,7 @@ export default class HomePage extends React.Component {
     
     render() {
         const {items,categories,list_trend_search,list_top_search}=this.state
-        console.log(this.state.list_trend_search)
+       
         return (
             <>
                 <div id="main">

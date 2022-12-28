@@ -12,7 +12,7 @@ import {debounce} from 'lodash'
 import Productoffer from '../seller/promotions/Productoffer';
 let Pagesize=5
 const Promotioninfo=(props)=>{
-    const navite=useNavigate()
+    const navigate=useNavigate()
     const {id}=useParams()
     const [timeend,setTime_end]=useState(()=>time_end.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
     const [timestart,setTime_start]=useState(()=>new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
@@ -33,9 +33,10 @@ const Promotioninfo=(props)=>{
     const [loading,setLoading]=useState(false)
     const [sameitem,setSameitem]=useState([])
     const [duplicate,setDuplicate]=useState(false)
+    const [editprogram,setEditprogram]=useState(true)
     const list_enable_on=itemshop.items_choice.filter(item=>item.enable)
     const item_unvalid=list_enable_on.some(item=>sameitem.some(product=>product==item.id))
-    const url_combo=id?detailcomboURL+id:newcomboURL
+    const url_combo=id?`${detailcomboURL}/${id}`:newcomboURL
     const edit=id?true:false
     useEffect(() => {
         (async () => {
@@ -49,6 +50,9 @@ const Promotioninfo=(props)=>{
                 })
                 setTime_end(timesubmit(data.valid_to))
                 setTime_start(timesubmit(data.valid_from))
+                if (new Date(data.valid_from)<=new Date()  && new Date(data.valid_to) >=new Date()){
+                    setEditprogram(false)
+                }
                 inputRef.current.value=data.promotion_combo_name
                 setItem({...itemshop,items_choice:list_products,page_count_main:Math.ceil(list_products.length / Pagesize)})
             }
@@ -233,6 +237,7 @@ const Promotioninfo=(props)=>{
     },[itemshop])
 
     const complete=()=>{
+        if(editprogram){
         if(!item_unvalid){
             const datacombo=combo
             delete datacombo.products
@@ -248,7 +253,7 @@ const Promotioninfo=(props)=>{
                     if (state.timeSecond <= 0) {
                         clearInterval(countDown)
                         setState({...state,complete:false})
-                        navite('/marketing/bundle/list')
+                        navigate('/marketing/bundle/list')
                     }
                 }, 1000);
             }
@@ -261,6 +266,7 @@ const Promotioninfo=(props)=>{
         else{
             seteterror(sameitem)
         }
+    }
     }
 
     return(

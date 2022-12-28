@@ -3,22 +3,26 @@ import axios from 'axios';
 import Navbar from "../containers/Navbar"
 import User from "./User"
 import {profiledURL} from "../urls"
-import { headers,expiry } from '../actions/auth';
+import { headers,expiry, updateprofile } from '../actions/auth';
+import { useSelector,useDispatch } from 'react-redux';
 
-const Profile =()=>{
+const Profile =(props)=>{
     const [state,setState]=useState({list_gender:['MALE','FEMALE','OTHER']})
     const[show,setShow]=useState({date:false,month:false,year:false})
     const [loading,setLoading]=useState(false)
     const [formData,setformData]=useState({phone:'',date:1,month:1,year:2000,username:'',name:'',email:'',image:null})
+    const dispatch = useDispatch()
+    const user=useSelector(state=>state.user)
+    const {username,avatar}=formData
     useEffect(() => {
-        axios.get(profiledURL,headers())
-        .then(res=>{
-          const data = res.data
-          setLoading(true)
-          setformData({ username:data.username,name:data.name,email:data.email,
+        ( async () =>{
+            const res= await axios.get(profiledURL,headers())
+            const data = res.data
+            setLoading(true)
+            setformData({ username:data.username,name:data.name,email:data.email,
             phone:data.phone,shop_name:data.shop_name,gender:data.gender,
-            avatar:data.avatar,date:data.date_of_birth!=null?new Date(data.date_of_birth).getDate():1,month:data.date_of_birth!=null?new Date(data.date_of_birth).getMonth()+1:1,year:data.date_of_birth!=null?new Date(data.date_of_birth).getFullYear():2020});
-        })   
+            avatar:data.avatar,date:data.date_of_birth!=null?new Date(data.date_of_birth).getDate():1,month:data.date_of_birth!=null?new Date(data.date_of_birth).getMonth()+1:1,year:data.date_of_birth!=null?new Date(data.date_of_birth).getFullYear():2020}); 
+        })()
     },[])
     
     if(expiry()<=0 || !localStorage.token){
@@ -47,15 +51,14 @@ const Profile =()=>{
             }
         }
     }
-    const saveinfo=()=>{
+    const saveinfo= async ()=>{
         let form=new FormData()
         Object.keys(formData).map(item=>{
             form.append(item,formData[item])
         })
         form.append('date_of_birth',`${formData.year}-${('0'+formData.month).slice(-2)}-${('0'+formData.date).slice(-2)}`)
-        axios.post(profiledURL,form,headers())
-        .then(res=>{
-        })
+        const res = await axios.post(profiledURL,form,headers())
+        dispatch(updateprofile({username,avatar}))
     }
     const inputref=useRef();
     const year_now=new Date().getFullYear()

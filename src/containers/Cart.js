@@ -300,8 +300,8 @@ const Iteminfo=(props)=>{
                 </div>
             </div>
             <div className="shop-item-price-origin item-center">
-                <span className={`_1CXksa ${item.discount_price>0?'_1k1Vcm':''}`}>₫{formatter.format(item.price)}</span>
-                {item.discount_price?
+                <span className={`_1CXksa ${item.discount_price<item.price?'_1k1Vcm':''}`}>₫{formatter.format(item.price)}</span>
+                {item.discount_price<item.price?
                 <span className="_1CXksa">₫{formatter.format(item.discount_price)}</span>
                 :''}
             </div>
@@ -446,7 +446,7 @@ const ButtonCheckout=(props)=>{
 class Cart extends React.Component{
     constructor(props) {
     super(props);
-    this.state = {name:'',list_item_recommend:[],loading_item:false,page_no:1,items:[],
+    this.state = {name:'',list_item_recommend:[],loading_item:false,page_no:1,items:[],list_cartitem:[],
         shopchoice:null,show_thread:false,list_shop:[],keyword:'',loading_recommend:false,
         user:null,show_message:false,error:false}
     }
@@ -794,6 +794,7 @@ class Cart extends React.Component{
         const {count_order,total,discount_promotion,loading,keyword,show_order,
         discount_deal,discount_product,discount_voucher_shop,list_shop,count_cartitem,
         warring,list_cartitem}=this.state
+        const count_products=list_cartitem.filter(item=>item.check).length
         return(
             <>
                 <div id="main">
@@ -1066,7 +1067,7 @@ class Cart extends React.Component{
                                         </div>:
                                         <div className="_2BT_es">
                                             <div className="flex-end _2LMWss">
-                                                <div className="_10A7e2">Total payment ({count_cartitem} {count_cartitem>1?'products':'product'}):</div>
+                                                <div className="_10A7e2">Total payment ({count_products} {count_products>1?'products':'product'}):</div>
                                                 <div className="nBHs8H">₫{formatter.format(total)}</div>
                                             </div>
                                         </div>}

@@ -264,7 +264,7 @@ const Chartdata=(props)=>{
         setTimechoice(()=>value)
         setDates(()=>value)
     }
-    console.log(date)
+  
     const setdaychoice=(value)=>{
         setTimechoice(()=>value)
         setTime(()=>'day')

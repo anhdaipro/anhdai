@@ -49,9 +49,7 @@ const Calendar = (props) => {
             setShow({...show,decade:false,year:true,month:false})
         }
     },[show_month,show_year,show_decade])
-    
-   console.log(show_year)
-   console.log(show_month)
+
     const thisYear = dayObj.year()
     const thisMonth = dayObj.month() // (January as 0, December as 11)
     const daysInMonth = dayObj.daysInMonth()
@@ -84,7 +82,7 @@ const Calendar = (props) => {
             return (year+value)
         }))
     }
-   console.log(dayjs(value).week())
+  
     const [listweek,setListweek]=useState([])
     const endday=startDate>endDate?startDate:endDate
     const startday=startDate<endDate?startDate:endDate
@@ -117,7 +115,7 @@ const Calendar = (props) => {
             return(item)
         }))
     }
-    console.log(time_end)
+   
     const setday=(e,date,week)=>{
         const daychoices=choice=='week'?week[0].day:date.day
         const month_choice=choice=='week'?week[0].month:date.month

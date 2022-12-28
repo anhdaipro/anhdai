@@ -3,13 +3,13 @@ import Navbar from "./Navbar"
 import {Link,Navigate,useNavigate,useSearchParams} from 'react-router-dom'
 import React, {useState, useEffect,useRef} from 'react'
 import Sidebamenu from "./Sidebar-menu"
-
-import {itemvariation} from "../constants"
-import { headers } from '../actions/auth';
+import {formatter, itemvariation} from "../constants"
+import { headers,showchat,showthreads } from '../actions/auth';
 import {listordersellerURL,} from "../urls"
 import Daterange from '../hocs/Daterange';
 import Options from './Options';
 import Tabs from './Tabs';
+import {connect} from "react-redux"
 const choice_option=[
     {name:"Mã đơn hàng",value:"1"},
     {name:"Tên người mua",value:"2"},
@@ -21,7 +21,8 @@ const listchoice=[
     {name:'Chờ lấy hàng',value:'toship'},{name:'Đang giao',value:'shipping'},{name:'Đã giao',value:'completed'}
     ,{name:'Đơn huỷ',value:'canceled'},{name:'Trả hàng/Hoàn tiền',value:'refund'}
 ]
-const Shippingmanagement=()=>{
+const Shippingmanagement=(props)=>{
+    const {showchat,showthreads,user}=props
     const [state,setState]=useState({list_order_type:[{name:'Tất cả',type:undefined},{name:'Chờ xác nhận',type:'unpaid'},
     {name:'Chờ lấy hàng',type:'toship'},{name:'Đang giao',type:'shipping'},{name:'Đã giao',type:'completed'}
     ,{name:'Đơn huỷ',type:'canceled'}],show_select:false,listoptionsearch:[{name:'Mã đơn hàng',type:'refcode'},{name:'Tên người mua',type:'username'},{name:'Sản phẩm',type:'product'},{name:'Mã vận đơn',type:'shipping'}]})
@@ -47,7 +48,13 @@ const Shippingmanagement=()=>{
         })();
       },[params,end,start,option,keyword,choice])
 
-    const search=Object.fromEntries([...params])
+    
+    const setshowthread=(e,order)=>{
+        let data={member:[user.id,order.user.id],thread:null,send_to:order.user.id}
+        showchat(data)
+        showthreads()
+    } 
+    
     const setordertype=(item)=>{
         if(item=='refund'){
             navigate('/sale/returnlist')
@@ -56,6 +63,18 @@ const Shippingmanagement=()=>{
             setChoice(item)
             const type_order=item!=undefined?{type:item}:undefined
             setSearchParams({...params,...type_order})
+        }
+    }
+    const setstatus=  async (order)=>{
+        if(!order.accepted){
+            const form={status:'1',id:order.id}
+            const res= await axios.post(listordersellerURL,JSON.stringify(form),headers())
+            setData(current=>current.map(item=>{
+                if(item.id===order.id){
+                    return ({...item,accepted:true})
+                }
+                return ({...item,})
+            }))
         }
     }
     return(
@@ -280,7 +299,7 @@ const Shippingmanagement=()=>{
                                                         <img className="avatar__img" src={order.user.avatar}/>
                                                     </div>
                                                     <span>{order.user.username}</span>
-                                                    <button className="_13iGI_"><svg viewBox="0 0 16 16" className="svg-icon _2KYoW7 "><g fillRule="evenodd"><path d="M15 4a1 1 0 01.993.883L16 5v9.932a.5.5 0 01-.82.385l-2.061-1.718-8.199.001a1 1 0 01-.98-.8l-.016-.117-.108-1.284 8.058.001a2 2 0 001.976-1.692l.018-.155L14.293 4H15zm-2.48-4a1 1 0 011 1l-.003.077-.646 8.4a1 1 0 01-.997.923l-8.994-.001-2.06 1.718a.5.5 0 01-.233.108l-.087.007a.5.5 0 01-.492-.41L0 11.732V1a1 1 0 011-1h11.52zM3.646 4.246a.5.5 0 000 .708c.305.304.694.526 1.146.682A4.936 4.936 0 006.4 5.9c.464 0 1.02-.062 1.608-.264.452-.156.841-.378 1.146-.682a.5.5 0 10-.708-.708c-.185.186-.445.335-.764.444a4.004 4.004 0 01-2.564 0c-.319-.11-.579-.258-.764-.444a.5.5 0 00-.708 0z"></path></g></svg></button>
+                                                    <button onClick={(e)=>setshowthread(e,order)} className="_13iGI_"><svg viewBox="0 0 16 16" className="svg-icon _2KYoW7 "><g fillRule="evenodd"><path d="M15 4a1 1 0 01.993.883L16 5v9.932a.5.5 0 01-.82.385l-2.061-1.718-8.199.001a1 1 0 01-.98-.8l-.016-.117-.108-1.284 8.058.001a2 2 0 001.976-1.692l.018-.155L14.293 4H15zm-2.48-4a1 1 0 011 1l-.003.077-.646 8.4a1 1 0 01-.997.923l-8.994-.001-2.06 1.718a.5.5 0 01-.233.108l-.087.007a.5.5 0 01-.492-.41L0 11.732V1a1 1 0 011-1h11.52zM3.646 4.246a.5.5 0 000 .708c.305.304.694.526 1.146.682A4.936 4.936 0 006.4 5.9c.464 0 1.02-.062 1.608-.264.452-.156.841-.378 1.146-.682a.5.5 0 10-.708-.708c-.185.186-.445.335-.764.444a4.004 4.004 0 01-2.564 0c-.319-.11-.579-.258-.764-.444a.5.5 0 00-.708 0z"></path></g></svg></button>
                                                 </div>
                                                 <div className="order-ref-code">ID đơn hàng: {order.ref_code}</div>
                                             </div>
@@ -298,7 +317,7 @@ const Shippingmanagement=()=>{
                                                         <div>{cartitem.quantity}</div>
                                                     </div>
                                                     <div className="item-total">
-                                                        <div>{cartitem.total_price}</div>
+                                                        <div>₫{formatter.format(cartitem.total_price)}</div>
                                                         <div>{cartitem.canceled}</div>
                                                     </div>
                                                     <div className="item-status">
@@ -309,7 +328,7 @@ const Shippingmanagement=()=>{
                                                         <div></div>
                                                     </div>
                                                     <div className="item-action">
-                                                        <div>{!order.canceled && !order.being_delivered && !order.received && new Date().getTime()>new Date(order.ordered_date).getTime()+30*1000*1800?'Chuẩn bị hàng':''}</div>
+                                                        {!order.being_delivered && !order.canceled &&(<button onClick={()=>setstatus(order)} className="btn-m btn-orange">{!order.accepted?"Xác nhận":"Chuẩn bị hàng"}</button>)}
                                                     </div>
                                                 </div>)}
                                             </div>
@@ -322,8 +341,11 @@ const Shippingmanagement=()=>{
                 </div>
             </div>
         </div>
-        
     </>
     )
 }
-export default Shippingmanagement
+const mapStateToProps = state => ({
+    user:state.user
+});
+
+export default connect(mapStateToProps,{showchat,showthreads})(Shippingmanagement);

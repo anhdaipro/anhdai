@@ -117,7 +117,7 @@ const Flashsale=()=>{
             setFlashsale({id:res.data.id,valid_from:res.data.valid_from,valid_to:res.data.valid_to})
         })()
     }, [params])
-    console.log(params.get('promotionId'))
+  
     useEffect(()=>{
         if(flashsale){
             const countDown= setInterval(() => timer(), 1000);

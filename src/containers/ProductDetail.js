@@ -581,7 +581,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
     const showfile=(e)=>{
         e.stopPropagation() ;
         showmediaitem(state.filechoice,listmedia)
-        console.log(listmedia)
+        
     }
     const  showmedia=(e,item,reviewchoice)=>{
         const list_reviews=listreview.map(review=>{

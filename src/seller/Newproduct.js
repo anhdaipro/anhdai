@@ -77,7 +77,7 @@ const Newproduct=()=>{
         setKeyword(e.target.value)
         setLevel(0)
    }
-   console.log(state.list_choice)
+  
     return(
         <>
             <Navbar/>

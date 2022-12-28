@@ -36,7 +36,7 @@ const Searchitem=()=>{
     },[params])
 
     const search=Object.fromEntries([...params])
-    console.log(search)
+   
     const rating_review_choice=(number,value)=>{
         const rating_score=[]
         for(let i=1;i<number;i++){

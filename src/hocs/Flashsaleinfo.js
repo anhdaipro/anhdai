@@ -6,7 +6,7 @@ import {formatter,itemvariation,time_end,timevalue} from "../constants"
 
 import { headers } from '../actions/auth';
 import { detailflashsaleURL, newflashsaleURL } from '../urls';
-import { useParams } from 'react-router';
+import { Navigate, useNavigate, useParams } from 'react-router';
 import Productoffer from '../seller/promotions/Productoffer';
 const Pagesize=10
 const list_fram_time_choice=[ {name:'00:00:00 - 00:02:00',hour:0,minutes:0,hour_to:2,minutes_to:0},
@@ -25,7 +25,7 @@ const Flashsaleinfo=(props)=>{
     const [flashsale,setFlashsale]=useState({time:null,hour:null,minutes:null,minutes_to:null,
         hour_to:null
     })
-    const dragbtn=useRef()
+    const navigate=useNavigate()
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
     const [state,setState]=useState({percent_discount:'',promotion_stock:'',user_item_limit:'',timeSecond:5,complete:false,page_input:1,show:false})
     const [date,setDates]=useState({time:new Date(),hour:new Date().getHours(),minutes:new Date().getMinutes(),
@@ -39,13 +39,14 @@ const Flashsaleinfo=(props)=>{
     const [timestart,setTime_start]=useState(()=>timevalue(new Date()))
     const [timeend,setTime_end]=useState(()=>timevalue(nextweek))
     const [sameitem,setSameitem]=useState(false)
+    const [editprogram,setEditprogram]=useState(true)
     const [duplicate,setDuplicate]=useState(false)
     const {id}=useParams()
-    const url_flashsale=id?detailflashsaleURL+id:newflashsaleURL
+    const url_flashsale=id?`${detailflashsaleURL}/${id}`:newflashsaleURL
     useEffect(() => {
         (async () => {
             if(id){
-                const res = await axios(detailflashsaleURL+id,headers())
+                const res = await axios(url_flashsale,headers())
                 const  data=res.data
                 setFlashsale({time:new Date(data.valid_from),hour:new Date(data.valid_from).getHours(),minutes:new Date(data.valid_from).getMinutes(),
                     hour_to:new Date(data.valid_to).getHours(),minutes_to:new Date(data.valid_to).getMinutes()})
@@ -61,6 +62,9 @@ const Flashsaleinfo=(props)=>{
                     variations:variations.filter(variation=>variation.item_id==product.id)})
                 })
                 setLoading(true)
+                if (new Date(data.valid_from)<=new Date()  && new Date(data.valid_to) >=new Date()){
+                    setEditprogram(false)
+                }
                 setItem({...itemshop,byproduct_choice:list_products,
                 page_count_by:Math.ceil(list_products.length / Pagesize)})
             }
@@ -446,6 +450,7 @@ const Flashsaleinfo=(props)=>{
     const list_enable_on=itemshop.byproduct_choice.filter(item=>item.variations.some(variation=>variation.enable))
 
     const complete=()=>{
+        if(editprogram){
         if(sameitem){
             alert('vui lòng chọn khoảng thời gian khác')
         }
@@ -455,9 +460,9 @@ const Flashsaleinfo=(props)=>{
             })
             const discount_model_list=itemshop.byproduct_choice.reduce((arr,obj,i)=>{
                 const datavariation= obj.variations.map(variation=>{
-                    return({...variation,
+                    return({...variation,promotion_stock:variation.promotion_stock?variation.promotion_stock:variation.inventory,
                         percent_discount:variation.percent_discount*100/variation.price,
-                        user_item_limit:obj.user_item_limit?obj.user_item_limit:0})
+                        user_item_limit:obj.user_item_limit?obj.user_item_limit:1000000})
                 })
                 return [...arr,...datavariation]
             },[])
@@ -474,6 +479,7 @@ const Flashsaleinfo=(props)=>{
                         if (state.timeSecond <= 0) {
                             clearInterval(countDown)
                             setState({...state,complete:false})
+                            navigate(`/marketing/shop-flash-sale/list`)
                         }
                     }, 1000);
                 }
@@ -483,6 +489,7 @@ const Flashsaleinfo=(props)=>{
                 }
             })
         }
+    }
     }
     const count_valid_framtime=list_fram_time_choice.filter(item=>new Date(`${timevalue(date.time)} ${('0'+item.hour).slice(-2)}:${('0'+item.minutes).slice(-2)}`)>new Date())
     return(

@@ -39,7 +39,7 @@ const Whell=()=>{
         getJournal();
     }, [id])
     const itemchoice=loading?listaward.find(item=>position>=item.from && position<=item.to)?listaward.find(item=>position>=item.from && position<=item.to):listaward[0]:null
-    console.log(listaward)
+    
     const setwhell=()=>{
         setTime(5)
         let value=rotate
@@ -48,8 +48,7 @@ const Whell=()=>{
 
         let random = TaoSoNgauNhien(720,1000)
         value+=random
-        console.log(random % 360);
-        console.log(value % 360);
+        
         setRotate(current=>current+random)
         setTimeout(() => {
             setPosition(value % 360);

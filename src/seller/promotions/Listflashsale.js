@@ -1,12 +1,13 @@
 import React, {useState,useCallback,useEffect} from 'react'
 import {formatter,timepromotion,percent,timeformat,listchoice,timevalue} from "../../constants"
 import {useNavigate,useSearchParams} from 'react-router-dom'
-import {dataFlashsaleURL, listflashsaleshopURL,} from "../../urls"
+import {dataFlashsaleURL, listflashsaleshopURL,detailflashsaleURL} from "../../urls"
 import axios from 'axios'
 import { headers } from '../../actions/auth'
 import Navbar from '../Navbar'
 import Tabs from '../Tabs'
 import Daterange from '../../hocs/Daterange'
+import { BtnDelete, BtnInfo } from './Buttonaction'
 const now=new Date()
 now.setDate(new Date().getDate()-7)
 const Listflashseleshop=()=>{
@@ -70,9 +71,7 @@ const Listflashseleshop=()=>{
     },[count,loading,listflashsale.length])
 
     
-    const setdetail=(item)=>{
-        navite(`/marketing/flash-sale/${item.id}`)
-    }
+    
     useEffect(()=>{
         (async()=>{
             if(start){
@@ -95,10 +94,31 @@ const Listflashseleshop=()=>{
             }
             setLoading(false)
             const res =await axios.get(`${listflashsaleshopURL}?${params}`,headers())
-            setFlashsales(current=>[...current,...res.data.data])
+            setFlashsales(res.data.data)
+            setCount(res.data.count)
             setLoading(true)
         })()
     },[start,end,choice,params])
+
+    
+    const setdata=useCallback(
+        (data) => {
+            setFlashsales(data)
+        },
+        [],
+    )
+    const setstatus= async (itemchoice)=>{
+        const form ={action:itemchoice.number_product_on?'turn_off':'turn_on'}
+        const res = await axios.post(`${detailflashsaleURL}/${itemchoice.id}`,JSON.stringify(form),headers())
+        setFlashsales(current=>current.map(item=>{
+            if(item.id===itemchoice.id){
+                return({...item,number_product_on:item.number_product_on?0:item.number_product})
+            }
+            else{
+                return({...item})
+            }
+        }))
+    }
     return(
         <>
             <Navbar/>
@@ -297,9 +317,9 @@ const Listflashseleshop=()=>{
                                                                                 <div className="table__cell">
                                                                                     <div data-v-198e0541="" className="products">
                                                                                         <div data-v-198e0541="">Bật Flash Sale
-                                                                                            <span data-v-198e0541="" className="added-number">0</span>
+                                                                                            <span data-v-198e0541="" className="added-number"> {flashsale.number_product_on}</span>
                                                                                         </div> 
-                                                                                        <div data-v-198e0541="" className="available">Số sản phẩm tham gia {flashsale.products.length}</div>
+                                                                                        <div data-v-198e0541="" className="available">Số sản phẩm tham gia {flashsale.number_product}</div>
                                                                                     </div>
                                                                                 </div>
                                                                             </td>
@@ -327,7 +347,7 @@ const Listflashseleshop=()=>{
                                                                                     <div data-v-198e0541="" className="enable-disable-status status-enable">
                                                                                         <div data-v-198e0541="" className="popover popover--light">
                                                                                             <div className="popover__ref">
-                                                                                                <div data-v-198e0541="" className="switch switch--open switch--normal switch--disabled"></div>
+                                                                                                <div onClick={()=>setstatus(flashsale)} data-v-198e0541="" className={`switch ${flashsale.number_product_on?'switch--open':''} switch--normal ${new Date(flashsale.valid_from)<new Date() && new Date(flashsale.valid_to)>new Date() ?'disable':""}`}></div>
                                                                                             </div> 
                                                                                             <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
                                                                                                 <div className="popover__content">Shop bạn chưa đủ điều kiện để tạo chương trình Flash Sale riêng của Shop.</div>
@@ -340,18 +360,18 @@ const Listflashseleshop=()=>{
                                                                             <td className="is-last">
                                                                                 <div className="table__cell last-cell">
                                                                                     <div data-v-6b00c90e="" className="action-list-comp _3MyH5U5zfKZqxZyFzTY6wM">
-                                                                                        <div className="action-list-item">
-                                                                                            <div className="popover popover--light">
-                                                                                                <div className="popover__ref">
-                                                                                                    <button onClick={()=>setdetail(flashsale)} type="button" className="button button--link button--normal">
-                                                                                                        <span>Chi tiết</span>
-                                                                                                    </button>
-                                                                                                </div> 
-                                                                                                <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
-                                                                                                    <div className="popover__content"></div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                        
+                                                                                        <BtnInfo
+                                                                                            url={`/marketing/flash-sale/${flashsale.id}`}
+                                                                                        />
+                                                                                        
+
+                                                                                        <BtnDelete
+                                                                                            url={`${detailflashsaleURL}/${flashsale.id}`}
+                                                                                            data={listflashsale}
+                                                                                            itemchoice={flashsale}
+                                                                                            setdata={data=>setdata(data)}
+                                                                                        />
                                                                                         <div className="action-list-item">
                                                                                             <div className="popover popover--light">
                                                                                                 <div className="popover__ref">

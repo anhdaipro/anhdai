@@ -1,12 +1,13 @@
-import React, {useState,useRef,useEffect} from 'react'
+import React, {useState,useRef,useEffect,useCallback} from 'react'
 import {formatter,timepromotion,percent,timeformat,listchoice,timevalue} from "../../constants"
-import {dataOfferURL, dataPromotionURL,listFollowOffershopURL,} from "../../urls"
+import {dataOfferURL, dataPromotionURL,detailFollowOffershopURL,listFollowOffershopURL,} from "../../urls"
 import {useNavigate,useSearchParams} from 'react-router-dom'
 import axios from 'axios'
 import { headers } from '../../actions/auth'
 import Navbar from '../Navbar'
 import Tabs from '../Tabs'
 import Daterange from '../../hocs/Daterange'
+import { BtnDelete, BtnInfo } from './Buttonaction'
 const now=new Date()
 now.setDate(new Date().getDate()-7)
 const ListFollowerOffer=()=>{
@@ -74,12 +75,8 @@ const ListFollowerOffer=()=>{
         })()
     }
 
-    const setdata=(data)=>{
-        setFollowerOffer(data)
-    }
-    const setdetail=(item)=>{
-        navite(`/marketing/follow-prize/${item.id}`)
-    }
+
+    
     useEffect(()=>{
       (async()=>{
         if(start){
@@ -109,13 +106,20 @@ const ListFollowerOffer=()=>{
 
         setLoading(false)
         const res =await axios.get(`${listFollowOffershopURL}?${params}`,headers())
-        setFollowerOffer(current=>[...current,...res.data.data])
+        setFollowerOffer(res.data.data)
+        setCount(res.data.count)
         setLoading(true)
     })()
     },[end,start,keyword,params,choice])
     const searchitem=(e)=>{
         setKeyword(inputRef.current.value)
     }
+    const setdata=useCallback(
+        (data) => {
+            setFollowerOffer(data)
+        },
+        [],
+    )
     return(
         <>
             <Navbar/>
@@ -367,18 +371,18 @@ const ListFollowerOffer=()=>{
                                                                             <td className="is-last">
                                                                                 <div className="table__cell last-cell">
                                                                                     <div data-v-6b00c90e="" className="action-list-comp _3MyH5U5zfKZqxZyFzTY6wM">
-                                                                                        <div className="action-list-item">
-                                                                                            <div className="popover popover--light">
-                                                                                                <div className="popover__ref">
-                                                                                                    <button onClick={()=>setdetail(item)} type="button" className="button button--link button--normal">
-                                                                                                        <span>Chi tiết</span>
-                                                                                                    </button>
-                                                                                                </div> 
-                                                                                                <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
-                                                                                                    <div className="popover__content"></div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                        
+                                                                                        <BtnInfo
+                                                                                            url={`/marketing/follow-prize/${item.id}`}
+                                                                                        />
+                                                                                        
+
+                                                                                        <BtnDelete
+                                                                                            url={`${detailFollowOffershopURL}/${item.id}`}
+                                                                                            data={follower_offers}
+                                                                                            itemchoice={item}
+                                                                                            setdata={data=>setdata(data)}
+                                                                                        />
                                                                                         <div className="action-list-item">
                                                                                             <div className="popover popover--light">
                                                                                                 <div className="popover__ref">

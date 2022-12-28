@@ -33,9 +33,9 @@ const Voucherinfo=(props)=>{
     const [timeend,setTime_end]=useState(()=>time_end.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
     const [timestart,setTime_start]=useState(()=>new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,16))
     const {id}=useParams()
-    console.log(id)
+    const [editprogram,setEditprogram]=useState(true)
     const edit =id?true:false
-    const url_voucher=id?detailvoucherURL+id:vouchershopURL
+    const url_voucher=id?`${detailvoucherURL}/${id}`:vouchershopURL
     useEffect(() => {
         (async () => {
             if(id){
@@ -46,6 +46,9 @@ const Voucherinfo=(props)=>{
                 setLoading(true)
                 setTime_end(timesubmit(data.valid_to))
                 setTime_start(timesubmit(data.valid_from))
+                if (new Date(data.valid_from)<=new Date()  && new Date(data.valid_to) >=new Date()){
+                    setEditprogram(false)
+                }
                 setItem({...itemshop,items_choice:data.products,page_count_main:Math.ceil(data.products.length / Pagesize)})
             }
             else{
@@ -84,7 +87,7 @@ const Voucherinfo=(props)=>{
     
 
     const complete=()=>{
-        if(voucher.name_of_the_discount_program=='' || voucher.code==''){
+        if(voucher.name_of_the_discount_program=='' || voucher.code=='' || !editprogram){
             return
         }
         else{
@@ -119,7 +122,7 @@ const Voucherinfo=(props)=>{
             }
         })
         setItem({...itemshop,[keys]:list_item})
-        console.log({[keys]:list_item})
+       
     }
 
     const setcheckall=(e,list_items,keys,value,value_choice)=>{
@@ -210,7 +213,7 @@ const Voucherinfo=(props)=>{
         setVoucher({...voucher,discount_type:item.value})
         setState({...state,open_discount:false})
     }
-   console.log(voucher)
+
     return(
         <>
             <div id="app">

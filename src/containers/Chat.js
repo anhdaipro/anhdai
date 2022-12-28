@@ -1,11 +1,12 @@
 import axios from 'axios';
-import React, {useState, useEffect,useCallback,useRef} from 'react'
+import React, {useState,useMemo, useEffect,useCallback,useRef} from 'react'
 import {formatter,dataURLtoFile,checkDay,itemvariation,timeformat,timevalue} from "../constants"
 import { connect,useDispatch } from 'react-redux';
 import {conversationsURL,listThreadlURL,updatefileURL,updateuseronlineURL} from "../urls"
 import { headers,expiry, setuseronline} from '../actions/auth';
 import io from "socket.io-client";
 import {Link,useNavigate} from "react-router-dom"
+import dayjs from "dayjs"
 import {debounce} from 'lodash';
 const listaction=[ {name:'Ghim Trò Chuyện',gim:true},{name:'Bỏ gim cuộc Trò Chuyện',gim:false},
 {name:'Đánh dấu đã đọc',unread:false},{name:'Đánh dấu đã đọc',unread:true},
@@ -27,22 +28,23 @@ const Shopmember=(props)=>{
         }
     },[showdata])
     useEffect(() => {
+        const handleClick = (event) => {
+            const { target } = event
+            if(shopref.current!=null){
+                if (!shopref.current.contains(target)) {
+                    setShow(false)
+                    if (!btnorder.current.contains(target) && !btnproduct.current.contains(target)) {
+                        setshowshop()
+                    }
+                }
+            }
+        }
         document.addEventListener('click', handleClick)
         return () => {
             document.removeEventListener('click', handleClick)
         }
     }, [])
-    const handleClick = (event) => {
-        const { target } = event
-        if(shopref.current!=null){
-            if (!shopref.current.contains(target)) {
-                setShow(false)
-                if (!btnorder.current.contains(target) && !btnproduct.current.contains(target)) {
-                    setshowshop()
-                }
-            }
-        }
-    }
+    
     const fetchkey=(e)=>{
         const value=e.target.value
         setKeyword(value)
@@ -234,7 +236,7 @@ const Threadinfo=(props)=>{
     const [show,setShow]=useState(false)
     const {thread,showmessage,setactionconversations,user,i}=props
     const threadref=useRef()
-    const direact_chat=(thread)=>{
+    const direct_chat=(thread)=>{
         return(thread.members.find(member=>member.user_id!=user.id))
     }
     const user_chat=(thread)=>{
@@ -263,15 +265,18 @@ const Threadinfo=(props)=>{
         <div key={i} onClick={(e)=>{
             showmessage(e,thread)
         }} className="chat-pages-index__root" style={{height: '48px', left: '0px', position: 'absolute', top: `${i*48}px`, width: '100%'}}>
+            {user_chat(thread).gim &&(<i class="GHUxSkxNuJ wZRQkuhJtX">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="chat-icon"><path d="M8.468 12.932H3.405v-2.154L5.6 9.354v-6.77a.75.75 0 01.75-.75h5.305a.75.75 0 01.75.75V9.3l2.25 1.477v2.154H9.593v4.651H8.468v-4.65z" fill-rule="evenodd"></path></svg>
+            </i>)}
             <div className="chat-pages-index__avatar">
                 <div className="chat-avatar-index__avatar-wrapper">
-                    <img alt="" src={`${direact_chat(thread).avatar}`}/>
+                    <img alt="" src={`${direct_chat(thread).avatar}`}/>
                     <div className="chat-avatar-index__avatar-border"></div>
                 </div>
             </div>
             <div className="chat-pages-index__container">
                 <div className="chat-pages-index__upper">
-                    <div className="chat-pages-index__username" title={direact_chat(thread).name}>{direact_chat(thread).name}</div>
+                    <div className="chat-pages-index__username" title={direct_chat(thread).username}>{direct_chat(thread).username}</div>
                 </div>
                 <div className="chat-pages-index__lower"> 
                     <>
@@ -313,7 +318,7 @@ const Threadinfo=(props)=>{
                     <span className="badge badge-soft-danger rounded-pill">{user_chat(thread).count_message_unseen>99?'99+':user_chat(thread).count_message_unseen}</span>
                 </div>:""}
                 <div className="chat-messsage-time-last">
-                    {thread.message_last?<>{checkDay(new Date(thread.message_last.date_created))=="Today"?`${("0" + new Date(thread.message_last.date_created).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_created).getMinutes()).slice(-2)}`:checkDay(new Date(thread.message_last.date_created))=="Yesterday"?`Yesterday, ${("0" + new Date(thread.message_last.date_created).getHours()).slice(-2)}:${("0" + new Date(thread.message_last.date_created).getMinutes()).slice(-2)}`:new Date(thread.message_last.date_created).getFullYear()<new Date().getFullYear()?`${("0" + new Date(thread.message_last.date_created).getDate()).slice(-2)} Tháng ${("0"+(new Date(thread.message_last.date_created).getMonth()+1)).slice(-2)}, ${new Date(thread.message_last.date_created).getFullYear()}`:`${("0" + new Date(thread.message_last.date_created).getDate()).slice(-2)} Tháng ${(new Date(thread.message_last.date_created).getMonth()+1)}`}</>:''}
+                    {thread.message_last?<>{checkDay(new Date(thread.message_last.date_created))=="Today"?`${dayjs(thread.message_last.date_created).format("HH:mm")}`:checkDay(new Date(thread.message_last.date_created))=="Yesterday"?`${dayjs(thread.message_last.date_created).format("DD/MM")}`:new Date(thread.message_last.date_created).getFullYear()<new Date().getFullYear()?`${dayjs(thread.message_last.date_created).format("DD/MM/YYYYY")}`:`${dayjs(thread.message_last.date_created).format("DD/MM")}`}</>:''}
                 </div>
                 <div onClick={(e)=>setShow(!show)} id="460390502831204148" className="src-pages-index__three-dots">
                     <i className="_3kEAcT1Mk5 src-pages-ConversationLists-ConversationCells-index__three-dots-icon--1psZR ">
@@ -323,10 +328,10 @@ const Threadinfo=(props)=>{
                 {show?
                 <div className="drop-down-action-thread">
                     <div className="list-actions">
-                        <div onClick={(e)=>setaction(e,thread,'gim',!thread.gim?true:false)} className="conversation-action-option">
+                        <div onClick={(e)=>setaction(e,thread,'gim',!user_chat(thread).gim)} className="conversation-action-option">
                             <i className="action-options-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="chat-icon"><path d="M11.29 16.243H4.54v-2.872l2.927-1.9V2.444a1 1 0 011-1h7.073a1 1 0 011 1v8.957l3 1.97v2.872h-6.75v6.201h-1.5v-6.201zm6.75-1.5v-.563l-3-1.97V2.944H8.967v9.342l-2.927 1.9v.557h12z"></path></svg>
-                            </i>{!thread.gim?'Ghim Trò Chuyện':'Bỏ gim trò chuyện'}
+                            </i>{!user_chat(thread).gim?'Ghim Trò Chuyện':'Bỏ gim trò chuyện'}
                         </div>
                         <div onClick={(e)=>setaction(e,thread,'seen',user_chat(thread).count_message_unseen==0?true:false)} className="conversation-action-option">
                             <i className="action-options-icon">
@@ -345,6 +350,84 @@ const Threadinfo=(props)=>{
         </div>
     )
 }
+
+const Memberinfo=(props)=>{
+    const {direct,setactionconversations,thread,direct_user}=props
+    const [show,setShow]=useState(false)
+    const navigate=useNavigate()
+    const parentRef=useRef()
+    useEffect(() => {
+        const handleClick = (event) => {
+            const { target } = event
+            if(show){
+                if (!parentRef.current.contains(target)) {
+                    setShow(false)
+                }
+            }
+        }
+        document.addEventListener('click', handleClick)
+        return () => {
+            document.removeEventListener('click', handleClick)
+        }
+    }, [show])
+    
+    return(
+        <div ref={parentRef} className="chat-shop-info item-center"> 
+            <div onClick={()=>setShow(!show)} className="item-center">
+                <div className="chat-shop-name">{direct.username}</div>
+                <i className="icon-dropdown icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" className="chat-icon"><path d="M6.243 6.182L9.425 3l1.06 1.06-4.242 4.243L2 4.061 3.06 3z"></path></svg>
+                </i>
+            </div>
+            {show?
+            <div data-popper-reference-hidden="false" data-popper-escaped="false" data-popper-placement="bottom-start" className="_2QLhFk_X2O _1BzVU7fHvH" style={{position: 'absolute',top:'40px'}}>
+                <div className="_15v99gbQSv">
+                    <div className="_3zpMyJKkl2WoOerymVZPuR">
+                        <div className="_32eIwz3LtMqgfk1YqB6IIN _18E_V1N5iaI_S92DHx8vqU">
+                            <div className="_3gUqnenePUrxbbMEeh9i4M">
+                                <div className="_2xGjvAuHdCo364lNgvhQYC undefined">
+                                    <div className="_29uoglXEwg_2RaVW0_CFBG">
+                                        <img alt="" src={direct.avatar}/>
+                                        <div className="_2Wkz3CDhCMDEZwE7G91OSy">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="_1quVkM8A5NvTpdli3Wc-rj">
+                                <div title="ccutun" className="_1h02b9izN7ZJFXg60EFE8- _3hKrXgKJrf8GP0HSHSC9JA">{direct.username}</div>
+                            </div>
+                        </div>
+                        <div className="_39MlxwpZU6">
+                            <div className="_1DylYknmeT"></div>
+                            <div onClick={e=>{
+                                window.open(`/${direct.url}`)
+                                }} 
+                                className="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
+                                <div>Xem thông tin cá nhân</div>
+                            </div>
+                            <div className="_1DylYknmeT"></div>
+                            <div onClick={(e)=>{
+                                setactionconversations(e,thread,'block',!direct.block)
+                                setShow(false)
+                                }} 
+                                className="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
+                                <div>{direct.block?"Bỏ chặn người dùng":"Chặn người dùng"}</div>
+                            </div>
+                            <div className="_1DylYknmeT"></div>
+                            <div onClick={(e)=>{
+                                    setactionconversations(e,thread,'report')
+                                    setShow(false)
+                                }} className="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
+                                <div>Báo cáo</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>:''}
+        </div>
+    )
+}
+
 const Message=(props)=>{
     const {threadstate,list_threads,user,messages,members,showchat,count_message_unseen}=props
     const [state, setState] = useState({show_type_chat:false,type_chat:1,user_search:null,loading:false,
@@ -356,13 +439,10 @@ const Message=(props)=>{
     const [message,setMessage]=useState('')
     const [threads,setThreads]=useState([]);
     const [message_unseen,setMessage_unseen]=useState(0)
-    const [thread,setThread]=useState();
-    const [showaction,setShowaction]=useState(false)
     const [showemoji,setShowemoji]=useState(false)
     const [show_type_chat,setShow_type_chat]=useState(false)
     const [receiver,setReceiver]=useState([])
     const [listfile,setListfile]=useState([]);
-    const [listmember,setListmember]=useState([])
     const [typing,setTyping]=useState({typing:false,send_to:null})
     const dispatch = useDispatch()
     const [length,setLength]=useState(40)
@@ -373,9 +453,14 @@ const Message=(props)=>{
     const socket=useRef()   
     const scrollRef=useRef(null);
     const typechatref=useRef(null);
-    const direact=listmember.find(member=>member.user_id!=user.id)
-    const direact_user=listmember.find(member=>member.user_id==user.id)
-    const direact_chat=(thread)=>{
+    const thread=threads.find(item=>item.choice)
+    
+    const listmember=useMemo(()=>{
+        return thread?threads.find(item=>item.choice).members:[]
+    },[thread])
+    const direct=listmember.find(member=>member.user_id!=user.id)
+    const direct_user=listmember.find(member=>member.user_id==user.id)
+    const direct_chat=(thread)=>{
         return(thread.members.find(member=>member.user_id!=user.id))
     }
     const btnproduct=useRef()
@@ -387,34 +472,38 @@ const Message=(props)=>{
     },[count_message_unseen])
     useEffect(() =>  {
         if(showchat){
-        setListmember(members)
         setShow(showchat)
-        setState({...state,loading_more:true,loading:true})
-        setThread(threadstate)
+        setState(prev=>{return {...prev,loading_more:true,loading:true}})
         setListmessages(messages.reverse())
         }
-    }, [threadstate,members,messages,showchat]);
+    }, [showchat,threadstate,members,messages]);
     useEffect(()=>{
         if(list_threads.length>0){
-            setThreads(list_threads)
+            setThreads(list_threads.map(item=>{
+                if(item.id==threadstate.id){
+                    return {...item,choice:true}
+                }
+                return{...item}
+            }))
         }
-    },[list_threads])
-   
+    },[list_threads,threadstate])
+    
     useEffect(() => {
+        const handleClick = (event) => {
+            const { target } = event
+            if(typechatref.current!=null){
+                if (!typechatref.current.contains(target)) {
+                    setShow_type_chat(false)
+                }
+            }
+        }
         document.addEventListener('click', handleClick)
         return () => {
             document.removeEventListener('click', handleClick)
         }
     }, [])
 
-    const handleClick = (event) => {
-        const { target } = event
-        if(typechatref.current!=null){
-            if (!typechatref.current.contains(target)) {
-                setShow_type_chat(false)
-            }
-        }
-    }
+    
 
     useEffect(() => {
         socket.current=io.connect('https://serverecomerce-production.up.railway.app/');
@@ -448,7 +537,7 @@ const Message=(props)=>{
             else{
                 setTyping({typing:false})
                 if(thread && thread.id==data.thread_id){
-                    console.log(data)
+                    
                     setListmessages(current=>[...current,...data.message])
                 }
                 setTyping({typing:false,send_to:data.send_to})
@@ -468,7 +557,7 @@ const Message=(props)=>{
                 }
             }
         })
-    },[scrollRef,thread?thread.id:thread,user])
+    },[scrollRef,thread,user])
     const showthread=()=>{
         setShow(true)
         axios.get(listThreadlURL,headers())
@@ -485,7 +574,7 @@ const Message=(props)=>{
     const showmessage=useCallback((e,threadchoice)=>{
         setThreads(current=>current.map(thread=>{
             if(thread.id==threadchoice.id){
-                return({...thread,members:thread.members.map(member=>{
+                return({...thread,choice:true,members:thread.members.map(member=>{
                     if(member.user_id==user.id){
                         return({...member,count_message_unseen:0})
                     }
@@ -494,8 +583,7 @@ const Message=(props)=>{
             }
             return({...thread})
         }))
-        setThread(threadchoice)
-        setListmember(threadchoice.members)
+        
         if(!thread || threadchoice.members.some(member=>member.count_message_unseen>0 && member.user_id==user.id) ||  (threadchoice && threadchoice.id!=thread.id)){
             setState({...state,loading:false})
             axios.get(`${conversationsURL}/${threadchoice.id}?action=showmessage`,headers())
@@ -516,7 +604,7 @@ const Message=(props)=>{
                 let form=new FormData()
                 form.append('item_id',item.id) 
                 form.append('action','create-message')
-                form.append('send_to',direact.user_id)
+                form.append('send_to',direct.user_id)
                 const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers())
                 setShowshop({show_product:false,show_order:false})
                 if(!res.data.error){
@@ -538,7 +626,7 @@ const Message=(props)=>{
             try{
                 let form=new FormData()
                 form.append('order_id',order.id) 
-                form.append('send_to',direact.user_id)
+                form.append('send_to',direct.user_id)
                 form.append('action','create-message')
                 const res=await axios.post(`${conversationsURL}/${thread.id}`,form,headers())
                 setShowshop({show_product:false,show_order:false})
@@ -578,7 +666,7 @@ const Message=(props)=>{
         if(listfile.filter(file=>file.filetype=='image').length>0 || message.trim()!=''){ 
             let form=new FormData()
             form.append('action','create-message')
-            form.append('send_to',direact.user_id)
+            form.append('send_to',direct.user_id)
             form.append('send_by',user.id)
             if(message.trim()!=''){
                 form.append('message',message)
@@ -606,7 +694,7 @@ const Message=(props)=>{
                 let formfile=new FormData()
                 formfile.append('action','create-message')
                 formfile.append('send_by',user.id)
-                formfile.append('send_to',direact.user_id)
+                formfile.append('send_to',direct.user_id)
                 listfile.filter(file=>file.filetype!=='image').map((file,i)=>{
                     formfile.append('file',file.file)
                     formfile.append('filetype',file.filetype)
@@ -643,7 +731,7 @@ const Message=(props)=>{
         e.stopPropagation()
         if(state.loading && e.target.scrollTop==0 && list_messages.length<thread.count_message){
             setState({...state,loading:false})
-            axios.get(`${conversationsURL}/${thread.id}?offset=${list_messages.length}`,headers())
+            axios.get(`${conversationsURL}/${thread.id}?offset=${list_messages.length}&action=showmessage`,headers())
             .then(res=>{
                 setState({...state,loading:true})
                 const datamesssage=res.data.reverse()
@@ -665,25 +753,21 @@ const Message=(props)=>{
 
     const listdate=()=>{
         const list_day=list_messages.map(message=>{
-            return(("0" + new Date(message.date_created).getDate()).slice(-2) + "-" + ("0"+(new Date(message.date_created).getMonth()+1)).slice(-2) + "-" +
-            new Date(message.date_created).getFullYear())
+            return {day:dayjs(message.date_created).format("DD-MM-YYYY"),id:message.id}
         })
         return list_day.reduce((arr,obj)=>{
-            if(!arr.includes(obj)){
-                arr.push(obj)
+            if(arr.every(item=>item.day!=obj.day)){
+                arr=[...arr,obj]
             }
             return arr
         },[])
     }
     
-    let list_file=[]
     const previewFile=(e)=>{
         [].forEach.call(e.target.files, function(file) {
             if ((/image\/.*/.test(file.type))){
-                list_file.push({file:file,file_preview:undefined,duration:0,filetype:'image',
-                file_name:file.name,media_preview:(window.URL || window.webkitURL).createObjectURL(file)})
-                const list_file_chat=[...listfile,...list_file]
-                setListfile(list_file_chat)
+                setListfile(current=>[...current,{file:file,file_preview:undefined,duration:0,filetype:'image',
+                file_name:file.name,media_preview:(window.URL || window.webkitURL).createObjectURL(file)}])
             }
             else if(file.type.match('video.*')){ 
                 var url = (window.URL || window.webkitURL).createObjectURL(file);
@@ -693,15 +777,13 @@ const Message=(props)=>{
                     video.currentTime=1
                 });
                 video.addEventListener('timeupdate',e=>{
-                let canvas = document.createElement('canvas');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-                let image = canvas.toDataURL("image/png");
-                let file_preview = dataURLtoFile(image,'dbc9a-rg53.png');
-                list_file.push({file_name:file.name,filetype:'video',file:file,file_preview:file_preview,duration:video.duration,media:url,media_preview:(window.URL || window.webkitURL).createObjectURL(file_preview)})    
-                const list_file_chat=[...listfile,...list_file]
-                setListfile(list_file_chat)
+                    let canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                    let image = canvas.toDataURL("image/png");
+                    let file_preview = dataURLtoFile(image,'dbc9a-rg53.png');
+                    setListfile(current=>[...current,{file_name:file.name,filetype:'video',file:file,file_preview:file_preview,duration:video.duration,media:url,media_preview:(window.URL || window.webkitURL).createObjectURL(file_preview)}])
                 });
                 video.preload = 'metadata';
                 // Load video in Safari / IE11
@@ -713,13 +795,12 @@ const Message=(props)=>{
     const deletefile=(file,i)=>{
         const list_files=listfile.filter(item=>listfile.indexOf(item)!=i)
         setListfile(list_files)
-       
     }                
 
     const chatproduct=()=>{
         setShop({...shop,choice:'item'})
         setShowshop({...showshop,show_product:!showshop.show_product,show_order:false})
-        const user_id=direact_user.count_product_shop>0?user.id:direact.user_id
+        const user_id=direct_user.count_product_shop>0?user.id:direct.user_id
         if(!showshop.show_product && shop.list_items.length==0){
             setShopchoice(user_id)
         }
@@ -740,20 +821,20 @@ const Message=(props)=>{
                 console.log(e)
             }
         })()
-    },[shopchoice])
+    },[shopchoice,thread])
    
     const chatorder=()=>{
         setShop({...shop,choice:'order'})
         setShowshop({...showshop,show_order:!showshop.show_order,show_product:false})
         if(!showshop.show_order && shop.list_orders.length==0){
             setLoading(false)
-            axios.get(`${conversationsURL}/${thread.id}?user_id=${direact.user_id}&action=showorder`,headers())
+            axios.get(`${conversationsURL}/${thread.id}?user_id=${direct.user_id}&action=showorder`,headers())
             .then(res=>{
                 setLoading(true)
                 const listorder=res.data.list_orders.map(order=>{
                     return({...order,showall:false})
                 })
-                setShop({...shop,user_id:direact.user_id,list_orders:listorder,choice:'order',count_order:res.data.count_order})
+                setShop({...shop,user_id:direct.user_id,list_orders:listorder,choice:'order',count_order:res.data.count_order})
             })
         }
     }
@@ -782,38 +863,52 @@ const Message=(props)=>{
                 })
             }
         }
-    },[shop,state.loading])
+    },[shop,state.loading,shopchoice,thread])
     
     const setactionconversations=useCallback((e,thread,name,value)=>{
         e.stopPropagation()
         let form=new FormData()
         form.append('action',name)
+        form.append('send_by',user.id)
+        
+        form.append('send_to',direct_chat(thread).user_id)
         axios.post(`${conversationsURL}/${thread.id}`,form,headers())
         .then(res=>{
-            setMessage_unseen(name=='seen' && value?message_unseen-1:message_unseen+1)
+            setMessage_unseen(name=='seen'?value?message_unseen-1:message_unseen+1:message_unseen)
             setThreads(current=>name=='delete'?
             current.filter(item=>item.id!=thread.id)
-            :name=='seen'?current.map(item=>{
+            :name!='report'?current.map(item=>{
                 if(item.id==thread.id){
                     return({...item,members:item.members.map(member=>{
                         if(member.user_id==user.id){
-                            return({...member,count_message_unseen:value?0:1})
+                            if(name=='seen'){
+                                return({...member,count_message_unseen:value?0:1})
+                            }
+                            else if(name=='gim'){
+                                return({...member,[name]:value})
+                            }
+                            else{
+                                return({...member})
+                            }
                         }
-                        return({...member})
+                        else{
+                            if(name=='block'){
+                                return({...member,[name]:value})
+                            }
+                            else{
+                                return({...member})
+                            }
+                            
+                        }
+                        
                     })})
                 }
                 return({...item})
-            })
-            
-            :current.map(item=>{
-                if(item.id==thread.id){
-                    return({...item,[name]:value}) 
-                }
-                return({...item})
-            })) 
+            }):current
+            ) 
         })
-    },[message_unseen,user?user.id:user])
-
+    },[message_unseen,user])
+ 
     ///set tychat
     useEffect(()=>{
         (async()=>{
@@ -823,33 +918,18 @@ const Message=(props)=>{
                     return({...thread,show_action:false})
                 })
                 setThreads(threads)
-                
                 if(!res.data.some(thread=>thread.id==thread.id)){
-                    setThread()
                     setListmessages([])
                 }
             }
         })()
     },[typechat])
         
-     
     
-
-    // show actio
-    const setshowaction=(e,thread)=>{
-        e.stopPropagation()
-        const list_convesations=threads.map(item=>{
-            if(thread.id==item.id){
-                return({...item,show_action:!item.show_action})
-            }
-            return({...item,show_action:false})
-        })
-        setThreads(list_convesations)
-    }
 
     const setshopchoice=useCallback((data)=>{
         setShopchoice(data)
-    },[shopchoice])
+    },[])
 
     const setshop=useCallback((data)=>{
         setShop(current=>({...current,...data}))
@@ -904,12 +984,12 @@ const Message=(props)=>{
             <div className="chat-body">
                 {thread?
                 <div className="chat-window-detail">
-                    <div className="chat-shop-info item-center"> 
-                        <div className="chat-shop-name">{direact.username}</div>
-                        <i className="icon-dropdown icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" className="chat-icon"><path d="M6.243 6.182L9.425 3l1.06 1.06-4.242 4.243L2 4.061 3.06 3z"></path></svg>
-                        </i>
-                    </div>
+                    <Memberinfo
+                        direct={direct}
+                        thread={thread}
+                        direct_user={direct_user}
+                        setactionconversations={(e,thread,name,value)=>setactionconversations(e,thread,name,value)}
+                    />
                     <div className="chat-message-detail">
                         <div className="chat-message-detail-wrap" id="messagesContainer">
                             {listfile.length>0?
@@ -985,8 +1065,8 @@ const Message=(props)=>{
                                     <div className="loader"></div>
                                 </div>}
                                 {list_messages.map((message,i)=>
-                                <div key={i}>
-                                    {listdate().includes(i)?
+                                <div key={message.id}>
+                                    {listdate().some(item=>item.id===message.id)?
                                         <div className="chat-message-time">{checkDay(new Date(message.date_created))=="Today"?`${("0" + new Date(message.date_created).getHours()).slice(-2)}:${("0" + new Date(message.date_created).getMinutes()).slice(-2)}`:checkDay(new Date(message.date_created))=="Yesterday"?`Yesterday, ${("0" + new Date(message.date_created).getHours()).slice(-2)}:${("0" + new Date(message.date_created).getMinutes()).slice(-2)}`:`${("0" + new Date(message.date_created).getDate()).slice(-2)} Th${("0"+(new Date(message.date_created).getMonth()+1)).slice(-2)} ${new Date(message.date_created).getFullYear()}, ${("0" + new Date(message.date_created).getHours()).slice(-2)}:${("0" + new Date(message.date_created).getMinutes()).slice(-2)}`}</div>
                                     :''}
                                     <div className={`chat-message-table ${message.user_id==user.id?'chat-message-sender':'chat-message-receiver'}`}>
@@ -1202,7 +1282,10 @@ const Message=(props)=>{
                                         {list_type_chat.map(item=>
                                         <div onClick={(e)=>{setTypechat(item.value)
                                             setShow_type_chat(false)
-                                        }} className="type-chat">{item.name}</div>
+                                        }} className="type-chat">
+                                            {typechat ==item.value &&(<span class="b94DgsuLFu"></span>)}
+                                            {item.name}
+                                        </div>
                                         )}
                                     </div>
                                 </div>:''}
@@ -1210,7 +1293,7 @@ const Message=(props)=>{
                         </div>
                     </div>
                     <div className="chat-conversation-lists-container chat-index__conversation-lists">
-                        {threads.length==0 || (state.user_search!=null && state.user_search.trim()!='' && !threads.some(thread=>direact.username.toUpperCase().indexOf(state.user_search.toUpperCase())>-1))?
+                        {threads.length==0 || (state.user_search!=null && state.user_search.trim()!='' && !threads.some(thread=>direct.username.toUpperCase().indexOf(state.user_search.toUpperCase())>-1))?
                         <div className="_3YurerlznH src-pages-conversationLists-index__empty--2z4Bf">
                             <img src="https://res.cloudinary.com/dupep1afe/image/upload/v1651031916/file/profile/143e062750363ec2d5f8d5601a9b595a_lfxpez.png" className="_1jxtCX6jiG"/>
                             <div className="_3l9IBXMpxr">Không tìm thấy cuộc hội thoại nào.</div>
@@ -1218,17 +1301,22 @@ const Message=(props)=>{
                         <div className="chat-message-container" style={{height: '100%',boxSizing: 'border-box',direction: 'ltr',position: 'relative',width: '222px',willChange: 'transform',overflow: 'auto'}}>
                             <div className="chat-message-container">
                                 {threads.map((thread,i)=>{
-                                    if(state.user_search==null ||state.user_search=='' || (state.user_search!='' && direact_chat(thread).name.toUpperCase().indexOf(state.user_search.toUpperCase())>-1)){
+                                    if(!state.user_search|| (state.user_search!='' && direct_chat(thread).name.toUpperCase().indexOf(state.user_search.toUpperCase())>-1)){
                                         return(
                                             <Threadinfo
                                                 user={user}
                                                 i={i}
+                                                key={thread.id}
                                                 thread={thread}
                                                 setactionconversations={(e,thread,name,value)=>setactionconversations(e,thread,name,value)}
                                                 showmessage={(e,thread)=>showmessage(e,thread)}
                                             />
                                         )
-                                    }}
+                                    }
+                                    else{
+                                        return(<></>)
+                                    }
+                                }
                                 )}
                             </div>
                         </div>}
@@ -1256,41 +1344,7 @@ const Message=(props)=>{
             setshopchoice={data=>setshopchoice(data)}
             showmoreitem={(e,name)=>showmoreitem(e,name)}
         />
-        {showaction?
-            <div data-popper-reference-hidden="false" data-popper-escaped="false" data-popper-placement="bottom-start" className="_2QLhFk_X2O _1BzVU7fHvH" style={{position: 'absolute', inset: '0px auto auto 0px', transform: `translate(215px, 383px)`}}>
-                <div className="_15v99gbQSv">
-                    <div className="_3zpMyJKkl2WoOerymVZPuR">
-                        <div className="_32eIwz3LtMqgfk1YqB6IIN _18E_V1N5iaI_S92DHx8vqU">
-                            <div className="_3gUqnenePUrxbbMEeh9i4M">
-                                <div className="_2xGjvAuHdCo364lNgvhQYC undefined">
-                                    <div className="_29uoglXEwg_2RaVW0_CFBG">
-                                        <img alt="" src="https://cf.shopee.vn/file/abaee1d1cfd28d21dd4c67a2c7c0c218_tn"/>
-                                        <div className="_2Wkz3CDhCMDEZwE7G91OSy">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="_1quVkM8A5NvTpdli3Wc-rj">
-                                <div title="ccutun" className="_1h02b9izN7ZJFXg60EFE8- _3hKrXgKJrf8GP0HSHSC9JA">ccutun</div>
-                            </div>
-                        </div>
-                        <div className="_39MlxwpZU6">
-                            <div className="_1DylYknmeT"></div>
-                            <div onClick={e=>navigate('/shop')} className="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
-                                <div>Xem thông tin cá nhân</div>
-                            </div>
-                            <div className="_1DylYknmeT"></div>
-                            <div onClick={(e)=>setactionconversations(e)} className="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
-                                <div>Chặn người dùng</div>
-                            </div>
-                            <div className="_1DylYknmeT"></div>
-                            <div onClick={(e)=>setactionconversations(e)} className="_3cyrFIvvEl _2Tt8-1KAq6cSZW7Eu5Q-Lz">
-                                <div>Báo cáo</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>:''}
+       
         </>
     )
 }

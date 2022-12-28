@@ -18,7 +18,7 @@ const Layout = ({children,checkAuthenticated}) => {
         const beforeUnLoad = async (e) => {
             e.preventDefault();
             const res= await axios.post(updateuseronlineURL,JSON.stringify({online:false}),headers())
-            console.log(res.dataá)
+            
         }
         window.addEventListener('beforeunload', beforeUnLoad);
         return () => {

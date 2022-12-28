@@ -670,7 +670,8 @@
 .drop-chat{
   position:absolute;
   top:20px;
-  left:-15px;
+  left:-35px;
+  width:100px;
   background: #fff;
   box-shadow: 0 4px 20px 0 rgb(0 0 0 / 10%);
   z-index:1000
@@ -679,11 +680,16 @@
   padding:8px 0
 }
 .type-chat{
-  color:#555;
-  display: flex;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 14px;
+  align-items: center;
+    box-sizing: border-box;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    font-size: 14px;
+    line-height: 1.14em;
+    padding: 8px 16px;
+    position: relative;
+    white-space: nowrap;
 }
 .type-chat:hover{
   background-color: #dcdce0;
@@ -719,12 +725,38 @@
       color:#bbb;
       cursor: pointer;
     }
-  .src-pages-ConversationLists-ConversationCells-index__three-dots-icon--1psZR:hover{
+.src-pages-ConversationLists-ConversationCells-index__three-dots-icon--1psZR:hover{
     color:#ee4d2d
-  }
-  .action-thread{
+}
+.action-thread{
     position: relative;
-  }
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+.b94DgsuLFu {
+  background: #ee4d2d;
+  border-radius: 50%;
+  display: block;
+  height: 8px;
+  left: 4px;
+  margin-right: 0;
+  position: absolute;
+  width: 8px;
+}
+.GHUxSkxNuJ {
+    fill: currentColor;
+    display: inline-block;
+    line-height: 0;
+}
+.wZRQkuhJtX {
+  color: #ffbf00;
+  height: 10px;
+  left: -1px;
+  position: absolute;
+  top: 19px;
+  width: 10px;
+}
 .drop-down-action-thread{
 position: absolute;
 top:100%;
@@ -1962,11 +1994,11 @@ z-index:1000
     display: flex;
     padding: 8px 12px;
     position: relative;
-    justify-content: center;
     box-sizing: border-box;
+    cursor: pointer;
   }
   .chat-pages-index__root:hover{
-    cursor: pointer;
+    
     background-color: rgba(231, 227, 227, 0.54);
   }
   .chat-pages-index__avatar{
@@ -2039,12 +2071,7 @@ z-index:1000
     width: 10px;
     height: 10px;
   }
-  .chat-message-action{
   
-  }
-  .icon-message{
-  
-  }
   .chat-avatar-index__avatar-wrapper{
     color: #fff;
     height: 100%;
@@ -2079,8 +2106,8 @@ z-index:1000
     border: 1px solid rgba(0,0,0,.1);
   }
   .chat-pages-index__container{
-    flex-shrink: 0;
-    width: 116px;
+    flex: 1;
+    
     display: flex;
     margin-left: 10px;
     flex-direction: column;
@@ -2106,14 +2133,14 @@ z-index:1000
   .chat-messsage-time-last{
     font-size: 11px;
     width: 50px;
-    text-align: center;
+    text-align: end;
   }
   .unread-message {
-    position: absolute;
-    display: flex;
-    right: 16px;
-    left: auto;
-    top: 24px;
+    margin-bottom: 4px;
+    text-align: end;
+  }
+  .chat-pages-index__root:hover .unread-message{
+    display: none;
   }
   .badge {
     padding: 0.25em 0.6em;

@@ -1,13 +1,15 @@
 import React, {useState,useCallback,useEffect, useRef} from 'react'
 import {formatter,timepromotion,percent,timeformat,listchoice,timevalue, choice_option} from "../../constants"
 import {useNavigate,useSearchParams} from 'react-router-dom'
-import {dataAddonURL, listAddonshopURL,} from "../../urls"
+import {dataAddonURL, dealDetailshopURL, listAddonshopURL,} from "../../urls"
 import axios from 'axios'
 import { headers } from '../../actions/auth'
 import Daterange from '../../hocs/Daterange'
 import Navbar from '../Navbar'
 import Tabs from '../Tabs'
 import Options from '../Options'
+import dayjs from 'dayjs'
+import { BtnDelete, BtnInfo } from './Buttonaction'
 const now=new Date()
 now.setDate(new Date().getDate()-7)
 const Listdealshop=()=>{
@@ -90,7 +92,9 @@ const Listdealshop=()=>{
         }
     },[count,loading,listdeal.length])
 
-    
+    const setdata=useCallback((data)=>{
+        setDeal(data)
+    },[])
     const setdetail=(item)=>{
         navite(`/marketing/add-on-deal/${item.id}`)
     }
@@ -127,11 +131,12 @@ const Listdealshop=()=>{
         params.set('option',option)
         setLoading(false)
         const res =await axios.get(`${listAddonshopURL}?${params}`,headers())
-        setDeal([...res.data.data])
+        setDeal(res.data.data)
         setCount(res.data.count)
         setLoading(true)
     })()
     },[choice,option,start,end,keyword,params])
+    
     return(
         <>
             <Navbar/>
@@ -416,18 +421,18 @@ const Listdealshop=()=>{
                                                                             <td className="is-last">
                                                                                 <div className="table__cell last-cell">
                                                                                     <div data-v-6b00c90e="" className="action-list-comp _3MyH5U5zfKZqxZyFzTY6wM">
-                                                                                        <div className="action-list-item">
-                                                                                            <div className="popover popover--light">
-                                                                                                <div className="popover__ref">
-                                                                                                    <button onClick={()=>setdetail(deal)} type="button" className="button button--link button--normal">
-                                                                                                        <span>Chi tiết</span>
-                                                                                                    </button>
-                                                                                                </div> 
-                                                                                                <div className="popper popover__popper popover__popper--light with-arrow" style={{display: 'none', maxWidth: '320px'}}>
-                                                                                                    <div className="popover__content"></div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                        <BtnInfo
+                                                                                        url={`/marketing/add-on-deal/${deal.id}`}
+                                                                                        />
+                                                                                        
+
+                                                                                        <BtnDelete
+                                                                                        url={`${dealDetailshopURL}/${deal.id}`}
+                                                                                        data={listdeal}
+                                                                                        itemchoice={deal}
+                                                                                        setdata={data=>setdata(data)}
+                                                                                        />
+                                                                                       
                                                                                         <div className="action-list-item">
                                                                                             <div className="popover popover--light">
                                                                                                 <div className="popover__ref">
