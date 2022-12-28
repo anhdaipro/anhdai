@@ -85,17 +85,16 @@ const Voucherinfo=(props)=>{
         setVoucher({...voucher,[e.target.name]:e.target.value})
     }
     
-
-    const complete=()=>{
-        if(voucher.name_of_the_discount_program=='' || voucher.code=='' || !editprogram){
-            return
-        }
-        else{
+    const valid=voucher.name_of_the_discount_program && voucher.code && voucher.minimum_order_value && editprogram
+    const complete= async ()=>{
+        if(valid){
             const datavoucher=voucher
             delete datavoucher.products
             const data={list_items:itemshop.items_choice.map(item=>{
                 return(item.id)
             }),...datavoucher}
+            
+            const res= await axios.post(url_voucher,JSON.stringify(data),headers())
             const countDown = setInterval(() => {
                 state.timeSecond--;
                 setState({...state,complete:true})
@@ -105,10 +104,9 @@ const Voucherinfo=(props)=>{
                     navigate('/marketing/vouchers/list')
                 }
             }, 1000);
-            axios.post(url_voucher,JSON.stringify(data),headers())
-            .then(res=>{
-                
-            })
+        }
+        else{
+            return
         }
     }
 

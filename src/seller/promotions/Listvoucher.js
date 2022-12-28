@@ -51,6 +51,21 @@ const Listvoucher=()=>{
         }
     },[count,loading,listvoucher.length])
 
+    useEffect(()=>{
+        ( async ()=>{
+            if(choice!=='all'){
+                params.set('choice',choice)
+            }
+            else{
+                params.delete('choice')
+            }
+            setLoading(false)
+            const res =await axios.get(`${listvouchershopURL}?${params}`,headers())
+            setVouchers(res.data.data)
+            setCount(res.data.count)
+            setLoading(true)
+        })()
+    },[choice,params])
     const addItem=()=>{
         (async()=>{
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
