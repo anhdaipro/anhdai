@@ -826,7 +826,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
                             </>:<div className="vgsTBi">Chưa có đánh giá</div>}
                         
                             <div className="item-center pl-1">
-                                <div className="_3b2Btx">{data.num_order}</div>
+                                <div className="_3b2Btx">{data.number_order}</div>
                                 <div className="_3hic1u">đã bán</div>
                             </div>
                         </div>

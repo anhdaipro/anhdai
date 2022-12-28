@@ -316,7 +316,7 @@ const Iteminfo=(props)=>{
                     </button>
                 </div>
             </div>
-            <div className="shop-item-price item-centers">₫{formatter.format(item.total_price)}</div>
+            <div className="shop-item-price item-centers">₫{formatter.format(item.discount_price*item.quantity)}</div>
             <div className='_2y8iJi _2qPRqW' >
                 <button onClick={e=>removeitem(e,item,product,cartitem)} className="item-delete button-no-outline">Xóa</button>
                 <div ref={searchref} className={`_1-rOD0 ${item.show?'_1EMX1h':''}`}>
@@ -999,7 +999,7 @@ class Cart extends React.Component{
                                         <div className=""><button className="clear-btn-style">Bỏ sản phẩm không hoạt động</button></div>
                                         <button className="clear-btn-style _2mPWt7">Lưu vào mục Đã thích</button>
                                         <div className="_2ntEgZ"></div>
-                                        {(discount_product>0||discount_deal>0||discount_promotion>0||discount_voucher_shop>0) && this.state.show_order?
+                                        {(discount_product>0||discount_deal>0||discount_promotion>0||discount_voucher_shop>0)?
                                         <div className="stardust-popover" onMouseEnter={()=>this.setState({show_order:true})} onMouseLeave={()=>this.setState({show_order:false})}>
                                             <div className="stardust-popover__target">
                                                 <div className="_2BT_es">
@@ -1053,7 +1053,7 @@ class Cart extends React.Component{
                                                         <div className="_2gELoZ">
                                                             <div className="_1219oq">
                                                                 <span className="_1QnjKN uDWyka">Tiết kiệm</span>
-                                                                <span className="imvFus">-₫{formatter.format(this.state.discount_product+this.state.discount_voucher_shop+this.state.discount_promotion+this.state.discount_deal)}</span>
+                                                                <span className="imvFus">₫{formatter.format(this.state.discount_product+this.state.discount_voucher_shop+this.state.discount_promotion+this.state.discount_deal)}</span>
                                                             </div>
                                                             <div className="_1219oq">
                                                                 <span className="_1QnjKN uDWyka">Tổng số tiền</span>

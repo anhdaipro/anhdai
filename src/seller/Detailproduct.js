@@ -1300,7 +1300,7 @@ const Detailproduct=()=>{
                                                                                     <div data-v-a3311712="" className="product-edit-form-item-content">
                                                                                         <div data-v-4c2d181f="" className="input" data-v-a3311712="">
                                                                                             <div className="input__inner input__inner--large"> 
-                                                                                                <input onChange={(e)=>setState({...state,classify1:e.target.value})} value={state.classify1} type="text" placeholder="Nhập tên Nhóm phân loại hàng, ví dụ: màu sắc, kích thước v.v" size="large" resize="none" rows="2" minrows="2" maxlength="Infinity" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                                                <input onChange={(e)=>setState({...state,classify1:e.target.value})} value={state.classify1} type="text" placeholder="Nhập tên Nhóm phân loại hàng, ví dụ: màu sắc, kích thước v.v" size="large" resize="none" rows="2" minrows="2" maxlength="14" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                                                 <div className="input__suffix">
                                                                                                     <span className="input__suffix-split"></span>{state.classify1.trim().length}/14
                                                                                                 </div>
@@ -1322,7 +1322,7 @@ const Detailproduct=()=>{
                                                                                             <div data-v-a3311712="" className="product-edit-form-item-content">
                                                                                                 <div data-v-4c2d181f="" className="input" data-v-a3311712="">
                                                                                                     <div className="input__inner input__inner--large"> 
-                                                                                                        <input onChange={(e)=>setvaluecolor(e,color)} type="text" value={color.value} placeholder="Nhập phân loại hàng, ví dụ: Trắng, Đỏ v.v" size="large" resize="none" rows="2" minrows="2" maxlength="Infinity" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                                                        <input onChange={(e)=>setvaluecolor(e,color)} type="text" value={color.value} placeholder="Nhập phân loại hàng, ví dụ: Trắng, Đỏ v.v" size="large" resize="none" rows="2" minrows="2" maxlength="20" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                                                         <div className="input__suffix">
                                                                                                             <span className="input__suffix-split"></span>{color.value.trim().length}/20
                                                                                                         </div>
@@ -1392,7 +1392,7 @@ const Detailproduct=()=>{
                                                                                     <div data-v-a3311712="" className="product-edit-form-item-content">
                                                                                         <div data-v-4c2d181f="" className="input" data-v-a3311712="">
                                                                                             <div className="input__inner input__inner--large"> 
-                                                                                                <input onChange={(e)=>setState({...state,classify2:e.target.value})} value={state.classify2} type="text" placeholder="Nhập tên Nhóm phân loại hàng, ví dụ: màu sắc, kích thước v.v" size="large" resize="none" rows="2" minrows="2" maxlength="Infinity" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                                                <input onChange={(e)=>setState({...state,classify2:e.target.value})} value={state.classify2} type="text" placeholder="Nhập tên Nhóm phân loại hàng, ví dụ: màu sắc, kích thước v.v" size="large" resize="none" rows="2" minrows="2" maxlength="14" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                                                 <div className="input__suffix">
                                                                                                     <span className="input__suffix-split"></span>{state.classify2.trim().length}/14
                                                                                                 </div>
@@ -1414,7 +1414,7 @@ const Detailproduct=()=>{
                                                                                             <div data-v-a3311712="" className="product-edit-form-item-content">
                                                                                                 <div data-v-4c2d181f="" className="input" data-v-a3311712="">
                                                                                                     <div className="input__inner input__inner--large"> 
-                                                                                                        <input onChange={(e)=>setvaluesize(e,size)} type="text" value={size.value} placeholder="Nhập phân loại hàng, ví dụ: Trắng, Đỏ v.v" size="large" resize="none" rows="2" minrows="2" maxlength="Infinity" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
+                                                                                                        <input onChange={(e)=>setvaluesize(e,size)} type="text" value={size.value} placeholder="Nhập phân loại hàng, ví dụ: Trắng, Đỏ v.v" size="large" resize="none" rows="2" minrows="2" maxlength="20" restrictiontype="input" max="Infinity" min="-Infinity" className="input__input"/> 
                                                                                                         <div className="input__suffix">
                                                                                                             <span className="input__suffix-split"></span>{size.value.trim().length}/20
                                                                                                         </div>
