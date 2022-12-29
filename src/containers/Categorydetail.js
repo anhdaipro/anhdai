@@ -111,7 +111,7 @@ const Categorydetail = ({data,category_id}) => {
     const [category_choice,setCategorychoice]=useState([])
     const search=Object.fromEntries([...params])
     const [listitem,setListitem]=useState()
-    
+    const [list_search_category,setListsearchcategory]=useState([])
    
     const [showmore,setShowmore]=useState({children:false,choice:false,rating:false})
     useEffect(()=>{
@@ -127,11 +127,10 @@ const Categorydetail = ({data,category_id}) => {
     useEffect(()=>{
         (async()=>{
             if(category_id){
-            const usesearch=params
-            usesearch.set('category_id',category_id)
-            const res =await axios.get(`${searchURL}?${usesearch}`,headers())
-            setListitem(res.data)
-            setCategorychoice(res.data.category_choice)
+                params.set('category_id',category_id)
+                const res =await axios.get(`${searchURL}?${params}`,headers())
+                setListitem(res.data)
+                setCategorychoice(res.data.category_choice)
             }
         })()
     },[params,category_id])
@@ -166,6 +165,17 @@ const Categorydetail = ({data,category_id}) => {
         const searchitems={...searchitem,[name]:value}
         setsearchitem(searchitems)
     }
+    const setlistsearchcategory=(categorychoice)=>{
+        const check_exists=list_search_category.find(item=>item===categorychoice)
+        
+            const list_search_choice=[...list_search_category,categorychoice]
+            console.log(list_search_choice)
+            
+            setListsearchcategory(list_search_choice)
+        
+        
+    }
+    console.log(list_search_category)
     return(
         <div className="category-content">
             <div className="containers category-banners">
@@ -281,16 +291,13 @@ const Categorydetail = ({data,category_id}) => {
                                 </div>
                                 
                                 <div className="folding-items category-list__sub-category-list folding-items--folded">
-                                    {categories.category_children.map((category,index)=>{
-                                        if(index<3){
-                                            return (<Link key={index} className={`category-list__sub-category ${category.slug===slug?'category-list__sub-category--active':''}`} to={`/${category.slug}`}>
-                                                <svg viewBox="0 0 4 7" className="svg-icon category-list__sub-category__caret icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon>
-                                                </svg>{category.title}
-                                            </Link>)
-                                            }
-                                        })
-                                    }
-                                    {categories.category_children.length>2?
+                                    {categories.category_children.filter((item,index)=>index<3).map((category,index)=>
+                                        <Link key={index} className={`category-list__sub-category ${category.slug===slug?'category-list__sub-category--active':''}`} to={`/${category.slug}`}>
+                                            <svg viewBox="0 0 4 7" className="svg-icon category-list__sub-category__caret icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon>
+                                            </svg>{category.title}
+                                        </Link>
+                                    )}
+                                    {categories.category_children.length>3?
                                     <div className="stardust-dropdown folding-items__toggle">
                                         {!showmore.children && (<div className="stardust-dropdown__item-header">
                                             <div onClick={()=>setShowmore({...showmore,children:true})} className="filter-group__toggle-btn">
@@ -300,16 +307,13 @@ const Categorydetail = ({data,category_id}) => {
 
                                         <div className={`stardust-dropdown__item-body ${showmore.children?'stardust-dropdown__item-body--open':""}`}>
                                             <div className="folding-items__folded-items">
-                                                {categories.category_children.map((category,index)=>{
-                                                    if(index>=3){
-                                                        return (
-                                                        <Link key={index} className={`category-list__sub-category ${category.slug===slug?'category-list__sub-category--active':''}`} to={`/${category.slug}`}>
+                                                {categories.category_children.filter((item,index)=>index>2).map((category,index)=>    
+                                                    <Link key={index} className={`category-list__sub-category ${category.slug===slug?'category-list__sub-category--active':''}`} to={`/${category.slug}`}>
                                                         <svg viewBox="0 0 4 7" className="svg-icon category-list__sub-category__caret icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon>
                                                         </svg>{category.title}
-                                                        </Link>)
-                                                        }
-                                                    })
-                                                    }
+                                                    </Link>
+                                                )}
+                                                
                                             </div>
                                         </div>
                                     </div>:""}
@@ -324,26 +328,24 @@ const Categorydetail = ({data,category_id}) => {
                     {category_choice.length>0 &&(<div className="filter-group facet-filter">
                         <div className="filter-group__header">Theo Danh Mục</div>
                         <div className="folding-items filter-group__body folding-items--folded">
-                            {category_choice.map((category,index)=>{
-                                if(index<2){
-                                    return(
-                                        <div key={index} onClick={()=>setsearch('categoryID',category.id)} className="checkbox-filter">
-                                            <div className={`checkbox ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox--checked':''}`}>
-                                                <label className="checkbox__control">
-                                                    <input type="checkbox" name="" value="100557"/>
-                                                    <div className={`checkbox__box ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox__box--checked':''}`}>
-                                                        {search.categoryID!=undefined && search.categoryID==category.id?
-                                                        <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-checkbox-ticked checkbox__tick icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
-                                                        :<i> </i>}
-                                                    </div>
-                                                    <span className="checkbox__label">{category.title} ({category.count_item}+)</span>
-                                                </label>
+                            {category_choice.filter((item,index)=>index<3).map((category,index)=>
+                                <div key={index} onClick={()=>{
+                                    setlistsearchcategory(category.id)
+                                    }} className="checkbox-filter">
+                                    <div className={`checkbox ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox--checked':''}`}>
+                                        <label className="checkbox__control">
+                                            <input type="checkbox" name="" value="100557"/>
+                                            <div className={`checkbox__box ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox__box--checked':''}`}>
+                                                {search.categoryID!=undefined && search.categoryID==category.id?
+                                                    <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-checkbox-ticked checkbox__tick icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
+                                                :<i> </i>}
                                             </div>
-                                        </div>
-                                    )
-                                }
-                            })}
-                            {category_choice.length>2?
+                                            <span className="checkbox__label">{category.title} ({category.count_item}+)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            )}
+                            {category_choice.length>3?
                             <div className="stardust-dropdown folding-items__toggle">
                                 {!showmore.choice && (<div className="stardust-dropdown__item-header">
                                     <div onClick={()=>setShowmore({...showmore,choice:true})} className="filter-group__toggle-btn">
@@ -352,25 +354,24 @@ const Categorydetail = ({data,category_id}) => {
                                 </div>)}
                                 <div className={`stardust-dropdown__item-body ${showmore.choice?'stardust-dropdown__item-body--open':""}`}>
                                     <div className="folding-items__folded-items">
-                                    {category_choice.map((category,index)=>{
-                                        if(index>2){
-                                            return(
-                                                <div key={index} className="checkbox-filter">
-                                                    <div className={`checkbox ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox--checked':''}`}>
-                                                        <label className="checkbox__control">
-                                                            <input type="checkbox" name="" value="100557"/>
-                                                            <div className={`checkbox__box ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox__box--checked':''}`}>
-                                                                {search.categoryID!=undefined && search.categoryID==category.id?
-                                                                <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-checkbox-ticked checkbox__tick icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
-                                                                :<i> </i>}
-                                                            </div>
-                                                            <span className="checkbox__label">{category.title} ({category.count_item}+)</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            )
-                                        }
-                                    })}
+                                    {category_choice.filter((item,index)=>index>2).map((category,index)=>  
+                                        <div onClick={()=>{
+                                            setlistsearchcategory(category.id)
+                                            }} key={index} className="checkbox-filter">
+                                            <div className={`checkbox ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox--checked':''}`}>
+                                                <label className="checkbox__control">
+                                                    <input type="checkbox" name="" value="100557"/>
+                                                        <div className={`checkbox__box ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox__box--checked':''}`}>
+                                                            {search.categoryID!=undefined && search.categoryID==category.id?
+                                                            <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-checkbox-ticked checkbox__tick icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
+                                                            :<i> </i>}
+                                                        </div>
+                                                        <span className="checkbox__label">{category.title} ({category.count_item}+)</span>
+                                                </label>
+                                            </div>
+                                        </div>   
+                                        
+                                    )}
                                     </div>
                                 </div>
                             </div>:''}

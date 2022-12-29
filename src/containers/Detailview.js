@@ -32,30 +32,27 @@ const Detailview = () => {
   const choices=params.get('itemId') && !params.get('categoryId')?'product':''
   useEffect(() => {
     (async () => {
-        const searchparama=params
-       
-        const url=params.get('itemId') && !params.get('categoryId')?axios.get(`${itemURL}?${params}`,headers()):axios.get(`${categoryURL}/${slug}`,headers())
-        setChoice(choices)
-        const res = await url
-        setData(res.data)
-        
-        if (choices=='product'){
-          setProduct_id(res.data.id)
+      const url=params.get('itemId') && !params.get('categoryId')?axios.get(`${itemURL}?${params}`,headers()):axios.get(`${categoryURL}/${slug}`,headers())
+      const res = await url
+      setData(res.data)
+      setChoice(choices)
+      if (choices=='product'){
+        setProduct_id(res.data.id)
+        setCategory_id()
+        setShop_id()
+      }
+      else{
+        if(res.data.name){
+          setShop_id(res.data.id)
           setCategory_id()
-          setShop_id()
+          setProduct_id()
         }
         else{
-          if(res.data.name){
-            setShop_id(res.data.id)
-            setCategory_id()
-            setProduct_id()
-          }
-          else{
           setCategory_id(res.data.id)
           setProduct_id()
           setShop_id()
-          }
         }
+      }
     })();
   },[slug,params])
 

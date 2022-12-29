@@ -505,7 +505,7 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
             let variation_active=document.querySelectorAll('.product-variation--selected')
             if(variation_active.length===data.count_variation){
             setWaring({...waring,warring:false})
-            const form={item_id:data.id,quantity:quantity,id:variation.data.id}
+            const form={item_id:data.id,quantity:quantity,id:variation.data?variation.data.id:null}
             const res = await axios.post(addToCartURL,JSON.stringify(form),headers())
             addcartitem(res.data)
             if(value){
