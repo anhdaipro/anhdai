@@ -16,9 +16,8 @@ const Searchitem=()=>{
     })
     const [FormData,setFormData]=useState({minPrice:null,maxPrice:null})
     const [show,setShow]=useState(false)
-    
+    const [showmore,setShowmore]=useState({choice:false})
    
-    
     useEffect(() => {
         if(params.get('shop')!=null){
             setSearchitem({...searchitem,shop:params.get('shop')});
@@ -90,9 +89,9 @@ const Searchitem=()=>{
                         <div className="filter-group facet-filter">
                             <div className="filter-group__header">Theo Danh Mục</div>
                             <div className="folding-items filter-group__body folding-items--folded">
-                                {data.category_choice.map((category,index)=>{
-                                    if(index<2){
-                                        return(
+                                {data.category_choice.filter((category,index)=>index<3).map((category,index)=>
+                                    
+                                        
                                             <div onClick={()=>setsearch('categoryID',category.id)} className="checkbox-filter">
                                                 <div className={`checkbox ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox--checked':''}`}>
                                                     <label className="checkbox__control">
@@ -106,37 +105,35 @@ const Searchitem=()=>{
                                                     </label>
                                                 </div>
                                             </div>
-                                        )
-                                    }
-                                })}
-                                {data.category_choice.length>2?
+                                        
+                                    
+                                )}
+                                {data.category_choice.length>3?
                                 <div className="stardust-dropdown folding-items__toggle">
-                                    <div className="stardust-dropdown__item-header">
+                                    {!showmore.choice && (<div onClick={()=>setShowmore({choice:true})} className="stardust-dropdown__item-header">
                                         <div className="filter-group__toggle-btn">
                                             Thêm<svg enableBackground="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" className="svg-icon icon-arrow-down"><g><path d="m11 2.5c0 .1 0 .2-.1.3l-5 6c-.1.1-.3.2-.4.2s-.3-.1-.4-.2l-5-6c-.2-.2-.1-.5.1-.7s.5-.1.7.1l4.6 5.5 4.6-5.5c.2-.2.5-.2.7-.1.1.1.2.3.2.4z"></path></g></svg>
                                         </div>
-                                    </div>
-                                    <div className="stardust-dropdown__item-body">
+                                    </div>)}
+                                    <div className={`stardust-dropdown__item-body ${showmore.choice?'stardust-dropdown__item-body--open':""}`}>
                                         <div className="folding-items__folded-items">
-                                        {data.category_choice.map((category,index)=>{
-                                            if(index>2){
-                                                return(
-                                                    <div className="checkbox-filter">
-                                                        <div className={`checkbox ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox--checked':''}`}>
-                                                            <label className="checkbox__control">
-                                                                <input type="checkbox" name="" value="100557"/>
-                                                                <div className={`checkbox__box ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox__box--checked':''}`}>
-                                                                    {search.categoryID!=undefined && search.categoryID==category.id?
-                                                                    <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-checkbox-ticked checkbox__tick icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
-                                                                    :<i> </i>}
-                                                                </div>
-                                                                <span className="checkbox__label">{category.title} ({category.count_item}+)</span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            }
-                                        })}
+                                        {data.category_choice.filter((category,index)=>index>2).map((category,index)=>
+                                            <div className="checkbox-filter">
+                                                <div className={`checkbox ${search.categoryID && search.categoryID==category.id?'checkbox--checked':''}`}>
+                                                    <label className="checkbox__control">
+                                                        <input type="checkbox" name="" value="100557"/>
+                                                        <div className={`checkbox__box ${search.categoryID && search.categoryID==category.id?'checkbox__box--checked':''}`}>
+                                                            {search.categoryID && search.categoryID==category.id?
+                                                                <svg enableBackground="new 0 0 12 12" viewBox="0 0 12 12" x="0" y="0" className="svg-icon icon-checkbox-ticked checkbox__tick icon-tick-bold"><g><path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path></g></svg>
+                                                                :<i> </i>}
+                                                            </div>
+                                                        <span className="checkbox__label">{category.title} ({category.count_item}+)</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                                
+                                            
+                                        )}
                                         </div>
                                     </div>
                                 </div>:''}
