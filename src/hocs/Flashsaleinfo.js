@@ -8,6 +8,7 @@ import { headers } from '../actions/auth';
 import { detailflashsaleURL, newflashsaleURL } from '../urls';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import Productoffer from '../seller/promotions/Productoffer';
+import dayjs from 'dayjs';
 const Pagesize=10
 const list_fram_time_choice=[ {name:'00:00:00 - 00:02:00',hour:0,minutes:0,hour_to:2,minutes_to:0},
 
@@ -22,9 +23,7 @@ const list_fram_time_choice=[ {name:'00:00:00 - 00:02:00',hour:0,minutes:0,hour_
 const today=new Date()
 const nextweek=new Date(new Date().setDate(new Date().getDate() + 7))
 const Flashsaleinfo=(props)=>{
-    const [flashsale,setFlashsale]=useState({time:null,hour:null,minutes:null,minutes_to:null,
-        hour_to:null
-    })
+    const [flashsale,setFlashsale]=useState({valid_from:null,valid_to:null})
     const navigate=useNavigate()
     const [currentPage, setCurrentPage] = useState({items:1,byproduct:1});
     const [state,setState]=useState({percent_discount:'',promotion_stock:'',user_item_limit:'',timeSecond:5,complete:false,page_input:1,show:false})
@@ -48,8 +47,7 @@ const Flashsaleinfo=(props)=>{
             if(id){
                 const res = await axios(url_flashsale,headers())
                 const  data=res.data
-                setFlashsale({time:new Date(data.valid_from),hour:new Date(data.valid_from).getHours(),minutes:new Date(data.valid_from).getMinutes(),
-                    hour_to:new Date(data.valid_to).getHours(),minutes_to:new Date(data.valid_to).getMinutes()})
+                setFlashsale({valid_from:dayjs(data.valid_from).format("YYYY-MM-DD HH:mm"),valid_to:dayjs(data.valid_to).format("YYYY-MM-DD HH:mm")})
                 setDates({...date,time:new Date(data.valid_from),hour:new Date(data.valid_from).getHours(),minutes:new Date(data.valid_from).getMinutes(),
                 hour_to:new Date(data.valid_to).getHours(),minutes_to:new Date(data.valid_to).getMinutes()})
                 const variations=data.variations.map(variation=>{
@@ -74,13 +72,10 @@ const Flashsaleinfo=(props)=>{
           })();
     }, [id]);
     
-    const valid_from=`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour).slice(-2)}:${('0'+date.minutes).slice(-2)}`
-    const valid_to=`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour_to).slice(-2)}:${('0'+date.minutes_to).slice(-2)}`
-
+    const {valid_from,valid_to}=flashsale
     const firstpagebyproductIndex=(currentPage.byproduct - 1) * Pagesize;
     const lastPagebyproductIndex = firstpagebyproductIndex + Pagesize;
-    const byproductPage=itemshop.byproduct_choice.slice(firstpagebyproductIndex, lastPagebyproductIndex);
-    const [newFruitItem,setNewFruitItem]=useState('')
+    
     const dragItem=useRef()
     const dragOverItem=useRef()
     useEffect(()=>{
@@ -407,7 +402,8 @@ const Flashsaleinfo=(props)=>{
         setItem({...itemshop,byproduct_choice:list_product})
     }
     const settime=()=>{
-        setFlashsale({...flashsale,time:date.time,hour:date.hour,minutes:date.minutes,hour_to:date.hour_to,minutes_to:date.minutes_to})
+        const day=dayjs(date.time).format("YYYY-MM-DD")
+        setFlashsale({...flashsale,valid_from:dayjs(`${day} ${date.hour}:${date.minutes}`).format("YYYY-MM-DD HH:mm"),valid_to:dayjs(`${day} ${date.hour_to}:${date.minutes_to}`).format("YYYY-MM-DD HH:mm")})
         setShowtime(false)
         if(itemshop.byproduct_choice.length>0){
             const data={action:'checkitem',valid_from:valid_from,valid_to:valid_to}
@@ -466,8 +462,8 @@ const Flashsaleinfo=(props)=>{
                 })
                 return [...arr,...datavariation]
             },[])
-            const dataflash_sale={valid_from:`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour).slice(-2)}:${('0'+date.minutes).slice(-2)}`,
-            valid_to:`${date.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ${('0'+date.hour_to).slice(-2)}:${('0'+date.minutes_to).slice(-2)}`}
+            const dataflash_sale={valid_from:flashsale.valid_from,
+            valid_to:flashsale.valid_to}
             const data={...dataflash_sale,action:'submit',list_items:list_product,discount_model_list:discount_model_list}
             
             axios.post(url_flashsale,JSON.stringify(data),headers())
@@ -514,7 +510,7 @@ const Flashsaleinfo=(props)=>{
                                             <div ref={parentref} className="rele">
                                                 <div onClick={(e)=>setShowtime(!showtime)} className="time-slot-btn item-center" style={{width: '240px'}}>
                                                     <div className="mr-1_2"><i className="selector__prefix-icon icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M11.5156954,1 C11.7918378,1 12.0156954,1.22385763 12.0156954,1.5 L12.015,2 L14,2 C14.5522847,2 15,2.44771525 15,3 L15,14 C15,14.5522847 14.5522847,15 14,15 L2,15 C1.44771525,15 1,14.5522847 1,14 L1,3 C1,2.44771525 1.44771525,2 2,2 L3.991,2 L3.99143991,1.5 C3.99143991,1.22385763 4.21529754,1 4.49143991,1 C4.76758229,1 4.99143991,1.22385763 4.99143991,1.5 L4.991,2 L11.015,2 L11.0156954,1.5 C11.0156954,1.22385763 11.239553,1 11.5156954,1 Z M14,6 L2,6 L2,14 L14,14 L14,6 Z M5.5,11 C5.77614237,11 6,11.2238576 6,11.5 C6,11.7761424 5.77614237,12 5.5,12 L4.5,12 C4.22385763,12 4,11.7761424 4,11.5 C4,11.2238576 4.22385763,11 4.5,11 L5.5,11 Z M8.5,11 C8.77614237,11 9,11.2238576 9,11.5 C9,11.7761424 8.77614237,12 8.5,12 L7.5,12 C7.22385763,12 7,11.7761424 7,11.5 C7,11.2238576 7.22385763,11 7.5,11 L8.5,11 Z M11.5,11 C11.7761424,11 12,11.2238576 12,11.5 C12,11.7761424 11.7761424,12 11.5,12 L10.5,12 C10.2238576,12 10,11.7761424 10,11.5 C10,11.2238576 10.2238576,11 10.5,11 L11.5,11 Z M5.5,8 C5.77614237,8 6,8.22385763 6,8.5 C6,8.77614237 5.77614237,9 5.5,9 L4.5,9 C4.22385763,9 4,8.77614237 4,8.5 C4,8.22385763 4.22385763,8 4.5,8 L5.5,8 Z M8.5,8 C8.77614237,8 9,8.22385763 9,8.5 C9,8.77614237 8.77614237,9 8.5,9 L7.5,9 C7.22385763,9 7,8.77614237 7,8.5 C7,8.22385763 7.22385763,8 7.5,8 L8.5,8 Z M11.5,8 C11.7761424,8 12,8.22385763 12,8.5 C12,8.77614237 11.7761424,9 11.5,9 L10.5,9 C10.2238576,9 10,8.77614237 10,8.5 C10,8.22385763 10.2238576,8 10.5,8 L11.5,8 Z M3.991,3 L2,3 L2,5 L14,5 L14,3 L12.015,3 L12.0156954,3.5 C12.0156954,3.77614237 11.7918378,4 11.5156954,4 C11.239553,4 11.0156954,3.77614237 11.0156954,3.5 L11.015,3 L4.991,3 L4.99143991,3.5 C4.99143991,3.77614237 4.76758229,4 4.49143991,4 C4.21529754,4 3.99143991,3.77614237 3.99143991,3.5 L3.991,3 Z"></path></svg></i></div>
-                                                    <div>{flashsale.hour!=undefined?`${("0"+flashsale.hour).slice(-2)}:${('0'+flashsale.minutes).slice(-2)} ${flashsale.time.toLocaleString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).substr(0,10)} ~ ${('0'+flashsale.hour_to).slice(-2)}:${('0'+flashsale.minutes_to).slice(-2)}`:'Choose the time frame'}</div>
+                                                    <div>{flashsale.valid_from?`${dayjs(flashsale.valid_from).format('HH:mm')} ${dayjs(flashsale.valid_from).format('DD-MM-YYYY')} ~ ${dayjs(flashsale.valid_to).format('HH:mm')}`:'Choose the time frame'}</div>
                                                 </div>
                                                 {showtime?
                                                 <div className="date_pickers popper_content">
@@ -630,7 +626,7 @@ const Flashsaleinfo=(props)=>{
                             <h2 className="card-title">Product offer</h2>
                             <div className="tips">Add products to promotions and set promotional prices.</div>
                             <div className="add-item">
-                                <button onClick={()=>addbyproduct()} className={`button--primary ${flashsale.hour!=undefined?'':'disable'} btn-m add-product item-center`}>
+                                <button onClick={()=>addbyproduct()} className={`button--primary ${flashsale.valid_from?'':'disable'} btn-m add-product item-center`}>
                                     <i className="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fillRule="evenodd" d="M8.48176704,1.5 C8.75790942,1.5 8.98176704,1.72385763 8.98176704,2 L8.981,7.997 L15,7.99797574 C15.2761424,7.99797574 15.5,8.22183336 15.5,8.49797574 C15.5,8.77411811 15.2761424,8.99797574 15,8.99797574 L8.981,8.997 L8.98176704,15 C8.98176704,15.2761424 8.75790942,15.5 8.48176704,15.5 C8.20562467,15.5 7.98176704,15.2761424 7.98176704,15 L7.981,8.997 L2,8.99797574 C1.72385763,8.99797574 1.5,8.77411811 1.5,8.49797574 C1.5,8.22183336 1.72385763,7.99797574 2,7.99797574 L7.981,7.997 L7.98176704,2 C7.98176704,1.72385763 8.20562467,1.5 8.48176704,1.5 Z"></path></svg></i>
                                     <span className="ml-1_2">Add product</span>  
                                 </button>

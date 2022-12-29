@@ -175,7 +175,7 @@ const Categorydetail = ({data,category_id}) => {
         
         
     }
-    console.log(list_search_category)
+    
     return(
         <div className="category-content">
             <div className="containers category-banners">
