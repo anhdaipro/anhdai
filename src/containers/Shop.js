@@ -356,7 +356,7 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
                             <Link className="navbar-with-more-menu__item" to={`/${slug}#product_list`}>
                                 <span>TẤT CẢ SẢN PHẨM</span>
                             </Link>
-                            {childcategory.map(category=>
+                            {childcategory.filter((item,index)=>index<6).map(category=>
                                 <Link onClick={()=>setsearchcategory('categoryID',category.id)} className="navbar-with-more-menu__item" to={`/${slug}?categoryID=${category.id}#productlist`}>
                                     <span>{category.title}</span>
                                 </Link>
@@ -368,11 +368,10 @@ const Shopinfo = ({data,shop_id,showchat,showthreads,setsearchcategory,user}) =>
             <div className="containers">
                 <ContentWrap className="shop-page__vouchers">
                     <h3 className="shop-page__section-title">Mã giảm giá của Shop</h3>
-                    
                     <Shopvoycher
-                    categories={listvoucher}
-                    num_display={3.5}
-                    width={1200-30}
+                        categories={listvoucher}
+                        num_display={3.5}
+                        width={1200-30}
                     />
                 </ContentWrap>
                 <div className="shop-decoration">
