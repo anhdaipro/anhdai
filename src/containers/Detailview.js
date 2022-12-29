@@ -1,6 +1,5 @@
 
 import {categoryURL,itemURL,productinfoURL,shopURL} from "../urls"
-import axios from 'axios';
 import Navbar from "./Navbar"
 import Message from "./Chat"
 import {expiry, headers} from "../actions/auth"
@@ -9,6 +8,7 @@ import { useParams,useLocation,useNavigate,useSearchParams } from "react-router-
 import ProductDetail from "./ProductDetail";
 import Shopinfo from "./Shop";
 import Categorydetail from './Categorydetail'
+import axios from "axios";
 const Detailview = () => {
   const { slug } = useParams(); // <-- access id match param here
   const [list_threads,setThreads]=useState([]);
@@ -29,13 +29,13 @@ const Detailview = () => {
   const [product_id,setProduct_id]=useState()
   const [params, setSearchParams] = useSearchParams();
   const [searchitem,setSearchitem]=useState({page:1,sortby:'pop'})
-  const choices=params.get('itemId') && !params.get('categoryId')?'product':''
+  const choices=params.get('itemId')?'product':''
+  console.log(choices)
   useEffect(() => {
     (async () => {
-      const url=params.get('itemId') && !params.get('categoryId')?axios.get(`${itemURL}?${params}`,headers()):axios.get(`${categoryURL}/${slug}`,headers())
-      const res = await url
+      const url=params.get('itemId')?`${itemURL}?${params}`:`${categoryURL}/${slug}`
+      const res = await axios.get(url,headers())
       setData(res.data)
-      setChoice(choices)
       if (choices=='product'){
         setProduct_id(res.data.id)
         setCategory_id()
@@ -54,7 +54,7 @@ const Detailview = () => {
         }
       }
     })();
-  },[slug])
+  },[slug,params,choices])
 
 
   const showmediaitem=(file,listmedia)=>{
@@ -118,7 +118,7 @@ const Detailview = () => {
             cartitem={cartitem}
           />
         </div>
-        {category_id?
+        {choices=='' && category_id?
           <Categorydetail
           image_home={data.image_home}
           category_id={category_id}
@@ -126,7 +126,7 @@ const Detailview = () => {
          
           />
         :''}
-        {choice=='product' && product_id?
+        {product_id && choices=='product'?
           <ProductDetail
             data_product={data}
             id={product_id}
@@ -138,11 +138,10 @@ const Detailview = () => {
             show_report={state.show_report}
           />
         :''}
-        {choice==''&&shop_id?
+        {choices=='' && shop_id?
           <Shopinfo
             data={data}
             shop_id={shop_id}
-            
             setsearchcategory={(name,value)=>setsearchcategory(name,value)}
         />
         :''}
