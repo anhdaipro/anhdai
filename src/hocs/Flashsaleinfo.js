@@ -73,9 +73,7 @@ const Flashsaleinfo=(props)=>{
     }, [id]);
     
     const {valid_from,valid_to}=flashsale
-    const firstpagebyproductIndex=(currentPage.byproduct - 1) * Pagesize;
-    const lastPagebyproductIndex = firstpagebyproductIndex + Pagesize;
-    
+   
     const dragItem=useRef()
     const dragOverItem=useRef()
     useEffect(()=>{

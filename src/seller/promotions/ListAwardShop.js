@@ -56,7 +56,8 @@ const ListAwardShop=()=>{
                 const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
                 if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listaward.length< count){
                     setLoading(false)
-                    const res =await axios.get(`${listAwardshopURL}?&offset=${listaward.length}`,headers())
+                    params.set('offset',listaward.length)
+                    const res =await axios.get(`${listAwardshopURL}?${params}`,headers())
                     setListAward(current=>[...current,...res.data.data])
                     setLoading(true)
                 }
@@ -66,7 +67,7 @@ const ListAwardShop=()=>{
         return () => {
             document.removeEventListener('scroll', addItem)
         }
-    },[count,loading,listaward.length])
+    },[count,loading,listaward.length,params])
 
     
     const setdetail=(item)=>{
@@ -100,6 +101,7 @@ const ListAwardShop=()=>{
             else{
                 params.delete('choice')
             }
+            params.delete('offset')
             setLoading(false)
             const res =await axios.get(`${listAwardshopURL}?${params}`,headers())
             setListAward(res.data.data)

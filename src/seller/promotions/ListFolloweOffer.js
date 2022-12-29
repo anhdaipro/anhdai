@@ -57,24 +57,26 @@ const ListFollowerOffer=()=>{
 
     
     useEffect(()=>{
+        const addItem=()=>{
+            (async()=>{
+                const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+                if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && follower_offers.length< count){
+                    setLoading(false)
+                    params.set('offset',follower_offers.length)
+                    const res =await axios.get(`${listFollowOffershopURL}?${params}`,headers())
+                    setFollowerOffer(current=>[...current,...res.data.data])
+                    setLoading(true)
+                }
+            })()
+        }
+    
         document.addEventListener('scroll',addItem)
         return () => {
             document.removeEventListener('scroll', addItem)
         }
-    },[count,loading,follower_offers.length])
+    },[count,loading,follower_offers.length,params])
 
-    const addItem=()=>{
-        (async()=>{
-            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-            if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && follower_offers.length< count){
-                setLoading(false)
-                const res =await axios.get(`${listFollowOffershopURL}?&offset=${follower_offers.length}`,headers())
-                setFollowerOffer(current=>[...current,...res.data.data])
-                setLoading(true)
-            }
-        })()
-    }
-
+    
 
     
     useEffect(()=>{
@@ -103,7 +105,7 @@ const ListFollowerOffer=()=>{
         else{
             params.delete('choice')
         }
-
+        params.delete('offset')
         setLoading(false)
         const res =await axios.get(`${listFollowOffershopURL}?${params}`,headers())
         setFollowerOffer(res.data.data)

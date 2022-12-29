@@ -45,11 +45,23 @@ const Listvoucher=()=>{
     
 
     useEffect(()=>{
+        const addItem=()=>{
+            (async()=>{
+                const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+                if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listvoucher.length< count){
+                    setLoading(false)
+                    params.set('offset',listvoucher.length)
+                    const res =await axios.get(`${listvouchershopURL}?${params}`,headers())
+                    setVouchers(current=>[...current,...res.data.data])
+                    setLoading(true)
+                }
+            })()
+        }
         document.addEventListener('scroll',addItem)
         return () => {
             document.removeEventListener('scroll', addItem)
         }
-    },[count,loading,listvoucher.length])
+    },[count,loading,listvoucher.length,params])
 
     useEffect(()=>{
         ( async ()=>{
@@ -59,6 +71,7 @@ const Listvoucher=()=>{
             else{
                 params.delete('choice')
             }
+            params.delete('offset')
             setLoading(false)
             const res =await axios.get(`${listvouchershopURL}?${params}`,headers())
             setVouchers(res.data.data)
@@ -66,17 +79,7 @@ const Listvoucher=()=>{
             setLoading(true)
         })()
     },[choice,params])
-    const addItem=()=>{
-        (async()=>{
-            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-            if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listvoucher.length< count){
-                setLoading(false)
-                const res =await axios.get(`${listvouchershopURL}?&offset=${listvoucher.length}`,headers())
-                setVouchers(current=>[...current,...res.data.data])
-                setLoading(true)
-            }
-        })()
-    }
+    
     const setdata=useCallback((data)=>{
         setVouchers(data)
     },[])

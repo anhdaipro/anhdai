@@ -167,7 +167,6 @@ const Checkout =({user,showchat})=>{
                 ])
                 let total=0
                 let total_final=0
-                let fee_shipping=0
                 let discount_promotion=0
                 let discount_voucher=0
                 let address_order=null
@@ -175,7 +174,6 @@ const Checkout =({user,showchat})=>{
                 obj1.data.map((order)=>{
                     total_final+=order.total_final
                     total+=order.total
-                    fee_shipping+=order.fee_shipping
                     discount_promotion+=order.discount_promotion
                     discount_voucher+=order.discount_voucher
                 })
@@ -191,7 +189,7 @@ const Checkout =({user,showchat})=>{
                     address_order:address_order,fee_shipping:fee_shipping,address_choice:address_order
                 }})
                 const dataorders=obj1.data.map(order=>{
-                    return({...order,show_shipping:false,shipping:order.shipping_item[0]})
+                    return({...order,show_shipping:false,shipping:order.shipping_item[0],fee_shipping:prices.find(item=>item.method==order.shipping_item[0].method).price})
                 })
                 setOrders(dataorders)
         })()
@@ -200,9 +198,13 @@ const Checkout =({user,showchat})=>{
     
     const  checkout = async (e)=>{
         if(state.address_order){
-            const data={orders:orders,address_id:state.address_order.id,payment_choice:state.method_choice}
-            const res= await axios.post(checkoutURL,JSON.stringify(data),headers())
+            const form={orders:orders,address_id:state.address_order.id,payment_choice:state.method_choice}
+            const res= await axios.post(checkoutURL,JSON.stringify(form),headers())
+            const data=res.data
             if(state.method_choice=='Payment on delivery'){
+                if(data.waring){
+                    alert(data.message)
+                }
                 navigate("/user/purchase")
             }
             if(state.method_choice=='Paypal'){
@@ -497,7 +499,7 @@ const Checkout =({user,showchat})=>{
                                         </div>
                                         <div className="_1MFx1Y">
                                             <div className="_3519w5">Tổng số tiền ({order.count} sản phẩm):</div>
-                                            <div className="-c5EIK">₫{formatter.format(order.total-order.total_discount)}</div>
+                                            <div className="-c5EIK">₫{formatter.format(order.total_final+prices.find(item=>item.method==order.shipping.method).price)}</div>
                                         </div> 
                                     </div>
                                 </div>

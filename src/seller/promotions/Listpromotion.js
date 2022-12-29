@@ -78,7 +78,8 @@ const Listcomboshop=()=>{
                 const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
                 if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listcombo.length< count){
                     setLoading(false)
-                    const res =await axios.get(`${listcomboshopURL}?&offset=${listcombo.length}`,headers())
+                    params.set('offset',listcombo.length)
+                    const res =await axios.get(`${listcomboshopURL}?${params}`,headers())
                     setCombo(current=>[...current,...res.data.data])
                     setLoading(true)
                 }
@@ -88,7 +89,7 @@ const Listcomboshop=()=>{
         return () => {
             document.removeEventListener('scroll', addItem)
         }
-    },[count,loading,listcombo.length])
+    },[count,loading,listcombo.length,params])
 
     
     useEffect(() => {
@@ -117,7 +118,7 @@ const Listcomboshop=()=>{
             else{
                 params.delete('choice')
             }
-    
+            params.delete('offset')
             params.set('option',option)
             setLoading(false)
             const res =await axios.get(`${listcomboshopURL}?${params}`,headers())

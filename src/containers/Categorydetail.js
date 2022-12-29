@@ -101,7 +101,7 @@ padding: 0px 0.9375rem;
 margin:0.625rem 0
 `
 const shopmalls=partition(shopmall, int).map(subarray => subarray)
-const Categorydetail = ({data,category_id}) => {
+const Categorydetail = ({image_home,category_id}) => {
     const {slug}=useParams();
     const [FormData,setFormData]=useState({minPrice:null,maxPrice:null})
     const [show,setShow]=useState(false)
@@ -116,8 +116,8 @@ const Categorydetail = ({data,category_id}) => {
     const [showmore,setShowmore]=useState({children:false,choice:false,rating:false})
     useEffect(()=>{
         (async()=>{
-            
             if(category_id){
+                
                 const res =await axios.get(`${categoryinfoURL}?category_id=${category_id}`,headers())
                 setCategory(res.data)
                 
@@ -128,13 +128,16 @@ const Categorydetail = ({data,category_id}) => {
         (async()=>{
             if(category_id){
                 params.set('category_id',category_id)
+                
                 const res =await axios.get(`${searchURL}?${params}`,headers())
                 setListitem(res.data)
-                setCategorychoice(res.data.category_choice)
+                if(category_choice.length==0){
+                    setCategorychoice(res.data.category_choice)
+                }
             }
         })()
-    },[params,category_id])
-
+    },[params,category_id,category_choice.length])
+    
     const setsearchitem=(items)=>{
         setSearchitem(items) 
         setSearchParams(items)
@@ -165,23 +168,28 @@ const Categorydetail = ({data,category_id}) => {
         const searchitems={...searchitem,[name]:value}
         setsearchitem(searchitems)
     }
-    const setlistsearchcategory=(categorychoice)=>{
-        const check_exists=list_search_category.find(item=>item===categorychoice)
-        
-            const list_search_choice=[categorychoice]
-            console.log(list_search_choice)
-            
-            setListsearchcategory(list_search_choice)
-        
-        
-    }
     
+    const setlistsearchcategory=(event,categorychoice)=>{
+            
+            const check_exists=list_search_category.find(item=>item===categorychoice.id)
+            const searchitems={...searchitem,categoryID:categorychoice.id}
+            setsearchitem(searchitems)
+            if(!check_exists){
+                const list_search_choice=[...list_search_category,categorychoice.id]
+                setListsearchcategory(list_search_choice)
+            }
+            else{
+                const list_search_choice=list_search_category.filter(item=>item!==check_exists)
+                setListsearchcategory(list_search_choice)
+            }
+    }
+    console.log(list_search_category)
     return(
         <div className="category-content">
             <div className="containers category-banners">
                 <div style={{width:'100%'}}>
                     <SlideshowGallery
-                        slides={data.image_home}
+                        slides={image_home}
                         automatic={true}
                         timeout={`2500`}
                         top={29.5003}
@@ -270,7 +278,7 @@ const Categorydetail = ({data,category_id}) => {
                     </div>
                 </div>
             </div>
-            {data?
+            
             <div className="d-flex mt-2 containers">
                 <div className="filter-panel">
                     <div className="category-list">
@@ -292,7 +300,7 @@ const Categorydetail = ({data,category_id}) => {
                                 
                                 <div className="folding-items category-list__sub-category-list folding-items--folded">
                                     {categories.category_children.filter((item,index)=>index<3).map((category,index)=>
-                                        <Link key={index} className={`category-list__sub-category ${category.slug===slug?'category-list__sub-category--active':''}`} to={`/${category.slug}`}>
+                                        <Link key={category.id} className={`category-list__sub-category ${category.slug===slug?'category-list__sub-category--active':''}`} to={`/${category.slug}`}>
                                             <svg viewBox="0 0 4 7" className="svg-icon category-list__sub-category__caret icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon>
                                             </svg>{category.title}
                                         </Link>
@@ -308,7 +316,7 @@ const Categorydetail = ({data,category_id}) => {
                                         <div className={`stardust-dropdown__item-body ${showmore.children?'stardust-dropdown__item-body--open':""}`}>
                                             <div className="folding-items__folded-items">
                                                 {categories.category_children.filter((item,index)=>index>2).map((category,index)=>    
-                                                    <Link key={index} className={`category-list__sub-category ${category.slug===slug?'category-list__sub-category--active':''}`} to={`/${category.slug}`}>
+                                                    <Link key={category.id} className={`category-list__sub-category ${category.slug===slug?'category-list__sub-category--active':''}`} to={`/${category.slug}`}>
                                                         <svg viewBox="0 0 4 7" className="svg-icon category-list__sub-category__caret icon-down-arrow-right-filled"><polygon points="4 3.5 0 0 0 7"></polygon>
                                                         </svg>{category.title}
                                                     </Link>
@@ -329,8 +337,8 @@ const Categorydetail = ({data,category_id}) => {
                         <div className="filter-group__header">Theo Danh Mục</div>
                         <div className="folding-items filter-group__body folding-items--folded">
                             {category_choice.filter((item,index)=>index<3).map((category,index)=>
-                                <div key={index} onClick={()=>{
-                                    setlistsearchcategory(category.id)
+                                <div key={category.id} onClick={(e)=>{
+                                    setlistsearchcategory(e,category)
                                     }} className="checkbox-filter">
                                     <div className={`checkbox ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox--checked':''}`}>
                                         <label className="checkbox__control">
@@ -355,9 +363,9 @@ const Categorydetail = ({data,category_id}) => {
                                 <div className={`stardust-dropdown__item-body ${showmore.choice?'stardust-dropdown__item-body--open':""}`}>
                                     <div className="folding-items__folded-items">
                                     {category_choice.filter((item,index)=>index>2).map((category,index)=>  
-                                        <div onClick={()=>{
-                                            setlistsearchcategory(category.id)
-                                            }} key={index} className="checkbox-filter">
+                                        <div onClick={(e)=>{
+                                            setlistsearchcategory(e,category)
+                                            }} key={category.id} className="checkbox-filter">
                                             <div className={`checkbox ${search.categoryID!=undefined && search.categoryID==category.id?'checkbox--checked':''}`}>
                                                 <label className="checkbox__control">
                                                     <input type="checkbox" name="" value="100557"/>
@@ -618,7 +626,7 @@ const Categorydetail = ({data,category_id}) => {
                         />:''}
                     </div>
                 </div>
-            </div>:''}
+            </div>
         </div>
   )
 }

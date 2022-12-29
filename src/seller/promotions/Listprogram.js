@@ -75,7 +75,8 @@ const Listdiscountshop=()=>{
                 const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
                 if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listdiscount.length< count){
                     setLoading(false)
-                    const res =await axios.get(`${listdiscountshopURL}?&offset=${listdiscount.length}`,headers())
+                    params.set('offset',listdiscount.length)
+                    const res =await axios.get(`${listdiscountshopURL}?${params}`,headers())
                     setDiscount(current=>[...current,...res.data.data])
                     setLoading(true)
                 }
@@ -85,7 +86,7 @@ const Listdiscountshop=()=>{
         return () => {
             document.removeEventListener('scroll', addItem)
         }
-    },[count,loading,listdiscount.length])
+    },[count,loading,listdiscount.length,params])
 
     
     useEffect(()=>{
@@ -114,7 +115,7 @@ const Listdiscountshop=()=>{
             else{
                 params.delete('choice')
             }
-    
+            params.delete('offset')
             params.set('option',option)
             setLoading(false)
             const res =await axios.get(`${listdiscountshopURL}?${params}`,headers())

@@ -97,6 +97,8 @@ const Flashsale=()=>{
     const [items,setItems]=useState([])
     const [flashsale,setFlashsale]=useState()
     const [loading,setLoading]=useState(false)
+    const [loadmore,setLoadmore]=useState(true)
+    const [count,setCount]=useState(0)
     const [time,setTime]=useState({hours:0,mins:0,seconds:0})
     const [params, setSearchParams] = useSearchParams();
     const [listflashsale,setListflashsale]=useState([])
@@ -105,17 +107,19 @@ const Flashsale=()=>{
         (async()=>{
             const res= await axios.get(listflashsaleURL,headers())
             setListflashsale(res.data)
-            setLoading(true)
         })()
     }, [])
     useEffect(() => {
         (async()=>{
             setLoading(false)
+            params.delete('from_to')
             const res= await axios.get(`${flashsaleURL}?${params}`,headers())
             setItems(res.data.items_flash_sale)
-            setLoading(true)
+            setCount(res.data.count)
             setFlashsale({id:res.data.id,valid_from:res.data.valid_from,valid_to:res.data.valid_to})
+            setLoading(true)
         })()
+
     }, [params])
   
     useEffect(()=>{
@@ -133,6 +137,25 @@ const Flashsale=()=>{
         return ()=> clearInterval(countDown)
     }
     },[flashsale])
+    useEffect(()=>{
+        const addItem=()=>{
+            (async()=>{
+                const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+                if(count && clientHeight + scrollTop >= scrollHeight-100 && loadmore && items.length< count){
+                    setLoadmore(false)
+                    params.set('from_to',items.length)
+                    const res =await axios.get(`${flashsaleURL}?${params}`,headers())
+                    setItems(current=>[...current,...res.data.items_flash_sale])
+                    setLoadmore(true)
+                }
+            })()
+        }
+    
+        document.addEventListener('scroll',addItem)
+        return () => {
+            document.removeEventListener('scroll', addItem)
+        }
+    },[count,loadmore,items.length,params])
     const number=(number,value)=>{
         return Array(number).fill().map((_,i)=>
             <div key={i} style={{color:'#fff'}} className="countdown-timer__number__item">
@@ -150,6 +173,12 @@ const Flashsale=()=>{
         else{
             return value.split('').map((key,i)=><>{i==0||i>=value.length-3 ||key=='.'?key:'?'}</>)
         }
+    }
+    const price=(item)=>{
+        return (item.max_price+item.min_price)/2
+    }
+    const discount_price=(item)=>{
+        return (price(item)*(1-item.percent_discount/100))
     }
     return(
         <div>
@@ -187,7 +216,7 @@ const Flashsale=()=>{
                                             <div className="countdown-timer__number__hexa countdown-timer__number__hexa--second" style={{animationDelay: '-18s',transform:`translateY(-${('0'+time.seconds).slice(-2,-1)*17}px)`}}>
                                                 {number(10,('0'+time.seconds).slice(-2,-1))}
                                             </div>
-                                            <div className="countdown-timer__number__deca countdown-timer__number__deca--second" style={{animationDelay: '-9s',transform:`translateY(-${('0'+time.seconds).slice(-1)*17}px)`}}>
+                                            <div className="countdown-timer__number__deca countdown-timer__number__deca--second" style={{animationDelay: '-1s',transform:`translateY(-${('0'+time.seconds).slice(-1)*17}px)`}}>
                                                 {number(10,('0'+time.seconds).slice(-1))}
                                             </div>
                                         </div>
@@ -253,9 +282,8 @@ const Flashsale=()=>{
                         </div>
                     </div>
                     <div>
-                        {flashsale?
-                        loading?
-                        <div className="VUCDM7">
+                        {loading?
+                        <div className={`VUCDM7 ${loadmore?'':'item-centers'}`}>
                             {items.map(item=>
                             <div key={item.id} className="B3+pb+ N8hR+F y+U+-m">
 
@@ -278,13 +306,13 @@ const Flashsale=()=>{
                                                 <div className="IKgh3U">
                                                     <div className="qOgYxF">
                                                         <span className="-92Xgq">₫ </span>
-                                                        <span>{(item.max_price+item.min_price)/2}</span>
+                                                        <span>{formatter.format(price(item))}</span>
                                                     </div>
                                                 </div>
                                                 <StyleDicount>
                                                     <div className="qOgYxF">
                                                         <span className="-92Xgq">₫ </span>
-                                                        <span className="_6Xxkav">{new Date(flashsale.valid_from)<new Date()?formatter.format((item.discount_price/1000).toFixed(0)*1000):displaydiscount(formatter.format((item.discount_price/1000).toFixed(0)*1000))}</span>
+                                                        <span className="_6Xxkav">{new Date(flashsale.valid_from)<new Date()?formatter.format((discount_price(item)/1000).toFixed(0)*1000):displaydiscount(formatter.format((discount_price(item)/1000).toFixed(0)*1000))}</span>
                                                     </div>
                                                 </StyleDicount>
                                                 {new Date(flashsale.valid_from)<new Date()?
@@ -322,13 +350,18 @@ const Flashsale=()=>{
                                 </Link>
                             </div>
                             )}
+                            {!loadmore &&(
+                            <Loading className="loading_item item-center">
+                            <div className="ball"></div>
+                            <div className="ball"></div>
+                            <div className="ball"></div>
+                            </Loading>)}
                         </div>:
                         <Loading className="loading_item item-center">
                             <div className="ball"></div>
                             <div className="ball"></div>
                             <div className="ball"></div>
-                        </Loading>
-                    :''}
+                        </Loading>}
                     </div>
                 </div>
             </div>

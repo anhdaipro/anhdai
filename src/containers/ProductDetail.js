@@ -202,6 +202,7 @@ const Itemdeal=(props)=>{
           setState({...state,size_id:null,variation_size:[],size_value:''})
         }
     }
+    
     return(
         <div key={item.id} className="Cgh6x3 wAs-X+">
             <a className="HqVUvN" href="/Quần-Baggy-Nam-Ống-Rộng-vải-Hàn-Cao-Cấp-Quần-Âu-công-sở-chất-liệu-co-giãn-phong-cách-Hàn-Quốc-i.275899480.12372283368">
@@ -278,7 +279,7 @@ const Itemdeal=(props)=>{
                                         <button onClick={e=>setQuantity(quantity-1)} className={`${quantity==1?'disable':''} minus-btn btn-adjust`}>
                                             <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon "><polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon></svg>
                                         </button>
-                                        <input onChange={e=>setQuantity(isNaN(e.target.value)?quantity:e.target.value)} className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={quantity}/>
+                                        <input onChange={e=>setQuantity(isNaN(e.target.value)?quantity:parseInt(e.target.value))} className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={quantity}/>
                                         <button onClick={e=>setQuantity(quantity+1)} className={`plus-btn btn-adjust`}><svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg></button>
                                        
                                     </div>
@@ -702,6 +703,11 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
             }
         }
     }
+    const setquantity=(value)=>{
+        const inventory=variation.data?variation.data.inventory:data.total_inventory
+        const value_choice=value<=1?1:value>=inventory?inventory:value
+        setQuantity(value_choice)
+    }
     return(
     <div className="page-product">
         {data?
@@ -1068,11 +1074,11 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
                                         <label className="koZBMj">Quanlity</label>
                                         <div className="item-center" id="choice_quantity">
                                             <div className="_16mL_A item-center mr-1 input-quantity">
-                                                <button onClick={(e)=>setQuantity(quantity-1)} className="minus-btn btn-adjust">
+                                                <button onClick={(e)=>setquantity(quantity-1)} className="minus-btn btn-adjust">
                                                     <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon "><polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon></svg>
                                                 </button>
-                                                <input onChange={e=>setQuantity(isNaN(e.target.value)?quantity:e.target.value)} className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={quantity}/>
-                                                <button onClick={(e)=>setQuantity(quantity+1)} className="plus-btn btn-adjust">
+                                                <input onChange={e=>setquantity(isNaN(e.target.value)?quantity:e.target.value)} className="_2KdYzP quantity iRO3yj" type="text" role="spinbutton" aria-valuenow="1" value={quantity}/>
+                                                <button onClick={(e)=>setquantity(quantity+1)} className="plus-btn btn-adjust">
                                                     <svg enableBackground="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0" className="svg-icon icon-plus-sign"><polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5"></polygon></svg>
                                                 </button>
                                             </div>

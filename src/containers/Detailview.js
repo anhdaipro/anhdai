@@ -54,7 +54,7 @@ const Detailview = () => {
         }
       }
     })();
-  },[slug,params])
+  },[slug])
 
 
   const showmediaitem=(file,listmedia)=>{
@@ -74,6 +74,7 @@ const Detailview = () => {
     setState({...state,show_report:true})
     setReviewchoice(review)
   }
+
   const setsubmitreport=(e)=>{
     setState({...state,report_complete:false})
     const data={review_id:reviewchoice.id,
@@ -105,22 +106,24 @@ const Detailview = () => {
 
   return(
     <>
+      {data? 
       <div id="main">
+        
         <div className="item-col top container-wrapper">
-        {data? 
+        
           <Navbar 
             data={data}
             category_id={category_id}
             shop_id={shop_id}
             cartitem={cartitem}
-          />:""}
+          />
         </div>
-        {choice=='' && category_id?
+        {category_id?
           <Categorydetail
-          data={data}
+          image_home={data.image_home}
           category_id={category_id}
           listitem={data.list_item_page}
-          setsearchcategory={(name,value)=>setsearchcategory(name,value)}
+         
           />
         :''}
         {choice=='product' && product_id?
@@ -143,7 +146,7 @@ const Detailview = () => {
             setsearchcategory={(name,value)=>setsearchcategory(name,value)}
         />
         :''}
-      </div>
+      </div>:''}
       <div id="modal">
         {state.show_media?
         <div className="_34EwmR">

@@ -58,7 +58,8 @@ const Listflashseleshop=()=>{
                 const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
                 if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listflashsale.length< count){
                     setLoading(false)
-                    const res =await axios.get(`${listflashsaleshopURL}?&offset=${listflashsale.length}`,headers())
+                    params.set('offset',listflashsale.length)
+                    const res =await axios.get(`${listflashsaleshopURL}?${params}`,headers())
                     setFlashsales(current=>[...current,...res.data.data])
                     setLoading(true)
                 }
@@ -68,7 +69,7 @@ const Listflashseleshop=()=>{
         return () => {
             document.removeEventListener('scroll', addItem)
         }
-    },[count,loading,listflashsale.length])
+    },[count,loading,listflashsale.length,params])
 
     
     
@@ -92,6 +93,7 @@ const Listflashseleshop=()=>{
             else{
                 params.delete('choice')
             }
+            params.delete('offset')
             setLoading(false)
             const res =await axios.get(`${listflashsaleshopURL}?${params}`,headers())
             setFlashsales(res.data.data)

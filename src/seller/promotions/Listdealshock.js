@@ -79,7 +79,8 @@ const Listdealshop=()=>{
                 const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
                 if(count && clientHeight + scrollTop >= scrollHeight-300 && loading && listdeal.length< count){
                     setLoading(false)
-                    const res =await axios.get(`${listAddonshopURL}?&offset=${listdeal.length}`,headers())
+                    params.set('offset',listdeal.length)
+                    const res =await axios.get(`${listAddonshopURL}?${params}`,headers())
                     setDeal(current=>[...current,...res.data.data])
                     setLoading(true)
                 }
@@ -90,7 +91,7 @@ const Listdealshop=()=>{
         return () => {
             document.removeEventListener('scroll', addItem)
         }
-    },[count,loading,listdeal.length])
+    },[count,loading,listdeal.length,params])
 
     const setdata=useCallback((data)=>{
         setDeal(data)
@@ -127,7 +128,7 @@ const Listdealshop=()=>{
         else{
             params.delete('choice')
         }
-
+        params.delete('offset')
         params.set('option',option)
         setLoading(false)
         const res =await axios.get(`${listAddonshopURL}?${params}`,headers())
