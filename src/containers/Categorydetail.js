@@ -168,7 +168,7 @@ const Categorydetail = ({data,category_id}) => {
     const setlistsearchcategory=(categorychoice)=>{
         const check_exists=list_search_category.find(item=>item===categorychoice)
         
-            const list_search_choice=[...list_search_category,categorychoice]
+            const list_search_choice=[categorychoice]
             console.log(list_search_choice)
             
             setListsearchcategory(list_search_choice)
