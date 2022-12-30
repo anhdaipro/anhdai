@@ -53,7 +53,7 @@ const SlideshowGallery=({slides,automatic,top})=>{
                     {slides.map((item,i)=>
                     
                         <div className="stardust-carousel__item-inner-wrapper">
-                            <Link className="full-home-banners__banner-image" to={`/${item.url_field}`}>
+                            <Link className="full-home-banners__banner-image" to={`${item.url_field}`}>
                                 <div className="_3XtrnR full-home-banners__light-background">
                                     <div className="full-home-banners__main-banner-image nO87xn" style={{backgroundImage: `url(${item.image})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat',paddingTop:`${top}%`}}></div>
                                 </div>
