@@ -26,11 +26,11 @@ const ImageBackground=styled.div`
 
 `
 const items=[
-    {image:'https://cf.shopee.vn/file/a2c97acccc2213d2fcc3729cf1ab40a4',url_field:'/enfaofficialstore'},
-    {image:'https://cf.shopee.vn/file/5824537f420e7f1ae501fd6059e35e81',url_field:'/enfaofficialstore'},
-    {image:'https://cf.shopee.vn/file/a0abb2ab28a3cedd2afddeab71a71a56',url_field:'/enfaofficialstore'},
-    {image:'https://cf.shopee.vn/file/5fef93dfdfd1949341bace89f3ede8cd',url_field:'/enfaofficialstore'},
-    {image:'https://cf.shopee.vn/file/9687f840376bd97a95a7f6967b7e8c0f',url_field:'/enfaofficialstore'},
+    {image:'https://cf.shopee.vn/file/a2c97acccc2213d2fcc3729cf1ab40a4',url_field:'/anhdai'},
+    {image:'https://cf.shopee.vn/file/5824537f420e7f1ae501fd6059e35e81',url_field:'/anhdai'},
+    {image:'https://cf.shopee.vn/file/a0abb2ab28a3cedd2afddeab71a71a56',url_field:'/anhdai'},
+    {image:'https://cf.shopee.vn/file/5fef93dfdfd1949341bace89f3ede8cd',url_field:'/anhdai'},
+    {image:'https://cf.shopee.vn/file/9687f840376bd97a95a7f6967b7e8c0f',url_field:'/anhdai'},
 ]
 const listitem=[
     {image:'https://cf.shopee.vn/file/087e91c91d23ebb7c425612a7ee721ff_xhdpi',name:'Mua là có quà'},
