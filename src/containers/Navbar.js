@@ -209,7 +209,7 @@ searchitem()
                                 <div  className="cart-drawer-container">
                                     <Link className="cart-drawer item-center" to="/cart">
                                         <svg viewBox="0 0 26.6 25.6" className="svg-icon navbar__link-icon icon-shopping-cart-2"><polyline fill="none" points="2 1.7 5.5 1.7 9.6 18.3 21.2 18.3 24.6 6.1 7 6.1" ></polyline><circle cx="10.7" cy="23" r="2.2" stroke="none"></circle><circle cx="19.7" cy="23" r="2.2" stroke="none"></circle></svg>
-                                        <div className="cart-number-badge">{state.count}</div>
+                                        {state.count &&(<div className="cart-number-badge">{state.count}</div>)}
                                     </Link>
                                 </div>
                             </div>
