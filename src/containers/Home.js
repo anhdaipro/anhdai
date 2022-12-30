@@ -177,7 +177,7 @@ class ImageHome extends React.Component {
             </div>
             <ListItem>
                 {listitem.map((item,i)=>
-                <Link key={i} to='/ggg'>
+                <Link key={i} to='/'>
                     <div style={{width:'100px'}}>
                         <Background>
                             <Image image={item.image}></Image>
