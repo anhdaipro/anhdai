@@ -9,6 +9,7 @@ import {promotionURL,addToCartURL} from "../urls"
 import {formatter,} from "../constants"
 import Message from "./Chat"
 import { expiry, headers } from '../actions/auth';
+import { useSelector } from 'react-redux';
 const Promotion = () => {
     const { id } = useParams(); // <-- access id match param here
     const [state, setState] = useState({loading:false,products:[],combo_type:'1'});
@@ -18,6 +19,7 @@ const Promotion = () => {
     const [warring, setWarring] = useState(false);
     const [cartitem,setCartitem]=useState()
     const navigate=useNavigate()
+    const user=useSelector(state=>state.user)
     const [variation, setVariation] = useState({data:null,
         count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],
         count_variation:0,quantity:1})
@@ -57,10 +59,12 @@ const Promotion = () => {
             form.append('item_id',data.id)
             form.append('quantity',1)
             if(localStorage.token && expiry()>0){
+                if(user.id!==state.user_id){
                 axios.post(addToCartURL,form,headers())
                 .then(res=>{
                     setCartitem(res.data)
                 })
+            }
             }
             else{
                 navigate(`/buyer/login?next=${window.location}`, { replace: true });
