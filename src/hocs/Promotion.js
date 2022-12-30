@@ -2,15 +2,18 @@
 import axios from 'axios';
 import React, {useState, useEffect,memo} from 'react'
 import {formatter,} from "../constants"
-import { headers } from '../actions/auth';
+import { expiry, headers } from '../actions/auth';
 import {addToCartURL} from "../urls"
-const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring,setcartitem})=>{
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
+const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring,setcartitem,user_id})=>{
     const [state, setState] = useState({data:data,inventory:null,price:null,percent_discount:null,product_id:0});
     const [variation, setVariation] = useState({
         count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],
         quantity:1})
     const [quantity,setQuantity]=useState(1)
-    
+    const user=useSelector(state=>state.user)
+    const navigate=useNavigate()
     const setcolor=(e,item)=>{ 
         e.preventDefault()
         e.target.classList.toggle('product-variation--selected')
@@ -66,20 +69,27 @@ const Variationitem=({show,data,count_variation,setshow,seterrow,setwarring,setc
             seterrow(false)
             setwarring(true)
             const data={id:state.id,item_id:state.data.id,quantity:quantity} 
-            axios.post(addToCartURL,JSON.stringify(data),headers())
-            .then(res=>{
-                let data=res.data
-                setshow(false)
-                setwarring(true)
-                setcartitem(data)
-                setTimeout(function(){
-                    setwarring(false)
-                },2500)
-                setVariation({count_size:0,count_color:0,size_id:0,color_id:0,
-                variation_color:[],variation_size:[],quantity:1})
-                setState({data:data,inventory:null,price:null,percent_discount:null,
-                id:0})
-          })
+            if(localStorage.token && expiry()){
+                if(user.id!=user_id){
+                    axios.post(addToCartURL,JSON.stringify(data),headers())
+                    .then(res=>{
+                        let data=res.data
+                        setshow(false)
+                        setwarring(true)
+                        setcartitem(data)
+                        setTimeout(function(){
+                            setwarring(false)
+                        },2500)
+                        setVariation({count_size:0,count_color:0,size_id:0,color_id:0,
+                        variation_color:[],variation_size:[],quantity:1})
+                        setState({data:data,inventory:null,price:null,percent_discount:null,
+                        id:0})
+                    })
+                }
+            }
+            else{
+                navigate(`/buyer/login?next=${window.location}`, { replace: true }); 
+            }
         }  
     }
 

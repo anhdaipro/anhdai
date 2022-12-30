@@ -172,6 +172,7 @@ const Promotion = () => {
                     data={variation.data}
                     count_variation={variation.count_variation}
                     show={show}
+                    user_id={state.user_id}
                     setshow={es=>setshow(es)}
                     setcartitem={data=>setCartitem(data)}
                     seterrow={err=>seterrow(err)}
