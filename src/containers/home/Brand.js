@@ -57,7 +57,7 @@ const Brand=(props)=>{
             <div>
                 {item.map((category,index)=>
                     <div key={index} class="ofs-carousel__item" location="14" shopid="37251700">
-                        <Link class="ofs-carousel__shop-cover-image" to="/larocheposay">
+                        <Link class="ofs-carousel__shop-cover-image" to="/phamdai">
                             <div class="n-CE6j">
                                 <ImageBackground image={category.image} class="ofs-carousel__cover-image edy5hG"></ImageBackground>
                             </div>
