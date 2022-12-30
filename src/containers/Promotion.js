@@ -4,11 +4,11 @@ import axios from 'axios';
 import Navbar from "./Navbar"
 import React, {useState, useEffect,useCallback} from 'react'
 import Variationitem from '../hocs/Promotion';
-import { useParams,Link } from "react-router-dom";
+import { useParams,Link, useNavigate } from "react-router-dom";
 import {promotionURL,addToCartURL} from "../urls"
 import {formatter,} from "../constants"
 import Message from "./Chat"
-import { headers } from '../actions/auth';
+import { expiry, headers } from '../actions/auth';
 const Promotion = () => {
     const { id } = useParams(); // <-- access id match param here
     const [state, setState] = useState({loading:false,products:[],combo_type:'1'});
@@ -17,6 +17,7 @@ const Promotion = () => {
     const [errow, setErrow] = useState(false);
     const [warring, setWarring] = useState(false);
     const [cartitem,setCartitem]=useState()
+    const navigate=useNavigate()
     const [variation, setVariation] = useState({data:null,
         count_size:0,count_color:0,size_id:0,color_id:0,variation_color:[],variation_size:[],
         count_variation:0,quantity:1})
@@ -29,20 +30,19 @@ const Promotion = () => {
         })();
     }, [id]);
 
-    const setshow = useCallback((es) => {
+    const setshow = (es) => {
         setShow(es);
-      }, [show]);
+    }
     
-    const seterrow=useCallback((err)=>{
+    const seterrow=(err)=>{
         setErrow(err);
-      }, [errow]);
+    }
 
-    const setwarring=useCallback((war)=>{
+    const setwarring=(war)=>{
         setWarring(war);
-      }, [warring]);
+    }
     
     const openvariation=(e,data)=>{
-        e.preventDefault()
         e.stopPropagation()
         let count_variation=0
         if(data.sizes.length>0){
@@ -56,10 +56,15 @@ const Promotion = () => {
             let form =new FormData()
             form.append('item_id',data.id)
             form.append('quantity',1)
-            axios.post(addToCartURL,form,headers())
-            .then(res=>{
-                setCartitem(res.data)
-            })
+            if(localStorage.token && expiry()>0){
+                axios.post(addToCartURL,form,headers())
+                .then(res=>{
+                    setCartitem(res.data)
+                })
+            }
+            else{
+                navigate(`/buyer/login?next=${window.location}`, { replace: true });
+            }
         }
         else{
             setShow(true)
