@@ -679,8 +679,10 @@ const ProductDetail = ({report_complete,showchat,show_report,setreport,users,
         product_id:main_product.variation_choice.product_id,quantity:main_product.quantity,
         byproducts:byproducts,item_id:main_product.id}
         if(localStorage.token && expiry()>0){
-            const res= await axios.post(addToCartBatchURL,JSON.stringify(form),headers())
-            addcartitem({id:res.data.id,image:data.image,name:data.name,price:pricemain()*main_product.quantity})
+            if(user.id!=data.user_id){
+                const res= await axios.post(addToCartBatchURL,JSON.stringify(form),headers())
+                addcartitem({id:res.data.id,image:data.image,name:data.name,price:pricemain()*main_product.quantity})
+            }
         }
         else{
             navigate(`/buyer/login?next=${window.location}`, { replace: true });
