@@ -7658,9 +7658,7 @@ flex-direction: row;
 justify-content:space-between;
 width: 250px;
   }
-.input-group {
-	width: 120px;
-}
+
 .btn-minus {
 background: #e74c3c;
 font-size: 12px;
