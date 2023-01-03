@@ -217,7 +217,7 @@ const Checkout =({user,showchat})=>{
         if(state.list_addresses.length==0){
             axios.get(updateAddressURL,headers())
             .then(res=>{
-                setState({...state,list_addresses:res.data.a,show:true})
+                setState({...state,list_addresses:res.data,show:true})
             })
         }
         else{
