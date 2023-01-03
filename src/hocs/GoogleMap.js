@@ -5,10 +5,7 @@ function GoogleMaps() {
   const key = 'AIzaSyBZVkd_qWs-BHzt0xzzAahhhIJBaynKSGQ'
 
   return (
-    <div className="App">
-          <header>
-            Map Demo
-          </header>
+    <div className="google-map">
           <Map
             googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap`}
             loadingElement={<div style={{ height: `100%` }} />}

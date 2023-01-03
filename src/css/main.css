@@ -5576,6 +5576,10 @@ button._0FecFw {
   
     transform: translateZ(0px);
   }
+  .google-map{
+    width:100%;
+    height:100%
+  }
   .home-product-item__discount-deal-shock{
     color: rgb(238, 77, 45);
     overflow: hidden;
