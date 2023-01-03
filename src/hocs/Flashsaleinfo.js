@@ -577,7 +577,7 @@ const Flashsaleinfo=(props)=>{
                                     <div className="info-item-label">Tieu chí product</div>
                                     <div className="products-criteria-wrapper">
                                         <div className="tab-item active">
-                                            <div data-v-4679d5c2="" data-v-261a253a="" className="ellipsis-text-wrapper">
+                                            <div data-v-4679d5c2="" data-v-261a253a="" className="item-centers ellipsis-text-wrapper">
                                                 Tất cả
                                             </div>
                                         </div>
