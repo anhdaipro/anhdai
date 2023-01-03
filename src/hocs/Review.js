@@ -4,9 +4,7 @@ import { headers } from '../actions/auth';
 import {formatter,itemvariation,hidestring,list_review_text_star,
 star_solid,star_empty,dataURLtoFile,rating_score,list_rating_category_bab,list_reason_cancel} from "../constants"
 import {threadlURL,purchaselistdURL,localhost, reviewURL,} from "../urls"
-const [
-    
-]
+
 const Listreview=({order_choice,cancel,list_orders,setcancel,show,list_review,user,setshow,updateorder,
     edit,setedit,list_cartitem,setcartitem,setChoice,setlistreview})=>{
     const [state, setState] = useState({loading:false,review:null,submit:false,
