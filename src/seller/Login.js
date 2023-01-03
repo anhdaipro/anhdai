@@ -89,7 +89,7 @@ const Loginvendor = ({ login, isAuthenticated }) => {
                                     </form> 
                                     <div data-v-1d0455cd="" className="main-sub-account-login"> 
                                         <div data-v-1d0455cd="" className="create-account-frame">Chưa có tài khoản Anhdai? 
-                                            <button data-v-1d0455cd="" type="button" className="button button--link button--normal" style={{textDecoration: 'none'}}>
+                                            <button onClick={()=>navigate('/buyer/signup')} data-v-1d0455cd="" type="button" className="button button--link button--normal" style={{textDecoration: 'none'}}>
                                                 <span>Tạo tài khoản</span>
                                             </button>
                                         </div> 
@@ -98,7 +98,7 @@ const Loginvendor = ({ login, isAuthenticated }) => {
                                             <div data-v-1d0455cd="" className="main-sub-account-or">OR</div> 
                                             <div data-v-1d0455cd="" className="main-sub-account-divider"></div>
                                         </div> 
-                                        <button data-v-1d0455cd="" type="button" className="button button--large" style={{width: '100%'}}>
+                                        <button onClick={()=>navigate('/buyer/login')} data-v-1d0455cd="" type="button" className="button button--large" style={{width: '100%'}}>
                                             <span>Đăng nhập với tài khoản Chính/ Phụ</span>
                                         </button>
                                     </div>

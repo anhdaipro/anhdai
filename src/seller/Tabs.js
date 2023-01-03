@@ -5,7 +5,6 @@ import axios from 'axios'
 import { headers } from '../actions/auth'
 const Tabs=(props)=>{
     const {choice,loading,listchoice,setchoice}=props
-    const [params, setSearchParams] = useSearchParams();
     const tabs_ink =useRef()
     const parent =useRef()
     

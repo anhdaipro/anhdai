@@ -5577,8 +5577,8 @@ button._0FecFw {
     transform: translateZ(0px);
   }
   .home-product-item__discount-deal-shock{
-  color: rgb(238, 77, 45);
-  overflow: hidden;
+    color: rgb(238, 77, 45);
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: center;
