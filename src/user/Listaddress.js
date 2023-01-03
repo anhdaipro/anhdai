@@ -30,15 +30,14 @@ const Addressuser = ({user}) =>{
             }
             getJournal();
         }, []);
-        
+    useEffect(()=>{
+        axios.get(cityListURL)
+        .then(res=>{
+            setCity({list_city:res.data})
+        })
+    },[])    
     function editaddress(e,address){
         setShow(true)
-        if(city.list_city.length==0){
-            axios.get(cityListURL)
-            .then(res=>{
-                setCity({list_city:res.data})
-            })
-        } 
         const city_choice=city.list_city.find(item=>item.name==address.city && item.level==1)    
         const district_choice=city.list_city.find(item=>item.name==address.district && item.matp==city_choice.matp && item.level==2)
         const town_choice=city.list_city.find(item=>item.name==address.town && item.maqh==district_choice.maqh && item.level==3)
