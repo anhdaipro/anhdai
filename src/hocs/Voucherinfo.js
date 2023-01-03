@@ -549,6 +549,7 @@ const Voucherinfo=(props)=>{
                     showbyproduct={show.byproduct}
                     loading={loading}
                     items={itemshop.items}
+                    limit={100}
                     sec={state.timeSecond}
                     text={voucher}
                     complete={state.complete}

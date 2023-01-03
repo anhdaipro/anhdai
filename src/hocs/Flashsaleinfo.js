@@ -893,6 +893,7 @@ const Flashsaleinfo=(props)=>{
                     loading={loading}
                     items={itemshop.items}
                     sec={state.timeSecond}
+                    limit={10}
                     setDuplicate={data=>setDuplicate(data)}
                     duplicate={duplicate}
                     text={flashsale}

@@ -567,6 +567,7 @@ const Promotioninfo=(props)=>{
                     items={itemshop.items}
                     sec={state.timeSecond}
                     text={combo}
+                    limit={100}
                     duplicate={duplicate}
                     texterror={`Combo Khuyến Mãi`}
                     setDuplicate={data=>setDuplicate(data)}

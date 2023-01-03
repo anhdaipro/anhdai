@@ -1347,6 +1347,7 @@ const Detaildealshock=()=>{
                     items={itemshop.items}
                     sec={state.timeSecond}
                     text={deal}
+                    limit={100}
                     edit={edit}
                     complete={state.complete}
                     duplicate={duplicate}

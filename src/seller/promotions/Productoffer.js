@@ -9,7 +9,7 @@ const listchoice=[
     {name:"",value:"1"},
 ]
 const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,submitby,
-    setshow,duplicate,sec,text,complete,setDuplicate,
+    setshow,duplicate,sec,text,complete,setDuplicate,limit,
     showmain,showbyproduct,byproduct,byproduct_choice})=>{
    
     const [currentPage, setCurrentPage] = useState(1);
@@ -323,7 +323,7 @@ const Productoffer=({loading,items,items_choice,setcheckitem,setcheckall,submit,
                             :''}
                             <div className="modal__footer-buttons">
                                 <button onClick={()=>setshow(false,name)} className="cancel btn-m btn-light">Cancel</button>
-                                <button onClick={()=>{showmain?submit():submitby()}} className={`comfirm ${list_items.some(item=>item.check) || choice_product.length>0?'':'disable'} btn-orange btn-m`}>Comfirm</button>
+                                <button onClick={()=>{showmain?submit():submitby()}} className={`comfirm ${(list_items.some(item=>item.check) && list_items.filter(item=>item.check).length<=limit) || choice_product.length>0?'':'disable'} btn-orange btn-m`}>Comfirm</button>
                             </div>
                         </div>
                     </div>}

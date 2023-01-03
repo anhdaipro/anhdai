@@ -836,6 +836,7 @@ const Programinfo=(props)=>{
                     items={itemshop.items}
                     sec={state.timeSecond}
                     duplicate={duplicate}
+                    limit={100}
                     setDuplicate={data=>setDuplicate(data)}
                     text={program}
                     complete={state.complete}
