@@ -278,7 +278,7 @@ const Detailproduct=()=>{
                                 </div>
                             </>:
                             <div className="upload-wrapper upload-dragger">
-                                <input onChange={(e)=>previewFile(e,name,value,filetype,media)} type="file"  accept={media.filetype=='video'?'video/mp4':'image/*'} multiple className="image-video" />
+                                <input onChange={(e)=>previewFile(e,name,value,filetype,media)} type="file"  accept={media.filetype=='video'?'video/mp4':'image/*'}  className="image-video" />
                                 <div className="cricle">+</div>
                             </div>}
                             
