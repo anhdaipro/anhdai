@@ -3383,7 +3383,9 @@ font-size: 14px;
 .content-box .form-select{
  height: 30px;
   }
-
+.content-box  .item-end{
+  padding-bottom:12px
+}
 .variation-body{
   display: flex;
   flex-direction: column;
