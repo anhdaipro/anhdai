@@ -154,10 +154,13 @@ const Navbar = ({ logout, isAuthenticated,data,cartitem,image,user,hidesearch}) 
                             <div className="searchbar ">
                                 <div className="searchbar__main" style={{position: 'relative'}}>
                                     <form role="search" className="searchbar-input" autoComplete="off">
-                                        <input onKeyPress={e=>{if(e.key === "Enter"){
- e.preventDefault()
-searchitem()
-}}} onChange={(e)=>setKeyword(e.target.value)} aria-label="Hoàn xu Xtra đơn từ 0Đ" className="searchbar-input__input" style={{width:'500px'}} value={(params.get('keyword')!=keyword && params.has('keyword') && keyword!=null)||(!params.has('keyword'))?keyword:params.get('keyword')} maxLength="128" placeholder={`${searchchoice!=null?data.user_id?'Tìm trong shop':data.title?`Tìm trong ${data.title}`:'Tìm trong shoppe':'Hoàn xu Xtra đơn từ 0Đ'}`} autoComplete="off" />
+                                        <input onKeyPress={e=>{
+                                            if(e.key === "Enter"){
+                                                e.preventDefault()
+                                                searchitem()
+                                            }}
+                                            } 
+                                            onChange={(e)=>setKeyword(e.target.value)} aria-label="Hoàn xu Xtra đơn từ 0Đ" className="searchbar-input__input" style={{width:'500px'}} value={(params.get('keyword')!=keyword && params.has('keyword') && keyword!=null)||(!params.has('keyword'))?keyword:params.get('keyword')} maxLength="128" placeholder={`${searchchoice!=null?data.user_id?'Tìm trong shop':data.title?`Tìm trong ${data.title}`:'Tìm trong shoppe':'Hoàn xu Xtra đơn từ 0Đ'}`} autoComplete="off" />
                                     </form>
                                     {data?
                                     
