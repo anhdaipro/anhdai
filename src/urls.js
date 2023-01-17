@@ -1,4 +1,4 @@
-export const localhost = "https://ecomerceapp-production.up.railway.app";
+export const localhost = "https://web-production-fecd.up.railway.app";
 const apiURL = "/api/v4";
 export const endpoint = `${localhost}${apiURL}`;
 export const refreshtokenURL=`${localhost}${apiURL}/refresh`
