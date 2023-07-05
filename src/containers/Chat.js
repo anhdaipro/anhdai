@@ -506,7 +506,7 @@ const Message=(props)=>{
     
 
     useEffect(() => {
-        socket.current=io.connect('https://serverecomerce-production.up.railway.app/');
+        socket.current=io.connect('https://ecommerceserver-4arh.onrender.com/');
         socket.current.on("getUsers", (users) => {
             dispatch(setuseronline(users))
             console.log(users)
